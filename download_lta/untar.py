@@ -1,6 +1,7 @@
 import os
 from glob import glob
 import argparse
+from subprocess import call
 
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('--path', type=str, help='path')
@@ -13,3 +14,9 @@ for filename in glob(args.path+"/*SB*.tar*"):
   os.system('rm -r '+outname)
 
   print(outname+' untarred.')
+
+os.system(f"mkdir -p {args.path}/Data")
+
+for f in glob("/home/lofarvwf-rtimmerman/Downloads/*.MS"):
+    if "L769393" in f:
+        call(f"mv {f} {args.path}/Data/", shell=True)
