@@ -1,7 +1,7 @@
 import os
 import argparse
 
-parser = argparse.ArgumentParser(description='Process some integers.')
+parser = argparse.ArgumentParser(description='.')
 parser.add_argument('--to_path', type=str, help='path')
 parser.add_argument('--input', type=str, help='input data')
 parser.add_argument('--parallel', action='store_true', help='parallel')
