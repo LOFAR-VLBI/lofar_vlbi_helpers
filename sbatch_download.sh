@@ -11,4 +11,4 @@
 #    echo $i
 #done
 
-python3 download_lta.py --input $1 --to_path $2 --parallel --n ${SLURM_ARRAY_TASK_ID}
+python3 ~/scripts/ILT_helpers/download_lta.py --input $1 --to_path $2 --parallel --n ${SLURM_ARRAY_TASK_ID}
