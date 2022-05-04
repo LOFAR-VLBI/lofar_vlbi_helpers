@@ -14,7 +14,7 @@ urls = open(args.input, 'r')
 if not args.parallel:
     for url in urls.readlines():
         url = url.replace("\n", "")
-        cmd = f'wget  --no-check-certificate https://lofar-download.grid.surfsara.nl/lofigrid/SRMFifoGet.py?{url} -P {args.to_path}'
+        cmd = f'wget -ci {url} -P {args.to_path}'
         print(cmd)
         try:
             os.system(cmd)
@@ -22,7 +22,7 @@ if not args.parallel:
             print('FAIL: '+cmd)
 else:
     urls_list = [u.replace("\n", "") for u in urls.readlines()]
-    cmd = f'wget  --no-check-certificate https://lofar-download.grid.surfsara.nl/lofigrid/SRMFifoGet.py?{urls_list[int(args.n)]} -P {args.to_path}'
+    cmd = f'wget -ci {urls_list[int(args.n)]} -P {args.to_path}'
     try:
         os.system(cmd)
     except:
