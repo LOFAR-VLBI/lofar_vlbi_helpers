@@ -18,7 +18,7 @@ cd $RUNDIR
 echo "RETRIEVING INPUT DATA ..."
 # Run the pipeline
 cp ~/scripts/prefactor_helpers/prefactor_pipeline/pipeline.cfg .
-cp ~/scripts/prefactor_helpers/prefactor_pipeline/Delay-Calibration.parset .
+cp ~/scripts/prefactor_helpers/prefactor_pipeline/Pre-Facet-Calibrator.parset .
 
 sed -i "s?CORES?$CORES?g" Pre-Facet-Calibrator.parset
 sed -i "s?RESULTS_DIR?$RESULTS_DIR?g" Pre-Facet-Calibrator.parset

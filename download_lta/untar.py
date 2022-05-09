@@ -17,6 +17,6 @@ for filename in glob(args.path+"/*SB*.tar*"):
 
 os.system(f"mkdir -p {args.path}/Data")
 
-for f in glob("/home/lofarvwf-rtimmerman/Downloads/*.MS"):
+for f in glob(args.path+"/*.MS"):
     if "L769393" in f:
         call(f"mv {f} {args.path}/Data/", shell=True)
