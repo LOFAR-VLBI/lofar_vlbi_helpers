@@ -17,14 +17,14 @@ cd $RUNDIR
 
 echo "RETRIEVING INPUT DATA ..."
 # Run the pipeline
-cp ~/scripts/prefactor_helpers/prefactor_pipeline/pipeline.cfg .
-cp ~/scripts/prefactor_helpers/prefactor_pipeline/Delay-Calibration.parset .
+cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/prefactor_pipeline/pipeline.cfg .
+cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/prefactor_pipeline/Delay-Calibration.parset .
 
 sed -i "s?CORES?$CORES?g" Delay-Calibration.parset
 sed -i "s?RESULTS_DIR?$RESULTS_DIR?g" Delay-Calibration.parset
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" pipeline.cfg
 
-singularity exec -B $PWD,/project $SIMG genericpipeline.py -d -c pipeline.cfg Delay-Calibration.parset 
+singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG genericpipeline.py -d -c pipeline.cfg Delay-Calibration.parset
 
 echo "Copying results to $RESULTS_DIR ..."
 mkdir -p $RESULTS_DIR

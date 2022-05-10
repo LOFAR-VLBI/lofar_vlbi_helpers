@@ -11,4 +11,4 @@
 #    echo $i
 #done
 
-python3 ~/scripts/prefactor_helpers/download_lta.py --input $1 --to_path $2 --parallel --n ${SLURM_ARRAY_TASK_ID}
+python3 /home/lofarvwf-jdejong/scripts/prefactor_helpers/download_lta.py --input $1 --to_path $2 --parallel --n ${SLURM_ARRAY_TASK_ID}
