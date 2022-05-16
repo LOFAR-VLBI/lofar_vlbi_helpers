@@ -5,7 +5,6 @@ CORES=8
 
 #1 --> result directory
 
-
 echo "Job landed on $(hostname)"
 echo "GENERIC PIPELINE STARTING"
 export RUNDIR=$(mktemp -d -p "$TMPDIR")
