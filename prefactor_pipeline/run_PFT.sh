@@ -7,8 +7,8 @@ echo "Job landed on $(hostname)"
 echo "GENERIC PIPELINE STARTING"
 
 export RUNDIR=$(mktemp -d -p "$TMPDIR")
-export RESULTS_DIR=$1#/project/lofarvwf/Share/rtimmerman/CDGS54/part4/P150
-export CAL_DIR=$2#/project/lofarvwf/Share/rtimmerman/CDGS54/part4/3C196
+export RESULTS_DIR=$1
+export CAL_DIR=$2
 export SIMG=/project/lofarvwf/Software/singularity/test_lofar_sksp_v3.3.4_x86-64_generic_avx512_ddf.sif
 
 echo "RUNDIR is $(readlink -f $RUNDIR)"
