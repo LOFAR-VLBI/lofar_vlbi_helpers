@@ -1,5 +1,7 @@
 prefactor_helpers v1.1
 
+Most scripts written by Roland Timmerman
+
 Step 1) run download_lta/sbatch_download_series.sh to download the data that you have staged with html \
 Step 2) run helper_scripts/findmissingdata.py to check the data\
 Step 3) run prefactor_pipeline/run_PFC.sh to calibrate for the calibrator\
