@@ -1,0 +1,85 @@
+solset = [sol000]
+soltab = [sol000/phase000]
+ant = []
+pol = [XX, YY]
+
+[dupli]
+operation                   =   DUPLICATE
+soltab                      =   sol000/phaseOrig
+soltabOut                   =   phase000
+[plotP3]
+operation                  =   PLOT
+soltab                     =   sol000/phase000
+axesInPlot                 =   [time,freq]
+axisInTable                =   ant
+plotFlag                   =   True
+prefix                     =   polalign_ph_
+refAnt                     =   'CS001HBA1'
+minmax                     =   [-3.14,3.14]
+[plotPd]
+operation                  =   PLOT
+soltab                     =   sol000/phase000
+axesInPlot                 =   [time,freq]
+axisInTable                =   ant
+axisDiff                   =   pol
+plotFlag                   =   True
+prefix                     =   polalign_ph_poldif
+refAnt                     =   'CS001HBA1'
+minmax                     =   [-3.14,3.14]
+[plotRot3]
+operation                =   PLOT
+soltab                   =   sol000/rotation000
+axesInPlot               =   [time,freq]
+axisInTable              =   ant
+plotFlag                 =   True
+prefix                   =   polalign_rotangle
+refAnt                   =   'CS001HBA1'
+[plotA3]
+operation                  =   PLOT
+soltab                     =   sol000/amplitude000
+axesInPlot                 =   [time,freq]
+axisInTable                =   ant
+plotFlag                   =   True
+prefix                     =   polalign_amp_
+[align]
+operation                   =   POLALIGN
+soltabOut                   =   polalign
+average                     =   True
+replace                     =   True
+fitOffset                   =   False
+maxResidual                 =   0.2
+refAnt                      =   'CS001HBA1'
+[plotAlign]
+operation               =   PLOT
+soltab                  =   sol000/polalign
+axesInPlot              =   [time,freq]
+axisInTable             =   ant
+axisDiff                =   pol
+plotFlag                =   True
+prefix                  =   polalign
+refAnt                  =   'CS001HBA1'
+minmax                  =   [-3.14,3.14]
+[residual]
+operation                =   RESIDUALS
+soltab                   =   sol000/phase000
+soltabsToSub             =   polalign
+[plotPr]
+operation                  =   PLOT
+soltab                     =   sol000/phase000
+axesInPlot                 =   [time,freq]
+axisInTable                =   ant
+axisDiff                   =   pol
+plotFlag                   =   True
+prefix                     =   polalign_ph-res_poldif
+refAnt                     =   'CS001HBA1'
+minmax                     =   [-3.14,3.14]
+[plotPr2]
+operation                 =   PLOT
+soltab                    =   sol000/phase000
+axesInPlot                =   [time,freq]
+axisInTable               =   ant
+axisInCol                 =   pol
+plotFlag                  =   True
+prefix                    =   polalign_ph-res_
+refAnt                    =   'CS001HBA1'
+minmax                    =   [-3.14,3.14]
