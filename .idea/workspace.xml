@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="e5e538b1-39a6-4936-a4e7-597824e473fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helper_scripts/findmissingdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/helper_scripts/findmissingdata.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prefactor_pipeline/Pre-Facet-Calibrator.parset" beforeDir="false" afterPath="$PROJECT_DIR$/prefactor_pipeline/Pre-Facet-Calibrator.parset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ELAIS_data/L769389/html.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
