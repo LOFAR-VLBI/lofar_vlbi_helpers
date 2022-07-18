@@ -52,7 +52,7 @@
 
 ! substep_ddf             = apply_ddf   ## set to apply_ddf to use, leave blank otherwise
 ! ddf_soldir              = DDF_OUTPUT/SOLSDIR     ## path to 'SOLSDIR' from ddf-pipeline run, leave blank otherwise
-! delaycal_col            = DATA ## set to DATA_DI_CORRECTED if applying ddf solutions, leave as DATA otherwise.
+! delaycal_col            = DATA_DI_CORRECTED ## set to DATA_DI_CORRECTED if applying ddf solutions, leave as DATA otherwise.
 
 ##########################################################
 ## These parameters may need to be updated.             ##
