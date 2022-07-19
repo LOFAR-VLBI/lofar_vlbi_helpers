@@ -21,6 +21,7 @@ echo "RETRIEVING INPUT DATA ..."
 cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/prefactor_pipeline/pipeline.cfg .
 cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/prefactor_pipeline/Delay-Calibration.parset .
 
+sed -i "s?DDF_OUTPUT?$DDF_OUTPUT?g" Delay-Calibration.parset
 sed -i "s?CORES?$CORES?g" Delay-Calibration.parset
 sed -i "s?RESULTS_DIR?$RESULTS_DIR?g" Delay-Calibration.parset
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" pipeline.cfg
