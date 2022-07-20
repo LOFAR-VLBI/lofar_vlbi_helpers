@@ -78,6 +78,8 @@
 ! lbcs_skymodel          = {{ results_directory }}/lbcs_catalogue.csv
 ! image_cat              = {{ results_directory }}/image_catalogue.csv
 ! delay_cat              = {{ results_directory }}/delay_calibrators.csv
+! best_delay_cat	     = {{ results_directory }}/best_delay_calibrators.csv
+! subtract_cat           = {{ results_directory }}/subtract_sources.csv
 ! continue_without_lotss = True
 
 ## setup for running steps
@@ -215,7 +217,7 @@ ndppp_prep_target.control.error_tolerance               = {{ error_tolerance }}
 ndppp_prep_target.argument.numthreads                   = 2
 ndppp_prep_target.argument.msin                         = createmap_target.output.mapfile
 ndppp_prep_target.argument.msin.datacolumn              = DATA
-ndppp_prep_target.argument.msin.baseline                = check_station_mismatch.output.filter
+ndppp_prep_target.argument.msin.baseline                = {{ filter_baselines }}
 ndppp_prep_target.argument.msout.datacolumn             = DATA
 ndppp_prep_target.argument.msout.storagemanager         = dysco
 ndppp_prep_target.argument.msout.writefullresflag       = False
@@ -226,7 +228,7 @@ ndppp_prep_target.argument.flag.baseline                = {{ flag_baselines }}
 ndppp_prep_target.argument.flagamp.type                 = preflagger
 ndppp_prep_target.argument.flagamp.amplmin              = 1e-30
 ndppp_prep_target.argument.filter.type                  = filter
-ndppp_prep_target.argument.filter.baseline              = check_station_mismatch.output.filter
+ndppp_prep_target.argument.filter.baseline              = {{ filter_baselines }}
 ndppp_prep_target.argument.filter.remove                = true
 ndppp_prep_target.argument.applyclock.type              = applycal
 ndppp_prep_target.argument.applyclock.parmdb            = {{ solutions }}
