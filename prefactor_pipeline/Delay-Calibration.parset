@@ -207,6 +207,7 @@ download_cats.control.lotss_result_file       = {{ image_cat }}
 download_cats.control.delay_cals_file         = {{ delay_cat }}
 download_cats.control.subtract_file           = {{ subtract_cat }}
 download_cats.control.match_tolerance         = 5.
+download_cats.control.subtract_limit          = 0.5
 download_cats.control.bright_limit_Jy         = 5.
 download_cats.control.image_limit_Jy          = 0.01
 download_cats.control.continue_no_lotss       = {{ continue_without_lotss }}
