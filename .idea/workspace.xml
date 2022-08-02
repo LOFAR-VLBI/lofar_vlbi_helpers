@@ -5,6 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e5e538b1-39a6-4936-a4e7-597824e473fb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/cleanup/clean_calibrator.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cleanup/clean_delay.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cleanup/clean_target.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
