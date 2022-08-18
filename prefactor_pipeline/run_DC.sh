@@ -1,19 +1,20 @@
 #!/bin/bash
 #SBATCH -N 1 -c 16 -t 120:00:00 --constraint=intel --job-name=delay-calibration
 
-#1 --> result directory
+#Example command:
+#~/scripts/prefactor_helpers/prefactor_pipeline/run_DC.sh /project/lofarvwf/Share/jdejong/output/ELAIS/L798074/target /project/lotss/Public/jdejong/ELAIS/L798074/ddf
+#in ../delaycal
 
 CORES=16
 
 echo "Job landed on $(hostname)"
 echo "GENERIC PIPELINE STARTING"
 
-export RUNDIR=$(mktemp -d -p "$TMPDIR")
+export RUNDIR=$PWD
 export RESULTS_DIR=$1
 export DDF_OUTPUT=$2
 export SIMG=/project/lofarvwf/Software/singularity/test_lofar_sksp_v3.3.5_cascadelake_cascadelake_avx512_cuda11_3_ddf.sif
 
-echo "RUNDIR is $(readlink -f $RUNDIR)"
 cd $RUNDIR
 
 echo "RETRIEVING INPUT DATA ..."
@@ -28,12 +29,5 @@ sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" pipeline.cfg
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG genericpipeline.py -d -c pipeline.cfg Delay-Calibration.parset
 
-echo "Copying results to $RESULTS_DIR ..."
-mkdir -p $RESULTS_DIR
-cp -r Delay-Calibration $RESULTS_DIR/
-echo "... done"
-
-echo "Cleaning up RUNDIR ..."
-rm -rf $RUNDIR
 echo "... done"
 echo "GENERIC PIPELINE FINISHED"

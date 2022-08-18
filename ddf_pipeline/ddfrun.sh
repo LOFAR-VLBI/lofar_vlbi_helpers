@@ -5,6 +5,8 @@
 ##SBATCH --constraint=skylake
 #SBATCH -p infinite
 
+#pipeline.cfg from https://github.com/mhardcastle/ddf-pipeline/blob/master/examples/tier1-minimal.cfg
+
 unset DDF_PIPELINE_DATABASE
 export SINGULARITYENV_RCLONE_CONFIG_DIR=/project/lotss/Software/prefactor-operations/macaroons/
 export SINGULARITYENV_SDR_TOKEN=c49c6bb3-d074-a44d-4fca-1d3f7458055d
