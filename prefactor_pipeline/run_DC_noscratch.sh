@@ -1,6 +1,10 @@
 #!/bin/bash
 #SBATCH -N 1 -c 16 -t 120:00:00 --constraint=intel --job-name=delay-calibration
 
+#Example command:
+#~/scripts/prefactor_helpers/prefactor_pipeline/run_DC_noscratch.sh /project/lofarvwf/Share/jdejong/output/ELAIS/L798074/target /project/lotss/Public/jdejong/ELAIS/L798074/ddf
+#in ../delaycal
+
 CORES=16
 
 echo "Job landed on $(hostname)"
