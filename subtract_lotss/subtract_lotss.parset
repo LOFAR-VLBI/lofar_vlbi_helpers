@@ -10,7 +10,7 @@
 ! widefield_dir = /project/lofarvwf/Software/lofar-highres-widefield
 ! ddf_pipeline_dir = /project/lofarvwf/Software/ddf-pipeline
 # Directory with results from the ddf-pipeline
-! ddf_dir		  = /project/lofarvwf/Data/ELAIS-N1_ddf_results
+! ddf_dir		  = DDF_OUTPUT
 ! prefactor_dir                         = PREFACTOR_SCRATCH_DIR/pipelines/prefactor
 ! prefactor_scripts			= {{ prefactor_dir }}/scripts
 ! losoto_directory                     = /opt/lofar/pyenv-py2
