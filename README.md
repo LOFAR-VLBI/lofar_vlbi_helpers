@@ -9,10 +9,12 @@ Step 3) run helper_scripts/findmissingdata.py to check the data \
 Step 4) run prefactor_pipeline/run_PFC.sh to calibrate for the calibrator from the calibrator folder \
 Step 5) run prefactor_pipeline/run_PFT.sh to calibrate the target from the target folder \
 Step 6) run the DDF pipeline to obtain a 6" image (solutions/model can be used for higher resolutions), example: ddf_pipeline/ddfrun.sh \
-Step 7) run prefactor_pipeline/run_DC.sh to do a delay calibration 
-Step 8) run ...
+Step 7) run prefactor_pipeline/run_DC.sh to do a delay calibration from lofar-vlbi \
+Step 8) run subtract_lotss/subtract_lotss.sh to subtract 6" LoTSS map from the input data \
+Step 9) run prefactor_pipeline/run_DC_continue.sh to continue delay calibration steps from lofar-vlbi \
+Step 10) ...
 
-See main github page for prefactor --> https://github.com/lofar-astron/prefactor \
+See main prefactor --> https://github.com/lofar-astron/prefactor \
 See main lofar-vlbi pipeline --> https://github.com/lmorabit/lofar-vlbi/blob/master/Delay-Calibration.parset \
 See main lofar-highres-widefield --> https://github.com/tikk3r/lofar-highres-widefield
 

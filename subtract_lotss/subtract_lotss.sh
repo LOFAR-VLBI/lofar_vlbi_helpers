@@ -3,11 +3,16 @@
 
 DELAYCAL_RESULT=$1
 
+echo "Job landed on $(hostname)"
+
 export RUNDIR=$PWD
 export SIMG=/project/lofarvwf/Software/singularity/test_lofar_sksp_v3.3.5_cascadelake_cascadelake_avx512_cuda11_3_ddf.sif
 
-mkdir Input
+mkdir -p Input
+
 cp -r DELAYCAL_RESULT/L*.msdpppconcat Input
+cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/prefactor_pipeline/pipeline.cfg .
+cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtract_lotss.parset .
 
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" pipeline.cfg
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" subtract_lotss.parset
