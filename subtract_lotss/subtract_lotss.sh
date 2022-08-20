@@ -16,7 +16,7 @@ cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtract_lots
 
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" pipeline.cfg
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" subtract_lotss.parset
-sed -i "s?DDF_OUTPUT?$DDF_OUTPUT?g" Delay-Calibration.parset
+sed -i "s?DDF_OUTPUT?$DDF_OUTPUT?g" subtract_lotss.parset
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG genericpipeline.py -d -c pipeline.cfg subtract_lotss.parset
 
