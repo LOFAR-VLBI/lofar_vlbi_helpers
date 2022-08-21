@@ -6,11 +6,11 @@ echo "Job landed on $(hostname)"
 export DELAYCAL_RESULT=$1
 export RUNDIR=$PWD
 export DDF_OUTPUT=$2
-export SIMG=/project/lofarvwf/Software/singularity/test_lofar_sksp_v3.3.5_cascadelake_cascadelake_avx512_cuda11_3_ddf.sif
+export SIMG=/project/lofarvwf/Software/singularity/lofar-grid-hpccloud_lofar_sksp@94aa06259a602eb0c19a237199b330c4fa7ca2d7.sif
 
 mkdir -p Input
 
-cp -r ${DELAYCAL_RESULT}/L*.msdpppconcat Input
+#cp -r ${DELAYCAL_RESULT}/L*.msdpppconcat Input
 cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/prefactor_pipeline/pipeline.cfg .
 cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtract_lotss.parset .
 
