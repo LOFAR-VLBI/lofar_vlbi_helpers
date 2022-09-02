@@ -171,7 +171,7 @@ cp_lotss_products.argument.flags          = [-r,sols,{{ ddf_dir }}/image_dirin_S
 # This bit needs quite a bit of memory. A whole node or at least 256 GB should be allocated to it.
 subtract_6asec.control.kind                     = recipe
 subtract_6asec.control.type                     = executable_args
-subtract_6asec.control.executable               = {{ widefield_dir }}/utils/sub-sources-outside-region.py
+subtract_6asec.control.executable               = /home/lofarvwf-jdejong/scripts/lofar_helpers/supporting_scripts/reinout/sub-sources-outside-region.py
 subtract_6asec.control.max_per_node             = 1
 subtract_6asec.control.error_tolerance          = {{ error_tolerance }}
 # Again, this mapfile is not used. DDF.py looks at mslist.txt
