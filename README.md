@@ -16,6 +16,6 @@ Step 10) ...
 
 See main prefactor --> https://github.com/lofar-astron/prefactor \
 See main lofar-vlbi pipeline --> https://github.com/lmorabit/lofar-vlbi/blob/master/Delay-Calibration.parset \
-See main lofar-highres-widefield --> https://github.com/tikk3r/lofar-highres-widefield
+Clone lofar-highres-widefield --> ```git clone https://github.com/tikk3r/lofar-highres-widefield.git```
 
 Also see --> de Gasperin et al 2019: https://www.aanda.org/articles/aa/pdf/2019/02/aa33867-18.pdf

@@ -27,6 +27,7 @@ sed -i "s?CORES?$CORES?g" Delay-Calibration.parset
 sed -i "s?RESULTS_DIR?$RESULTS_DIR?g" Delay-Calibration.parset
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" pipeline.cfg
 
+singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG CleanSHM.py
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG genericpipeline.py -d -c pipeline.cfg Delay-Calibration.parset
 
 echo "... done"
