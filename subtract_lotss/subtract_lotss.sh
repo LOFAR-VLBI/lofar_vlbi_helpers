@@ -6,7 +6,7 @@ echo "Job landed on $(hostname)"
 export DELAYCAL_RESULT=$1
 export RUNDIR=$PWD
 export DDF_OUTPUT=$2
-export SIMG=/project/lofarvwf/Software/singularity/test_lofar_sksp_v3.3.5_cascadelake_cascadelake_avx512_cuda11_3_ddf.sif
+export SIMG=/project/lofarvwf/Software/singularity/testpatch_lofar_sksp_v3.4_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
 mkdir -p Input
 
