@@ -11,4 +11,4 @@ parser.add_argument('--path', type=str, help='path')
 args = parser.parse_args()
 
 for ms in glob(args.path+'/*.pre-cal.ms'):
-    os.system('mv -r '+ms+' '+ms.replace('.pre-cal',''))
+    os.system('mv '+ms+' '+ms.replace('.pre-cal',''))
