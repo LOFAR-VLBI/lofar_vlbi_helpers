@@ -103,7 +103,7 @@ createmap_preptarg.control.filename                            =   createmap_pre
 createmap_preptarg.control.mapfile_in                          =   createmap_target.output.mapfile
 createmap_preptarg.control.target_dir                          =   {{ working_directory }}
 createmap_preptarg.control.make_target_dir                     =   False
-createmap_preptarg.control.new_suffix                          =   .ms
+createmap_preptarg.control.new_suffix                          =   .pre-cal.ms
 
 # convert to a mapfile with all subbands in one list
 createmap_target_list.control.kind            =   plugin
