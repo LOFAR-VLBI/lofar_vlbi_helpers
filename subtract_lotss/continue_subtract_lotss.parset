@@ -175,7 +175,7 @@ rename_lotss_products.control.kind            = recipe
 rename_lotss_products.control.type            = executable_args
 rename_lotss_products.control.executable      = {{ helper_scripts }}/subtract_lotss/change_folder_name_mv.py
 rename_lotss_products.control.max_per_node    = 1
-rename_lotss_products.argument.flags          = [--path PREFACTOR_SCRATCH_DIR/subtract_lotss/SOLSDIR]
+rename_lotss_products.argument.flags          = [--path,PREFACTOR_SCRATCH_DIR/subtract_lotss/SOLSDIR]
 
 # This bit needs quite a bit of memory. A whole node or at least 256 GB should be allocated to it.
 subtract_6asec.control.kind                     = recipe
