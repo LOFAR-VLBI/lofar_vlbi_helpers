@@ -9,15 +9,11 @@ export DDF_OUTPUT=$2
 export SIMG=/project/lofarvwf/Software/singularity/testpatch_lofar_sksp_v3.4_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
 mkdir -p Input
-mkdir -p subtract_lotss
-mkdir -p subtract_lotss/SOLSDIR
 
-cp -r ${DDF_OUTPUT}/SOLSDIR/* subtract_lotss/SOLSDIR
 cp -r ${DELAYCAL_RESULT}/L*.msdpppconcat Input
+
 cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/prefactor_pipeline/pipeline.cfg .
 cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtract_lotss.parset .
-
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts python /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/change_folder_name.py --path $PWD/subtract_lotss/SOLSDIR
 
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" pipeline.cfg
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" subtract_lotss.parset
