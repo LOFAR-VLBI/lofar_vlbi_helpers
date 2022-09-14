@@ -12,4 +12,4 @@ parser.add_argument('--suffix', type=str, help='endings from files to change')
 args = parser.parse_args()
 
 for ms in glob(args.path+'/*'+args.suffix):
-    os.system('mv '+ms+' '+ms.replace('.pre-cal','').replace('A1C14Et', 'A1C14Dt'))
+    os.system('mv '+ms+' '+ms.replace('A1C14Dt', 'A1C14Et'))
