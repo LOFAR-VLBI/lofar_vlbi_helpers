@@ -12,12 +12,12 @@ mkdir -p Input
 mkdir -p subtract_lotss
 mkdir -p subtract_lotss/SOLSDIR
 
-cp -r ${DDF_OUTPUT}/SOLSDIR/* subtract_lotss/SOLSDIR
-cp -r ${DELAYCAL_RESULT}/L*.msdpppconcat Input
+#cp -r ${DDF_OUTPUT}/SOLSDIR/* subtract_lotss/SOLSDIR
+#cp -r ${DELAYCAL_RESULT}/L*.msdpppconcat Input
 cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/prefactor_pipeline/pipeline.cfg .
 cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/continue_subtract_lotss.parset .
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts python /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/change_folder_name.py --path $PWD/subtract_lotss/SOLSDIR
+#singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts python /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/change_folder_name.py --path $PWD/subtract_lotss/SOLSDIR
 
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" pipeline.cfg
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" continue_subtract_lotss.parset

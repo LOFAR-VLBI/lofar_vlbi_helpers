@@ -58,7 +58,8 @@
 ##########################################################
 ## Steps to run.					##
 ##########################################################
-pipeline.steps = [setup, subtract_lotss, finalize]
+#pipeline.steps = [setup, subtract_lotss, finalize]
+pipeline.steps = [finalize]
 
 #pipeline.steps.setup = [mk_results_dir, mk_inspect_dir, mk_cal_values_dir, createmap_target, createmap_preptarg, createmap_target_list, cp_data]
 #pipeline.steps.subtract_lotss = [make_box, make_mslist, createmap_lotss_sols, cp_lotss_products, rename_lotss_products, subtract_6asec]
