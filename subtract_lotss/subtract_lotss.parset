@@ -61,7 +61,7 @@
 pipeline.steps = [setup, subtract_lotss, finalize]
 
 pipeline.steps.setup = [mk_results_dir, mk_inspect_dir, mk_cal_values_dir, createmap_target, createmap_preptarg, createmap_target_list, cp_data]
-pipeline.steps.subtract_lotss = [make_box, make_mslist, createmap_lotss_sols, cp_lotss_products, rename_lotss_products, subtract_6asec]
+pipeline.steps.subtract_lotss = [make_box, make_mslist, createmap_lotss_sols, cp_lotss_products, subtract_6asec]
 pipeline.steps.finalize = [createmap_subtracted, make_results_mapfile, move_results]
 
 ###########################################################################
@@ -170,11 +170,13 @@ cp_lotss_products.control.inputkey        = sols
 cp_lotss_products.argument.flags          = [-r,sols,{{ ddf_dir }}/image_dirin_SSD_m.npy.ClusterCat.npy,{{ ddf_dir }}/image_full_ampphase_di_m.NS.DicoModel,{{ ddf_dir }}/image_full_ampphase_di_m.NS.mask01.fits,{{ ddf_dir }}/SOLSDIR,{{ working_directory }}]
 
 #rename lotss products
-rename_lotss_products.control.kind            = recipe
-rename_lotss_products.control.type            = executable_args
-rename_lotss_products.control.executable      = {{ helper_scripts }}/subtract_lotss/change_folder_name_mv.py
-rename_lotss_products.control.max_per_node    = 1
-rename_lotss_products.argument.flags          = [--path PREFACTOR_SCRATCH_DIR/subtract_lotss/SOLSDIR]
+#rename_lotss_products.control.kind            = recipe
+#rename_lotss_products.control.type            = executable_args
+#rename_lotss_products.control.executable      = {{ helper_scripts }}/subtract_lotss/change_folder_name_mv.py
+#rename_lotss_products.control.max_per_node    = 1
+#rename_lotss_products.control.mapfile_in      = createmap_target_list.output.mapfile
+#rename_lotss_products.control.inputkey        = sols
+#rename_lotss_products.argument.flags          = [--path,PREFACTOR_SCRATCH_DIR/subtract_lotss/SOLSDIR]
 
 # This bit needs quite a bit of memory. A whole node or at least 256 GB should be allocated to it.
 subtract_6asec.control.kind                     = recipe
