@@ -187,7 +187,7 @@ subtract_6asec.control.error_tolerance          = {{ error_tolerance }}
 # Again, this mapfile is not used. DDF.py looks at mslist.txt
 subtract_6asec.control.mapfile_in               = createmap_target_list.output.mapfile
 subtract_6asec.control.skip_infile              = True
-subtract_6asec.argument.flags                   = [--boxfile,boxfile.reg,--column,{{ datadi_col }},--freqavg,1,--timeavg,1,--ncpu,24,--prefixname,sub6asec,--noconcat,--keeplongbaselines,--nophaseshift,--chunkhours,4]
+subtract_6asec.argument.flags                   = [--boxfile,boxfile.reg,--column,{{ datadi_col }},--freqavg,1,--timeavg,1,--ncpu,24,--prefixname,sub6asec,--noconcat,--keeplongbaselines,--nophaseshift,--chunkhours,1]
 
 #
 # Apply infield calibrator solutions
