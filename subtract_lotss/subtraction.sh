@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH -N 1 -c 16 --constraint=intel --job-name=subtract
 
+MS=$1
 
 export SIMG=/project/lofarvwf/Software/singularity/testpatch_lofar_sksp_v3.4_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
@@ -17,4 +18,4 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG /home/lof
 --keeplongbaselines \
 --nophaseshift \
 --chunkhours 1 \
---mslist test-mslist.txt
+--mslist $1
