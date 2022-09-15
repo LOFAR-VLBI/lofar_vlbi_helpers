@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 16 --constraint=intel --job-name=subtract
+#SBATCH -N 1 -c 16 --job-name=subtract
 
 MS=$1
 
@@ -18,4 +18,4 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG /home/lof
 --keeplongbaselines \
 --nophaseshift \
 --chunkhours 1 \
---mslist $1
+--mslist $MS
