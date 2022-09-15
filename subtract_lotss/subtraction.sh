@@ -7,7 +7,7 @@ export SIMG=/project/lofarvwf/Software/singularity/testpatch_lofar_sksp_v3.4_cas
 cd subtract_lotss
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG CleanSHM.py
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG /home/lofarvwf-jdejong/scripts/lofar-highres-widefield/utils/sub-sources-outside-region.py \
---boxfile boxfile_2.reg \
+--boxfile boxfile.reg \
 --column DATA_DI_CORRECTED \
 --freqavg 1 \
 --timeavg 1 \
