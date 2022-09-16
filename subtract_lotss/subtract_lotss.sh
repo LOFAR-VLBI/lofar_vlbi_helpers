@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 16 --constraint=intel --job-name=subtract
+#SBATCH -N 1 -c 16 --job-name=subtract
 
 echo "Job landed on $(hostname)"
 

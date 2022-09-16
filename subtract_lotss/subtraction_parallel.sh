@@ -1,4 +1,5 @@
 #!/bin/bash
+#SBATCH -N 1 -c 4 --job-name=subtract_distribute
 
 RUNDIR=$1
 DIR=${RUNDIR}/subtract_lotss/
