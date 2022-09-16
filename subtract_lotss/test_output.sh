@@ -54,4 +54,4 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG wsclean \
 -nmiter 10 \
 -niter 100000 \
 -maxuv-l 20e3 \
-avg_sub6asec_${MS_IN}_avg.sub.shift.avg.ms
+avg_sub6asec_${MS_IN}.sub.shift.avg.ms
