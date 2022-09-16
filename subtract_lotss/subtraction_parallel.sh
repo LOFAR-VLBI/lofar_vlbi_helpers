@@ -24,7 +24,7 @@ do
   cp ${DDF_OUTPUT}/DDS3_full_*_smoothed.npz ${FILE}_suboutput
   cp boxfile.reg ${FILE}_suboutput
   cp cutoutmask.fits ${FILE}_suboutput
-  cp -r SOLSDIR ${DDF_OUTPUT}/${FILE}_suboutput
+  cp -r ${DDF_OUTPUT}/SOLSDIR ${FILE}_suboutput
   mv ${FILE} ${FILE}_suboutput
   cd ${FILE}_suboutput
   echo ${FILE} > mslist.txt
