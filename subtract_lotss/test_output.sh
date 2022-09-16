@@ -15,7 +15,7 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG wsclean \
 -minuv-l 80 \
 -size 8192 8192 \
 -reorder \
--weight briggs -0.5\
+-weight briggs -0.5 \
 -cleanborder 1 \
 -parallel-reordering 4 \
 -mgain 0.75 \
@@ -37,7 +37,7 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG wsclean \
 -minuv-l 80 \
 -size 8192 8192 \
 -reorder \
--weight briggs -0.5\
+-weight briggs -0.5 \
 -cleanborder 1 \
 -parallel-reordering 4 \
 -mgain 0.75 \
