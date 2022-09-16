@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 16 --job-name=subtract
+#SBATCH -N 1 -c 30 --job-name=subtract
 
 MS=$1
 
@@ -17,7 +17,7 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG /home/lof
 --noconcat \
 --keeplongbaselines \
 --nophaseshift \
---chunkhours 1 \
+--chunkhours 0.5 \
 --mslist $MS
 
 cp -r sub6asec* ../
