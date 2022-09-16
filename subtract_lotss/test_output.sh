@@ -5,8 +5,8 @@ export SIMG=/project/lofarvwf/Software/singularity/testpatch_lofar_sksp_v3.4_cas
 
 MS_IN=$1
 
-#singularity exec -B ${SING_BIND} ${SING_IMAGE} DPPP msin=${MS_IN} msout=avg_${MS_IN} steps=[av] msout.storagemanager=dysco steps=[av] av.type=averager av.freqstep=16 av.timestep=16
-#singularity exec -B ${SING_BIND} ${SING_IMAGE} DPPP msin=sub6asec_${MS_IN} msout=avg_sub6asec_${MS_IN} steps=[av] msout.storagemanager=dysco steps=[av] av.type=averager av.freqstep=16 av.timestep=16
+singularity exec -B ${SING_BIND} ${SING_IMAGE} DPPP msin=${MS_IN} msout=${MS_IN}_avg steps=[av] msout.storagemanager=dysco steps=[av] av.type=averager av.freqstep=16 av.timestep=16
+singularity exec -B ${SING_BIND} ${SING_IMAGE} DPPP msin=sub6asec_${MS_IN}* msout=sub6asec_${MS_IN}_avg steps=[av] msout.storagemanager=dysco steps=[av] av.type=averager av.freqstep=16 av.timestep=16
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG wsclean \
 -no-update-model-required \
@@ -26,7 +26,9 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG wsclean \
 -nmiter 10 \
 -niter 100000 \
 -maxuv-l 20e3 \
-avg_${MS_IN}
+-scale 3arcsec \
+-taper-gaussian 20arcsec \
+${MS_IN}_avg
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG wsclean \
 -no-update-model-required \
@@ -46,4 +48,6 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG wsclean \
 -nmiter 10 \
 -niter 100000 \
 -maxuv-l 20e3 \
-avg_sub6asec_${MS_IN}.sub.shift.avg.ms
+-scale 3arcsec \
+-taper-gaussian 20arcsec \
+sub6asec_${MS_IN}_avg
