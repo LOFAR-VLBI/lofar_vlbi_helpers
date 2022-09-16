@@ -23,4 +23,10 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG CleanSHM.
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG genericpipeline.py -d -c pipeline.cfg subtract_lotss.parset
 
 echo "... done"
-echo "SUBTRACT FINISHED"
+echo "SUBTRACT SETUP FINISHED"
+
+re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
+if [[ $RUNDIR =~ $re ]]; then LNUM=${BASH_REMATCH}; fi
+echo echo "SUBTRACT START ${LNUM}"
+
+sbatch subtraction_parallel.sh ${LNUM}

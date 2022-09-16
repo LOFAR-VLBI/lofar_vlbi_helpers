@@ -24,7 +24,6 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG wsclean \
 -auto-threshold 0.5 \
 -pol i -use-wgridder \
 -name testimage \
--scale 3arcsec \
 -nmiter 10 \
 -niter 100000 \
 -maxuv-l 20e3 \
@@ -50,7 +49,6 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG wsclean \
 -auto-threshold 0.5 \
 -pol i -use-wgridder \
 -name testimage \
--scale 3arcsec \
 -nmiter 10 \
 -niter 100000 \
 -maxuv-l 20e3 \
