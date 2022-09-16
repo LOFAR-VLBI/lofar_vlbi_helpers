@@ -9,6 +9,8 @@ MS_IN=$1
 #singularity exec -B ${SING_BIND} ${SING_IMAGE} DPPP msin=sub6asec_${MS_IN}* msout=sub6asec_${MS_IN}_avg steps=[av] msout.storagemanager=dysco steps=[av] av.type=averager av.freqstep=16 av.timestep=16
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG wsclean \
+-scale 3arcsec \
+-taper-gaussian 20arcsec \
 -no-update-model-required \
 -minuv-l 80 \
 -size 8192 8192 \
@@ -26,11 +28,11 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG wsclean \
 -nmiter 10 \
 -niter 100000 \
 -maxuv-l 20e3 \
--scale 3arcsec \
--taper-gaussian 20arcsec \
 avg_${MS_IN}
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG wsclean \
+-scale 3arcsec \
+-taper-gaussian 20arcsec \
 -no-update-model-required \
 -minuv-l 80 \
 -size 8192 8192 \
@@ -48,6 +50,4 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG wsclean \
 -nmiter 10 \
 -niter 100000 \
 -maxuv-l 20e3 \
--scale 3arcsec \
--taper-gaussian 20arcsec \
 avg_sub6asec_${MS_IN}_avg.sub.shift.avg.ms
