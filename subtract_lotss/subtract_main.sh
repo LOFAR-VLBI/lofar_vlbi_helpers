@@ -25,8 +25,6 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG genericpi
 echo "... done"
 echo "SUBTRACT SETUP FINISHED"
 
-re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
-if [[ $RUNDIR =~ $re ]]; then LNUM=${BASH_REMATCH}; fi
-echo echo "SUBTRACT START ${LNUM}"
 
-sbatch subtraction_parallel.sh ${LNUM}
+
+sbatch subtraction_parallel.sh

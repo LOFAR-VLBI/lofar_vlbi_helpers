@@ -1,10 +1,14 @@
 #!/bin/bash
 #SBATCH -N 1 -c 4 --job-name=subtract_distribute
 
-OBSERVATION=$1
-
 mkdir -p subtract_lotss
+
 DIR=subtract_lotss/
+
+re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
+if [[ $RUNDIR =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
+echo echo "SUBTRACT START ${OBSERVATION}"
+
 DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf/
 
 cd ${DIR}

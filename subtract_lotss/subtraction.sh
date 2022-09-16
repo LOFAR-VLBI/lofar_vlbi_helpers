@@ -21,3 +21,5 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG /home/lof
 --mslist $MS
 
 cp -r sub6asec* ../
+
+echo "SUBTRACT END"
