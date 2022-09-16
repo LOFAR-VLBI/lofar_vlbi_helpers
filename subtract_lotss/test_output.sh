@@ -47,4 +47,4 @@ wsclean \
 -nmiter 10 \
 -niter 100000 \
 -maxuv-l 20e3 \
-avg_sub6asec_${MS_IN}
+avg_sub6asec_${MS_IN}.sub.shift.avg.ms
