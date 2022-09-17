@@ -12,7 +12,7 @@ mkdir -p Input
 
 cp -r ${DELAYCAL_RESULT}/L*.msdpppconcat Input
 
-cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/prefactor_pipeline/pipeline.cfg .
+cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/lofar-vlbi-setup/pipeline.cfg .
 cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtract_lotss.parset .
 
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" pipeline.cfg
