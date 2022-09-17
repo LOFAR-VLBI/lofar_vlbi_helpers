@@ -13,7 +13,7 @@ mkdir -p Input
 cp -r ${DELAYCAL_RESULT}/L*.msdpppconcat Input
 
 cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/lofar-vlbi-setup/pipeline.cfg .
-cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtract_lotss.parset .
+cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtract_lotss_setup.parset .
 
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" pipeline.cfg
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" subtract_lotss.parset
@@ -27,4 +27,4 @@ echo "SUBTRACT SETUP FINISHED"
 
 cd $RUNDIR
 
-sbatch subtraction_parallel.sh
+sbatch /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtraction_parallel.sh
