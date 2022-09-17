@@ -20,7 +20,7 @@ sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" subtract_lotss.parset
 sed -i "s?DDF_OUTPUT?$DDF_OUTPUT?g" subtract_lotss.parset
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG CleanSHM.py
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG genericpipeline.py -d -c pipeline.cfg subtract_lotss.parset
+singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG genericpipeline.py -d -c pipeline.cfg subtract_lotss_setup.parset
 
 echo "... done"
 echo "SUBTRACT SETUP FINISHED"
