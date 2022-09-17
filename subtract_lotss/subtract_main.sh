@@ -25,6 +25,6 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG genericpi
 echo "... done"
 echo "SUBTRACT SETUP FINISHED"
 
-cd $RUNDIR
+#cd $RUNDIR
 
-sbatch /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtraction_parallel.sh
+#sbatch /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtraction_parallel.sh
