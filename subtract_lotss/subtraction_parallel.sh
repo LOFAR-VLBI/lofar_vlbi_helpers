@@ -25,7 +25,7 @@ do
   cp boxfile.reg ${FILE}_suboutput
   cp cutoutmask.fits ${FILE}_suboutput
   cp -r ${DDF_OUTPUT}/SOLSDIR ${FILE}_suboutput
-  mv ${FILE} ${FILE}_suboutput
+  cp -r ${FILE} ${FILE}_suboutput
   cd ${FILE}_suboutput
   echo ${FILE} > mslist.txt
   sbatch /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtraction.sh mslist.txt
