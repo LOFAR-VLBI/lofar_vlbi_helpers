@@ -17,7 +17,7 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG /home/lof
 --noconcat \
 --keeplongbaselines \
 --nophaseshift \
---chunkhours 0.5 \
+--chunkhours 0.3 \
 --mslist $MS
 
 cp -r sub6asec* ../
