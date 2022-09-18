@@ -27,6 +27,6 @@ echo "SUBTRACT SETUP FINISHED"
 
 cp -r ${RUNDIR} ${RUNDIR}_backup
 
-cd $RUNDIR
+cd ${RUNDIR}
 
 sbatch /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtraction_parallel.sh
