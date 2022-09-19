@@ -1,19 +1,19 @@
 #!/bin/bash
 #SBATCH -N 1 -c 4 --job-name=subtract_distribute
 
-mkdir -p subtract_lotss
-
-DIR=subtract_lotss/
-
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 echo echo "SUBTRACT START ${OBSERVATION}"
 
-DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf/
+DIR=subtract_lotss/
+
+cp -r Input/*msdpppconcat subtract_lotss
 
 cd ${DIR}
 
-for FILE in ${OBSERVATION}*.ms
+rm -r ${DIR}/${OBSERVATION}*_suboutput
+
+for FILE in ${OBSERVATION}*.msdpppconcat
 do
   echo "${FILE}"
   mkdir -p ${FILE}_suboutput
@@ -31,3 +31,4 @@ do
   sbatch /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtraction.sh mslist.txt
   cd ../
 done
+
