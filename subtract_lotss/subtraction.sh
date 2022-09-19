@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 30 --job-name=subtract
+#SBATCH -N 1 -c 30 --job-name=subtract --constraint=intel
 
 MS=$1
 
