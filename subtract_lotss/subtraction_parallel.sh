@@ -14,6 +14,8 @@ DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf/
 
 cd ${DIR}
 
+mv /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/Input/*.ms .
+
 for FILE in ${OBSERVATION}*.ms
 do
   echo "Subtract ${FILE}"
@@ -26,7 +28,7 @@ do
   cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/boxfile.reg ${FILE}_subrun
   #cp cutoutmask.fits ${FILE}_subrun
   cp -r ${DDF_OUTPUT}/SOLSDIR ${FILE}_subrun
-  mv /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/Input/${FILE} ${FILE}_subrun
+  mv ${FILE} ${FILE}_subrun
   cd ${FILE}_subrun
   echo ${FILE} > mslist.txt
   sbatch /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtraction.sh mslist.txt
