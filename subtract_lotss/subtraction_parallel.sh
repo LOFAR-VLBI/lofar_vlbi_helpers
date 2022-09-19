@@ -7,6 +7,8 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 echo echo "SUBTRACT START ${OBSERVATION}"
 
+mkdir -p subtract_lotss
+
 DIR=subtract_lotss/
 DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf/
 
