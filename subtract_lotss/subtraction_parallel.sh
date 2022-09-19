@@ -14,9 +14,9 @@ DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf/
 
 cd ${DIR}
 
-mv /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/Input/*.ms .
+mv /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/Input/*msdpppconcat .
 
-for FILE in ${OBSERVATION}*.ms
+for FILE in ${OBSERVATION}*.msdpppconcat
 do
   echo "Subtract ${FILE}"
   mkdir -p ${FILE}_subrun
