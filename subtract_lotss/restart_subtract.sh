@@ -17,7 +17,7 @@ do
   mv ${FILE} ${SUBBAND}_subrun
   mv ${SUBBAND}_subrun/${SUBBAND}.msdpppconcat ${SUBBAND}_subrun/${SUBBAND}.pre-cal.ms
   cd ${SUBBAND}_subrun
-  echo ${FILE} > mslist.txt
+  echo ${SUBBAND}.pre-cal.ms > mslist.txt
   rm -rf SOLSDIR/*.msdpppconcat
   sbatch /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtraction.sh mslist.txt
   cd ../
