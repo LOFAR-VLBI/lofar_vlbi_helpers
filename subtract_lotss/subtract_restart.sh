@@ -3,15 +3,17 @@
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
-echo echo "SUBTRACT START ${OBSERVATION}"
+
+echo "SUBTRACT START ${OBSERVATION}"
 
 DIR=subtract_lotss/
+DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf/
 
 cp -r Input/*msdpppconcat subtract_lotss
 
 cd ${DIR}
 
-rm -r ${DIR}/${OBSERVATION}*_suboutput
+rm -r ${OBSERVATION}*_suboutput
 
 for FILE in ${OBSERVATION}*.msdpppconcat
 do
