@@ -1,30 +1,26 @@
 #!/bin/bash
-#SBATCH -N 1 -c 16 --job-name=subtract
+#SBATCH -N 1 -c 4 --job-name=subtract
 
 echo "Job landed on $(hostname)"
 
-export DELAYCAL_RESULT=$1
-export RUNDIR=$PWD
-export DDF_OUTPUT=$2
-export SIMG=/project/lofarvwf/Software/singularity/testpatch_lofar_sksp_v3.4_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
+re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
+if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
+
+DELAYCAL_RESULT=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/delaycal/Delay-Calibration
+SIMG=/project/lofarvwf/Software/singularity/testpatch_lofar_sksp_v3.4_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
 mkdir -p Input
 
-cp -r ${DELAYCAL_RESULT}/L*.msdpppconcat Input
+echo "Copy input data to Input"
 
-cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/lofar-vlbi-setup/pipeline.cfg .
-cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtract_lotss.parset .
+cp -r ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat Input
 
-sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" pipeline.cfg
-sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" subtract_lotss.parset
-sed -i "s?DDF_OUTPUT?$DDF_OUTPUT?g" subtract_lotss.parset
+mkdir -p subtract_lotss
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG CleanSHM.py
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG genericpipeline.py -d -c pipeline.cfg subtract_lotss.parset
+echo "Make boxfile: boxfile.reg with /home/lofarvwf-jdejong/scripts/lofar-highres-widefield/utils/make_box.py"
 
-echo "... done"
+singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG /home/lofarvwf-jdejong/scripts/lofar-highres-widefield/utils/make_box.py msfile Input/*.msdpppconcat 2.5
+
 echo "SUBTRACT SETUP FINISHED"
-
-cd ${RUNDIR}
 
 sbatch /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtraction_parallel.sh

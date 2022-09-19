@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 8 -t 48:00:00 --constraint=intel --job-name=pre-facet-cal
+#SBATCH -N 1 -c 8 -t 48:00:00 --job-name=pre-facet-cal
 
 CORES=8
 
