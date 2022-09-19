@@ -7,6 +7,8 @@ MS=$1
 
 export SIMG=/project/lofarvwf/Software/singularity/testpatch_lofar_sksp_v3.4_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
+rm -rf SOLSDIR/*.msdpppconcat
+
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG /home/lofarvwf-jdejong/scripts/lofar-highres-widefield/utils/sub-sources-outside-region.py \
 --boxfile boxfile.reg \
 --column DATA_DI_CORRECTED \
