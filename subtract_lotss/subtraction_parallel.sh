@@ -20,7 +20,7 @@ mv /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/Input/*m
 for FILE in ${OBSERVATION}*.msdpppconcat
 do
   echo "Subtract ${FILE}"
-  if [[ $PWD =~ $re_subband ]]; then SUBBAND=${BASH_REMATCH}; fi
+  if [[ ${FILE} =~ $re_subband ]]; then SUBBAND=${BASH_REMATCH}; fi
   mkdir -p ${SUBBAND}_subrun
   cp ${DDF_OUTPUT}/image_full_ampphase_di_m.NS.DicoModel ${SUBBAND}_subrun
   cp ${DDF_OUTPUT}/image_full_ampphase_di_m.NS.mask01.fits ${SUBBAND}_subrun
