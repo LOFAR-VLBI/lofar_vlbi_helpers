@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 24 --job-name=subtract --exclusive
+#SBATCH -N 1 -c 31 --job-name=subtract
 
 OBSERVATION=$1
 
