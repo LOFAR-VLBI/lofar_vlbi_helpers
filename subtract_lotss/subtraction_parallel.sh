@@ -6,7 +6,7 @@ echo "Job landed on $(hostname)"
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
-echo echo "SUBTRACT START ${OBSERVATION}"
+echo "SUBTRACT START ${OBSERVATION}"
 
 mkdir -p subtract_lotss
 
@@ -32,7 +32,7 @@ do
   cp -r ${DDF_OUTPUT}/SOLSDIR ${SUBBAND}_subrun
   mv ${FILE} ${SUBBAND}_subrun/${SUBBAND}.pre-cal.ms
   cd ${SUBBAND}_subrun
-  echo ${FILE} > mslist.txt
+  echo ${SUBBAND}.pre-cal.ms > mslist.txt
   sbatch /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtraction.sh mslist.txt
   cd ../
 done
