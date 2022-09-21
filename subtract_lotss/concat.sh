@@ -1,4 +1,5 @@
 #!/bin/bash
+#SBATCH -N 1 -c 4 --job-name=subtract_main
 
 export SIMG=/project/lofarvwf/Software/singularity/testpatch_lofar_sksp_v3.4_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
