@@ -9,7 +9,7 @@ DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf/
 
 export SIMG=/project/lofarvwf/Software/singularity/testpatch_lofar_sksp_v3.4_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
-#MSIN=$1
+MSIN=$1
 #
 #mkdir imagetest_${MSIN}
 #
