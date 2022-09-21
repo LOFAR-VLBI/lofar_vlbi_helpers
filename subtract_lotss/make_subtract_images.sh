@@ -26,7 +26,7 @@ MSIN=$1
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
 DPPP \
 msin=${MSIN} \
-msout=${MSIN}.avg \
+msout=${MSIN}-cal.ms \
 msin.datacolumn=DATA \
 steps=[filter,averager] \
 numthreads=24 \
@@ -38,7 +38,7 @@ msout.storagemanager=dysco \
 msin.weightcolumn=WEIGHT_SPECTRUM \
 msout.writefullresflag=False
 
-echo ${MSIN}.avg > mslist.txt
+echo ${MSIN}-cal.ms > mslist.txt
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DDF.py \
 --Output-Name=test_sub --Data-MS=mslist.txt --Deconv-PeakFactor \
