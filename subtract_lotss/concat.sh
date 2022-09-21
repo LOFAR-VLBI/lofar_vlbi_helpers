@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 4 --job-name=concat
+#SBATCH -N 1 -c 16 --job-name=concat
 
 export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
 
