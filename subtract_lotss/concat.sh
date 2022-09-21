@@ -4,7 +4,7 @@
 export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DP3 \
-msin=mslist.txt \
+msin=sub6asec*.ms \
 msin.datacolumn=DATA \
 msout=TargetName_120_168MHz_averaged.ms \
 msout.storagemanager=dysco \
