@@ -1,46 +1,46 @@
 #!/bin/bash
 #SBATCH -N 1 -c 32 --job-name=test_image
 
-re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
-re_subband="([^.]+)"
-if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
+#re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
+#re_subband="([^.]+)"
+#if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
 DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf/
 
 export SIMG=/project/lofarvwf/Software/singularity/testpatch_lofar_sksp_v3.4_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
-MSIN=$1
-
-mkdir imagetest_${MSIN}
-
-cp -r ${MSIN} imagetest_${MSIN}
-cp ${DDF_OUTPUT}/DDS3_full_*_smoothed.npz imagetest_${MSIN}
-cp ${DDF_OUTPUT}/DDS3_full_*_merged.npz imagetest_${MSIN}
-cp ${DDF_OUTPUT}/image_full_ampphase_di_m.NS.mask01.fits imagetest_${MSIN}
-cp ${DDF_OUTPUT}/SOLSDIR imagetest_${MSIN}
-cp ${DDF_OUTPUT}/image_dirin_SSD_m.npy.ClusterCat.npy imagetest_${MSIN}
-cp ${DDF_OUTPUT}/image_full_ampphase_di_m.NS.DicoModel imagetest_${MSIN}
-
-cd imagetest_${MSIN}
-
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-msin=${MSIN} \
-msout=${MSIN}.avg \
-msin.datacolumn=DATA \
-steps=[filter,averager] \
-numthreads=24 \
-filter.baseline=[CR]S*&&* \
-filter.remove=true \
-averager.timestep=8 \
-averager.freqstep=8 \
-msout.storagemanager=dysco \
-msin.weightcolumn=WEIGHT_SPECTRUM \
-msout.writefullresflag=False
-
-echo ${MSIN}.avg > mslist.txt
+#MSIN=$1
+#
+#mkdir imagetest_${MSIN}
+#
+#cp -r ${MSIN} imagetest_${MSIN}
+#cp ${DDF_OUTPUT}/DDS3_full_*_smoothed.npz imagetest_${MSIN}
+#cp ${DDF_OUTPUT}/DDS3_full_*_merged.npz imagetest_${MSIN}
+#cp ${DDF_OUTPUT}/image_full_ampphase_di_m.NS.mask01.fits imagetest_${MSIN}
+#cp ${DDF_OUTPUT}/SOLSDIR imagetest_${MSIN}
+#cp ${DDF_OUTPUT}/image_dirin_SSD_m.npy.ClusterCat.npy imagetest_${MSIN}
+#cp ${DDF_OUTPUT}/image_full_ampphase_di_m.NS.DicoModel imagetest_${MSIN}
+#
+#cd imagetest_${MSIN}
+#
+#singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
+#msin=${MSIN} \
+#msout=${MSIN}.avg \
+#msin.datacolumn=DATA \
+#steps=[filter,averager] \
+#numthreads=24 \
+#filter.baseline=[CR]S*&&* \
+#filter.remove=true \
+#averager.timestep=8 \
+#averager.freqstep=8 \
+#msout.storagemanager=dysco \
+#msin.weightcolumn=WEIGHT_SPECTRUM \
+#msout.writefullresflag=False
+#
+#echo ${MSIN}.avg > mslist.txt
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DDF.py \
---Output-Name=test_sub --Data-MS=mslist.txt --Deconv-PeakFactor \
+--Output-Name=test_sub --Data-MS=${MSIN}.avg --Deconv-PeakFactor \
 0.001000 --Data-ColName DATA --Parallel-NCPU=32 --Beam-CenterNorm=1 \
 --Deconv-CycleFactor=0 --Deconv-MaxMinorIter=1000000 \
 --Deconv-MaxMajorIter=1 --Deconv-Mode SSD --Beam-Model=LOFAR \
