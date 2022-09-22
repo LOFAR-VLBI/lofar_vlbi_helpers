@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 16 --constraint=intel --job-name=delay-calibration -p infinite
+#SBATCH -N 1 -c 16 --constraint=intel --job-name=delay-calibration -p infinite --exclusive
 
 #Example command:
 #~/scripts/prefactor_helpers/prefactor_pipeline/run_DC.sh /project/lofarvwf/Share/jdejong/output/ELAIS/L798074/target /project/lotss/Public/jdejong/ELAIS/L798074/ddf
