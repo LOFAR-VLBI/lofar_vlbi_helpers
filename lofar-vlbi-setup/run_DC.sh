@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 16 --constraint=intel --job-name=delay-calibration -p infinite
+#SBATCH -N 1 -c 16 --constraint=intel --job-name=delay-calibration -p infinite --exclusive
 
 CORES=16
 
