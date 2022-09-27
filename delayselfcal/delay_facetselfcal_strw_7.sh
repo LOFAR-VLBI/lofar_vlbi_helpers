@@ -10,7 +10,7 @@ MSIN=$1
 singularity exec -B $BIND $SIMG \
 python /net/rijn/data2/rvweeren/LoTSS_ClusterCAL/facetselfcal.py \
 --imsize=1600 \
--i selfcal_round6_LBCS \
+-i selfcal_round7_LBCS \
 --pixelscale=0.075 \
 --uvmin=10000 \
 --skymodelpointsource=0.22 \

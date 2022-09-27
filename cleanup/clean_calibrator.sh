@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm -rf Pre-Facet-Target/*prep_cal
+rm -rf Pre-Facet-Calibrator/*prep_cal

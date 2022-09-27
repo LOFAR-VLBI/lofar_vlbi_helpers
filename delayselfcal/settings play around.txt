@@ -4,6 +4,8 @@ TESTS:
 - subtract op klein region rond de bron --> kan uvmin oplossen
 - phaseupstations=superterp?
 
+RESULTS:
+- fulljones longer solint seems to reduce fringes (trying more fulljones smoothing?)
 
 TAKE INTO ACCOUNT:
 - noisyness phasediff plot --> increase solint
@@ -24,45 +26,3 @@ fulljoins [slow]-->
 complexgain [slow]--> time, frequency, and polarisation dependent amplitude and phase solutions
 scalarcomplexgain [slow]--> solve extra for ringen rond bron
 
-
-SETUP 1
-
---imsize=1600 \
--i selfcal_round1_LBCS \
---pixelscale=0.075 \
---uvmin=20000 \
---skymodelpointsource=1.0 \
---soltype-list="['scalarphasediff','scalarphase','scalarcomplexgain']" \
---soltypecycles-list="[0,0,3]" \
---solint-list="['2min','32s','40min']" \
---nchan-list="[1,1,1]" \
---smoothnessconstraint-list="[5.0,0.75,10.0]" \
---antennaconstraint-list="['alldutch',None,None]" \
---forwidefield \
---avgfreqstep=1 \
---avgtimestep=1 \
---skipbackup \
---no_beamcor \
---useaoflagger
-
-
-SETUP 2
-
---imsize=1600 \
--i selfcal_round7_LBCS \
---pixelscale=0.075 \
---uvmin=10000 \
---skymodelpointsource=0.22 \
---soltype-list="['scalarphasediff','scalarphase','scalarcomplexgain','complexgain','fulljones']" \
---soltypecycles-list="[0,0,1,1,1]" \
---solint-list="['8min','32s','20min','40min','80min']" \
---nchan-list="[1,1,1,1,1]" \
---smoothnessconstraint-list="[10.0,1.25,7.5,15.0,5.0]" \
---antennaconstraint-list="['alldutch',None,None,None,None]" \
---forwidefield --avgfreqstep=1 --avgtimestep=1 --no-beamcor \
---skipbackup --uvminscalarphasediff=0 \
---makeimage-ILTlowres-HBA \
---makeimage-fullpol \
---useaoflagger \
---stop=5 \
-L816272_120_168MHz_averaged.ms.smallphaseupset
