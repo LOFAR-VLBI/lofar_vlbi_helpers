@@ -62,4 +62,4 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DDF.py \
 --DDESolutions-DDModeDeGrid=AP \
 --DDESolutions-DDSols=[DDS3_full_smoothed,DDS3_full_slow_merged] \
 --Selection-UVRangeKm=[0.100000,1000.000000] --GAClean-MinSizeInit=10 \
---Beam-Smooth=1 --Misc-IgnoreDeprecationMarking 1 \
+--Beam-Smooth=1
