@@ -19,7 +19,7 @@ mkdir -p subtract_lotss
 
 echo "Make boxfile: boxfile.reg with /home/lofarvwf-jdejong/scripts/lofar-highres-widefield/utils/make_box.py"
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG /home/lofarvwf-jdejong/scripts/lofar-highres-widefield/utils/make_box.py Input/*.msdpppconcat 2.5
+singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG python /home/lofarvwf-jdejong/scripts/lofar-highres-widefield/utils/make_box.py Input/*.msdpppconcat 2.5
 
 echo "SUBTRACT SETUP FINISHED"
 
