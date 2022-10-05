@@ -19,6 +19,7 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG /home/lof
 --nophaseshift \
 --chunkhours 0.5 \
 --ddfbootstrapcorrection \
+--onlyuseweightspectrum \
 --mslist $MS
 
 mv -r sub6asec* ../
