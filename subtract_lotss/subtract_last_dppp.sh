@@ -9,5 +9,5 @@ echo "Start last command"
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DPPP msin=${OBSERVATION} \
 msout.writefullresflag=False steps=[average] average.timestep=1 average.freqstep=1 msin.weightcolumn=WEIGHT_SPECTRUM \
 msout.storagemanager=dysco msout=sub6asec_${OBSERVATION}.sub.shift.avg.ms \
-msout.storagemanager.databitrate=4 msout.storagemanager.weightbitrate=8 msin.datacolumn=DATA_SUB
+msin.datacolumn=DATA_SUB
 echo "Finished"

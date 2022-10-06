@@ -22,6 +22,6 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG /home/lof
 --onlyuseweightspectrum \
 --mslist $MS
 
-mv -r sub6asec* ../
+mv sub6asec* ../
 
 echo "SUBTRACT END"
