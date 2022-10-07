@@ -12,6 +12,7 @@ Step 6) run the DDF pipeline to obtain a 6" image (solutions/model can be used f
 After DDF need to run helper_scripts/getfreqs_scales.py to get frequency scales used in ddf \
 Step 7) run prefactor_pipeline/run_DC.sh to make the setup for the delay calibration from lofar-vlbi \
 Step 8) run subtract_lotss/subtract_main.sh to subtract 6" LoTSS map from the input data \
+Extra step) Validate the output from the subtraction by running subtract_lotss/validate_subtract_output.py \
 Step 9) run delayselfcal/delay_facetselfcal.sh to do a delayselfcal \
 Step 10) ...
 
