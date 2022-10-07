@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH -N 1 -c 32 --job-name=test_image --exclusive --constraint=naples
 
-#re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
-#re_subband="([^.]+)"
-#if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
-#
-#DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf
-#
-#export SIMG=/home/lofarvwf-jdejong/singularities/lofar_sksp_fedora31_ddf_fixed.sif
+re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
+re_subband="([^.]+)"
+if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
+
+DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf
+
+export SIMG=/home/lofarvwf-jdejong/singularities/lofar_sksp_fedora31_ddf_fixed.sif
 #
 #MSIN=$1
 #

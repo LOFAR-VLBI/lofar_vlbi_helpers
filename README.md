@@ -14,7 +14,13 @@ Step 7) run prefactor_pipeline/run_DC.sh to make the setup for the delay calibra
 Step 8) run subtract_lotss/subtract_main.sh to subtract 6" LoTSS map from the input data \
 Extra step) Validate the output from the subtraction by running subtract_lotss/validate_subtract_output.py \
 Step 9) run delayselfcal/delay_facetselfcal.sh to do a delayselfcal \
-Step 10) ...
+\
+To add: \
+Step 10) apply delay cal solutions \
+Step 11) split directions \
+Step 12) DD selfcals for directions \
+Step 13) validate DD selfcals \
+Step 14) imaging
 
 See main prefactor --> https://github.com/lofar-astron/prefactor \
 See main lofar-vlbi pipeline --> https://github.com/lmorabit/lofar-vlbi/blob/master/Delay-Calibration.parset \
