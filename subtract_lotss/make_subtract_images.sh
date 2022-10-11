@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 32 --job-name=test_image --exclusive --constraint=naples
+#SBATCH -N 1 -c 32 --job-name=test_image --exclusive --constraint=intel
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
