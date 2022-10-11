@@ -32,14 +32,14 @@ msin=${MSIN} \
 msout=${MSIN}-cal.ms \
 msin.datacolumn=DATA \
 msout.storagemanager=dysco \
-msin.weightcolumn=WEIGHT_SPECTRUM \
+msin.weightcolumn=WEIGHT_SPECTRUM_SOLVE \
 msout.writefullresflag=False \
 steps=[filter,averager] \
 filter.baseline='[CR]S*&&*' \
 filter.remove=true \
 averager.timestep=8 \
-averager.freqstep=8
-#numthreads=24 \
+averager.freqstep=8 \
+numthreads=24
 
 echo ${MSIN}-cal.ms > mslist.txt
 
