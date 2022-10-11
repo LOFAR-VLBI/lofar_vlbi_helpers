@@ -31,15 +31,15 @@ DPPP \
 msin=${MSIN} \
 msout=${MSIN}-cal.ms \
 msin.datacolumn=DATA \
+msout.storagemanager=dysco \
+msin.weightcolumn=WEIGHT_SPECTRUM \
+msout.writefullresflag=False \
 steps=[filter,averager] \
-numthreads=24 \
 filter.baseline='[CR]S*&&*' \
 filter.remove=true \
 averager.timestep=8 \
-averager.freqstep=8 \
-msout.storagemanager=dysco \
-msin.weightcolumn=WEIGHT_SPECTRUM \
-msout.writefullresflag=False
+averager.freqstep=8
+#numthreads=24 \
 
 echo ${MSIN}-cal.ms > mslist.txt
 
