@@ -12,7 +12,7 @@ export SIMG=/home/lofarvwf-jdejong/singularities/lofar_sksp_fedora31_ddf_fixed.s
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG CleanSHM.py
 
 #
-#MSIN=$1
+MSIN=$1
 #
 #mkdir imagetest_${MSIN}
 #
@@ -26,22 +26,22 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG CleanSHM.
 #
 #cd imagetest_${MSIN}
 #
-#singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-#DPPP \
-#msin=${MSIN} \
-#msout=${MSIN}-cal.ms \
-#msin.datacolumn=DATA \
-#steps=[filter,averager] \
-#numthreads=24 \
-#filter.baseline='[CR]S*&&*' \
-#filter.remove=true \
-#averager.timestep=8 \
-#averager.freqstep=8 \
-#msout.storagemanager=dysco \
-#msin.weightcolumn=WEIGHT_SPECTRUM \
-#msout.writefullresflag=False
-#
-#echo ${MSIN}-cal.ms > mslist.txt
+singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
+DPPP \
+msin=${MSIN} \
+msout=${MSIN}-cal.ms \
+msin.datacolumn=DATA \
+steps=[filter,averager] \
+numthreads=24 \
+filter.baseline='[CR]S*&&*' \
+filter.remove=true \
+averager.timestep=8 \
+averager.freqstep=8 \
+msout.storagemanager=dysco \
+msin.weightcolumn=WEIGHT_SPECTRUM \
+msout.writefullresflag=False
+
+echo ${MSIN}-cal.ms > mslist.txt
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DDF.py \
 --Output-Name=test_sub --Data-MS=mslist.txt --Deconv-PeakFactor \
