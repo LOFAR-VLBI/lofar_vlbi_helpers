@@ -26,22 +26,22 @@ MSIN=$1
 #
 #cd imagetest_${MSIN}
 #
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-DPPP \
-msin=${MSIN} \
-msout=${MSIN}-cal.ms \
-msin.datacolumn=DATA \
-msout.storagemanager=dysco \
-msin.weightcolumn=WEIGHT_SPECTRUM_SOLVE \
-msout.writefullresflag=False \
-steps=[filter,averager] \
-filter.baseline='[CR]S*&&*' \
-filter.remove=true \
-averager.timestep=8 \
-averager.freqstep=8 \
-numthreads=24
-
-echo ${MSIN}-cal.ms > mslist.txt
+#singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
+#DPPP \
+#msin=${MSIN} \
+#msout=${MSIN}-cal.ms \
+#msin.datacolumn=DATA \
+#msout.storagemanager=dysco \
+#msin.weightcolumn=WEIGHT_SPECTRUM_SOLVE \
+#msout.writefullresflag=False \
+#steps=[filter,averager] \
+#filter.baseline='[CR]S*&&*' \
+#filter.remove=true \
+#averager.timestep=8 \
+#averager.freqstep=8 \
+#numthreads=24
+#
+#echo ${MSIN}-cal.ms > mslist.txt
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DDF.py \
 --Output-Name=test_sub --Data-MS=mslist.txt --Deconv-PeakFactor \
