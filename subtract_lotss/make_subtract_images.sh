@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 60 --job-name=test_image --exclusive --constraint=naples
+#SBATCH -N 1 -c 60 --job-name=test_image --exclusive --constraint=intel
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
@@ -7,7 +7,7 @@ if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
 DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf
 
-export SIMG=/home/lofarvwf-jdejong/singularities/lofar_sksp_fedora31_ddf_fixed.sif
+export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.3.3_x86-64_generic_avx512_ddf_public.sif
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG CleanSHM.py
 
