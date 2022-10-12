@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 31 --job-name=test_image --exclusive --constraint=naples
+#SBATCH -N 1 -c 31 --job-name=test_image --exclusive
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
@@ -27,19 +27,7 @@ MSIN=$1
 #cd imagetest_${MSIN}
 #
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-DPPP \
-msin=${MSIN} \
-msout=${MSIN}-cal.ms \
-msin.datacolumn=DATA \
-msout.storagemanager=dysco \
-msin.weightcolumn=WEIGHT_SPECTRUM_SOLVE \
-msout.writefullresflag=False \
-steps=[filter,averager] \
-filter.baseline='[CR]S*&&*' \
-filter.remove='true' \
-averager.timestep=8 \
-averager.freqstep=8 \
-numthreads=24
+DPPP test.parset
 
 echo ${MSIN}-cal.ms > mslist.txt
 
@@ -65,4 +53,4 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DDF.py \
 --DDESolutions-DDModeDeGrid=AP \
 --DDESolutions-DDSols=[DDS3_full_smoothed,DDS3_full_slow_merged] \
 --Selection-UVRangeKm=[0.100000,1000.000000] --GAClean-MinSizeInit=10 \
---Beam-Smooth=1 --Cache-ResetWisdom=True --Misc-IgnoreDeprecationMarking=1
+--Beam-Smooth=1 --Cache-ResetWisdom=True
