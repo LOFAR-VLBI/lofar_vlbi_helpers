@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 31 --job-name=test_image --exclusive --constraint=intel
+#SBATCH -N 1 -c 31 --job-name=test_image --exclusive --constraint=naples
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
@@ -7,7 +7,7 @@ if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
 DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf
 
-export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.3.3_x86-64_generic_avx512_ddf_public.sif
+export SIMG=/home/lofarvwf-jdejong/singularities/lofar_sksp_fedora31_ddf_fixed.sif
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG CleanSHM.py
 
@@ -26,22 +26,22 @@ MSIN=$1
 #
 #cd imagetest_${MSIN}
 #
-#singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-#DPPP \
-#msin=${MSIN} \
-#msout=${MSIN}-cal.ms \
-#msin.datacolumn=DATA \
-#msout.storagemanager=dysco \
-#msin.weightcolumn=WEIGHT_SPECTRUM_SOLVE \
-#msout.writefullresflag=False \
-#steps=[filter,averager] \
-#filter.baseline='[CR]S*&&*' \
-#filter.remove=true \
-#averager.timestep=8 \
-#averager.freqstep=8 \
-#numthreads=24
-#
-#echo ${MSIN}-cal.ms > mslist.txt
+singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
+DPPP \
+msin=${MSIN} \
+msout=${MSIN}-cal.ms \
+msin.datacolumn=DATA \
+msout.storagemanager=dysco \
+msin.weightcolumn=WEIGHT_SPECTRUM_SOLVE \
+msout.writefullresflag=False \
+steps=[filter,averager] \
+filter.baseline='[CR]S*&&*' \
+filter.remove='true' \
+averager.timestep=8 \
+averager.freqstep=8 \
+numthreads=24
+
+echo ${MSIN}-cal.ms > mslist.txt
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DDF.py \
 --Output-Name=test_sub --Data-MS=mslist.txt --Deconv-PeakFactor \
