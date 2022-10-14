@@ -25,11 +25,10 @@ cd ${DIR}
 
 echo "COPY DATA ${OBSERVATION}"
 
-N_FILES=$(ls ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat | wc -w)
-ls -d ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat | xargs -n ${N_FILES} | while read file; do
-  cp -r ${file} . &
+for FILE in ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat
+do
+  cp -r ${file} .
 done
-wait
 
 echo "SUBTRACT START ${OBSERVATION}"
 
