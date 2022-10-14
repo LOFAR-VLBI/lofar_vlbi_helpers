@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 8 --job-name=subtract_main
+#SBATCH -N 1 -c 24 --job-name=subtract_main
 
 echo "Job landed on $(hostname)"
 
@@ -25,10 +25,8 @@ cd ${DIR}
 
 echo "COPY DATA ${OBSERVATION}"
 
-MAX_PARALLEL=8
-nroffiles=$(ls ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat | wc -w)
-setsize=$(( nroffiles/MAX_PARALLEL + 1 ))
-ls -d ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat | xargs -n "$setsize" | while read file; do
+N_FILES=$(ls ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat | wc -w)
+ls -d ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat | xargs -n ${N_FILES} | while read file; do
   cp -r ${file} . &
 done
 wait
