@@ -27,7 +27,7 @@ echo "COPY DATA ${OBSERVATION}"
 
 for FILE in ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat
 do
-  cp -r ${file} .
+  cp -r ${FILE} .
 done
 
 echo "SUBTRACT START ${OBSERVATION}"
