@@ -28,7 +28,7 @@ echo "COPY DATA ${OBSERVATION}"
 MAX_PARALLEL=8
 nroffiles=$(ls ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat | wc -w)
 setsize=$(( nroffiles/MAX_PARALLEL + 1 ))
-ls ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat | xargs -n "$setsize" | while read file; do
+ls -d ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat | xargs -n "$setsize" | while read file; do
   cp -r ${file} . &
 done
 wait
