@@ -12,10 +12,17 @@ mkdir -p subtract_lotss
 
 DIR=subtract_lotss/
 DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf/
+DELAYCAL_RESULT=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/delaycal/Delay-Calibration
 
 cd ${DIR}
 
-mv /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/Input/*msdpppconcat .
+MAX_PARALLEL=4
+nroffiles=$(ls ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat | wc -w)
+setsize=$(( nroffiles/MAX_PARALLEL + 1 ))
+ls -1 ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat | xargs -n "$setsize" | while read file; do
+  cp -r ${file} . &
+done
+wait
 
 for FILE in ${OBSERVATION}*.msdpppconcat
 do
@@ -38,6 +45,3 @@ do
   sbatch /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtraction.sh mslist.txt
   cd ../
 done
-
-#Refresh the Input
-cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/delaycal/Delay-Calibration/L*.msdpppconcat /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/Input
