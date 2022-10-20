@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 24 --job-name=subtract_main
+#SBATCH -N 1 -c 4 --job-name=subtract_main
 
 echo "Job landed on $(hostname)"
 
