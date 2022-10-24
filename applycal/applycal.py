@@ -4,16 +4,17 @@ import sys
 from subprocess import call
 from argparse import ArgumentParser
 
+
 def run(command):
-   retval=call(command,shell=True)
-   if retval!=0:
-      print('FAILED to run '+command+': return value is '+str(retval))
-      raise Exception(command)
-   return retval
+    retval = call(command, shell=True)
+    if retval != 0:
+        print('FAILED to run ' + command + ': return value is ' + str(retval))
+        raise Exception(command)
+    return retval
 
 
 def fulljonesparmdb(h5):
-    H=tables.open_file(h5)
+    H = tables.open_file(h5)
     try:
         phase = H.root.sol000.phase000.val[:]
         amplitude = H.root.sol000.amplitude000.val[:]
@@ -27,23 +28,21 @@ def fulljonesparmdb(h5):
     return fulljones
 
 
-def applycal(ms, inparmdblist, msincol='DATA' ,msoutcol='CORRECTED_DATA', msout='.', dysco=True):
-
+def applycal(ms, inparmdblist, msincol='DATA', msoutcol='CORRECTED_DATA', msout='.', dysco=True):
     # to allow both a list or a single file (string)
-    if not isinstance(inparmdblist ,list):
+    if not isinstance(inparmdblist, list):
         inparmdblist = [inparmdblist]
 
-    cmd = 'DPPP numthreads= '+ str(cpu_count()) + ' msin=' + ms
+    cmd = 'DPPP numthreads= ' + str(cpu_count()) + ' msin=' + ms
     cmd += ' msout=' + msout + ' '
     cmd += 'msin.datacolumn=' + msincol + ' '
-    if msout == '.':
-        cmd += 'msout.datacolumn=' + msoutcol + ' '
+    cmd += 'msout.datacolumn=' + msoutcol + ' '
     if dysco:
         cmd += 'msout.storagemanager=dysco '
     count = 0
     for parmdb in inparmdblist:
         if fulljonesparmdb(parmdb):
-            cmd += 'ac' + str(count) +'.parmdb=' + parmdb + ' '
+            cmd += 'ac' + str(count) + '.parmdb=' + parmdb + ' '
             cmd += 'ac' + str(count) + '.type=applycal '
             cmd += 'ac' + str(count) + '.correction=fulljones '
             cmd += 'ac' + str(count) + '.soltab=[amplitude000,phase000] '
@@ -103,6 +102,7 @@ def applycal(ms, inparmdblist, msincol='DATA' ,msoutcol='CORRECTED_DATA', msout=
     run(cmd)
     return
 
+
 if __name__ == '__main__':
     parser = ArgumentParser(description='Applycal on MS with H5')
     parser.add_argument('--msin', type=str, help='input measurement set', required=True)
@@ -112,4 +112,4 @@ if __name__ == '__main__':
     parser.add_argument('--colout', type=str, default='CORRECTED_DATA', help='output column name')
     args = parser.parse_args()
 
-    applycal(args.msin, args.h5, args.colin, args.colout, args.msout)
+    applycal(args.msin, inparmdblist=args.h5, msincol=args.colin, msoutcol=args.colout, msout=args.msout)
