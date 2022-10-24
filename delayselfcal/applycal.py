@@ -33,7 +33,7 @@ def applycal(ms, inparmdblist, msincol='DATA' ,msoutcol='CORRECTED_DATA', msout=
     if not isinstance(inparmdblist ,list):
         inparmdblist = [inparmdblist]
 
-    cmd = 'DP3 numthreads= '+ str(cpu_count()) + ' msin=' + ms
+    cmd = 'DPPP numthreads= '+ str(cpu_count()) + ' msin=' + ms
     cmd += ' msout=' + msout + ' '
     cmd += 'msin.datacolumn=' + msincol + ' '
     if msout == '.':
@@ -99,7 +99,7 @@ def applycal(ms, inparmdblist, msincol='DATA' ,msoutcol='CORRECTED_DATA', msout=
             cmd += ','
     cmd += ']'
 
-    print('DP3 applycal:', cmd)
+    print('DPPP applycal:', cmd)
     run(cmd)
     return
 
