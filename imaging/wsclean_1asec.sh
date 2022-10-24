@@ -19,7 +19,6 @@ MEM=$((100/$1))
 
 singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} \
 wsclean \
-
 -update-model-required \
 -temp-dir "$TMPDIR"/wscleandata \
 -use-wgridder \
