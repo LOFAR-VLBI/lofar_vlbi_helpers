@@ -52,8 +52,6 @@ wsclean \
 -j ${SLURM_CPUS_PER_TASK} \
 ${MSIN}
 
-rm -rf sub6asec_L686962_SB001_uv_12CFFDDA8t_1*
-rm merged_testpython3_withCS_jan22.h5
 tar cf output.tar *MFS*.fits
 cp "$TMPDIR"/wscleandata/output.tar $1
 
