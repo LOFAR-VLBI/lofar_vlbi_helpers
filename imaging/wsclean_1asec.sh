@@ -47,9 +47,6 @@ wsclean \
 -nmiter 1 \
 -parallel-gridding 10 \
 -mem 10 \
--apply-facet-beam \
--facet-beam-update 600 \
--use-differential-lofar-beam \
 -channels-out 1 \
 -deconvolution-channels 3 \
 -join-channels \
