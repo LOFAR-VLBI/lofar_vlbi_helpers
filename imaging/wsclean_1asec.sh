@@ -48,7 +48,6 @@ wsclean \
 -parallel-gridding 10 \
 -mem 10 \
 -channels-out 1 \
--deconvolution-channels 3 \
 -j ${SLURM_CPUS_PER_TASK} \
 ${MSIN}
 
