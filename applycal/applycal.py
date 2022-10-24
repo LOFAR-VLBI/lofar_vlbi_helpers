@@ -106,7 +106,7 @@ def applycal(ms, inparmdblist, msincol='DATA', msoutcol='CORRECTED_DATA', msout=
 if __name__ == '__main__':
     parser = ArgumentParser(description='Applycal on MS with H5')
     parser.add_argument('--msin', type=str, help='input measurement set', required=True)
-    parser.add_argument('--msout', type=str, default='', help='output measurement set')
+    parser.add_argument('--msout', type=str, default='.', help='output measurement set')
     parser.add_argument('--h5', type=str, help='h5 calibration', required=True)
     parser.add_argument('--colin', type=str, default='DATA', help='input column name')
     parser.add_argument('--colout', type=str, default='CORRECTED_DATA', help='output column name')
