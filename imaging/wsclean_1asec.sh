@@ -49,7 +49,6 @@ wsclean \
 -mem 10 \
 -channels-out 1 \
 -deconvolution-channels 3 \
--join-channels \
 -j ${SLURM_CPUS_PER_TASK} \
 ${MSIN}
 
