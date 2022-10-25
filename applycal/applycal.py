@@ -28,16 +28,16 @@ def fulljonesparmdb(h5):
     return fulljones
 
 
-def applycal(ms, inparmdblist, msincol='DATA', msoutcol=None, msout='.', dysco=True):
+def applycal(ms, inparmdblist, msincol='DATA', msoutcol='CORRECTED_DATA', msout='.', dysco=True):
     # to allow both a list or a single file (string)
     if not isinstance(inparmdblist, list):
         inparmdblist = [inparmdblist]
 
     cmd = 'DPPP numthreads= ' + str(cpu_count()) + ' msin=' + ms + ' '
-    if msoutcol:
-        cmd += 'msout=' + msout + ' '
+    cmd += 'msout=' + msout + ' '
     cmd += 'msin.datacolumn=' + msincol + ' '
-    cmd += 'msout.datacolumn=' + msoutcol + ' '
+    if msout == '.':
+        cmd += 'msout.datacolumn=' + msoutcol + ' '
     if dysco:
         cmd += 'msout.storagemanager=dysco '
     count = 0
