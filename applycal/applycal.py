@@ -28,13 +28,14 @@ def fulljonesparmdb(h5):
     return fulljones
 
 
-def applycal(ms, inparmdblist, msincol='DATA', msoutcol='CORRECTED_DATA', msout='.', dysco=True):
+def applycal(ms, inparmdblist, msincol='DATA', msoutcol=None, msout='.', dysco=True):
     # to allow both a list or a single file (string)
     if not isinstance(inparmdblist, list):
         inparmdblist = [inparmdblist]
 
-    cmd = 'DPPP numthreads= ' + str(cpu_count()) + ' msin=' + ms
-    cmd += ' msout=' + msout + ' '
+    cmd = 'DPPP numthreads= ' + str(cpu_count()) + ' msin=' + ms + ' '
+    if msoutcol:
+        cmd += 'msout=' + msout + ' '
     cmd += 'msin.datacolumn=' + msincol + ' '
     cmd += 'msout.datacolumn=' + msoutcol + ' '
     if dysco:
@@ -109,7 +110,7 @@ if __name__ == '__main__':
     parser.add_argument('--msout', type=str, default='.', help='output measurement set')
     parser.add_argument('--h5', type=str, help='h5 calibration', required=True)
     parser.add_argument('--colin', type=str, default='DATA', help='input column name')
-    parser.add_argument('--colout', type=str, default='CORRECTED_DATA', help='output column name')
+    parser.add_argument('--colout', type=str, default=None, help='output column name')
     args = parser.parse_args()
 
     applycal(args.msin, inparmdblist=args.h5, msincol=args.colin, msoutcol=args.colout, msout=args.msout)
