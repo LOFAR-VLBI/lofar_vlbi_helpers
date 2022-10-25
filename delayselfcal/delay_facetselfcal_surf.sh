@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -N 1 -c 24 --job-name=delayselfcal
 
-SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_ddf_rijnX.sif
+SIMG=/home/lofarvwf-jdejong/singularities/pill-latest.simg
 BIND=$PWD,/project,/home/lofarvwf-jdejong/scripts
 
 #INPUT CONCATTENATED MS FILE
