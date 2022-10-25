@@ -9,13 +9,13 @@ MSIN=$1
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
 SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/idgtest_23_02_2022.sif
 
-echo "Copy data to TMPDIR/wscleandata"
-
-mkdir "$TMPDIR"/wscleandata
-cp -r ${MSIN} "$TMPDIR"/wscleandata
-#cp /project/lofarvwf/Share/jdejong/output/LB_test_data/facetsscreen.reg "$TMPDIR"/wscleandata
-#cp /project/lofarvwf/Share/jdejong/output/LB_test_data/merged_testpython3_withCS_jan22.h5 "$TMPDIR"/wscleandata
-cd "$TMPDIR"/wscleandata
+#echo "Copy data to TMPDIR/wscleandata"
+#
+#mkdir "$TMPDIR"/wscleandata
+#cp -r ${MSIN} "$TMPDIR"/wscleandata
+##cp /project/lofarvwf/Share/jdejong/output/LB_test_data/facetsscreen.reg "$TMPDIR"/wscleandata
+##cp /project/lofarvwf/Share/jdejong/output/LB_test_data/merged_testpython3_withCS_jan22.h5 "$TMPDIR"/wscleandata
+#cd "$TMPDIR"/wscleandata
 
 echo "----------START WSCLEAN----------"
 
@@ -53,8 +53,8 @@ ${MSIN}
 
 echo "----------FINISHED WSCLEAN----------"
 
-echo "Moving output images back to main folder"
-tar cf output.tar *MFS*.fits
-cp "$TMPDIR"/wscleandata/output.tar $1
+#echo "Moving output images back to main folder"
+#tar cf output.tar *MFS*.fits
+#cp "$TMPDIR"/wscleandata/output.tar $1
 
 echo "COMPLETED JOB"
