@@ -14,10 +14,10 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-PATH=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/subtract_lotss
+PATH_MS=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/subtract_lotss
 SCRIPTS=/home/lofarvwf-jdejong/scripts
 
-for FILE in ${PATH}/sub6asec_${OBSERVATION}*.ms
+for FILE in ${PATH_MS}/sub6asec_${OBSERVATION}*.ms
 do
-  sbatch applycal.sh ${FILE} ${H5##*/}
+  sbatch ${SCRIPTS}/prefactor_helpers/applycal/applycal.sh ${FILE} ${H5##*/}
 done
