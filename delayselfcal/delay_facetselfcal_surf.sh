@@ -1,11 +1,13 @@
 #!/bin/bash
 #SBATCH -N 1 -c 24 --job-name=delayselfcal
 
-SIMG=/home/lofarvwf-jdejong/singularities/pill-latest.simg
+SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
 BIND=$PWD,/project,/home/lofarvwf-jdejong/scripts
 
 #INPUT CONCATTENATED MS FILE
 MSIN=$1
+
+export PYTHONPATH=/opt/lofar/DPPP/lib/python3.7/site-packages:$PYTHONPATH
 
 singularity exec -B $BIND $SIMG \
 python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
