@@ -8,4 +8,4 @@ BIND=$PWD,/project,/home/lofarvwf-jdejong/scripts
 MSIN=$1
 
 singularity exec -B $BIND $SIMG \
-source /home/lofarvwf-jdejong/scripts/prefactor_helpers/delayselfcal/delaycal.sh ${MSIN}
+/home/lofarvwf-jdejong/scripts/prefactor_helpers/delayselfcal/delaycal.sh ${MSIN}
