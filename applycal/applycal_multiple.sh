@@ -19,5 +19,5 @@ SCRIPTS=/home/lofarvwf-jdejong/scripts
 
 for FILE in ${PATH}/sub6asec_${OBSERVATION}*.ms
 do
-  sbatch ${SCRIPTS}/prefactor_helpers/applycal/applycal.sh ${FILE} ${H5##*/}
+  sbatch applycal.sh ${FILE} ${H5##*/}
 done
