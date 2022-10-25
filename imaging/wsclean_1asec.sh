@@ -22,7 +22,6 @@ echo "----------START WSCLEAN----------"
 singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} \
 wsclean \
 -update-model-required \
--temp-dir "$TMPDIR"/wscleandata \
 -use-wgridder \
 -minuv-l 80.0 \
 -size 22500 22500 \
