@@ -6,6 +6,8 @@
 #INPUT H5 FILE
 H5=$1
 
+cp ${H5} .
+
 echo "Job landed on $(hostname)"
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
@@ -16,5 +18,5 @@ PATH=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/subtra
 
 for FILE in ${PATH}/sub6asec_${OBSERVATION}*.ms
 do
-  sbatch applycal.sh ${FILE} ${H5}
+  sbatch applycal.sh ${FILE} ${H5##*/}
 done
