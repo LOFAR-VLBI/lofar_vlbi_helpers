@@ -4,6 +4,7 @@
 SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
 BIND=$PWD,/project,/home/lofarvwf-jdejong/scripts
 
+#INPUT CONCATTENATED MS FILE
 MSIN=$1
 
 singularity exec -B $BIND $SIMG \
@@ -32,4 +33,6 @@ python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
 --makeimage-fullpol \
 --resetsols-list="[None,'alldutch','core',None,None,None,None]" \
 --stop=1 \
+--helperscriptspath=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal \
+--helperscriptspathh5merge=/home/lofarvwf-jdejong/scripts/lofar_helpers \
 ${MSIN}

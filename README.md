@@ -12,16 +12,16 @@ Step 6) run the DDF pipeline to obtain a 6" image (solutions/model can be used f
 After DDF need to run helper_scripts/getfreqs_scales.py to get frequency scales used in ddf \
 Step 7) run prefactor_pipeline/run_DC.sh to make the setup for the delay calibration from lofar-vlbi \
 Step 8) run subtract_lotss/subtract_main.sh to subtract 6" LoTSS map from the input data \
-Extra step) Validate the output from the subtraction by running subtract_lotss/validate_subtract_output.py \
-Step 9) run delayselfcal/delay_facetselfcal.sh to do a delayselfcal \
-Step 10) run applycal/applycal_multiple.sh to apply the solutions to the subbands \
-Step 11) make image at 1" as first image \
+Step 9) concat the subtracted output and phase shift to delaycalibrator subtract_lotss/concat.sh \
+Step 10) run delayselfcal/delay_facetselfcal.sh to do a delayselfcal on concattenated file \
+Step 11) run applycal/applycal_multiple.sh to apply the solutions to the subbands \
+Step 12) make image at 1" as first image \
 \
 TODO: \
-Step 11) split directions \
-Step 12) DD selfcals for directions \
-Step 13) validate DD selfcals \
-Step 14) imaging
+Step 12) split directions \
+Step 13) DD selfcals for directions \
+Step 14) validate DD selfcals \
+Step 15) imaging
 
 See main prefactor --> https://github.com/lofar-astron/prefactor \
 See main lofar-vlbi pipeline --> https://github.com/lmorabit/lofar-vlbi/blob/master/Delay-Calibration.parset \
