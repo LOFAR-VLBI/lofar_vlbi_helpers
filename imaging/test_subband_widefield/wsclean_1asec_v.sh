@@ -34,7 +34,7 @@ wsclean \
 -auto-mask 3 \
 -auto-threshold 1.0 \
 -pol v \
--name 1.2asec_image \
+-name 1.2asec_V \
 -scale 0.4arcsec \
 -taper-gaussian 1.2asec \
 -niter 50000 \
