@@ -7,7 +7,7 @@
 MSIN=$1
 
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
-SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/idgtest_23_02_2022.sif
+SING_IMAGE_WSCLEAN=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
 
 #echo "Copy data to TMPDIR/wscleandata"
 #
@@ -30,7 +30,7 @@ wsclean \
 -weight briggs -1.5 \
 -parallel-reordering 6 \
 -mgain 0.65 \
--data-column CORRECTED_DATA \
+-data-column DATA \
 -auto-mask 3 \
 -auto-threshold 1.0 \
 -pol i \
