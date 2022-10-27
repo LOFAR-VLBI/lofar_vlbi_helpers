@@ -8,9 +8,9 @@ SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx
 BIND=$PWD,/project,/home/lofarvwf-jdejong/scripts
 
 #INPUT CONCATTENATED MS FILE
-MSIN=$1
+MSIN=${OBSERVATION}_120_168MHz_averaged.ms
 
-cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/subtract_lotss/${OBSERVATION}_120_168MHz_averaged.ms .
+cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/subtract_lotss/${MSIN} .
 
 singularity exec -B $BIND $SIMG \
 /home/lofarvwf-jdejong/scripts/prefactor_helpers/delayselfcal/delaycal_1secav.sh ${MSIN}
