@@ -33,7 +33,7 @@ wsclean \
 -auto-mask 3 \
 -auto-threshold 1.0 \
 -pol iquv \
--name 1.2asec_Q \
+-name 1.2asec_iquv \
 -scale 0.4arcsec \
 -taper-gaussian 1.2asec \
 -niter 50000 \
