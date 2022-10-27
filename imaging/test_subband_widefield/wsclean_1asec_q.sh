@@ -32,7 +32,7 @@ wsclean \
 -data-column DATA \
 -auto-mask 3 \
 -auto-threshold 1.0 \
--pol q \
+-pol iquv \
 -name 1.2asec_Q \
 -scale 0.4arcsec \
 -taper-gaussian 1.2asec \
@@ -43,7 +43,6 @@ wsclean \
 -multiscale \
 -multiscale-max-scales 9 \
 -nmiter 1 \
--parallel-gridding 3 \
 -mem 25 \
 -channels-out 1 \
 -j ${SLURM_CPUS_PER_TASK} \

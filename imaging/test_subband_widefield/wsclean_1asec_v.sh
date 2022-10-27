@@ -43,7 +43,6 @@ wsclean \
 -multiscale \
 -multiscale-max-scales 9 \
 -nmiter 1 \
--parallel-gridding 3 \
 -mem 25 \
 -channels-out 1 \
 -j ${SLURM_CPUS_PER_TASK} \
