@@ -22,7 +22,6 @@ echo "----------START WSCLEAN----------"
 singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} \
 wsclean \
 -update-model-required \
--use-wgridder \
 -minuv-l 80.0 \
 -size 22500 22500 \
 -weighting-rank-filter 3 \
@@ -48,6 +47,9 @@ wsclean \
 -mem 25 \
 -channels-out 1 \
 -j ${SLURM_CPUS_PER_TASK} \
+-use-idg \
+-grid-with-beam \
+-use-differential-lofar-beam \
 ${MSIN}
 
 echo "----------FINISHED WSCLEAN----------"
