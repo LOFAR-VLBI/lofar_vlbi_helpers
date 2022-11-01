@@ -42,7 +42,7 @@ wsclean \
 -parallel-deconvolution 2600 \
 -multiscale \
 -multiscale-max-scales 9 \
--nmiter 1 \
+-nmiter 9 \
 -mem 25 \
 -channels-out 1 \
 -j ${SLURM_CPUS_PER_TASK} \
