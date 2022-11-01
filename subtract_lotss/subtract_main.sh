@@ -37,8 +37,8 @@ do
   echo "Subtract ${FILE}"
   if [[ ${FILE} =~ $re_subband ]]; then SUBBAND=${BASH_REMATCH}; fi
   mkdir -p ${SUBBAND}_subrun
-  cp ${DDF_OUTPUT}/${OBSERVATION}crossmatch-results-2.npy ${SUBBAND}_subrun
-  cp ${DDF_OUTPUT}/${OBSERVATION}freqs.npy ${SUBBAND}_subrun
+  #cp ${DDF_OUTPUT}/${OBSERVATION}crossmatch-results-2.npy ${SUBBAND}_subrun
+  #cp ${DDF_OUTPUT}/${OBSERVATION}freqs.npy ${SUBBAND}_subrun
   cp ${DDF_OUTPUT}/image_full_ampphase_di_m.NS.DicoModel ${SUBBAND}_subrun
   cp ${DDF_OUTPUT}/image_full_ampphase_di_m.NS.mask01.fits ${SUBBAND}_subrun
   cp ${DDF_OUTPUT}/image_dirin_SSD_m.npy.ClusterCat.npy ${SUBBAND}_subrun
