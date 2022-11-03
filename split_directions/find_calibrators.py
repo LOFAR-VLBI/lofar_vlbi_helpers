@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
-"""Written by Frits Sweijen"""
+"""Based on script, written by Frits Sweijen"""
 
-from astropy.io import ascii
 from astropy.table import Table
 from scipy.cluster.hierarchy import linkage, fcluster
-import ast
 import numpy as np
 
 
@@ -21,7 +19,7 @@ def find_candidates(cat, fluxcut=25e-3):
         candidates (Table): a table containing candidate sources to phaseshift to. Columns
             that are present, are Source_id, RA and DEC.
     '''
-    tab = ascii.read(cat)
+    tab = Table.read(cat)
     sub_tab = tab[tab['Peak_flux'] > fluxcut]
     sub_tab.rename_column('RA', 'LOTSS_RA')
     sub_tab.rename_column('DEC', 'LOTSS_DEC')
@@ -57,63 +55,57 @@ def find_candidates(cat, fluxcut=25e-3):
     return candidates
 
 
-def make_parset(candidates, sols_phase=None, solset_phase='sol000', sols_amp=None, solset_amp='sol000', prefix=''):
+def make_parset(candidates=None, h5=None, solset_phase=None, solset_amp=None):
     ''' Create a DPPP ready parset for phaseshifting towards the sources.
     Args:
         candidates (Table): a table containing the sources to phaseshift to.
-        sols_phase (str): path to the h5parm containing phase solutions of the infield calibrator.
-        solset_phase (str): name of the solset from which to take phase solutions. Default is `sol000`.
-        sols_amp (str): path to the h5parm containing ampliutde solutions of the infield calibrator.
-        solset_amp (str): name of the solset from which to take amplitude solutions. Default is `sol000`.
+        h5 (str): path to the h5parm containing amplitude and/or phase solutions of the infield calibrator.
+        solset_phase (str): name of the solset from which to take phase solutions.
+        solset_amp (str): name of the solset from which to take amplitude solutions.
         prefix (str): prefix to prepend to spit out measurement sets. Default is an empty string.
     Returns:
         parset (str): a fully formatted parset ready to be fed into DPPP.
     '''
     parset = '''msout.storagemanager=dysco
-steps=[explode]
-'''
-    if (sols_phase is not None) and (sols_amp is not None):
-        parset += '''explode.steps=[shift,avg1,apply1,apply2,adder,filter,averager,msout]
-'''
-    elif (sols_phase is not None) and (sols_amp is None):
-        parset += '''explode.steps=[shift,avg1,apply1,adder,filter,averager,msout]
-'''
-    elif (sols_phase is None) and (sols_amp is None):
-        parset += '''explode.steps=[shift,avg1,adder,filter,averager,msout]
-'''
+            steps=[explode]
+            '''
+    if (solset_phase is not None) and (solset_amp is not None):
+        parset += '''explode.steps=[shift,avg1,apply1,apply2,adder,filter,averager,msout]'''
+    elif (solset_phase is not None) and (solset_amp is None):
+        parset += '''explode.steps=[shift,avg1,apply1,adder,filter,averager,msout]'''
+    elif (solset_phase is None) and (solset_amp is None):
+        parset += '''explode.steps=[shift,avg1,adder,filter,averager,msout]'''
 
     parset += '''explode.replaceparms = [shift.phasecenter, msout.name]
-shift.type=phaseshift
-# Average the data a little bit to 4s and 4 ch/SB
-avg1.type = average
-avg1.timeresolution = 4
-avg1.freqresolution = 48.82kHz
-'''
-    if sols_phase is not None:
+    shift.type=phaseshift
+    # Average the data a little bit to 4s and 4 ch/SB
+    avg1.type = average
+    avg1.timeresolution = 4
+    avg1.freqresolution = 48.82kHz
+    '''
+    if solset_phase is not None:
         parset += '''apply1.type = applycal
-apply1.parmdb = {h5phase:s}
-apply1.solset = {h5phasess:s}
-apply1.correction = phase000
-'''.format(h5phase=sols_phase, h5phasess=solset_phase)
-    if sols_amp is not None:
+        apply1.parmdb = {h5phase:s}
+        apply1.solset = {h5phasess:s}
+        apply1.correction = phase000'''.format(h5phase=h5, h5phasess=solset_phase)
+    if solset_amp is not None:
         parset += '''apply2.type = applycal
-apply2.parmdb = {h5amp:s}
-apply2.solset = {h5ampss:s}
-apply2.correction = amplitude000
-'''.format(h5amp=sols_amp, h5ampss=solset_amp)
+        apply2.parmdb = {h5amp:s}
+        apply2.solset = {h5ampss:s}
+        apply2.correction = amplitude000'''.format(h5amp=h5, h5ampss=solset_amp)
     parset += '''adder.type=stationadder
-adder.stations={ST001:'CS*'}
-filter.type=filter
-filter.baseline=^[C]S*&&
-filter.remove=True
-# Average the data to 60 s and 1 ch / SB
-averager.type=averager
-averager.freqresolution = 195.28kHz
-averager.timeresolution = 60
-msout.overwrite = True
-'''
-    parset += 'msout.name=[' + ','.join(list(map(lambda s: prefix + 'P{:d}.ms'.format(int(s)), candidates['Source_id']))) + ']\n'
-    parset += 'shift.phasecenter=[' + ','.join(list(map(lambda x: '[{:f}deg,{:f}deg]'.format(x[0], x[1]), candidates['RA', 'DEC']))) + ']\n'
+            adder.stations={ST001:'CS*'}
+            filter.type=filter
+            filter.baseline=^[C]S*&&
+            filter.remove=True
+            # Average the data to 60 s and 1 ch / SB
+            averager.type=averager
+            averager.freqresolution = 195.28kHz
+            averager.timeresolution = 60
+            msout.overwrite = True
+            '''
+    parset += 'msout.name=[' + ','.join(list(map(lambda s: 'P{:d}.ms'.format(int(s)), candidates['Source_id']))) + ']\n'
+    parset += 'shift.phasecenter=[' + ','.join(list(map(lambda x: '[{:f}deg,{:f}deg]'.format(x[0], x[1]), candidates['LOTSS_RA', 'LOTSS_DEC']))) + ']\n'
     return parset
 
 
@@ -122,30 +114,17 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--catalog', dest='catalog', help='Catalog to select candidate calibrators from.')
-    parser.add_argument('--write-parsets', dest='writepset', help='Write out parsets to do the splitting.', default=False, type=bool)
-    parser.add_argument('--prefix', dest='prefix', help='Prefix for the split out measurement sets.', default='')
-    parser.add_argument('--solutions_phase', dest='sols_phase', help='Phase solutions on infield calibrator.', default='')
-    parser.add_argument('--solset_phase', dest='ss_phase', help='Solset for phase solutions on infield calibrator.', default='sol001')
-    parser.add_argument('--solutions_amp', dest='sols_amp', help='Amplitude solutions on infield calibrator.', default='')
-    parser.add_argument('--solset_amp', dest='ss_amp', help='Solset for amplitude solutions on infield calibrator.', default='sol001')
-
+    parser.add_argument('--h5', dest='h5', help='h5 file with amplitude and phase solutions from infield calibrator.', default='')
+    parser.add_argument('--solset_phase', dest='ss_phase', help='Solset for phase solutions on infield calibrator (example: sol000, sol001, ...).', default=None)
+    parser.add_argument('--solset_amp', dest='ss_amp', help='Solset for amplitude solutions on infield calibrator (example: sol000, sol001, ...).', default=None)
     args = parser.parse_args()
 
-    if (args.sols_amp) and (not args.sols_phase):
-        parser.error('Cannot specify --solutions_amp without specifying --solutions_phase.')
-
     candidates = find_candidates(args.catalog)
-    candidates.write('dde_calibrators.csv', format='ascii.csv')
-    if ast.literal_eval(args.writepset):
-        Nchunks = (len(candidates) // 10) + 1
-        for i in xrange(Nchunks):
-            candidate_chunk = candidates[10 * i:10 * (i + 1)]
-            if args.sols_phase:
-                parset = make_parset(candidate_chunk, sols_phase=args.sols_phase, solset_phase=args.ss_phase, prefix=args.prefix)
-                if args.sols_amp:
-                    parset = make_parset(candidate_chunk, sols_phase=args.sols_phase, solset_phase=args.ss_phase, sols_amp=args.sols_amp, solset_amp=args.ss_amp, prefix=args.prefix)
-            else:
-                parset = make_parset(candidate_chunk, prefix=args.prefix)
-
-            with open('shift_to_calibrators_{:01d}.parset'.format(i), 'w') as f:
-                f.write(parset)
+    print(candidates)
+    candidates.write('dde_calibrators.csv', format='ascii.csv', overwrite=True)
+    Nchunks = (len(candidates) // 10) + 1
+    for i in range(Nchunks):
+        candidate_chunk = candidates[10 * i:10 * (i + 1)]
+        parset = make_parset(candidate_chunk, h5=args.h5, solset_phase=args.ss_phase, solset_amp=args.ss_amp)
+        with open('shift_to_calibrators_{:01d}.parset'.format(i), 'w') as f:
+            f.write(parset)

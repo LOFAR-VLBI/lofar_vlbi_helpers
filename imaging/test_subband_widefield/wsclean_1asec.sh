@@ -9,13 +9,13 @@ MSIN=$1
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
 SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/idgtest_23_02_2022.sif
 
-#echo "Copy data to TMPDIR/wscleandata"
-#
-#mkdir "$TMPDIR"/wscleandata
-#cp -r ${MSIN} "$TMPDIR"/wscleandata
-##cp /project/lofarvwf/Share/jdejong/output/LB_test_data/facetsscreen.reg "$TMPDIR"/wscleandata
-##cp /project/lofarvwf/Share/jdejong/output/LB_test_data/merged_testpython3_withCS_jan22.h5 "$TMPDIR"/wscleandata
-#cd "$TMPDIR"/wscleandata
+OUT_DIR=$PWD
+
+echo "Copy data to TMPDIR/wscleandata"
+
+mkdir "$TMPDIR"/wscleandata
+cp -r ${MSIN} "$TMPDIR"/wscleandata
+cd "$TMPDIR"/wscleandata
 
 echo "----------START WSCLEAN----------"
 
@@ -36,13 +36,13 @@ wsclean \
 -name 1.2asec_I \
 -scale 0.4arcsec \
 -taper-gaussian 1.2asec \
--niter 50000 \
+-niter 200 \
 -log-time \
 -multiscale-scale-bias 0.6 \
 -parallel-deconvolution 2600 \
 -multiscale \
 -multiscale-max-scales 9 \
--nmiter 6 \
+-nmiter 1 \
 -mem 25 \
 -channels-out 1 \
 -j ${SLURM_CPUS_PER_TASK} \
@@ -53,8 +53,8 @@ ${MSIN}
 
 echo "----------FINISHED WSCLEAN----------"
 
-#echo "Moving output images back to main folder"
-#tar cf output.tar *MFS*.fits
-#cp "$TMPDIR"/wscleandata/output.tar $1
+echo "Moving output images back to main folder"
+tar cf output.tar *
+cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
 
 echo "COMPLETED JOB"

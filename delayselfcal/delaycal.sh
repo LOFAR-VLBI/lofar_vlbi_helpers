@@ -19,7 +19,7 @@ python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
 --antennaconstraint-list="['alldutch',None,None,None,None,'alldutch',None]" \
 --forwidefield \
 --avgfreqstep=5 \
---avgtimestep=4 \
+--avgtimestep=8 \
 --docircular \
 --skipbackup \
 --uvminscalarphasediff=0 \

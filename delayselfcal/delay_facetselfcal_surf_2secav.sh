@@ -13,4 +13,4 @@ MSIN=${OBSERVATION}_120_168MHz_averaged.ms
 cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/subtract_lotss/${MSIN} .
 
 singularity exec -B $BIND $SIMG \
-/home/lofarvwf-jdejong/scripts/prefactor_helpers/delayselfcal/delaycal_1secav.sh ${MSIN}
+/home/lofarvwf-jdejong/scripts/prefactor_helpers/delayselfcal/delaycal_2secav.sh ${MSIN}
