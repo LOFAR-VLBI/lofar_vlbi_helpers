@@ -2,20 +2,42 @@
 #SBATCH -c 31
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
+#SBATCH --constraint=intel
 
-#INPUT
-MSIN=$1
+#MSLIST
+ls -1 applycal* > mslist.txt
 
+#SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
 SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/idgtest_23_02_2022.sif
 
 OUT_DIR=$PWD
 
-echo "Copy data to TMPDIR/wscleandata"
+echo "Average data in DPPP..."
+
+for MS in applycal*.ms
+do
+  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DPPP \
+  msin=${MS} \
+  msin.datacolumn=DATA \
+  msout.overwrite=True \
+  msout.storagemanager=dysco \
+  msout.writefullresflag=False \
+  steps=[avg] \
+  avg.type=averager \
+  avg.freqstep=4 \
+  avg.timestep=2
+done
+
+echo "...Finished averaging"
+
+echo "Copy data to TMPDIR/wscleandata..."
 
 mkdir "$TMPDIR"/wscleandata
-cp -r ${MSIN} "$TMPDIR"/wscleandata
+cp -r applycal*.ms "$TMPDIR"/wscleandata
 cd "$TMPDIR"/wscleandata
+
+echo "...Finished copying"
 
 echo "----------START WSCLEAN----------"
 
@@ -44,12 +66,15 @@ wsclean \
 -multiscale-max-scales 9 \
 -nmiter 1 \
 -mem 25 \
--channels-out 1 \
+-channels-out 6 \
+-join-channels \
+-fit-spectral-pol 3 \
+-deconvolution-channels 3 \
 -j ${SLURM_CPUS_PER_TASK} \
 -use-idg \
 -grid-with-beam \
 -use-differential-lofar-beam \
-${MSIN}
+applycal*.ms
 
 echo "----------FINISHED WSCLEAN----------"
 
