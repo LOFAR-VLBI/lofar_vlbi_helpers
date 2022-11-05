@@ -6,4 +6,6 @@
 *.fits
 *.log
 *.xml
+*.txt
+*.csv
 !notes/prefactor.png
