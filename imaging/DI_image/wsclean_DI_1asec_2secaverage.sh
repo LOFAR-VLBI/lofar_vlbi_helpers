@@ -3,13 +3,14 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --constraint=intel
-
+#SBATCH -p infinite
 
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
 SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/idgtest_23_02_2022.sif
 
 OUT_DIR=$PWD
+cd ${OUT_DIR}
 
 echo "Average data in DPPP..."
 
@@ -32,10 +33,10 @@ ls -1 avg_applycal* > mslist.txt
 
 echo "...Finished averaging"
 
-echo "Copy data to TMPDIR/wscleandata..."
+echo "Move data to TMPDIR/wscleandata..."
 
 mkdir "$TMPDIR"/wscleandata
-cp -r avg_applycal* "$TMPDIR"/wscleandata
+mv -r avg_applycal* "$TMPDIR"/wscleandata
 cd "$TMPDIR"/wscleandata
 
 echo "...Finished copying"
