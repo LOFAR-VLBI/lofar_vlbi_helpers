@@ -14,19 +14,19 @@ cd ${OUT_DIR}
 
 echo "Average data in DPPP..."
 
-for MS in applycal*.ms
-do
-  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DPPP \
-  msin=${MS} \
-  msout=avg_${MS} \
-  msin.datacolumn=DATA \
-  msout.storagemanager=dysco \
-  msout.writefullresflag=False \
-  steps=[avg] \
-  avg.type=averager \
-  avg.freqstep=4 \
-  avg.timestep=2
-done
+#for MS in applycal*.ms
+#do
+#  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DPPP \
+#  msin=${MS} \
+#  msout=avg_${MS} \
+#  msin.datacolumn=DATA \
+#  msout.storagemanager=dysco \
+#  msout.writefullresflag=False \
+#  steps=[avg] \
+#  avg.type=averager \
+#  avg.freqstep=4 \
+#  avg.timestep=2
+#done
 
 #MSLIST
 ls -1 avg_applycal* > mslist.txt
@@ -36,7 +36,7 @@ echo "...Finished averaging"
 echo "Move data to TMPDIR/wscleandata..."
 
 mkdir "$TMPDIR"/wscleandata
-mv -r avg_applycal* "$TMPDIR"/wscleandata
+mv avg_applycal* "$TMPDIR"/wscleandata
 cd "$TMPDIR"/wscleandata
 
 echo "...Finished copying"

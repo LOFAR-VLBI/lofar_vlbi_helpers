@@ -36,7 +36,7 @@ echo "...Finished averaging"
 echo "Move data to TMPDIR/wscleandata..."
 
 mkdir "$TMPDIR"/wscleandata
-mv -r avg_applycal* "$TMPDIR"/wscleandata
+mv avg_applycal* "$TMPDIR"/wscleandata
 cd "$TMPDIR"/wscleandata
 
 echo "...Finished copying"
