@@ -14,19 +14,19 @@ cd ${OUT_DIR}
 
 echo "Average data in DPPP..."
 
-#for MS in applycal*.ms
-#do
-#  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DPPP \
-#  msin=${MS} \
-#  msout=avg_${MS} \
-#  msin.datacolumn=DATA \
-#  msout.storagemanager=dysco \
-#  msout.writefullresflag=False \
-#  steps=[avg] \
-#  avg.type=averager \
-#  avg.freqstep=4 \
-#  avg.timestep=2
-#done
+for MS in applycal*.ms
+do
+  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DPPP \
+  msin=${MS} \
+  msout=avg_${MS} \
+  msin.datacolumn=DATA \
+  msout.storagemanager=dysco \
+  msout.writefullresflag=False \
+  steps=[avg] \
+  avg.type=averager \
+  avg.freqstep=4 \
+  avg.timestep=2
+done
 
 #MSLIST
 ls -1 avg_applycal* > mslist.txt
@@ -66,7 +66,7 @@ wsclean \
 -parallel-deconvolution 2600 \
 -multiscale \
 -multiscale-max-scales 9 \
--nmiter 1 \
+-nmiter 9 \
 -mem 25 \
 -channels-out 1 \
 -j ${SLURM_CPUS_PER_TASK} \
