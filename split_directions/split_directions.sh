@@ -21,7 +21,7 @@ echo "-----------------STARTED SPLIT DIRECTIONS-----------------"
 while read -r LNUM; do
 
   cp /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/subtract/boxfile.reg .
-  cp /project/lofarvwf/Share/jdejong/output/ELAIS/L816272/imaging/DI_1asec/DI_I_test/1.2asec_I-dirty.fits .
+  cp /project/lofarvwf/Share/jdejong/output/ELAIS/L816272/subtract/test_subband/123MHz/test_sub.dirty.fits im.fits
 
   echo "Copy applycal ms"
 #  for MS in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/apply_delaycal/applycal_sub6asec_${LNUM}*.ms; do
@@ -31,7 +31,7 @@ while read -r LNUM; do
   for MS in applycal_sub6asec_${LNUM}*.ms; do
 
     #Make calibrator parsets
-    singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_directions_parsets.py --catalog ${CATALOG} --prefix ${LNUM} --ms ${MS} --fits 1.2asec_I-dirty.fits --boxfile boxfile.reg
+    singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_directions_parsets.py --catalog ${CATALOG} --prefix ${LNUM} --ms ${MS} --fits im.fits --boxfile boxfile.reg
     echo "Made parsets for ${LNUM}"
 
   done
