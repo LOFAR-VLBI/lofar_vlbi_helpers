@@ -18,19 +18,21 @@ echo "Job landed on $(hostname)"
 
 echo "-----------------STARTED SPLIT DIRECTIONS-----------------"
 
+cp
+
 while read -r LNUM; do
   #Check if special case
   H5=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/delayselfcal/merged_selfcalcyle000_linearfulljones_${LNUM}_120_168MHz_averaged.ms.avg.h5
   cp ${H5} .
 
   echo "Do applycal"
-#  for MS in sub6asec_${LNUM}*.ms; do
-#    singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-#    python /home/lofarvwf-jdejong/scripts/prefactor_helpers/applycal/applycal.py \
-#    --msin ${MS} \
-#    --h5 ${H5} \
-#    --msout applycal_${MS##*/}
-#  done
+  for MS in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/subtract/subtract_lotss/sub6asec_${LNUM}*.ms; do
+    singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
+    python /home/lofarvwf-jdejong/scripts/prefactor_helpers/applycal/applycal.py \
+    --msin ${MS} \
+    --h5 ${H5} \
+    --msout applycal_${MS##*/}
+  done
 
   for MS in applycal_sub6asec_${LNUM}*.ms; do
     #Launch sbatch script
