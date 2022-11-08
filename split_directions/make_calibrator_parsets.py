@@ -100,7 +100,7 @@ def make_parset(ms=None, candidate=None, special=None, prefix=''):
     else:
         parset += '\navg.timestep=4'
     parset += '\nps.phasecenter=' + '[{:f}deg,{:f}deg]\n'.format(candidate['RA'], candidate['DEC'])
-    with open(prefix+'P{:d}.parset'.format(int(candidate['Source_id']+'_')), 'w') as f:
+    with open(prefix+'_P{:d}.parset'.format(int(candidate['Source_id'])), 'w') as f:
         f.write(parset)
     return parset
 
