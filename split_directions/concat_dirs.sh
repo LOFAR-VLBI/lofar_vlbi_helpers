@@ -8,7 +8,7 @@ export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generi
 mkdir -P sub_parsets
 mv *.parset sub_parsets
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts ${SIMG} python ${SCRIPTS}/split_directions/concat_dirs.py
+singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts ${SIMG} python ${SCRIPTS}/split_directions/make_concat_parsets.py
 
 for P in *.parset; do
   sbatch ${SCRIPTS}/split_directions/run_concat_parset.sh ${P}

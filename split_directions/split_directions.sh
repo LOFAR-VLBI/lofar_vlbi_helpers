@@ -39,9 +39,9 @@ while read -r LNUM; do
 
     #Make calibrator parsets
     if [[ "$LNUM" =~ ^(L798074|L816272|)$ ]]; then
-      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_calibrator_parsets.py --catalog ${CATALOG} --already_averaged_data --prefix ${LNUM} --ms ${MS}
+      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_directions_parsets.py --catalog ${CATALOG} --already_averaged_data --prefix ${LNUM} --ms ${MS}
     else
-      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_calibrator_parsets.py --catalog ${CATALOG} --prefix ${LNUM} --ms ${MS}
+      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_directions_parsets.py --catalog ${CATALOG} --prefix ${LNUM} --ms ${MS}
     fi
     echo "Made parsets for ${LNUM}"
   done
