@@ -18,7 +18,6 @@ echo "Job landed on $(hostname)"
 
 echo "-----------------STARTED SPLIT DIRECTIONS-----------------"
 
-cp
 
 while read -r LNUM; do
 
