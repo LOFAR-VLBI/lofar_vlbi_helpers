@@ -10,7 +10,7 @@ from scipy.spatial import distance
 from math import pi
 
 
-def find_candidates(cat, fluxcut=25e-3):
+def find_candidates(cat, ms, fluxcut=25e-3):
     ''' Identify candidate sources for DDE calibration.
     The given catalog is searched for potential calibrator sources based on a cut in peak intensity.
     An attempt is made to remove duplicate entries by clustering multiple components based on their
@@ -29,6 +29,23 @@ def find_candidates(cat, fluxcut=25e-3):
 
     # In case of multiple components of a single source being found, calculate the mean position.
     candidates = Table(names=['Source_id', 'RA', 'DEC'])
+
+    # Select only sources within 2.5 degrees
+    t = ct.table(ms+'::FIELD')
+    phasedir = t.getcol("PHASE_DIR").squeeze()
+    phasedir *= 180/pi
+
+    keep=[]
+    for candidate in candidates:
+        sourcedir = np.array([candidate['RA'], candidate['DEC']])
+        dist = distance.euclidean(phasedir % 360, sourcedir % 360)
+
+        if dist<2.5:
+            keep.append(True)
+        else:
+            keep.append(False)
+
+    candidates = candidates[keep]
 
     # Make an (N,2) array of directions and compute the distances between points.
     pos = np.stack((list(sub_tab['RA']), list(sub_tab['DEC'])), axis=1)
@@ -67,16 +84,6 @@ def make_parset(ms=None, candidate=None, special=None, prefix=''):
         parset (str): a fully formatted parset ready to be fed into DPPP.
     '''
 
-    t = ct.table(ms+'::FIELD')
-    phasedir = t.getcol("PHASE_DIR").squeeze()
-    phasedir *= 180/pi
-    sourcedir = np.array([candidate['RA'], candidate['DEC']])
-
-    dist = distance.euclidean(phasedir % 360, sourcedir % 360)
-
-    if dist>2.5:
-        return
-
     parset = 'msin='+ms
     parset += '\nmsout=' + prefix+'_'+'P{:d}.ms'.format(int(candidate['Source_id']))
     parset += '\nmsin.datacolumn=DATA' \
@@ -112,8 +119,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    candidates = find_candidates(args.catalog)
+    candidates = find_candidates(args.catalog, args.ms)
 
     candidates.write('dde_calibrators.csv', format='ascii.csv', overwrite=True)
-    for i, candidate in enumerate(candidates):
-        parset = make_parset(ms=args.ms, candidate=candidate, special=args.special, prefix=args.prefix)
+    for candidate in candidates:
+        parset = make_parset(candidate=candidate, special=args.special, prefix=args.prefix)
