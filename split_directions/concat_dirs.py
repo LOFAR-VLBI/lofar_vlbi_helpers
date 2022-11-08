@@ -10,7 +10,7 @@ all_dirs = [f.split('_')[2].split('.')[0] for f in all_ms if 'P' in f]
 
 for observation in all_obs:
     for dir in all_dirs:
-        parset = 'msin=' + ' '.join(observation + '*' + dir + '.ms')
+        parset = 'msin=' + observation + '*' + dir + '.ms'
         parset += '\nmsout=' + observation + '_' + dir + '.ms'
         parset += '\nmsin.datacolumn=DATA\nmsout.storagemanager=dysco\nmsout.writefullresflag=False'
         with open(observation + '_' + dir + '.parset', 'w') as f:
