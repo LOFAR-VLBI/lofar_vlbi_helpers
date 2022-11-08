@@ -16,12 +16,13 @@ Step 9) concat the subtracted output and phase shift to delaycalibrator subtract
 Step 10) run delayselfcal/delay_facetselfcal.sh to do a delayselfcal on concattenated file \
 Step 11) run applycal/applycal_multiple.sh to apply the solutions to the subbands \
 Step 12) make image at 1" as first image \
+Step 13) run split_directions/split_directions.sh to split the bright directions to selfcal \
+Step 14) run split_directions/concat_dirs.sh to concat the individual subbands per observation \
 \
 TODO: \
-Step 12) split directions \
-Step 13) DD selfcals for directions \
-Step 14) validate DD selfcals \
-Step 15) imaging
+Step 15) DD selfcals for directions \
+Step 16) validate DD selfcals \
+Step 17) imaging
 
 See main prefactor --> https://github.com/lofar-astron/prefactor \
 See main lofar-vlbi pipeline --> https://github.com/lmorabit/lofar-vlbi/blob/master/Delay-Calibration.parset \
