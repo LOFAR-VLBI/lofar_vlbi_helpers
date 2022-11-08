@@ -22,19 +22,6 @@ while read -r LNUM; do
   #Check if special case
   H5=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/delayselfcal/merged_selfcalcyle000_linearfulljones_${LNUM}_120_168MHz_averaged.ms.avg.h5
   cp ${H5} .
-  if [[ "$LNUM" =~ ^(L798074|L816272|)$ ]]; then
-
-      #make calibrator parsets
-
-      pattern="sub6asec_L816272_SB000_uv_131A1C14Et_1*"
-      files=( $pattern )
-      first_file=${files[0]}
-
-      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_calibrator_parsets.py --catalog ${CATALOG} --already_averaged_data --prefix ${LNUM} --ms ${first_file}
-  else
-      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_calibrator_parsets.py --catalog ${CATALOG} --h5 ${H5} ${LNUM} --ms ${first_file}
-  fi
-  echo "Made parsets for ${LNUM}"
 
   echo "Do applycal"
   for MS in sub6asec_${LNUM}*.ms; do
@@ -46,12 +33,22 @@ while read -r LNUM; do
   done
 
   echo "Do phase shift"
-  for P in ${LNUM}*.parset; do
-    for MS in ${LNUM}*.ms; do
-      #Launch sbatch script
-		  sbatch ${SCRIPTS}/split_directions/phaseshift.sh ${P} ${MS} ${H5}
-		  echo "Launched script for ${P} and ${MS}"
-    done
+  for MS in ${LNUM}*.ms; do
+    #Launch sbatch script
+
+    #Make calibrator parsets
+    if [[ "$LNUM" =~ ^(L798074|L816272|)$ ]]; then
+      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_calibrator_parsets.py --catalog ${CATALOG} --already_averaged_data --prefix ${LNUM} --ms ${MS}
+    else
+      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_calibrator_parsets.py --catalog ${CATALOG} --h5 ${H5} ${LNUM} --ms ${MS}
+    fi
+    echo "Made parsets for ${LNUM}"
+  done
+
+  #Run parsets
+  for ${P} in ${LNUM}*.parset; do
+    sbatch ${SCRIPTS}/split_directions/phaseshift.sh ${P}
+    echo "Launched script for ${P}"
   done
 done <$L_LIST
 

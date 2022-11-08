@@ -77,7 +77,9 @@ def make_parset(ms=None, candidate=None, special=None, prefix=''):
     if dist>2.5:
         return
 
-    parset = 'msin.datacolumn=DATA' \
+    parset = 'msin='+ms
+    parset += '\nmsout=' + prefix+'_'+'P{:d}.ms'.format(int(candidate['Source_id']))
+    parset += '\nmsin.datacolumn=DATA' \
              '\nmsout.storagemanager=dysco' \
              '\nmsout.writefullresflag=False' \
              '\nsteps=[ps,avg]' \
@@ -93,9 +95,8 @@ def make_parset(ms=None, candidate=None, special=None, prefix=''):
         parset += '\navg.timestep=2'
     else:
         parset += '\navg.timestep=4'
-    parset += '\nmsout.name=' + prefix+'_'+'P{:d}.ms'.format(int(candidate['Source_id']))
     parset += '\nps.phasecenter=' + '[{:f}deg,{:f}deg]\n'.format(candidate['RA'], candidate['DEC'])
-    with open(prefix+'P{:d}.parset'.format(int(candidate['Source_id'])), 'w') as f:
+    with open(prefix+'P{:d}.parset'.format(int(candidate['Source_id']+'_')), 'w') as f:
         f.write(parset)
     return parset
 
