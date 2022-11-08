@@ -78,7 +78,6 @@ def make_parset(ms=None, candidate=None, special=None, prefix=''):
         return
 
     parset = 'msin.datacolumn=DATA' \
-             '\nmsout.overwrite=True' \
              '\nmsout.storagemanager=dysco' \
              '\nmsout.writefullresflag=False' \
              '\nsteps=[ps,avg]' \
@@ -94,7 +93,7 @@ def make_parset(ms=None, candidate=None, special=None, prefix=''):
         parset += '\navg.timestep=2'
     else:
         parset += '\navg.timestep=4'
-    parset += '\nmsout.name=' + prefix+'P{:d}.ms'.format(int(candidate['Source_id']))
+    parset += '\nmsout.name=' + prefix+'_'+'P{:d}.ms'.format(int(candidate['Source_id']))
     parset += '\nps.phasecenter=' + '[{:f}deg,{:f}deg]\n'.format(candidate['RA'], candidate['DEC'])
     with open(prefix+'P{:d}.parset'.format(int(candidate['Source_id'])), 'w') as f:
         f.write(parset)

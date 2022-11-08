@@ -12,11 +12,5 @@ echo "Job landed on $(hostname)"
 PATH_MS=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/subtract_lotss
 SCRIPTS=/home/lofarvwf-jdejong/scripts/prefactor_helpers
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-python /home/lofarvwf-jdejong/scripts/prefactor_helpers/applycal/applycal.py \
---msin ${MS} \
---h5 ${H5} \
---msout applycal_${MS##*/}
-
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DP3 \
 msin=${MS} ${PARSET}
