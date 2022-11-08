@@ -6,11 +6,26 @@ from astropy.table import Table
 from scipy.cluster.hierarchy import linkage, fcluster
 import numpy as np
 import casacore.tables as ct
-from scipy.spatial import distance
 from math import pi
+import pyregion
+from astropy.io import fits
+from astropy import units as u
+from astropy.coordinates import SkyCoord
+from astropy.wcs import WCS
+from astropy.wcs.utils import skycoord_to_pixel
 
+def in_fits(fitsfile, boxfile, coor):
+    hdu = fits.open(fitsfile)
+    w = WCS(hdu[0].header)
+    r = pyregion.open(boxfile).as_imagecoord(header=hdu[0].header)
+    mask = r.get_mask(hdu=hdu[0], shape=hdu[0].data[0][0].shape).astype(int)
+    c = SkyCoord(ra=coor[0] * u.degree, dec=coor[1] * u.degree, frame='icrs')
+    index = [int(i) for i in skycoord_to_pixel(c, wcs=w)]
+    if index[0]<mask.shape[0] or index[1]<mask.shape[1] or index[0]>mask.shape[0] or index[1]>mask.shape[1]:
+        return False
+    return bool(mask[index[0], index[1]])
 
-def find_candidates(cat, ms, fluxcut=25e-3):
+def find_candidates(cat, fitsfile='', fluxcut=25e-3, boxfile=''):
     ''' Identify candidate sources for DDE calibration.
     The given catalog is searched for potential calibrator sources based on a cut in peak intensity.
     An attempt is made to remove duplicate entries by clustering multiple components based on their
@@ -30,11 +45,6 @@ def find_candidates(cat, ms, fluxcut=25e-3):
     # In case of multiple components of a single source being found, calculate the mean position.
     candidates = Table(names=['Source_id', 'RA', 'DEC'])
 
-    # Get phase dir of observation
-    t = ct.table(ms+'::FIELD')
-    phasedir = t.getcol("PHASE_DIR").squeeze()
-    phasedir *= 180/pi
-
     # Make an (N,2) array of directions and compute the distances between points.
     pos = np.stack((list(sub_tab['RA']), list(sub_tab['DEC'])), axis=1)
 
@@ -50,8 +60,8 @@ def find_candidates(cat, ms, fluxcut=25e-3):
 
         # Select only sources within 2.5 degrees
         sourcedir = np.array([sub_tab['RA'][i], sub_tab['DEC'][i]])
-        dist = distance.euclidean(phasedir % 360, sourcedir % 360)
-        if dist>2.5:
+
+        if not in_fits(fitsfile, boxfile, sourcedir):
             continue
 
         if len(comps) == 1:
@@ -68,12 +78,10 @@ def find_candidates(cat, ms, fluxcut=25e-3):
     return candidates
 
 
-def make_parset(ms=None, candidate=None, special=None, prefix=''):
+def make_parset(ms=None, candidate=None, prefix=''):
     ''' Create a DPPP ready parset for phaseshifting towards the sources.
     Args:
-        fits (Fits): fits file to find phase center
         candidate (Table): candidate.
-        special (bool): for some L-numbers they have already been averaged
         prefix (str): prefix to prepend to spit out measurement sets. Default is an empty string.
     Returns:
         parset (str): a fully formatted parset ready to be fed into DPPP.
@@ -89,16 +97,13 @@ def make_parset(ms=None, candidate=None, special=None, prefix=''):
              '\nsteps=[ps,avg]' \
              '\nps.type=phaseshifter' \
              '\navg.type=averager' \
-             '\navg.freqstep=8'
+             '\navg.freqresolution=390.56kHz' \
+             '\navg.timeresolution=60'
 
     t = ct.table(ms+'::FIELD')
     phasedir = t.getcol("PHASE_DIR").squeeze()
     phasedir *= 180/pi
 
-    if special:
-        parset += '\navg.timestep=2'
-    else:
-        parset += '\navg.timestep=4'
     parset += '\nps.phasecenter=' + '[{:f}deg,{:f}deg]\n'.format(candidate['RA'], candidate['DEC'])
     with open(prefix+'_'+freqband+'_P{:d}.parset'.format(int(candidate['Source_id'])), 'w') as f:
         f.write(parset)
@@ -110,14 +115,15 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--ms', dest='ms', help='Measurement set to read phase dir from')
+    parser.add_argument('--fits', dest='fits', help='fits file from observation')
     parser.add_argument('--catalog', dest='catalog', help='Catalog to select candidate calibrators from.')
-    parser.add_argument('--already_averaged_data', dest='special', help='When using special L-numbers that have already been time averaged', action='store_true', default=None)
+    parser.add_argument('--boxfile', dest='boxfile', help='subtract boxfile', default=None)
     parser.add_argument('--prefix', dest='prefix', help='Prefix', default='')
 
     args = parser.parse_args()
 
-    candidates = find_candidates(cat=args.catalog, ms=args.ms)
+    candidates = find_candidates(cat=args.catalog, fitsfile=args.fits, boxfile=args.boxfile)
 
     candidates.write('dde_calibrators.csv', format='ascii.csv', overwrite=True)
     for candidate in candidates:
-        parset = make_parset(ms=args.ms, candidate=candidate, special=args.special, prefix=args.prefix)
+        parset = make_parset(ms=args.ms, candidate=candidate, prefix=args.prefix)

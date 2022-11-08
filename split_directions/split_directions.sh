@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 3 --job-name=split_directions
+#SBATCH -N 1 -c 5 --job-name=split_directions
 
 #List with L-numbers
 L_LIST=$1
@@ -20,23 +20,20 @@ echo "-----------------STARTED SPLIT DIRECTIONS-----------------"
 
 while read -r LNUM; do
 
-  echo "Do applycal"
+  cp /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/subtract/boxfile.reg .
+  cp /project/lofarvwf/Share/jdejong/output/ELAIS/L816272/imaging/DI_1asec/DI_I_test/1.2asec_I-dirty.fits .
+
+  echo "Copy applycal ms"
   for MS in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/apply_delaycal/applycal_sub6asec_${LNUM}*.ms; do
     cp -r ${MS} .
   done
 
   for MS in applycal_sub6asec_${LNUM}*.ms; do
 
-    #Launch sbatch script
-    echo "Do phase shift for ${MS}"
-
     #Make calibrator parsets
-    if [[ "$LNUM" =~ ^(L798074|L816272|)$ ]]; then
-      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_directions_parsets.py --catalog ${CATALOG} --already_averaged_data --prefix ${LNUM} --ms ${MS}
-    else
-      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_directions_parsets.py --catalog ${CATALOG} --prefix ${LNUM} --ms ${MS}
-    fi
+    singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_directions_parsets.py --catalog ${CATALOG} --prefix ${LNUM} --ms ${MS} --fits 1.2asec_I-dirty.fits --boxfile boxfile.reg
     echo "Made parsets for ${LNUM}"
+
   done
 
   #Run parsets
