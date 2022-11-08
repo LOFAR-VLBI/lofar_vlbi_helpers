@@ -32,7 +32,7 @@ while read -r LNUM; do
   for P in ${LNUM}*.parset; do
     for MS in sub6asec_${LNUM}*.ms; do
       #Launch sbatch script
-		  sbatch applycal_phaseshift.sh ${P} ${MS} ${H5}
+		  sbatch ${SCRIPTS}/split_directions/applycal_phaseshift.sh ${P} ${MS} ${H5}
 		  echo "Launched script for ${P} and ${MS}"
     done
   done
