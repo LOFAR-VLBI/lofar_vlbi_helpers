@@ -21,7 +21,7 @@ echo "-----------------STARTED SPLIT DIRECTIONS-----------------"
 while read -r LNUM; do
 
   echo "Do applycal"
-  for MS in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/subtract/apply_delaycal/applycal_sub6asec_${LNUM}*.ms; do
+  for MS in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/apply_delaycal/applycal_sub6asec_${LNUM}*.ms; do
     cp -r ${MS} .
   done
 
