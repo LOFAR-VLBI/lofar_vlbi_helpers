@@ -79,8 +79,10 @@ def make_parset(ms=None, candidate=None, special=None, prefix=''):
         parset (str): a fully formatted parset ready to be fed into DPPP.
     '''
 
+    freqband = ms.split('_')[-1].split('.')[0]
+
     parset = 'msin='+ms
-    parset += '\nmsout=' + prefix+'_'+'P{:d}.ms'.format(int(candidate['Source_id']))
+    parset += '\nmsout=' + prefix+'_'+freqband+'_P{:d}.ms'.format(int(candidate['Source_id']))
     parset += '\nmsin.datacolumn=DATA' \
              '\nmsout.storagemanager=dysco' \
              '\nmsout.writefullresflag=False' \
@@ -98,7 +100,7 @@ def make_parset(ms=None, candidate=None, special=None, prefix=''):
     else:
         parset += '\navg.timestep=4'
     parset += '\nps.phasecenter=' + '[{:f}deg,{:f}deg]\n'.format(candidate['RA'], candidate['DEC'])
-    with open(prefix+'_P{:d}.parset'.format(int(candidate['Source_id'])), 'w') as f:
+    with open(prefix+'_'+freqband+'_P{:d}.parset'.format(int(candidate['Source_id'])), 'w') as f:
         f.write(parset)
     return parset
 

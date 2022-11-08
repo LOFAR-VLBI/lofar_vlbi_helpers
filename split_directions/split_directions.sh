@@ -51,6 +51,8 @@ while read -r LNUM; do
     sbatch ${SCRIPTS}/split_directions/phaseshift.sh ${P}
     echo "Launched script for ${P}"
   done
+
+
 done <$L_LIST
 
 echo "-----------------FINISHED SPLIT DIRECTIONS-----------------"
