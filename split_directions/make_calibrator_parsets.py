@@ -30,19 +30,10 @@ def find_candidates(cat, ms, fluxcut=25e-3):
     # In case of multiple components of a single source being found, calculate the mean position.
     candidates = Table(names=['Source_id', 'RA', 'DEC'])
 
-    # Select only sources within 2.5 degrees
+    # Get phase dir of observation
     t = ct.table(ms+'::FIELD')
     phasedir = t.getcol("PHASE_DIR").squeeze()
     phasedir *= 180/pi
-    keep=[]
-    for candidate in candidates:
-        sourcedir = np.array([candidate['RA'], candidate['DEC']])
-        dist = distance.euclidean(phasedir % 360, sourcedir % 360)
-        if dist<2.5:
-            keep.append(True)
-        else:
-            keep.append(False)
-    candidates = candidates[keep]
 
     # Make an (N,2) array of directions and compute the distances between points.
     pos = np.stack((list(sub_tab['RA']), list(sub_tab['DEC'])), axis=1)
@@ -56,6 +47,13 @@ def find_candidates(cat, ms, fluxcut=25e-3):
         idx = np.where(clusters == c)
         i = idx[0][0]
         comps = sub_tab[idx]
+
+        # Select only sources within 2.5 degrees
+        sourcedir = np.array([sub_tab['RA'][i], sub_tab['DEC'][i]])
+        dist = distance.euclidean(phasedir % 360, sourcedir % 360)
+        if dist>2.5:
+            continue
+
         if len(comps) == 1:
             # Nothing needs to merge with this direction.
             candidates.add_row((sub_tab['Source_id'][i], sub_tab['RA'][i], sub_tab['DEC'][i]))

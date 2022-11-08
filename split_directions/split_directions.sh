@@ -47,7 +47,7 @@ while read -r LNUM; do
   done
 
   #Run parsets
-  for ${P} in ${LNUM}*.parset; do
+  for P in ${LNUM}*.parset; do
     sbatch ${SCRIPTS}/split_directions/phaseshift.sh ${P}
     echo "Launched script for ${P}"
   done
