@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 1 --job-name=split_directions
+#SBATCH -N 1 -c 3 --job-name=split_directions
 
 #List with L-numbers
 L_LIST=$1
