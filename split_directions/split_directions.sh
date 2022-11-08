@@ -24,23 +24,24 @@ while read -r LNUM; do
   cp ${H5} .
 
   echo "Do applycal"
-  for MS in sub6asec_${LNUM}*.ms; do
-    singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-    python /home/lofarvwf-jdejong/scripts/prefactor_helpers/applycal/applycal.py \
-    --msin ${MS} \
-    --h5 ${H5} \
-    --msout applycal_${MS##*/}
-  done
+#  for MS in sub6asec_${LNUM}*.ms; do
+#    singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
+#    python /home/lofarvwf-jdejong/scripts/prefactor_helpers/applycal/applycal.py \
+#    --msin ${MS} \
+#    --h5 ${H5} \
+#    --msout applycal_${MS##*/}
+#  done
 
-  echo "Do phase shift"
-  for MS in ${LNUM}*.ms; do
+  for MS in applycal_sub6asec_${LNUM}*.ms; do
     #Launch sbatch script
+
+    echo "Do phase shift for ${MS}"
 
     #Make calibrator parsets
     if [[ "$LNUM" =~ ^(L798074|L816272|)$ ]]; then
       singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_calibrator_parsets.py --catalog ${CATALOG} --already_averaged_data --prefix ${LNUM} --ms ${MS}
     else
-      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_calibrator_parsets.py --catalog ${CATALOG} --h5 ${H5} ${LNUM} --ms ${MS}
+      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_calibrator_parsets.py --catalog ${CATALOG} --prefix ${LNUM} --ms ${MS}
     fi
     echo "Made parsets for ${LNUM}"
   done

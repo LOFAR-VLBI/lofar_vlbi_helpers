@@ -34,17 +34,14 @@ def find_candidates(cat, ms, fluxcut=25e-3):
     t = ct.table(ms+'::FIELD')
     phasedir = t.getcol("PHASE_DIR").squeeze()
     phasedir *= 180/pi
-
     keep=[]
     for candidate in candidates:
         sourcedir = np.array([candidate['RA'], candidate['DEC']])
         dist = distance.euclidean(phasedir % 360, sourcedir % 360)
-
         if dist<2.5:
             keep.append(True)
         else:
             keep.append(False)
-
     candidates = candidates[keep]
 
     # Make an (N,2) array of directions and compute the distances between points.
@@ -119,8 +116,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    candidates = find_candidates(args.catalog, args.ms)
+    candidates = find_candidates(cat=args.catalog, ms=args.ms)
 
     candidates.write('dde_calibrators.csv', format='ascii.csv', overwrite=True)
     for candidate in candidates:
-        parset = make_parset(candidate=candidate, special=args.special, prefix=args.prefix)
+        parset = make_parset(ms=args.ms, candidate=candidate, special=args.special, prefix=args.prefix)
