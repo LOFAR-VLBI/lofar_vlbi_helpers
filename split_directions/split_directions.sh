@@ -24,9 +24,9 @@ while read -r LNUM; do
   cp ${H5} .
   if [[ "$LNUM" =~ ^(L798074|L816272|)$ ]]; then
       #make calibrator parsets
-      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_calibrator_parsets.py --catalog ${CATALOG} --h5 ${H5} --already_averaged_data --prefix ${LNUM}
+      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_calibrator_parsets.py --catalog ${CATALOG} --already_averaged_data --prefix ${LNUM}
   else
-      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_calibrator_parsets.py --catalog ${CATALOG} --h5 ${H5} --prefix ${LNUM}
+      singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_calibrator_parsets.py --catalog ${CATALOG} --h5 ${H5} ${LNUM}
   fi
   echo "Made parsets for ${LNUM}"
   for P in ${LNUM}*.parset; do
