@@ -24,9 +24,9 @@ while read -r LNUM; do
   cp /project/lofarvwf/Share/jdejong/output/ELAIS/L816272/imaging/DI_1asec/DI_I_test/1.2asec_I-dirty.fits .
 
   echo "Copy applycal ms"
-  for MS in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/apply_delaycal/applycal_sub6asec_${LNUM}*.ms; do
-    cp -r ${MS} .
-  done
+#  for MS in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/apply_delaycal/applycal_sub6asec_${LNUM}*.ms; do
+#    cp -r ${MS} .
+#  done
 
   for MS in applycal_sub6asec_${LNUM}*.ms; do
 
