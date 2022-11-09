@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 2 --job-name=splitcal
+#SBATCH -N 1 -c 2 --job-name=splitcal --array=1-2500%200
 
 PARSET=$1
 
@@ -10,5 +10,9 @@ echo "Job landed on $(hostname)"
 PATH_MS=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/subtract_lotss
 SCRIPTS=/home/lofarvwf-jdejong/scripts/prefactor_helpers
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DP3 \
-${PARSET}
+pattern="${LNUM}*.parset"
+files=( $pattern )
+N=${SLURM_ARRAY_TASK_ID}
+
+singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DP3 ${files[${N}]}
+echo "Launched script for ${files[${N}]}"
