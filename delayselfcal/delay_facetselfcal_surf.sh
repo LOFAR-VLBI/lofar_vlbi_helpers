@@ -11,6 +11,7 @@ BIND=$PWD,/project,/home/lofarvwf-jdejong/scripts
 MSIN=${OBSERVATION}_120_168MHz_averaged.ms
 
 cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/subtract_lotss/${MSIN} .
+cp /project/lofarvwf/Share/jdejong/output/ELAIS/7C1604+5529.skymodel .
 
 singularity exec -B $BIND $SIMG \
 /home/lofarvwf-jdejong/scripts/prefactor_helpers/delayselfcal/delaycal.sh ${MSIN}
