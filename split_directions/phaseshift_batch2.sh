@@ -7,9 +7,6 @@ LNUM=$1
 
 echo "Job landed on $(hostname)"
 
-PATH_MS=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/subtract_lotss
-SCRIPTS=/home/lofarvwf-jdejong/scripts/prefactor_helpers
-
 pattern="${LNUM}*.parset"
 files=( $pattern )
 N=${SLURM_ARRAY_TASK_ID}

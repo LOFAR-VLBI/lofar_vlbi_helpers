@@ -3,10 +3,9 @@
 
 export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
 
-echo "Job landed on $(hostname)"
+LNUM=$1
 
-PATH_MS=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/subtract_lotss
-SCRIPTS=/home/lofarvwf-jdejong/scripts/prefactor_helpers
+echo "Job landed on $(hostname)"
 
 pattern="${LNUM}*.parset"
 files=( $pattern )
