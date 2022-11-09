@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 2 --job-name=phaseshift --array=1-1000%100
+#SBATCH -c 2 --job-name=split_batch1 --array=0-999%100
 
 export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
 
