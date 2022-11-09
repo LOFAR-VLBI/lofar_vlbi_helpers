@@ -15,6 +15,13 @@ from astropy.wcs import WCS
 from astropy.wcs.utils import skycoord_to_pixel
 
 def in_fits(fitsfile, boxfile, coor):
+    """
+    Check if coor in fitsfile with corresponding boxfile
+    :param fitsfile: fitsfile
+    :param boxfile: boxfile
+    :param coor: coordinate
+    :return:
+    """
     hdu = fits.open(fitsfile)
     w = WCS(hdu[0].header)
     r = pyregion.open(boxfile).as_imagecoord(header=hdu[0].header)
@@ -25,7 +32,8 @@ def in_fits(fitsfile, boxfile, coor):
         return False
     return bool(mask[index[0], index[1]])
 
-def find_candidates(cat, fitsfile='', fluxcut=25e-3, boxfile=''):
+
+def find_candidates(cat, ms, fluxcut=25e-3):
     ''' Identify candidate sources for DDE calibration.
     The given catalog is searched for potential calibrator sources based on a cut in peak intensity.
     An attempt is made to remove duplicate entries by clustering multiple components based on their
@@ -37,16 +45,23 @@ def find_candidates(cat, fitsfile='', fluxcut=25e-3, boxfile=''):
         candidates (Table): a table containing candidate sources to phaseshift to. Columns
             that are present, are Source_id, RA and DEC.
     '''
+
     tab = Table.read(cat)
-    sub_tab = tab[tab['Peak_flux'] > fluxcut]
-    sub_tab.rename_column('RA', 'RA')
-    sub_tab.rename_column('DEC', 'DEC')
+    tab = tab[tab['Peak_flux'] > fluxcut]
+    tab.rename_column('RA', 'RA')
+    tab.rename_column('DEC', 'DEC')
 
     # In case of multiple components of a single source being found, calculate the mean position.
     candidates = Table(names=['Source_id', 'RA', 'DEC'])
 
+    # Get phase dir of observation
+    t = ct.table(ms+'::FIELD')
+    phasedir = t.getcol("PHASE_DIR").squeeze()
+    phasedir *= 180/pi
+    phasedir_coor = SkyCoord(ra=phasedir[0]*u.degree, dec=phasedir[1]*u.degree, frame='fk5')
+
     # Make an (N,2) array of directions and compute the distances between points.
-    pos = np.stack((list(sub_tab['RA']), list(sub_tab['DEC'])), axis=1)
+    pos = np.stack((list(tab['RA']), list(tab['DEC'])), axis=1)
 
     # Cluster components based on the distance between them.
     Z = linkage(pos, method='complete', metric='euclidean')
@@ -56,25 +71,29 @@ def find_candidates(cat, fitsfile='', fluxcut=25e-3, boxfile=''):
     for c in np.unique(clusters):
         idx = np.where(clusters == c)
         i = idx[0][0]
-        comps = sub_tab[idx]
+        comps = tab[idx]
 
-        # Select only sources within 2.5 degrees
-        sourcedir = np.array([sub_tab['RA'][i], sub_tab['DEC'][i]])
+        # Select only sources within 2.5 degrees box
+        sourcedir = np.array([tab['RA'][i], tab['DEC'][i]])
+        sourcedir_x = SkyCoord(ra=sourcedir[0]*u.degree, dec=phasedir[1]*u.degree, frame='fk5')
+        sourcedir_y = SkyCoord(ra=phasedir[0]*u.degree, dec=sourcedir[1]*u.degree, frame='fk5')
 
-        if not in_fits(fitsfile, boxfile, sourcedir):
+        if phasedir_coor.separation(sourcedir_x).value>1.25 or phasedir_coor.separation(sourcedir_y).value>1.25:
             continue
 
         if len(comps) == 1:
             # Nothing needs to merge with this direction.
-            candidates.add_row((sub_tab['Source_id'][i], sub_tab['RA'][i], sub_tab['DEC'][i]))
+            candidates.add_row((tab['Source_id'][i], tab['RA'][i], tab['DEC'][i]))
             continue
         else:
-            ra_mean = np.mean(sub_tab['RA'][idx])
-            dec_mean = np.mean(sub_tab['DEC'][idx])
+            ra_mean = np.mean(tab['RA'][idx])
+            dec_mean = np.mean(tab['DEC'][idx])
             if (ra_mean not in candidates['RA']) and (dec_mean not in candidates['DEC']):
-                candidates.add_row((sub_tab['Source_id'][i], ra_mean, dec_mean))
+                candidates.add_row((tab['Source_id'][i], ra_mean, dec_mean))
             else:
-                print('Direction {:d} has been merged already.\n'.format(sub_tab['Source_id'][i]))
+                print('Direction {:d} has been merged already.\n'.format(tab['Source_id'][i]))
+
+
     return candidates
 
 
@@ -115,14 +134,12 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--ms', dest='ms', help='Measurement set to read phase dir from')
-    parser.add_argument('--fits', dest='fits', help='fits file from observation')
     parser.add_argument('--catalog', dest='catalog', help='Catalog to select candidate calibrators from.')
-    parser.add_argument('--boxfile', dest='boxfile', help='subtract boxfile', default=None)
     parser.add_argument('--prefix', dest='prefix', help='Prefix', default='')
 
     args = parser.parse_args()
 
-    candidates = find_candidates(cat=args.catalog, fitsfile=args.fits, boxfile=args.boxfile)
+    candidates = find_candidates(cat=args.catalog, ms=args.ms)
 
     candidates.write('dde_calibrators.csv', format='ascii.csv', overwrite=True)
     for candidate in candidates:
