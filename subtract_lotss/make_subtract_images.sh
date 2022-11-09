@@ -13,30 +13,31 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG CleanSHM.
 
 #
 MSIN=$1
-#
-#mkdir imagetest_${MSIN}
-#
-#cp -r ${MSIN} imagetest_${MSIN}
-#cp ${DDF_OUTPUT}/DDS3_full_*_smoothed.npz imagetest_${MSIN}
-#cp ${DDF_OUTPUT}/DDS3_full_*_merged.npz imagetest_${MSIN}
-#cp ${DDF_OUTPUT}/image_full_ampphase_di_m.NS.mask01.fits imagetest_${MSIN}
-#cp ${DDF_OUTPUT}/SOLSDIR imagetest_${MSIN}
-#cp ${DDF_OUTPUT}/image_dirin_SSD_m.npy.ClusterCat.npy imagetest_${MSIN}
-#cp ${DDF_OUTPUT}/image_full_ampphase_di_m.NS.DicoModel imagetest_${MSIN}
-#
-#cd imagetest_${MSIN}
-#
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-DPPP test.parset
+
+mkdir imagetest_${MSIN}
+
+cp -r ${MSIN} imagetest_${MSIN}
+cp ${DDF_OUTPUT}/DDS3_full_*_smoothed.npz imagetest_${MSIN}
+cp ${DDF_OUTPUT}/DDS3_full_*_merged.npz imagetest_${MSIN}
+cp ${DDF_OUTPUT}/image_full_ampphase_di_m.NS.mask01.fits imagetest_${MSIN}
+cp ${DDF_OUTPUT}/SOLSDIR imagetest_${MSIN}
+cp ${DDF_OUTPUT}/image_dirin_SSD_m.npy.ClusterCat.npy imagetest_${MSIN}
+cp ${DDF_OUTPUT}/image_full_ampphase_di_m.NS.DicoModel imagetest_${MSIN}
+
+cd imagetest_${MSIN}
+
+singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DPPP msin=${MSIN} test.parset
+
 
 echo ${MSIN}-cal.ms > mslist.txt
+
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DDF.py \
 --Output-Name=test_sub --Data-MS=mslist.txt --Deconv-PeakFactor \
 0.001000 --Data-ColName DATA --Parallel-NCPU=32 --Beam-CenterNorm=1 \
 --Deconv-CycleFactor=0 --Deconv-MaxMinorIter=1000000 \
 --Deconv-MaxMajorIter=1 --Deconv-Mode SSD --Beam-Model=LOFAR \
---Beam-LOFARBeamMode=A --Weight-Robust -0.500000 --Image-NPix=21500 \
+--Beam-LOFARBeamMode=A --Weight-Robust -0.500000 --Image-NPix=20000 \
 --CF-wmax 50000 --CF-Nw 100 --Output-Also onNeds --Image-Cell 1.500000 \
 --Facets-NFacets=11 --SSDClean-NEnlargeData 0 --Freq-NDegridBand 1 \
 --Beam-NBand 1 --Facets-DiamMax 1.5 --Facets-DiamMin 0.1 \

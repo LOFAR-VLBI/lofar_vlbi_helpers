@@ -1,4 +1,3 @@
-msin=L816272_SB000_uv_131A1C14Et_131MHz.pre
 msout=L816272_SB000_uv_131A1C14Et_131MHz.pre-cal.ms
 msin.datacolumn=DATA
 msout.storagemanager=dysco
