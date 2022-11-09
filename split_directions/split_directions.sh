@@ -20,10 +20,10 @@ echo "-----------------STARTED SPLIT DIRECTIONS-----------------"
 
 while read -r LNUM; do
 
-#  echo "Copy applycal ms"
-#  for MS in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/apply_delaycal/applycal_sub6asec_${LNUM}*.ms; do
-#    cp -r ${MS} .
-#  done
+  echo "Copy applycal ms"
+  for MS in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/apply_delaycal/applycal_sub6asec_${LNUM}*.ms; do
+    cp -r ${MS} .
+  done
 
   for MS in applycal_sub6asec_${LNUM}*.ms; do
 
@@ -33,11 +33,13 @@ while read -r LNUM; do
 
   done
 
+  sbatch ${SCRIPTS}/split_directions/phaseshift_batch1.sh ${LNUM}
+  sbatch ${SCRIPTS}/split_directions/phaseshift_batch2.sh ${LNUM}
+  sbatch ${SCRIPTS}/split_directions/phaseshift_batch3.sh ${LNUM}
+
 done <$L_LIST
 
-  #Run parsets
-#for P in ${LNUM}*.parset; do
-sbatch ${SCRIPTS}/split_directions/phaseshift.sh
-#done
+#Run parsets
+
 
 echo "-----------------FINISHED SPLIT DIRECTIONS-----------------"
