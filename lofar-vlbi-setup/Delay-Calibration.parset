@@ -15,8 +15,8 @@
 ##########################################################
 
 # local software paths
-! lofar_vlbi_dir            		= /project/lofarvwf/Software/lofar-vlbi
-! prefactor_dir                         = /project/lofarvwf/Software/prefactor
+! lofar_vlbi_dir            		= /home/lofarvwf-jdejong/scripts/lofar-vlbi
+! prefactor_dir                         = /home/lofarvwf-jdejong/scripts/prefactor
 ! helper_dir				= /home/lofarvwf-jdejong/scripts/lofar_helpers
 # the following are in the singularity image and should not need to be changed
 ! losoto_directory                      = /opt/lofar/pyenv-py2
