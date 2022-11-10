@@ -350,7 +350,7 @@ sort_concatmap.argument.target_path       = {{ job_directory }}
 sort_concatmap.argument.numSB             = 10
 sort_concatmap.argument.NDPPPfill         = True
 sort_concatmap.argument.stepname          = dpppconcat
-sort_concatmap.argument.firstSB           = None
+sort_concatmap.argument.firstSB           = 104
 sort_concatmap.argument.truncateLastSBs   = False
 
 # convert the output of sort_concatmap into usable mapfile
