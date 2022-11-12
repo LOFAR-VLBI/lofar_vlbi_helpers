@@ -9,8 +9,16 @@
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
 SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/idgtest_23_02_2022.sif
 
+re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
+re_subband="([^.]+)"
+if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
+
 OUT_DIR=$PWD
 cd ${OUT_DIR}
+
+echo "Copy data"
+
+cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms .
 
 echo "Average data in DPPP..."
 
