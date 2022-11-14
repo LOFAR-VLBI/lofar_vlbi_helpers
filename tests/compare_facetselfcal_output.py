@@ -1,10 +1,16 @@
+"""
+Script to compare two h5 solution files by looping over all stuff inside and make sure everything is the same
+Written for busy week 14/11/2022 by Jurjen
+"""
+
+
 import tables
 import argparse
 import sys
 from numpy import sum, all
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Compare measurement sets')
+    parser = argparse.ArgumentParser(description='Compare solutions files')
     parser.add_argument('--h5_1', default='', help='solution file 1')
     parser.add_argument('--h5_2', default='', help='solution file 2')
 
