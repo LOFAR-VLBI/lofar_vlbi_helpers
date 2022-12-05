@@ -68,13 +68,13 @@ wsclean \
 -name 1.2asec_I \
 -scale 0.4arcsec \
 -taper-gaussian 1.2asec \
--niter 200 \
+-niter 50000 \
 -log-time \
 -multiscale-scale-bias 0.6 \
 -parallel-deconvolution 2600 \
 -multiscale \
 -multiscale-max-scales 9 \
--nmiter 1 \
+-nmiter 9 \
 -mem 25 \
 -channels-out 6 \
 -join-channels \
