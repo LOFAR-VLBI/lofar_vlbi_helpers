@@ -68,7 +68,7 @@ wsclean \
 -name 1.2asec_I \
 -scale 0.4arcsec \
 -taper-gaussian 1.2asec \
--niter 50000 \
+-niter 200 \
 -log-time \
 -multiscale-scale-bias 0.6 \
 -parallel-deconvolution 2600 \
@@ -76,12 +76,15 @@ wsclean \
 -multiscale-max-scales 9 \
 -nmiter 1 \
 -mem 25 \
--channels-out 1 \
+-channels-out 6 \
+-join-channels \
+-fit-spectral-pol 3 \
+-deconvolution-channels 3 \
 -j ${SLURM_CPUS_PER_TASK} \
 -use-idg \
 -grid-with-beam \
 -use-differential-lofar-beam \
-avg_applycal*.ms
+applycal*.ms
 
 echo "----------FINISHED WSCLEAN----------"
 
