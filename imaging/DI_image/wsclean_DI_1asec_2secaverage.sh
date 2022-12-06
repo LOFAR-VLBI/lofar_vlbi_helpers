@@ -37,7 +37,7 @@ do
 done
 
 #MSLIST
-ls -1 avg_applycal* > mslist.txt
+ls -1 -d avg_applycal* > mslist.txt
 
 echo "...Finished averaging"
 
@@ -84,7 +84,7 @@ wsclean \
 -use-idg \
 -grid-with-beam \
 -use-differential-lofar-beam \
-applycal*.ms
+avg_applycal*.ms
 
 echo "----------FINISHED WSCLEAN----------"
 

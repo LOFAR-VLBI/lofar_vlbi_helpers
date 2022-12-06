@@ -5,7 +5,7 @@
 #SBATCH --constraint=intel
 
 #MSLIST
-ls -1 applycal* > mslist.txt
+ls -1 -d applycal* > mslist.txt
 
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
