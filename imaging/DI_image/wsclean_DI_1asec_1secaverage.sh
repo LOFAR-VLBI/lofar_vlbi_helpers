@@ -18,7 +18,7 @@ cd ${OUT_DIR}
 
 echo "Copy data"
 
-cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms .
+cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/applycal/applycal*.ms .
 
 echo "Average data in DPPP..."
 
