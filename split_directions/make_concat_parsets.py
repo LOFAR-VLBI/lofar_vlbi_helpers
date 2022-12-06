@@ -12,6 +12,6 @@ for observation in all_obs:
     for dir in all_dirs:
         parset = 'msin=' + observation + '*' + dir + '.ms'
         parset += '\nmsout=' + observation + '_' + dir + '.ms'
-        parset += '\nmsin.datacolumn=DATA\nmsout.storagemanager=dysco\nmsout.writefullresflag=False'
+        parset += '\nmsin.datacolumn=DATA\nmsout.storagemanager=dysco\nmsout.writefullresflag=False\nsteps=[]'
         with open(observation + '_' + dir + '.parset', 'w') as f:
             f.write(parset)
