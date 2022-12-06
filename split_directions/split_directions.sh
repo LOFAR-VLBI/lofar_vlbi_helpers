@@ -20,12 +20,8 @@ echo "-----------------STARTED SPLIT DIRECTIONS-----------------"
 
 while read -r LNUM; do
 
-#  echo "Copy applycal ms"
-#  for MS in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/apply_delaycal/applycal_sub6asec_${LNUM}*.ms; do
-#    cp -r ${MS} .
-#  done
-
-  for MS in applycal_sub6asec_${LNUM}*.ms; do
+  echo "Copy applycal ms"
+  for MS in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/apply_delaycal/applycal_sub6asec_${LNUM}*.ms; do
 
     #Make calibrator parsets
     singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_directions_parsets.py --catalog ${CATALOG} --prefix ${LNUM} --ms ${MS}
