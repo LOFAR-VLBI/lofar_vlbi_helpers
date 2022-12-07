@@ -84,6 +84,7 @@ wsclean \
 -use-idg \
 -grid-with-beam \
 -use-differential-lofar-beam \
+-dd-psf-grid 3 3 \
 avg_applycal*.ms
 
 echo "----------FINISHED WSCLEAN----------"

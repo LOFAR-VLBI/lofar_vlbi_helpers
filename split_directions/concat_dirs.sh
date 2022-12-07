@@ -13,3 +13,4 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts ${SIMG} python 
 
 for P in *.parset; do
   sbatch ${SCRIPTS}/split_directions/run_concat_parset.sh ${P}
+done
