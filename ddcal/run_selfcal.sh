@@ -21,6 +21,8 @@ if [[ ${MS} =~ $re ]]; then DIR=${BASH_REMATCH}; fi
 mkdir -p ${DIR}
 cd ${DIR}
 
+cp -r ${MS} .
+
 singularity exec -B $BIND $SIMG \
 python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
 -i selfcal_${DIR} \
@@ -29,4 +31,4 @@ python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
 --makeimage-ILTlowres-HBA \
 --targetcalILT='scalarphase' \
 --stop=12 \
-${MS}
+*.ms
