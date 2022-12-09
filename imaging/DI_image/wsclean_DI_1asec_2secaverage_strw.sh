@@ -2,11 +2,7 @@
 
 #SINGULARITY SETTINGS
 SING_BIND=$PWD
-SING_IMAGE_WSCLEAN=lofar_sksp_v4.0.1_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
-
-re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
-re_subband="([^.]+)"
-if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
+SING_IMAGE_WSCLEAN=${PWD}/lofar_sksp_v4.0.1_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
 OUT_DIR=DI1.2image
 mkdir -p ${OUT_DIR}
@@ -33,7 +29,7 @@ do
   avg.timestep=2
 
   #Baseline-dependent-averaging
-  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN}  DP3 \
+  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
   msin=avg_${MS} \
   msout=bdaavg_${MS} \
   steps=[bda] \
@@ -45,15 +41,10 @@ do
 done
 
 #MSLIST
-ls -1 -d avg_applycal* > mslist.txt
+ls -1 -d bdaavg_applycal* > mslist.txt
 
 echo "...Finished averaging"
 
-echo "Move data to TMPDIR/wscleandata..."
-
-mkdir "$TMPDIR"/wscleandata
-mv avg_applycal* "$TMPDIR"/wscleandata
-cd "$TMPDIR"/wscleandata
 
 echo "...Finished copying"
 
@@ -96,9 +87,5 @@ wsclean \
 bdaavg_applycal*.ms
 
 echo "----------FINISHED WSCLEAN----------"
-
-echo "Moving output images back to main folder"
-tar cf output.tar *
-cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
 
 echo "COMPLETED JOB"

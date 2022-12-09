@@ -13,7 +13,7 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-OUT_DIR=DI1.2image
+OUT_DIR=DI0.6image
 cd ${OUT_DIR}
 
 echo "Copy data to TMPDIR/wscleandata..."

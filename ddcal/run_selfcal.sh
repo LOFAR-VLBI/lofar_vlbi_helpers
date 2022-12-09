@@ -3,6 +3,8 @@
 #SBATCH --job-name=selfcal
 #SBATCH --array=0-85
 
+APPTAINERENV_MPLBACKEND=agg
+
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 

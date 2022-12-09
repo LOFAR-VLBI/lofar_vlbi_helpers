@@ -15,12 +15,12 @@ Step 8) run subtract_lotss/subtract_main.sh to subtract 6" LoTSS map from the in
 Step 9) concat the subtracted output and phase shift to delaycalibrator subtract_lotss/concat.sh \
 Step 10) run delayselfcal/delay_facetselfcal.sh to do a delayselfcal on concattenated file \
 Step 11) run applycal/applycal_multiple.sh to apply the solutions to the subbands \
-Step 12) make image at 1" as first image \
+Step 12) make image at 1" as first image (test)\
 Step 13) run split_directions/split_directions.sh to split the bright directions to selfcal \
 Step 14) run split_directions/concat_dirs.sh to concat the individual subbands per observation \
+Step 15) run ddcal/run_selfcal.sh to run selfcals in parallel (alternatively ddcal/selfcal.sh for individual selfcals) \
 \
 TODO: \
-Step 15) DD selfcals for directions \
 Step 16) validate DD selfcals \
 Step 17) imaging
 

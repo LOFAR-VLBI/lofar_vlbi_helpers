@@ -4,13 +4,13 @@
 
 #SINGULARITY SETTINGS
 SING_BIND=$PWD
-SING_IMAGE_WSCLEAN=lofar_sksp_v4.0.1_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
+SING_IMAGE_WSCLEAN=${PWD}/lofar_sksp_v4.0.1_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-OUT_DIR=DI0.3image
+OUT_DIR=DI0.6image
 mkdir -p ${OUT_DIR}
 cd ${OUT_DIR}
 
