@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 6
+#SBATCH -c 31
 #SBATCH --job-name=selfcal
 #SBATCH --array=0-85
 
