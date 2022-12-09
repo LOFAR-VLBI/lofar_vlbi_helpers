@@ -10,7 +10,7 @@ if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 BIND=$PWD,/project,/home/lofarvwf-jdejong/scripts
 SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
 
-PATH_DIR=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/ddcal
+PATH_DIR=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/ddcal/all_directions
 pattern="${PATH_DIR}/*.ms"
 MS_FILES=( $pattern )
 MS=${MS_FILES[${SLURM_ARRAY_TASK_ID}]}
