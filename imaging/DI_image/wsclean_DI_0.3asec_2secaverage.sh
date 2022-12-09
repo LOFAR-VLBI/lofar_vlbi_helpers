@@ -7,55 +7,31 @@
 
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
-SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/idgtest_23_02_2022.sif
+SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/lofar_sksp_v4.0.0_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-OUT_DIR=$PWD
+OUT_DIR=DI1.2image
 cd ${OUT_DIR}
 
-echo "Copy data"
+echo "Copy data to TMPDIR/wscleandata..."
 
-cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms .
-
-echo "Average data in DPPP..."
+mkdir "$TMPDIR"/wscleandata
+cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms "$TMPDIR"/wscleandata
+cd "$TMPDIR"/wscleandata
 
 for MS in applycal*.ms
 do
-  #Averaging
   singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
   msin=${MS} \
-  msout=avg_${MS} \
-  msin.datacolumn=DATA \
-  msout.storagemanager=dysco \
-  msout.writefullresflag=False \
-  steps=[avg] \
-  avg.type=averager \
-  avg.freqstep=4 \
-  avg.timestep=2
-
-  #Baseline-dependent-averaging
-  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN}  DP3 \
-  msin=avg_${MS} \
-  msout=bdaavg_${MS} \
+  msout=bdavg_${MS} \
   steps=[bda] \
   bda.type=bdaaverager \
   bda.maxinterval=64. \
-  bda.timebase=1000000
+  bda.timebase=4000000
 done
-
-#MSLIST
-ls -1 -d avg_applycal* > mslist.txt
-
-echo "...Finished averaging"
-
-echo "Move data to TMPDIR/wscleandata..."
-
-mkdir "$TMPDIR"/wscleandata
-mv avg_applycal* "$TMPDIR"/wscleandata
-cd "$TMPDIR"/wscleandata
 
 echo "...Finished copying"
 
@@ -65,7 +41,7 @@ singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} \
 wsclean \
 -update-model-required \
 -minuv-l 80.0 \
--size 22500 22500 \
+-size 45000 45000 \
 -weighting-rank-filter 3 \
 -reorder \
 -weight briggs -1.5 \
@@ -75,10 +51,10 @@ wsclean \
 -auto-mask 3 \
 -auto-threshold 1.0 \
 -pol i \
--name 1.2asec_I \
--scale 0.4arcsec \
--taper-gaussian 1.2asec \
--niter 50000 \
+-name 0.6asec_I \
+-scale 0.2arcsec \
+-taper-gaussian 0.6asec \
+-niter 150000 \
 -log-time \
 -multiscale-scale-bias 0.6 \
 -parallel-deconvolution 2600 \
@@ -94,8 +70,7 @@ wsclean \
 -use-idg \
 -grid-with-beam \
 -use-differential-lofar-beam \
--dd-psf-grid 3 3 \
-avg_applycal*.ms
+bdavg_applycal*.ms
 
 echo "----------FINISHED WSCLEAN----------"
 

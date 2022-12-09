@@ -13,7 +13,7 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-OUT_DIR=$PWD
+OUT_DIR=DI1.2image
 cd ${OUT_DIR}
 
 echo "Copy data to TMPDIR/wscleandata..."
@@ -21,6 +21,17 @@ echo "Copy data to TMPDIR/wscleandata..."
 mkdir "$TMPDIR"/wscleandata
 cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms "$TMPDIR"/wscleandata
 cd "$TMPDIR"/wscleandata
+
+for MS in applycal*.ms
+do
+  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
+  msin=${MS} \
+  msout=bdavg_${MS} \
+  steps=[bda] \
+  bda.type=bdaaverager \
+  bda.maxinterval=64. \
+  bda.timebase=2000000
+done
 
 echo "...Finished copying"
 
@@ -59,7 +70,7 @@ wsclean \
 -use-idg \
 -grid-with-beam \
 -use-differential-lofar-beam \
-applycal*.ms
+bdavg_applycal*.ms
 
 echo "----------FINISHED WSCLEAN----------"
 

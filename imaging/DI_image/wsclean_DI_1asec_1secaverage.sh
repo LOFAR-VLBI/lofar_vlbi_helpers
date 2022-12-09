@@ -24,7 +24,7 @@ echo "Average data in DPPP..."
 
 for MS in applycal*.ms
 do
-  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DPPP \
+  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
   msin=${MS} \
   msout=avg_${MS} \
   msin.datacolumn=DATA \
@@ -34,6 +34,14 @@ do
   avg.type=averager \
   avg.freqstep=4 \
   avg.timestep=4
+
+  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
+  msin=avg_${MS} \
+  msout=bdaavg_${MS} \
+  steps=[bda] \
+  bda.type=bdaaverager \
+  bda.maxinterval=64. \
+  bda.timebase=500000
 done
 
 #MSLIST

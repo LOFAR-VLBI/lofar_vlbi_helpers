@@ -1,24 +1,20 @@
 #!/bin/bash
-#SBATCH -c 31
-#SBATCH --mail-type=FAIL
-#SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
-#SBATCH --constraint=intel
-#SBATCH -p infinite
 
 #SINGULARITY SETTINGS
-SING_BIND=/project/lofarvwf/Share/jdejong,/home
-SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/idgtest_23_02_2022.sif
+SING_BIND=$PWD
+SING_IMAGE_WSCLEAN=lofar_sksp_v4.0.1_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-OUT_DIR=$PWD
+OUT_DIR=DI1.2image
+mkdir -p ${OUT_DIR}
 cd ${OUT_DIR}
 
 echo "Copy data"
 
-cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms .
+cp -r /net/rijn10/data2/jurjendejong/ELAIS/L816272/imaging/applieddata/applycal*.ms .
 
 echo "Average data in DPPP..."
 
@@ -42,8 +38,10 @@ do
   msout=bdaavg_${MS} \
   steps=[bda] \
   bda.type=bdaaverager \
-  bda.maxinterval=64. \
-  bda.timebase=1000000
+  bda.maxinterval=60. \
+  bda.timebase=1000000 #1.2" taper (input 2 seconden)
+
+  rm -r avg_${MS}
 done
 
 #MSLIST
@@ -90,12 +88,12 @@ wsclean \
 -join-channels \
 -fit-spectral-pol 3 \
 -deconvolution-channels 3 \
--j ${SLURM_CPUS_PER_TASK} \
+-j 30 \
 -use-idg \
 -grid-with-beam \
 -use-differential-lofar-beam \
 -dd-psf-grid 3 3 \
-avg_applycal*.ms
+bdaavg_applycal*.ms
 
 echo "----------FINISHED WSCLEAN----------"
 
