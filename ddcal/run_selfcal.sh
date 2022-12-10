@@ -1,7 +1,9 @@
 #!/bin/bash
-#SBATCH -c 31
+#SBATCH -c 6
 #SBATCH --job-name=selfcal
 #SBATCH --array=0-85
+#SBATCH --constraint=intel
+
 
 APPTAINERENV_MPLBACKEND=agg
 
@@ -10,7 +12,7 @@ if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
 #SINGULARITY SETTINGS
 BIND=$PWD,/project,/home/lofarvwf-jdejong/scripts
-SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
+SIMG=/home/lofarvwf-jdejong/singularities/lofar_sksp_v4.0.1_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
 PATH_DIR=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/ddcal/all_directions
 pattern="${PATH_DIR}/*.ms"

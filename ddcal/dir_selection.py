@@ -14,13 +14,11 @@ import math
 from datetime import datetime
 import sys
 
-
 def now_time():
     now = datetime.now()
     dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
     print("date and time =", dt_string)
     return dt_string
-
 
 def max_min_val(file_name):
     print('Opening file ', file_name)
@@ -29,7 +27,6 @@ def max_min_val(file_name):
     val = np.abs(data.max() / data.min())
     hdul.close()
     return val
-
 
 def collect_val(dir_num, PATH, d):
     """
@@ -44,13 +41,11 @@ def collect_val(dir_num, PATH, d):
             print(filename, idx, val)
     return d
 
-
 def init_d(keylist, dir_sum):
     d = {}
     for i in keylist:
         d[i] = [math.nan] * (dir_sum + 1)
     return d
-
 
 def read_noise(save_PATH, filename):
     noise_output = []
@@ -85,10 +80,8 @@ def read_noise(save_PATH, filename):
             f.write("%s\n" % item)
     return ms_file, number_output
 
-
 def splitevenodd(input_list):
     return input_list[::2], input_list[1::2]
-
 
 def split_cycle(input_list):
     split_output = []
@@ -100,10 +93,8 @@ def split_cycle(input_list):
     split_output = split_output + [input_list[temp_idx:]]
     return split_output
 
-
 def dir_number_from_filename(filename):
     return int(re.search(r'\d+', filename).group())
-
 
 def dir_number_from_slurmout(filename):
     print(filename)
@@ -117,7 +108,6 @@ def dir_number_from_slurmout(filename):
             else:
                 dir_num = 0
     return int(dir_num)
-
 
 keylist = ['dir_num', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 PATH = '/net/rijn2/data2/Haoyang/ALICE/selfcal_2022/fits_collection/'  # Directory of where all calibrator selfcal fits images are stored
