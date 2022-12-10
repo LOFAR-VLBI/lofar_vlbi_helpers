@@ -35,13 +35,13 @@ do
   avg.freqstep=4 \
   avg.timestep=4
 
-  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
-  msin=avg_${MS} \
-  msout=bdaavg_${MS} \
-  steps=[bda] \
-  bda.type=bdaaverager \
-  bda.maxinterval=64. \
-  bda.timebase=500000
+#  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
+#  msin=avg_${MS} \
+#  msout=bdaavg_${MS} \
+#  steps=[bda] \
+#  bda.type=bdaaverager \
+#  bda.maxinterval=64. \
+#  bda.timebase=500000
 done
 
 #MSLIST
@@ -99,6 +99,7 @@ echo "----------FINISHED WSCLEAN----------"
 
 echo "Moving output images back to main folder"
 tar cf output.tar *
+cp "$TMPDIR"/*.fits ${OUT_DIR}
 cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
 
 echo "COMPLETED JOB"
