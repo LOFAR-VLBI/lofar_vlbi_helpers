@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -c 3
-#SBATCH --job-name=selfcal
+#SBATCH --job-name=scalarphasediff
 #SBATCH --array=0-85
 #SBATCH --constraint=intel
 
@@ -27,7 +27,7 @@ cd ${DIR}
 # scalarphasediff
 singularity exec -B $BIND $SIMG \
 python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
--i scalarphasediff_${DIR} \
+-i scalarphasediffcheck_${DIR} \
 --forwidefield \
 --phaseupstations='core' \
 --msinnchan=120 \
@@ -43,6 +43,7 @@ python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
 --soltypecycles-list="[0]" \
 --imsize=1600 \
 --skymodelpointsource=1.0 \
+--stopafterskysolve \
 --helperscriptspath=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal \
 --helperscriptspathh5merge=/home/lofarvwf-jdejong/scripts/lofar_helpers \
 *.ms
