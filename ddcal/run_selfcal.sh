@@ -27,6 +27,7 @@ cd ${DIR}
 
 cp -r ${MS} .
 
+# scalarphasediff
 singularity exec -B $BIND $SIMG \
 python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
 -i scalarphasediff_${DIR} \
@@ -47,8 +48,9 @@ python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
 --skymodelpointsource=1.0 \
 --helperscriptspath=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal \
 --helperscriptspathh5merge=/home/lofarvwf-jdejong/scripts/lofar_helpers \
-*.ms
+${MS}
 
+# selfcals
 singularity exec -B $BIND $SIMG \
 python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
 -i selfcal_${DIR} \
@@ -59,4 +61,4 @@ python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
 --stop=12 \
 --helperscriptspath=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal \
 --helperscriptspathh5merge=/home/lofarvwf-jdejong/scripts/lofar_helpers \
-*.ms
+${MS}
