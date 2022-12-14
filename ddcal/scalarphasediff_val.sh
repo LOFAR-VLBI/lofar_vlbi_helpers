@@ -9,7 +9,9 @@ SIMG=/home/lofarvwf-jdejong/singularities/lofar_sksp_v4.0.1_x86-64_cascadelake_c
 
 MSIN=$1
 
-singularity exec -B $BIND $SIMG python  facetselfcal.py -i scalarphasediff \
+singularity exec -B $BIND $SIMG \
+python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
+-i scalarphasediff \
 --forwidefield \
 --phaseupstations='core' \
 --msinnchan=120 \
@@ -25,4 +27,7 @@ singularity exec -B $BIND $SIMG python  facetselfcal.py -i scalarphasediff \
 --soltypecycles-list="[0]" \
 --imsize=1600 \
 --skymodelpointsource=1.0 \
---stopafterskysolve ${MSIN}
+--helperscriptspath=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal \
+--helperscriptspathh5merge=/home/lofarvwf-jdejong/scripts/lofar_helpers \
+--stopafterskysolve \
+${MSIN}
