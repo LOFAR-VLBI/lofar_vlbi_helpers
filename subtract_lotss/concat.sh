@@ -12,8 +12,11 @@ ls sub6asec*.ms -1d > "mslist.txt"
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
 python /home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/check_missing_freqs_in_ms.py --ms sub6asec*.ms --make_dummies
 
+MS=$(cat  mslist.txt |tr "\n" " ")
+MS_ARRAY=($MS)
+
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DP3 \
-msin=$(cat  mslist.txt |tr "\n" ",") \
+msin=${MS_ARRAY} \
 msin.orderms=False \
 msin.missingdata=True \
 msin.datacolumn=DATA \
