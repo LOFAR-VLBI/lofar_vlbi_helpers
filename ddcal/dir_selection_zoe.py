@@ -1,15 +1,13 @@
-# python 3
-# Author: Haoyang Ye
+"""
+Updated and simplified version from code from Haoyang Ye: https://github.com/zoeye859/lb_scripts/blob/main/paper_scripts/
+Rewritten by: Jurjen de Jong
+"""
 
 import numpy as np
 import os
-import re
 from astropy.io import fits
-from pathlib import Path
 import pandas as pd
-import math
 import matplotlib.pyplot as plt
-import sys
 
 plt.style.use('bmh')
 
