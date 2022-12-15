@@ -22,8 +22,10 @@ MS=${MS_FILES[${SLURM_ARRAY_TASK_ID}]}
 re="P[0-9][0-9][0-9][0-9][0-9]"
 if [[ ${MS} =~ $re ]]; then DIR=${BASH_REMATCH}; fi
 
-mkdir -p ${DIR}
-cd ${DIR}
+mkdir -p ${DIR}_selfcal
+mkdir -p ${DIR}_scalarphasediff
+
+cd ${DIR}_scalarphasediff
 
 cp -r ${MS} .
 
@@ -50,6 +52,9 @@ python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
 --helperscriptspath=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal \
 --helperscriptspathh5merge=/home/lofarvwf-jdejong/scripts/lofar_helpers \
 *.ms
+
+cd ../${DIR}_selfcal
+cp -r ${MS} .
 
 # selfcals
 singularity exec -B $BIND $SIMG \

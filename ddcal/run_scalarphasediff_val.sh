@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH -c 3
-#SBATCH --job-name=scalarphasediff
+#SBATCH -c 6
+#SBATCH --job-name=selfcal
 #SBATCH --array=0-85
 #SBATCH --constraint=intel
 
@@ -22,7 +22,11 @@ MS=${MS_FILES[${SLURM_ARRAY_TASK_ID}]}
 re="P[0-9][0-9][0-9][0-9][0-9]"
 if [[ ${MS} =~ $re ]]; then DIR=${BASH_REMATCH}; fi
 
-cd ${DIR}
+mkdir -p ${DIR}_scalarphasediff
+
+cd ${DIR}_scalarphasediff
+
+cp -r ${MS} .
 
 # scalarphasediff
 singularity exec -B $BIND $SIMG \
