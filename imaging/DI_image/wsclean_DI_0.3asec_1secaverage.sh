@@ -22,16 +22,16 @@ mkdir "$TMPDIR"/wscleandata
 cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms "$TMPDIR"/wscleandata
 cd "$TMPDIR"/wscleandata
 
-for MS in applycal*.ms
-do
-  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
-  msin=${MS} \
-  msout=bdavg_${MS} \
-  steps=[bda] \
-  bda.type=bdaaverager \
-  bda.maxinterval=64. \
-  bda.timebase=2000000
-done
+#for MS in applycal*.ms
+#do
+#  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
+#  msin=${MS} \
+#  msout=bdavg_${MS} \
+#  steps=[bda] \
+#  bda.type=bdaaverager \
+#  bda.maxinterval=64. \
+#  bda.timebase=2000000
+#done
 
 echo "...Finished copying"
 
@@ -70,7 +70,7 @@ wsclean \
 -use-idg \
 -grid-with-beam \
 -use-differential-lofar-beam \
-bdavg_applycal*.ms
+applycal*.ms
 
 echo "----------FINISHED WSCLEAN----------"
 
