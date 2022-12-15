@@ -1,26 +1,45 @@
 # python 3
 # Author: Haoyang Ye
-# This jupyter notebook combines the python script Noise_extract.py, max_min_extract.py and good_dir_filter.py
 
 import numpy as np
 import os
 import re
-import matplotlib.pylab as plt
-import csv
 from astropy.io import fits
 from pathlib import Path
 import pandas as pd
 import math
-from datetime import datetime
+import matplotlib.pyplot as plt
 import sys
 
-def now_time():
-    now = datetime.now()
-    dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
-    print("date and time =", dt_string)
-    return dt_string
+plt.style.use('bmh')
+
+def findrms(file_name, maskSup=1e-7):
+    """
+    find the rms of an array, from Cycil Tasse/kMS
+    """
+    hdul = fits.open(file_name)
+    mIn = hdul[0].data
+    m=mIn[np.abs(mIn)>maskSup]
+    rmsold=np.std(m)
+    diff=1e-1
+    cut=3.
+    bins=np.arange(np.min(m),np.max(m),(np.max(m)-np.min(m))/30.)
+    med=np.median(m)
+    for i in range(10):
+        ind=np.where(np.abs(m-med)<rmsold*cut)[0]
+        rms=np.std(m[ind])
+        if np.abs((rms-rmsold)/rmsold)<diff: break
+        rmsold=rms
+    hdul.close()
+
+    return rms
+
 
 def max_min_val(file_name):
+    """
+    :param file_name: fits file name
+    :return: pixel max/min value
+    """
     print('Opening file ', file_name)
     hdul = fits.open(file_name)
     data = hdul[0].data
@@ -28,140 +47,113 @@ def max_min_val(file_name):
     hdul.close()
     return val
 
-def collect_val(dir_num, PATH, d):
+def collect_val(directions):
     """
-    dir_num: str, number of directions
+    :param directions: list with directions
+    :return: lists with max_min_values, source_names, rms
     """
-    d['dir_num'][int(dir_num)] = int(dir_num)
-    for filename in os.listdir(PATH):
-        if filename.startswith(dir_num + '_') and filename.endswith('.fits'):
-            val = max_min_val(PATH + filename)
-            idx = Path(filename).stem.split('_')[-1]
-            d[idx][int(dir_num)] = val
-            print(filename, idx, val)
-    return d
+    d = []
+    d_name = []
+    rms = []
+    for dir_num, dir in enumerate(directions):
+        images = glob(dir+'/selfcal_'+dir+'_0*-MFS-image.fits')
+        d_sub = []
+        rms_sub = []
+        for imnum, image in enumerate(images):
+            rms_sub.append(findrms(image)*1e3) # mJy/beam
+            d_sub.append(max_min_val(image))
+        d.append(d_sub)
+        rms.append(rms_sub)
+        d_name.append(dir)
+    return d, d_name, rms
 
-def init_d(keylist, dir_sum):
-    d = {}
-    for i in keylist:
-        d[i] = [math.nan] * (dir_sum + 1)
-    return d
+if __name__ == '__main__':
 
-def read_noise(save_PATH, filename):
-    noise_output = []
-    number_output = []
-    with open(filename, 'r') as outfile:
-        for line in outfile:
-            if line.startswith('  input MS:'):
-                ms_file = line[:-1].split('/')[-1]
-                # noise_output = [line[:-1].split('/')[-1]]
-                # number_output = [line[:-1].split('/')[-1]]
-                break
-            else:
-                ms_file = '0'
-    with open(filename, 'r') as outfile:
-        for line in outfile:
-            if line.startswith(' == Deconvolving ('):
-                temp_str = line[:-1]
-                temp_num = int(re.search(r'\d+', temp_str).group())
-            if line.startswith('Estimated standard deviation of background noise:'):
-                noise_output += [temp_str, line[:-1]]
-                number_output += [temp_num, float(re.findall(r'[\d\.\d]+', line)[0])]
-    print('The ms is: ', ms_file, '\n')
-    print('The following list is saved as ' + ms_file + '_noise_output.txt \n', noise_output)
-    print('The following list is saved as ' + ms_file + '_noise_data.txt \n', number_output)
-    file_output = save_PATH + str(dir_num) + '_' + ms_file + '_noise_output.txt'
-    file_data = save_PATH + str(dir_num) + '_' + ms_file + '_noise_data.txt'
-    with open(file_output, 'w') as f:
-        for item in noise_output:
-            f.write("%s\n" % item)
-    with open(file_data, 'w') as f:
-        for item in number_output:
-            f.write("%s\n" % item)
-    return ms_file, number_output
+    import argparse
+    from glob import glob
 
-def splitevenodd(input_list):
-    return input_list[::2], input_list[1::2]
+    parser = argparse.ArgumentParser(description='Validate selfcal output')
+    parser.add_argument('--dirs', nargs='+', help='path to folders with selfcal output', default=None)
+    parser.add_argument('--plot_png', help='plot noise pngs', action='store_true')
 
-def split_cycle(input_list):
-    split_output = []
-    temp_idx = 0
-    for i in range(1, len(input_list)):
-        if input_list[i] == 1:
-            split_output = split_output + [input_list[temp_idx:i]]
-            temp_idx = i
-    split_output = split_output + [input_list[temp_idx:]]
-    return split_output
+    args = parser.parse_args()
 
-def dir_number_from_filename(filename):
-    return int(re.search(r'\d+', filename).group())
+    if args.dirs is None:
+        directions = [d for d in glob('P*') if len(d)==6]
+    else:
+        directions = args.dirs  # Directory of where all calibrator selfcal fits images are stored
 
-def dir_number_from_slurmout(filename):
-    print(filename)
-    with open(filename, 'r') as outfile:
-        for line in outfile:  # '  input MS:       /tmp/26_ILTJ160623.53+540555.9_concat/ILTJ160623.53+540555.9_concat.ms\n'
-            if line.startswith('  input MS:'):
-                dir_num = line[:-1].split('/')[-2].split('_')[0]
-                if dir_num == 'testimg':  # '  input MS:       /tmp/testimg/ILTJ160903.09+561316.8_concat.ms\n'
-                    dir_num = 0
-                break
-            else:
-                dir_num = 0
-    return int(dir_num)
+    plot_png = args.plot_png
+    d, d_name, rms = collect_val(directions)
 
-keylist = ['dir_num', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-PATH = '/net/rijn2/data2/Haoyang/ALICE/selfcal_2022/fits_collection/'  # Directory of where all calibrator selfcal fits images are stored
-# PATH = str(Path().absolute()).split("\/")[0] + '/fits_collection/' # Directory of current working directory
-save_PATH = str(Path().absolute()).split("\/")[0] + '/data_analysis/'
-dir_sum = 100  # this number should be larger than the number of calibrator candidates
+    df_dynr = pd.DataFrame(d, index=d_name).T
+    df_rms = pd.DataFrame(rms, index=d_name).T
+    df_dynr.to_csv(r'dynamic_range.csv', index=False, header=True)
+    df_rms.to_csv(r'rms.csv', index=False, header=True)
 
-isExist = os.path.exists(save_PATH)
-if not isExist:
-    # Create a new directory because it does not exist
-    os.makedirs(save_PATH)
-    print("The new directory /data_analysis/ is created!")
+    images = 'images/'
+    os.system('mkdir -p ' + images)
 
-d = init_d(keylist, dir_sum)
-for i in range(1, dir_sum + 1):
-    print(i)
-    d = collect_val(str(i), PATH, d)
+    rdec = []
 
-df = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in d.items()]))
+    for dir in directions:
+        rms = df_rms[dir]
+        dyn_range = df_dynr[dir]
 
-df.to_hdf(save_PATH + 'max_min_fits.h5', key='selfcal_1b1', mode='w')
+        dr_origin = dyn_range[0]
+        decrease_ratio = ["{:.2%}".format((dr - dr_origin) / dr_origin) for dr in list(dyn_range)]
+        decrease_ratio_val = [(dr - dr_origin) / dr_origin for dr in list(dyn_range)]
+        rdec.append(decrease_ratio_val)
 
-df.to_csv(save_PATH + r'max_min_fits.csv', index=False, header=True)
+        if plot_png:
 
-## Results
-df_maxmin = pd.read_hdf(save_PATH + 'max_min_fits.h5')
-ratio_table = df_maxmin.T
+            plt.plot(rms)
+            plt.title(dir)
+            plt.savefig(images+'/rms_'+dir+'.png')
+            plt.close()
 
-print(df_maxmin)
+            plt.plot(dyn_range)
+            plt.title(dir)
+            plt.savefig(images+'/dynamicrange_'+dir+'.png')
+            plt.close()
 
-print(ratio_table)
+            plt.plot(decrease_ratio_val)
+            plt.title(dir)
+            plt.savefig(images+'/rms_ratio_'+dir+'.png')
+            plt.close()
 
-markers = ['o', 'v', '^', '<', '>', 's', 'p', 'P', '*', 'X', 'D']
-keylist = ['dir_num', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-noise_PATH = save_PATH + 'noise_png/'
-plot_png = 1
-isExist = os.path.exists(noise_PATH)
-if not isExist:
-    # Create a new directory because it does not exist
-    os.makedirs(noise_PATH)
-    print("The new directory noise_png is created!")
+    df_rmsdec = pd.DataFrame(rdec, index=d_name)
 
-output_PATH = '/net/rijn2/data2/Haoyang/ALICE/selfcal_2022/'  # where multiple slurm outputs are for each calibrators
+    df1 = df_dynr.T.rename(columns={c:'C'+str(c) for c in df_dynr.T.columns})
+    df2 = df_rmsdec.rename(columns={c:str(c) for c in df_dynr.T.columns})
+    val_max = df1.max(axis = 1, skipna = True).tolist()
+    ind_max = df1.idxmax(axis = 1, skipna = True).tolist()
+    df1['C val_max'] = val_max
+    df1['C ind_max'] = ind_max
+    val_min = df2.min(axis = 1, skipna = True).tolist()
+    ind_min = df2.idxmin(axis = 1, skipna = True).tolist()
+    df2['val_min'] = val_min
+    df2['ind_min'] = ind_min
+    result = pd.concat([df2, df1], axis=1, join="inner")
+    result['val_min_compare'] = result['0'] - result['val_min']
+    result['h5_num'] = [i for i in result['C ind_max']]
+    #### 4 conditions
+    con1 = result['C val_max'] > result['C0'] # max/min increase from C0
+    con2 = result['ind_min'] != str(0) # the biggest decrease should not be here
+    con3 = result['C val_max'] > 30
+    con4 = result['val_min'] < -0.1
+    #con5 = result['val_min_compare'] > 0.06
+    #### filter
+    select = result.loc[con1 & con2 & con3 & con4]
+    h5_num_filter = select['h5_num'].tolist()
+    dir_num_filter = select.index.tolist()
+    Max_min_filter = select['C val_max'].tolist()
+    result.to_hdf('result.h5', key='result', mode='w')
+    select.to_hdf('select.h5', key='select', mode='w')
 
-d = init_d(keylist, dir_sum)
+    print('We choose ' + str(len(dir_num_filter)) + ' calibrators, and their numbers are:')
+    os.system('mkdir -p best_solutions')
 
-
-
-
-
-
-
-
-
-
-
-
+    for i in range(len(dir_num_filter)):
+        print(dir_num_filter[i], h5_num_filter[i])
+        os.system('cp ' + sorted(glob(dir_num_filter[i] + '/merged_addCS_selfcal*'))[-1] + 'best_solutions')
