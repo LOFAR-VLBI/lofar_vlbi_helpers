@@ -47,8 +47,8 @@ def check_channels(input, make_dummies):
             dummy_num = np.sum(chan_diff > 0) // 2
             file = open('mslist.txt', 'a')
             for n in range(dummy_num):
-                print('dummy.ms added to mslist.txt')
-                file.write('dummy.ms\n')
+                print('dummy'+'_'+str(n)+'.ms added to mslist.txt')
+                file.write('dummy'+'_'+str(n)+'.ms\n')
             file.close()
             sys.exit("WARNING: there is/are " + str(dummy_num) + " gaps.")
 

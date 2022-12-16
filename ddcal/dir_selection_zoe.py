@@ -154,4 +154,7 @@ if __name__ == '__main__':
 
     for i in range(len(dir_num_filter)):
         print(dir_num_filter[i], h5_num_filter[i])
-        os.system('cp ' + sorted(glob(dir_num_filter[i] + '/merged_addCS_selfcal*'))[-1] + 'best_solutions')
+        os.system('cp ' + sorted(glob(dir_num_filter[i] + '/merged_addCS_selfcal*'))[-1] + ' best_solutions')
+
+    os.system('python /home/lofarvwf-jdejong/scripts/lofar_helpers/h5_merger.py -in best_solutions/*.h5 -out master_solutions.h5')
+    print('See master_solutions.h5 as final output')
