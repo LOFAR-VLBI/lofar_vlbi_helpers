@@ -15,11 +15,13 @@ if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
 echo "Copy data to TMPDIR/wscleandata..."
 
-mkdir "$TMPDIR"/wscleandata
-cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms "$TMPDIR"/wscleandata
-cp facets.reg "$TMPDIR"/wscleandata
-cp master_merged.h5 "$TMPDIR"/wscleandata
-cd "$TMPDIR"/wscleandata
+#mkdir "$TMPDIR"/wscleandata
+#cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms "$TMPDIR"/wscleandata
+#cp facets.reg "$TMPDIR"/wscleandata
+#cp master_merged.h5 "$TMPDIR"/wscleandata
+#cd "$TMPDIR"/wscleandata
+
+cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms .
 
 echo "...Finished copying"
 
@@ -42,7 +44,6 @@ echo "...Finished baseline-dependent averaging"
 singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} \
 wsclean \
 -update-model-required \
--temp-dir "$TMPDIR"/wscleandata \
 -use-wgridder \
 -minuv-l 80.0 \
 -size 22500 22500 \
@@ -79,8 +80,8 @@ wsclean \
 -j 32 \
 bdavg_*
 
-rm -rf bdavg_*
-tar cf output.tar *
-cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
+#rm -rf bdavg_*
+#tar cf output.tar *
+#cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
 
 echo "----FINISHED----"
