@@ -19,7 +19,13 @@ if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 source /home/lofarvwf-jdejong/scripts/prefactor_helpers/imaging/prep_data/bda_1asec_2secaverage.sh
 
 cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/imaging/master_merged.h5 .
-cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/imaging/facets.reg .
+
+singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} python \
+/home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/ds9facetgenerator.py \
+--h5 master_merged.h5 \
+--DS9regionout facets.reg \
+--imsize 22500 \
+--ms ${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
 
 echo "----------START WSCLEAN----------"
 
