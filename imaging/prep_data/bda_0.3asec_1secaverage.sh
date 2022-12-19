@@ -66,4 +66,4 @@ echo "...Finished concat"
 # CHECK OUTPUT
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
 python /home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/check_missing_freqs_in_ms.py \
---ms ${OBSERVATION}_120_168MHz_bda.ms
+--ms ${OBSERVATION}_120_168MHz_applied_bda.ms

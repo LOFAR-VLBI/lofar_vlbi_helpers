@@ -13,33 +13,9 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-echo "Copy data to TMPDIR/wscleandata..."
+source /home/lofarvwf-jdejong/scripts/prefactor_helpers/imaging/prep_data/bda_1asec_2secaverage.sh
 
-#mkdir "$TMPDIR"/wscleandata
-#cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms "$TMPDIR"/wscleandata
-#cp facets.reg "$TMPDIR"/wscleandata
-#cp master_merged.h5 "$TMPDIR"/wscleandata
-#cd "$TMPDIR"/wscleandata
-
-cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms .
-
-echo "...Finished copying"
-
-echo "Baseline-depenent averaging..."
-
-for MS in applycal*.ms
-do
-  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
-  msin=${MS} \
-  msout=bdavg_${MS} \
-  steps=[bda] \
-  bda.type=bdaaverager \
-  bda.maxinterval=64. \
-  bda.timebase=1000000
-  rm -rf ${MS}
-done
-
-echo "...Finished baseline-dependent averaging"
+echo "----------START WSCLEAN----------"
 
 singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} \
 wsclean \
@@ -78,7 +54,7 @@ wsclean \
 -join-channels \
 -fit-spectral-pol 3 \
 -j 32 \
-bdavg_*
+${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
 
 #rm -rf bdavg_*
 #tar cf output.tar *

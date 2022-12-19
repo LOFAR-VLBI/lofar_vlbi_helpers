@@ -7,65 +7,13 @@
 
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
-SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/idgtest_23_02_2022.sif
+SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/lofar_sksp_v4.0.0_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-OUT_DIR=$PWD
-cd ${OUT_DIR}
-
-echo "Copy data"
-
-cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms .
-
-echo "Average data in DPPP..."
-
-for MS in applycal*.ms
-do
-  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
-  msin=${MS} \
-  msout=avg_${MS} \
-  msin.datacolumn=DATA \
-  msout.storagemanager=dysco \
-  msout.writefullresflag=False \
-  steps=[avg] \
-  avg.type=averager \
-  avg.freqstep=4 \
-  avg.timestep=2
-
-  rm -rf ${MS}
-
-done
-
-#MSLIST
-ls -1 -d avg_applycal* > mslist.txt
-
-MS_VECTOR=[$(cat  mslist.txt |tr "\n" ",")]
-
-echo "Concat data"
-
-#CONCAT
-singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
-msin=${MS_VECTOR} \
-msin.orderms=False \
-msin.missingdata=True \
-msin.datacolumn=DATA \
-msout=${OBSERVATION}_120_168MHz_averaged.ms \
-msout.storagemanager=dysco \
-msout.writefullresflag=False \
-steps=[] \
-
-echo "..Finished concat"
-
-echo "Copy data to TMPDIR..."
-
-mkdir "$TMPDIR"/wscleandata
-cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms "$TMPDIR"/wscleandata
-cd "$TMPDIR"/wscleandata
-
-echo "...Finished copying"
+source /home/lofarvwf-jdejong/scripts/prefactor_helpers/imaging/prep_data/1asec_2secaverage.sh
 
 echo "----------START WSCLEAN----------"
 
@@ -73,7 +21,7 @@ singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} \
 wsclean \
 -update-model-required \
 -minuv-l 80.0 \
--size 22500 22500 \
+-size 45000 45000 \
 -weighting-rank-filter 3 \
 -reorder \
 -weight briggs -1.5 \
@@ -83,10 +31,10 @@ wsclean \
 -auto-mask 3 \
 -auto-threshold 1.0 \
 -pol i \
--name 1.2asec_I \
--scale 0.4arcsec \
--taper-gaussian 1.2asec \
--niter 50000 \
+-name 0.6asec_I \
+-scale 0.2arcsec \
+-taper-gaussian 0.6asec \
+-niter 150000 \
 -log-time \
 -multiscale-scale-bias 0.6 \
 -parallel-deconvolution 2600 \
@@ -102,16 +50,6 @@ wsclean \
 -use-idg \
 -grid-with-beam \
 -use-differential-lofar-beam \
--dd-psf-grid 3 3 \
-avg_applycal*.ms
+${OBSERVATION}_120_168MHz_averaged_applied.ms
 
 echo "----------FINISHED WSCLEAN----------"
-
-rm -rf avg_applycal*
-
-echo "Moving output images back to main folder"
-tar cf output.tar *
-cp "$TMPDIR"/*.fits ${OUT_DIR}
-cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
-
-echo "COMPLETED JOB"
