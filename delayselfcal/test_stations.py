@@ -135,12 +135,12 @@ if __name__ == '__main__':
             msout = "not_station_"+station+".ms"
 
             os.system("DPPP msin="+msin+" \
-            steps=[filter] \
-            filter.baseline=\'!"+station+"' \
-            filter.remove='true' \
-            msin.datacolumn=CORRECTED_DATA \
-            msout.storagemanager=dysco \
-            msout="+msout)
+                        steps=[filter] \
+                        filter.baseline=\'!"+station+"' \
+                        filter.remove='true' \
+                        msin.datacolumn=DATA \
+                        msout.storagemanager=dysco \
+                        msout="+msout)
 
             os.system("wsclean -no-update-model-required "
                       "-minuv-l 1500.0 "
