@@ -74,6 +74,8 @@ applycal*.ms
 
 echo "----------FINISHED WSCLEAN----------"
 
+rm -rf applycal*.ms
+
 echo "Moving output images back to main folder"
 tar cf output.tar *
 cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
