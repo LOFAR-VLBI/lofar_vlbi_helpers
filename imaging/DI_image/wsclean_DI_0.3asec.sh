@@ -50,6 +50,6 @@ wsclean \
 -use-idg \
 -grid-with-beam \
 -use-differential-lofar-beam \
-$1
+${OBSERVATION}_120_168MHz_applied.ms
 
 echo "----------FINISHED WSCLEAN----------"
