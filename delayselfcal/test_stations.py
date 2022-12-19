@@ -118,7 +118,7 @@ def plotimage(fitsimagename,outplotname,mask=None,rmsnoiseimage=None):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Loop over stations and exclude station by station')
-    parser.add_argument('--msfile', nargs='+', help='measurement set')
+    parser.add_argument('--msfile', help='measurement set')
 
     args = parser.parse_args()
 
