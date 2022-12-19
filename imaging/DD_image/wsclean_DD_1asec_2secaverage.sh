@@ -18,7 +18,7 @@ if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
 source /home/lofarvwf-jdejong/scripts/prefactor_helpers/imaging/prep_data/bda_1asec_2secaverage.sh
 
-cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/imaging/master_merged.h5 .
+cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/ddcal/selfcals/master_merged.h5 .
 
 singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} python \
 /home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/ds9facetgenerator.py \
