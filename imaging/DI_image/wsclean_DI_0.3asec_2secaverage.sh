@@ -33,6 +33,8 @@ cd "$TMPDIR"/wscleandata
 #  bda.timebase=4000000
 #done
 
+ls -1 -d applycal* > mslist.txt
+
 echo "...Finished copying"
 
 echo "----------START WSCLEAN----------"

@@ -18,7 +18,9 @@ cd ${OUT_DIR}
 
 echo "Copy data"
 
-cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms .
+mkdir "$TMPDIR"/wscleandata
+cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms "$TMPDIR"/wscleandata
+cd "$TMPDIR"/wscleandata
 
 echo "Average data in DPPP..."
 
@@ -35,27 +37,14 @@ do
   avg.freqstep=4 \
   avg.timestep=4
 
-#  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
-#  msin=avg_${MS} \
-#  msout=bdaavg_${MS} \
-#  steps=[bda] \
-#  bda.type=bdaaverager \
-#  bda.maxinterval=64. \
-#  bda.timebase=500000
+  rm -rf ${MS}
+
 done
 
 #MSLIST
 ls -1 -d avg_applycal* > mslist.txt
 
-echo "...Finished averaging"
-
-echo "Move data to TMPDIR/wscleandata..."
-
-mkdir "$TMPDIR"/wscleandata
-mv avg_applycal* "$TMPDIR"/wscleandata
-cd "$TMPDIR"/wscleandata
-
-echo "...Finished copying"
+echo "...Finished data preparing"
 
 echo "----------START WSCLEAN----------"
 
@@ -96,6 +85,8 @@ wsclean \
 avg_applycal*.ms
 
 echo "----------FINISHED WSCLEAN----------"
+
+rm -rf avg_applycal*
 
 echo "Moving output images back to main folder"
 tar cf output.tar *
