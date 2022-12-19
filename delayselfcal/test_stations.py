@@ -116,6 +116,7 @@ def plotimage(fitsimagename,outplotname,mask=None,rmsnoiseimage=None):
       plotimage_aplpy(fitsimagename,outplotname,mask,rmsnoiseimage)
 
 if __name__ == '__main__':
+    import argparse
     parser = argparse.ArgumentParser(description='Loop over stations and exclude station by station')
     parser.add_argument('--msfile', nargs='+', help='measurement set')
 
