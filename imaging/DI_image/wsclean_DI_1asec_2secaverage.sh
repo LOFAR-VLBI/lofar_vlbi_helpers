@@ -18,9 +18,7 @@ cd ${OUT_DIR}
 
 echo "Copy data"
 
-mkdir "$TMPDIR"/wscleandata
-cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms "$TMPDIR"/wscleandata
-cd "$TMPDIR"/wscleandata
+cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms .
 
 echo "Average data in DPPP..."
 
@@ -44,7 +42,30 @@ done
 #MSLIST
 ls -1 -d avg_applycal* > mslist.txt
 
-echo "...Finished data preparing"
+MS_VECTOR=[$(cat  mslist.txt |tr "\n" ",")]
+
+echo "Concat data"
+
+#CONCAT
+singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
+msin=${MS_VECTOR} \
+msin.orderms=False \
+msin.missingdata=True \
+msin.datacolumn=DATA \
+msout=${OBSERVATION}_120_168MHz_averaged.ms \
+msout.storagemanager=dysco \
+msout.writefullresflag=False \
+steps=[] \
+
+echo "..Finished concat"
+
+echo "Copy data to TMPDIR..."
+
+mkdir "$TMPDIR"/wscleandata
+cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal/applycal*.ms "$TMPDIR"/wscleandata
+cd "$TMPDIR"/wscleandata
+
+echo "...Finished copying"
 
 echo "----------START WSCLEAN----------"
 
