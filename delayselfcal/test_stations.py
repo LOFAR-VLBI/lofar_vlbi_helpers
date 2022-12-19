@@ -115,49 +115,55 @@ def plotimage(fitsimagename,outplotname,mask=None,rmsnoiseimage=None):
   except:
       plotimage_aplpy(fitsimagename,outplotname,mask,rmsnoiseimage)
 
-msin="L816272_120_168MHz_averaged_smallregion.ms.avg.phaseup"
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Loop over stations and exclude station by station')
+    parser.add_argument('--msfile', nargs='+', help='measurement set')
+
+    args = parser.parse_args()
+
+    msin = args.msfile
 
 
-t = ct.table(msin+'::ANTENNA')
-stations = t.getcol("NAME")
-t.close()
+    t = ct.table(msin+'::ANTENNA')
+    stations = t.getcol("NAME")
+    t.close()
 
-for station in stations:
-    if station!='ST001':
+    for station in stations:
+        if station!='ST001':
 
-        msout = "not_station_"+station+".ms"
+            msout = "not_station_"+station+".ms"
 
-        os.system("DPPP msin="+msin+" \
-        steps=[filter] \
-        filter.baseline=\'!"+station+"' \
-        filter.remove='true' \
-        msin.datacolumn=CORRECTED_DATA \
-        msout.storagemanager=dysco \
-        msout="+msout)
+            os.system("DPPP msin="+msin+" \
+            steps=[filter] \
+            filter.baseline=\'!"+station+"' \
+            filter.remove='true' \
+            msin.datacolumn=CORRECTED_DATA \
+            msout.storagemanager=dysco \
+            msout="+msout)
 
-        os.system("wsclean -no-update-model-required "
-                  "-minuv-l 1500.0 "
-                  "-size 1600 1600 "
-                  "-reorder "
-                  "-weight briggs -1.5 "
-                  "-clean-border 1 "
-                  "-parallel-reordering 4 "
-                  "-mgain 0.8 "
-                  "-data-column DATA "
-                  "-padding 1.4 "
-                  "-join-channels "
-                  "-channels-out 6 "
-                  "-auto-mask 2.5 "
-                  "-auto-threshold 0.5 "
-                  "-fit-spectral-pol 3 "
-                  "-pol i "
-                  "-baseline-averaging 6.135923151542564 "
-                  "-use-wgridder "
-                  "-name not_station_"+station+" "
-                "-scale 0.075arcsec "
-                "-nmiter 12 "
-                "-niter 15000 "+msout)
+            os.system("wsclean -no-update-model-required "
+                      "-minuv-l 1500.0 "
+                      "-size 1600 1600 "
+                      "-reorder "
+                      "-weight briggs -1.5 "
+                      "-clean-border 1 "
+                      "-parallel-reordering 4 "
+                      "-mgain 0.8 "
+                      "-data-column DATA "
+                      "-padding 1.4 "
+                      "-join-channels "
+                      "-channels-out 6 "
+                      "-auto-mask 2.5 "
+                      "-auto-threshold 0.5 "
+                      "-fit-spectral-pol 3 "
+                      "-pol i "
+                      "-baseline-averaging 6.135923151542564 "
+                      "-use-wgridder "
+                      "-name not_station_"+station+" "
+                    "-scale 0.075arcsec "
+                    "-nmiter 12 "
+                    "-niter 15000 "+msout)
 
-        plotimage('not_station_'+station+'-MFS-image.fits', 'not_'+station+'.png')
+            plotimage('not_station_'+station+'-MFS-image.fits', 'not_'+station+'.png')
 
 
