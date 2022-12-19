@@ -4,6 +4,7 @@
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --constraint=intel
 #SBATCH -p infinite
+#SBATCH --job-name=DI_0.3_imaging
 
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home

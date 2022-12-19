@@ -5,6 +5,7 @@
 #SBATCH --constraint=amd
 #SBATCH -p infinite
 #SBATCH --exclusive
+#SBATCH --job-name=DD_1_imaging
 
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home

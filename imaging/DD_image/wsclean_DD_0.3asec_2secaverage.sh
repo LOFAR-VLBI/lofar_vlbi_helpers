@@ -6,6 +6,7 @@
 #SBATCH -p infinite
 #SBATCH --constraint=mem950G
 #SBATCH --exclusive
+#SBATCH --job-name=DD_0.3_imaging
 
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
