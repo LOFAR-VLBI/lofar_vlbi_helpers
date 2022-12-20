@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 31
+#SBATCH -c 48
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --constraint=amd
@@ -27,11 +27,19 @@ singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} python \
 --imsize 60000 \
 --ms ${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
 
+echo "Move data to tmpdir..."
+mkdir mkdir "$TMPDIR"/wscleandata
+mv master_merged.h5 "$TMPDIR"/wscleandata
+mv facets.reg "$TMPDIR"/wscleandata
+mv ${OBSERVATION}_120_168MHz_applied_bda.ms "$TMPDIR"/wscleandata
+cd "$TMPDIR"/wscleandata
+
 echo "----------START WSCLEAN----------"
 
 singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} \
 wsclean \
 -update-model-required \
+-temp-dir "$TMPDIR"/wscleandata \
 -use-wgridder \
 -minuv-l 80.0 \
 -size 60000 60000 \
@@ -57,7 +65,6 @@ wsclean \
 -facet-regions facets.reg \
 -apply-facet-solutions master_merged.h5 amplitude000,phase000 \
 -parallel-gridding 6 \
--mem 16 \
 -apply-facet-beam \
 -facet-beam-update 600 \
 -use-differential-lofar-beam \
@@ -65,7 +72,6 @@ wsclean \
 -deconvolution-channels 3 \
 -join-channels \
 -fit-spectral-pol 3 \
--j 32 \
 ${OBSERVATION}_120_168MHz_applied_bda.ms
 
 #rm -rf bdavg_*

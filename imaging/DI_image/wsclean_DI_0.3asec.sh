@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 31
+#SBATCH -c 48
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --constraint=intel
@@ -42,12 +42,10 @@ wsclean \
 -multiscale \
 -multiscale-max-scales 9 \
 -nmiter 9 \
--mem 25 \
 -channels-out 6 \
 -join-channels \
 -fit-spectral-pol 3 \
 -deconvolution-channels 3 \
--j ${SLURM_CPUS_PER_TASK} \
 -use-idg \
 -grid-with-beam \
 -use-differential-lofar-beam \
