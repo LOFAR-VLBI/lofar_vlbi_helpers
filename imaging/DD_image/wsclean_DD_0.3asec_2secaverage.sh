@@ -8,6 +8,8 @@
 #SBATCH --exclusive
 #SBATCH --job-name=DD_0.3_imaging
 
+OUT_DIR=$PWD
+
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
 SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/lofar_sksp_v3.4_znver2_znver2_noavx512_cuda_ddf.sif
@@ -74,8 +76,9 @@ wsclean \
 -fit-spectral-pol 3 \
 ${OBSERVATION}_120_168MHz_applied_bda.ms
 
-#rm -rf bdavg_*
-#tar cf output.tar *
-#cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
+rm -rf ${OBSERVATION}_120_168MHz_applied_bda.ms
+
+tar cf output.tar *
+cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
 
 echo "----FINISHED----"
