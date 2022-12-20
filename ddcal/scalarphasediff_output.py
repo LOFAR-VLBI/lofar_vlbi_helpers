@@ -3,12 +3,13 @@ from glob import glob
 import numpy as np
 import csv
 
-h5s = glob("P*/scalarphasediffcheck*.h5")
+h5s = glob("P*/scalarphasediff0*.h5")
 
 f = open('scalarphase_output.csv', 'w')
 writer = csv.writer(f)
 writer.writerow(["file", "sin_value"])
 for h5 in h5s:
+    print(h5.split("_")[0])
     H = tables.open_file(h5)
 
     axes = str(H.root.sol000.phase000.val.attrs["AXES"]).replace("b'",'').replace("'",'').split(',')
@@ -31,7 +32,7 @@ for h5 in h5s:
     # normalize
     phase_sin /= dpoints
 
-    writer.writerow([h5, phase_sin_sum])
+    writer.writerow([h5.split("_")[0], phase_sin_sum])
     H.close()
 
 f.close()

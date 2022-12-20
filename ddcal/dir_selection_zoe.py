@@ -16,7 +16,7 @@ def findrms(file_name, maskSup=1e-7):
     find the rms of an array, from Cycil Tasse/kMS
     """
     hdul = fits.open(file_name)
-    mIn = hdul[0].data
+    mIn = np.ndarray.flatten(hdul[0].data)
     m=mIn[np.abs(mIn)>maskSup]
     rmsold=np.std(m)
     diff=1e-1
@@ -54,7 +54,7 @@ def collect_val(directions):
     d_name = []
     rms = []
     for dir_num, dir in enumerate(directions):
-        images = glob(dir+'/selfcal_'+dir+'_0*-MFS-image.fits')
+        images = sorted(glob(dir+'/selfcal_'+dir+'_0*-MFS-image.fits'))
         d_sub = []
         rms_sub = []
         for imnum, image in enumerate(images):
