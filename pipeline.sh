@@ -112,7 +112,7 @@ sbatch ${SCRIPT_FOLDER}/ddcal/run_selfcal.sh
 #TODO: verify if correct
 
 #direction selection
-python ${SCRIPT_FOLDER}/ddcal/dir_selection_zoe.py --dirs $PWD
+python ${SCRIPT_FOLDER}/ddcal/dir_selection.py --dirs $PWD
 #TODO: needs singularity wrapped and improvement of dir selection
 
 ################

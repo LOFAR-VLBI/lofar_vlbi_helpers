@@ -19,7 +19,7 @@ Step 11) run imaging/DI_image/wsclean_DI_1asec_1secaverage.sh to make DD image a
 Step 12) run split_directions/split_directions.sh to split the bright directions to selfcal \
 Step 13) run split_directions/concat_dirs.sh to concat the individual subbands per observation \
 Step 14) run ddcal/run_selfcal.sh to run selfcals in parallel (alternatively ddcal/selfcal.sh for individual selfcals) \
-Step 15) run ddcal/dir_selection_zoe.py to do selfcal direction selection \
+Step 15) run ddcal/dir_selection.py to do selfcal direction selection \
 Step 16) run merge/fullmerge.py to merge solutions for best calibrators \
 Step 17) run imaging/DD_image/* to do DD imaging
 
