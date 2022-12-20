@@ -4,8 +4,6 @@
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --constraint=amd
 #SBATCH -p infinite
-#SBATCH --constraint=mem950G
-#SBATCH --exclusive
 #SBATCH --job-name=DD_1_imaging
 
 OUT_DIR=$PWD
