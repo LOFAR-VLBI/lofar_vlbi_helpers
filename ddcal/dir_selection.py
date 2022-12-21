@@ -143,24 +143,24 @@ if __name__ == '__main__':
 
     df_dynr = pd.DataFrame(d, index=d_name)
     df_rms = pd.DataFrame(rms, index=d_name)
-    df_dynr.to_csv(r'dynamic_range.csv', index=False, header=True)
-    df_rms.to_csv(r'rms.csv', index=False, header=True)
+    df_dynr.to_csv(r'dynamic_range.csv', index=True, header=True)
+    df_rms.to_csv(r'rms.csv', index=True, header=True)
 
-    images = 'images/'
-    os.system('mkdir -p ' + images)
+    if plot_png:
 
-    rdec = []
+        images = 'images/'
+        os.system('mkdir -p ' + images)
 
-    for dir in directions:
-        rms = df_rms.T[dir]
-        dyn_range = df_dynr.T[dir]
+        rdec = []
 
-        dr_origin = dyn_range[0]
-        decrease_ratio = ["{:.2%}".format((dr - dr_origin) / dr_origin) for dr in list(dyn_range)]
-        decrease_ratio_val = [(dr - dr_origin) / dr_origin for dr in list(dyn_range)]
-        rdec.append(decrease_ratio_val)
+        for dir in directions:
+            rms = df_rms.T[dir]
+            dyn_range = df_dynr.T[dir]
 
-        if plot_png:
+            dr_origin = dyn_range[0]
+            decrease_ratio = ["{:.2%}".format((dr - dr_origin) / dr_origin) for dr in list(dyn_range)]
+            decrease_ratio_val = [(dr - dr_origin) / dr_origin for dr in list(dyn_range)]
+            rdec.append(decrease_ratio_val)
 
             plt.plot(rms)
             plt.title(dir)
@@ -178,10 +178,10 @@ if __name__ == '__main__':
             plt.close()
 
     t = pd.read_csv('scalarphasediff_output.csv')
-    rms = pd.read_csv('rms.csv')
-    dr = pd.read_csv('dynamic_range.csv')
-    rms = rms.T.rename(columns={c: 'rms_c' + str(c) for c in rms.T.columns})
-    dr = dr.T.rename(columns={c: 'dr_c' + str(c) for c in dr.T.columns})
+
+    rms = df_rms.rename(columns={c: 'rms_c' + str(c) for c in df_rms.columns})
+    dr = df_dynr.rename(columns={c: 'dr_c' + str(c) for c in df_dynr.columns})
+
     dr['dr_max'] = dr.max(axis=1)
     t = t.set_index('file').merge(rms, left_index=True, right_index=True).merge(dr, left_index=True, right_index=True)
     t['rms_ratio'] = t['rms_c0'] / t['rms_c11']
@@ -200,8 +200,8 @@ if __name__ == '__main__':
     print('We choose ' + str(len(dir_num_filter)) + ' calibrators, and their numbers are:')
     os.system('mkdir -p best_solutions')
 
-    for i in range(len(dir_num_filter)):
-        os.system('cp ' + sorted(glob(dir_num_filter[i] + '/merged_addCS_selfcal*'))[-1] + ' best_solutions')
+    for d in dir_num_filter:
+        os.system('cp ' + sorted(glob(d + '/merged_addCS_selfcal*'))[-1] + ' best_solutions')
 
     os.system('python /home/lofarvwf-jdejong/scripts/lofar_helpers/h5_merger.py -in best_solutions/*.h5 -out master_merged.h5')
     print('See master_solutions.h5 as final output')
