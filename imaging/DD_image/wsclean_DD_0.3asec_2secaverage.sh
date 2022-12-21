@@ -30,7 +30,7 @@ singularity exec -B ${SING_BIND} /project/lofarvwf/Public/fsweijen/lofar_sksp_v4
 --ms ${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
 
 echo "Move data to tmpdir..."
-mkdir mkdir "$TMPDIR"/wscleandata
+mkdir "$TMPDIR"/wscleandata
 mv master_merged.h5 "$TMPDIR"/wscleandata
 mv facets.reg "$TMPDIR"/wscleandata
 mv ${OBSERVATION}_120_168MHz_applied_bda.ms "$TMPDIR"/wscleandata
