@@ -39,7 +39,7 @@ msin.datacolumn=DATA \
 msout=${OBSERVATION}_120_168MHz_applied.ms \
 msout.storagemanager=dysco \
 msout.writefullresflag=False \
-steps=[] \
+steps=[]
 
 echo "...Finished concat"
 
