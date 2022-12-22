@@ -37,7 +37,7 @@ do
   bda.maxinterval=64. \
   bda.timebase=4000000
 
-  rm -rf avg_${MS}
+  rm -rf ${MS}
 
 done
 
