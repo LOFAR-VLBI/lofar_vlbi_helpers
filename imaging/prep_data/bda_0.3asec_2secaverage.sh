@@ -23,28 +23,28 @@ cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/apply_delaycal
 
 echo "...Finished copying from applycal folder"
 
-echo "Average data in DPPP..."
+#echo "Average data in DPPP..."
 
-for MS in applycal*.ms
-do
+#for MS in applycal*.ms
+#do
+#
+#  #Baseline-dependent-averaging
+#  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN}  DP3 \
+#  msin=${MS} \
+#  msout=bdaavg_${MS} \
+#  steps=[bda] \
+#  bda.type=bdaaverager \
+#  bda.maxinterval=64. \
+#  bda.timebase=4000000
+#
+#  rm -rf ${MS}
+#
+#done
 
-  #Baseline-dependent-averaging
-  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN}  DP3 \
-  msin=${MS} \
-  msout=bdaavg_${MS} \
-  steps=[bda] \
-  bda.type=bdaaverager \
-  bda.maxinterval=64. \
-  bda.timebase=4000000
-
-  rm -rf ${MS}
-
-done
-
-echo "... Finished averaging data in DPPP"
+#echo "... Finished averaging data in DPPP"
 
 #MSLIST
-ls -1 -d bdaavg* > mslist.txt
+ls -1 -d applycal* > mslist.txt
 
 MS_VECTOR=[$(cat  mslist.txt |tr "\n" ",")]
 
@@ -56,10 +56,13 @@ msin=${MS_VECTOR} \
 msin.orderms=False \
 msin.missingdata=True \
 msin.datacolumn=DATA \
-msout=${OBSERVATION}_120_168MHz_applied.ms \
+msout=${OBSERVATION}_120_168MHz_applied_bda.ms \
 msout.storagemanager=dysco \
 msout.writefullresflag=False \
-steps=[]
+steps=[bda] \
+bda.type=bdaaverager \
+bda.maxinterval=64. \
+bda.timebase=4000000
 
 echo "...Finished concat"
 

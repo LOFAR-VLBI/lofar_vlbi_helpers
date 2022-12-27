@@ -41,23 +41,23 @@ do
 
   rm -rf ${MS}
 
-  #Baseline-dependent-averaging
-  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN}  DP3 \
-  msin=avg_${MS} \
-  msout=bdaavg_${MS} \
-  steps=[bda] \
-  bda.type=bdaaverager \
-  bda.maxinterval=64. \
-  bda.timebase=1000000
-
-  rm -rf avg_${MS}
+#  #Baseline-dependent-averaging
+#  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN}  DP3 \
+#  msin=avg_${MS} \
+#  msout=bdaavg_${MS} \
+#  steps=[bda] \
+#  bda.type=bdaaverager \
+#  bda.maxinterval=64. \
+#  bda.timebase=1000000
+#
+#  rm -rf avg_${MS}
 
 done
 
 echo "... Finished averaging data in DPPP"
 
 #MSLIST
-ls -1 -d bdaavg_* > mslist.txt
+ls -1 -d avg_* > mslist.txt
 
 MS_VECTOR=[$(cat  mslist.txt |tr "\n" ",")]
 
@@ -72,7 +72,10 @@ msin.datacolumn=DATA \
 msout=${OBSERVATION}_120_168MHz_averaged_applied_bda.ms \
 msout.storagemanager=dysco \
 msout.writefullresflag=False \
-steps=[]
+steps=[bda] \
+bda.type=bdaaverager \
+bda.maxinterval=64. \
+bda.timebase=1000000
 
 echo "...Finished concat"
 
