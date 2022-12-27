@@ -16,8 +16,8 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-#source /home/lofarvwf-jdejong/scripts/prefactor_helpers/imaging/prep_data/bda_1asec_2secaverage.sh
-#
+source /home/lofarvwf-jdejong/scripts/prefactor_helpers/imaging/prep_data/bda_1asec_2secaverage.sh
+
 #cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/ddcal/selfcals/master_merged.h5 .
 #
 #singularity exec -B ${SING_BIND} /project/lofarvwf/Public/fsweijen/lofar_sksp_v4.0.0_x84-64_generic_noavx512_mkl_cuda_ddf_test3.sif python \
@@ -71,7 +71,8 @@ wsclean \
 -deconvolution-channels 3 \
 -join-channels \
 -fit-spectral-pol 3 \
-${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
+bdaavg*.ms
+#${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
 
 #rm -rf ${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
 #

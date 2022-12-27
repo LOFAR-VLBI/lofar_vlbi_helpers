@@ -39,18 +39,18 @@ do
   avg.freqstep=4 \
   avg.timestep=2
 
-  rm -rf ${MS}
+#  rm -rf ${MS}
 
-#  #Baseline-dependent-averaging
-#  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN}  DP3 \
-#  msin=avg_${MS} \
-#  msout=bdaavg_${MS} \
-#  steps=[bda] \
-#  bda.type=bdaaverager \
-#  bda.maxinterval=64. \
-#  bda.timebase=1000000
-#
-#  rm -rf avg_${MS}
+  #Baseline-dependent-averaging
+  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN}  DP3 \
+  msin=avg_${MS} \
+  msout=bdaavg_${MS} \
+  steps=[bda] \
+  bda.type=bdaaverager \
+  bda.maxinterval=64. \
+  bda.timebase=1000000
+
+  rm -rf avg_${MS}
 
 done
 
@@ -64,22 +64,27 @@ MS_VECTOR=[$(cat  mslist.txt |tr "\n" ",")]
 echo "Concat data..."
 
 #CONCAT
-singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
-msin=${MS_VECTOR} \
-msin.orderms=False \
-msin.missingdata=True \
-msin.datacolumn=DATA \
-msout=${OBSERVATION}_120_168MHz_averaged_applied_bda.ms \
-msout.storagemanager=dysco \
-msout.writefullresflag=False \
-steps=[bda] \
-bda.type=bdaaverager \
-bda.maxinterval=64. \
-bda.timebase=1000000
+#singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
+#msin=${MS_VECTOR} \
+#msin.orderms=False \
+#msin.missingdata=True \
+#msin.datacolumn=DATA \
+#msout=${OBSERVATION}_120_168MHz_averaged_applied_bda.ms \
+#msout.storagemanager=dysco \
+#msout.writefullresflag=False \
+#steps=[bda] \
+#bda.type=bdaaverager \
+#bda.maxinterval=64. \
+#bda.timebase=1000000
 
 echo "...Finished concat"
 
 # check output
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-python /home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/check_missing_freqs_in_ms.py \
---ms ${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
+#singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
+#python /home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/check_missing_freqs_in_ms.py \
+#--ms ${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
+
+rm -rf applycal*
+
+mkdir DATA
+cp -r *.ms DATA

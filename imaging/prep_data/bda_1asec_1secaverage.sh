@@ -39,7 +39,7 @@ do
   avg.freqstep=4 \
   avg.timestep=4
 
-  rm -rf ${MS}
+#  rm -rf ${MS}
 
   #Baseline-dependent-averaging
   singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN}  DP3 \
@@ -80,3 +80,8 @@ echo "...Finished concat"
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
 python /home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/check_missing_freqs_in_ms.py \
 --ms ${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
+
+rm -rf applycal*
+
+mkdir DATA
+cp -r *.ms DATA
