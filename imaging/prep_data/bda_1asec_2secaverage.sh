@@ -57,11 +57,11 @@ done
 echo "... Finished averaging data in DPPP"
 
 #MSLIST
-ls -1 -d avg_* > mslist.txt
-
-MS_VECTOR=[$(cat  mslist.txt |tr "\n" ",")]
-
-echo "Concat data..."
+#ls -1 -d avg_* > mslist.txt
+#
+#MS_VECTOR=[$(cat  mslist.txt |tr "\n" ",")]
+#
+#echo "Concat data..."
 
 #CONCAT
 #singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
