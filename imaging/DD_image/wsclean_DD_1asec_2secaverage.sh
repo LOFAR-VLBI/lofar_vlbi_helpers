@@ -27,7 +27,8 @@ singularity exec -B ${SING_BIND} /project/lofarvwf/Public/fsweijen/lofar_sksp_v4
 --h5 master_merged.h5 \
 --DS9regionout facets.reg \
 --imsize 22500 \
---ms ${LIST[0]}
+--ms ${LIST[0]} \
+--pixelscale 0.4
 
 #echo "Move data to tmpdir..."
 #mkdir "$TMPDIR"/wscleandata
