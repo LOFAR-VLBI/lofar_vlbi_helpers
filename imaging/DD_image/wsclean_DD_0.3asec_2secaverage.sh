@@ -73,7 +73,7 @@ wsclean \
 -deconvolution-channels 3 \
 -join-channels \
 -fit-spectral-pol 3 \
-bdaavg*
+bdaavg*.ms
 #${OBSERVATION}_120_168MHz_applied_bda.ms
 
 #rm -rf ${OBSERVATION}_120_168MHz_applied_bda.ms

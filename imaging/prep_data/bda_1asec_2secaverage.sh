@@ -39,7 +39,7 @@ do
   avg.freqstep=4 \
   avg.timestep=2
 
-#  rm -rf ${MS}
+  rm -rf ${MS}
 
   #Baseline-dependent-averaging
   singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN}  DP3 \
@@ -57,7 +57,7 @@ done
 echo "... Finished averaging data in DPPP"
 
 #MSLIST
-#ls -1 -d avg_* > mslist.txt
+ls -1 -d bdaavg_* > mslist.txt
 #
 #MS_VECTOR=[$(cat  mslist.txt |tr "\n" ",")]
 #
@@ -80,11 +80,11 @@ echo "... Finished averaging data in DPPP"
 echo "...Finished concat"
 
 # check output
-#singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-#python /home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/check_missing_freqs_in_ms.py \
-#--ms ${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
+singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
+python /home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/check_missing_freqs_in_ms.py \
+--ms bda*.ms
 
-rm -rf applycal*
+#rm -rf applycal*
 
 mkdir DATA
 cp -r *.ms DATA

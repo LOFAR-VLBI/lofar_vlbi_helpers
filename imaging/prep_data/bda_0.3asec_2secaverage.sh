@@ -37,7 +37,7 @@ do
   bda.maxinterval=64. \
   bda.timebase=4000000
 
-#  rm -rf ${MS}
+  rm -rf ${MS}
 
 done
 
@@ -71,7 +71,6 @@ singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
 python /home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/check_missing_freqs_in_ms.py \
 --ms bdaavg*
 
-rm -rf applycal*
 
 mkdir DATA
 cp -r *.ms DATA

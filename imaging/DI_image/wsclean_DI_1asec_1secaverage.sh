@@ -49,6 +49,6 @@ wsclean \
 -use-idg \
 -grid-with-beam \
 -use-differential-lofar-beam \
-${OBSERVATION}_120_168MHz_averaged_applied.ms
+avg*.ms
 
 echo "----------FINISHED WSCLEAN----------"
