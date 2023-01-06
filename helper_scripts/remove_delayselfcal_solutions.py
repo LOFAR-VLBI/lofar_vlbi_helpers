@@ -1,26 +1,7 @@
-import os
 import tables
 import casacore.tables as ct
 import numpy as np
 import os
-import argparse
-from glob import glob
-
-parser = argparse.ArgumentParser(description='Validate selfcal output')
-parser.add_argument('--dirs', nargs='+', help='path to folders with selfcal output', default=None)
-args = parser.parse_args()
-
-print(args.dirs)
-
-for dir in args.dirs:
-    print(dir)
-    os.system('cp ' + sorted(glob(dir + '/merged_addCS_selfcal*'))[-1] + ' best_solutions')
-
-os.system('python /home/lofarvwf-jdejong/scripts/lofar_helpers/h5_merger.py -in best_solutions/*.h5 -out master_merged.h5')
-
-
-###########SET DELAYSELFCAL SOLUTIONS TO 1 AND 0 BECAUSE OTHERWISE TWICE SOLUTIONS APPLIED################
-
 
 currentdir = os.getcwd()
 observation = [p for p in currentdir.split('/') if len(p)==7 and p[0]=='L'][0]
