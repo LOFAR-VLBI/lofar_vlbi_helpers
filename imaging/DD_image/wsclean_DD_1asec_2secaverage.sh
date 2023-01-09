@@ -4,6 +4,8 @@
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --constraint=amd
 #SBATCH -p infinite
+#SBATCH --constraint=mem950G
+#SBATCH --exclusive
 #SBATCH --job-name=DD_1_imaging
 
 OUT_DIR=$PWD
@@ -30,12 +32,12 @@ singularity exec -B ${SING_BIND} /project/lofarvwf/Public/fsweijen/lofar_sksp_v4
 --ms ${LIST[0]} \
 --pixelscale 0.4
 
-#echo "Move data to tmpdir..."
-#mkdir "$TMPDIR"/wscleandata
-#mv master_merged.h5 "$TMPDIR"/wscleandata
-#mv facets.reg "$TMPDIR"/wscleandata
-#mv ${OBSERVATION}_120_168MHz_averaged_applied_bda.ms "$TMPDIR"/wscleandata
-#cd "$TMPDIR"/wscleandata
+echo "Move data to tmpdir..."
+mkdir "$TMPDIR"/wscleandata
+mv master_merged.h5 "$TMPDIR"/wscleandata
+mv facets.reg "$TMPDIR"/wscleandata
+mv -r bdaavg*.ms "$TMPDIR"/wscleandata
+cd "$TMPDIR"/wscleandata
 
 echo "----------START WSCLEAN----------"
 
@@ -77,9 +79,9 @@ wsclean \
 bdaavg*.ms
 #${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
 
-#rm -rf ${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
+rm -rf bdaavg*.ms
 #
-#tar cf output.tar *
-#cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
+tar cf output.tar *
+cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
 
 echo "----FINISHED----"

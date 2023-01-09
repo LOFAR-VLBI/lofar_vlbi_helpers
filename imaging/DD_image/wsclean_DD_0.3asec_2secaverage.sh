@@ -28,16 +28,16 @@ singularity exec -B ${SING_BIND} /project/lofarvwf/Public/fsweijen/lofar_sksp_v4
 /home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/ds9facetgenerator.py \
 --h5 master_merged.h5 \
 --DS9regionout facets.reg \
---imsize 60000 \
+--imsize 45000 \
 --ms ${LIST[0]} \
---pixelscale 0.4
+--pixelscale 0.2
 
-#echo "Move data to tmpdir..."
-#mkdir "$TMPDIR"/wscleandata
-#mv master_merged.h5 "$TMPDIR"/wscleandata
-#mv facets.reg "$TMPDIR"/wscleandata
-#mv ${OBSERVATION}_120_168MHz_applied_bda.ms "$TMPDIR"/wscleandata
-#cd "$TMPDIR"/wscleandata
+echo "Move data to tmpdir..."
+mkdir "$TMPDIR"/wscleandata
+mv master_merged.h5 "$TMPDIR"/wscleandata
+mv facets.reg "$TMPDIR"/wscleandata
+mv bdaavg*.ms "$TMPDIR"/wscleandata
+cd "$TMPDIR"/wscleandata
 
 echo "----------START WSCLEAN----------"
 
@@ -46,7 +46,7 @@ wsclean \
 -update-model-required \
 -use-wgridder \
 -minuv-l 80.0 \
--size 60000 60000 \
+-size 45000 45000 \
 -weighting-rank-filter 3 \
 -reorder \
 -weight briggs -1.5 \
@@ -57,7 +57,7 @@ wsclean \
 -auto-threshold 1.0 \
 -pol i \
 -name image_test \
--scale 0.15arcsec \
+-scale 0.2arcsec \
 -taper-gaussian 0.4asec \
 -niter 50000 \
 -log-time \
@@ -79,9 +79,9 @@ wsclean \
 bdaavg*.ms
 #${OBSERVATION}_120_168MHz_applied_bda.ms
 
-#rm -rf ${OBSERVATION}_120_168MHz_applied_bda.ms
+rm -rf bdaavg*.ms
 
-#tar cf output.tar *
-#cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
+tar cf output.tar *
+cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
 
 echo "----FINISHED----"
