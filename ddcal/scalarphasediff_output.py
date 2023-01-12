@@ -3,6 +3,8 @@ from glob import glob
 import numpy as np
 import csv
 
+#TODO: diff (faraday), look at international stations (look at specific stations), make plot noise in function of station
+
 def get_scalarphasediff_measure(h5):
     H = tables.open_file(h5)
 

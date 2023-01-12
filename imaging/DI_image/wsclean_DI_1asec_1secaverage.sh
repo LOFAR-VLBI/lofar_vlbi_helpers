@@ -3,7 +3,6 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --constraint=intel
-#SBATCH -p infinite
 #SBATCH --job-name=DI_1_imaging
 
 #SINGULARITY SETTINGS
