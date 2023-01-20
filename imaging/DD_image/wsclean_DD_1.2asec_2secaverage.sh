@@ -4,7 +4,6 @@
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --constraint=amd
 #SBATCH -p infinite
-#SBATCH --constraint=mem950G
 #SBATCH --exclusive
 #SBATCH --job-name=DD_1_imaging
 
@@ -12,6 +11,7 @@ OUT_DIR=$PWD
 
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
+#TODO: Wrong singularity
 SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
