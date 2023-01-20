@@ -148,11 +148,13 @@ class Imaging:
         plt.subplot(projection=wcs)
         WCSAxes(fig, [0.1, 0.1, 0.8, 0.8], wcs=wcs)
 
-        r = pyregion.open(show_regions).as_imagecoord(header=self.hdu[0].header)
-        patch_list, artist_list = r.get_mpl_patches_texts()
+        if show_regions is not None:
 
-        for patch in patch_list:
-            plt.gcf().gca().add_patch(patch)
+            r = pyregion.open(show_regions).as_imagecoord(header=self.hdu[0].header)
+            patch_list, artist_list = r.get_mpl_patches_texts()
+
+            for patch in patch_list:
+                plt.gcf().gca().add_patch(patch)
 
 
         im = plt.imshow(image_data, origin='lower', cmap=cmap)
@@ -162,7 +164,7 @@ class Imaging:
         else:
             im.set_norm(PowerNorm(vmin=0, vmax=vmax, gamma=1 / 2))
 
-        if selfcalnames:
+        if selfcalnames is not None:
             if not os.path.exists('selfcal_pointings.csv'):
                 make_selfcal_csv()
             for name, pointing in pd.read_csv('selfcal_pointings.csv').set_index('name').iterrows():
@@ -234,6 +236,7 @@ if __name__ == "__main__":
     parser.add_argument('--selfcal_folder', type=str, help='path to selfcal folder')
     parser.add_argument('--resolution', type=float, help='resolution', default=1.2)
     parser.add_argument('--saveimage', action='store_true', help='save image')
+    parser.add_argument('--selfcalnames', action='store_true', help='give selfcal names')
     args = parser.parse_args()
 
     if args.saveimage:
@@ -247,5 +250,5 @@ if __name__ == "__main__":
         make_selfcal_csv(args.selfcal_folder)
     im.make_image(show_regions=args.region,
                   h5=args.h5,
-                  selfcalnames=True,
+                  selfcalnames=args.selfcalnames,
                   save=save)

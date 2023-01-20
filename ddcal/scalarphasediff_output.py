@@ -2,52 +2,63 @@ import tables
 from glob import glob
 import numpy as np
 import csv
+from scipy.stats import circstd, circmean
+import sys
 
-#TODO: diff (faraday), look at international stations (look at specific stations), make plot noise in function of station
 
-def get_scalarphasediff_measure(h5):
-    H = tables.open_file(h5)
-
-    axes = str(H.root.sol000.phase000.val.attrs["AXES"]).replace("b'",'').replace("'",'').split(',')
-    freq_ax = axes.index('freq')
-    pol_ax = axes.index('pol')
-    ant_ax = axes.index('ant')
-    dir_ax = axes.index('dir')
-    axs = list({freq_ax, pol_ax, ant_ax, dir_ax})[::-1]
-
-    phase = H.root.sol000.phase000.val[:]
-    """With the following method we check if a phase angle is noisy.
-    By taking modulus 2pi all values are between 0 and 2pi.
-    Phases between 0 and pi/2 and between 3pi/2 and 2pi are mapped to the same values with the sinus value.
-    Phases between pi/2 and 3pi/2 are most distant and mapped to cos(value)+1, as these are 1 integrand further."""
-    phasemod = phase % (2 * np.pi)
+def gonio_score(phasemod):
+    phasemod %= (2 * np.pi)
     p = np.zeros(phasemod.shape)
     p += np.where((phasemod < np.pi / 2) | ((phasemod < 2 * np.pi) & (phasemod > 3 * np.pi / 2)),
                   np.abs(np.sin(phasemod)), 0)
     p += np.where((phasemod < 3 * np.pi / 2) & (phasemod > np.pi / 2), 1 + np.abs(np.cos(phasemod)), 0)
+    return p
 
-    # number of data points to normalize
-    dpoints = phase.shape[freq_ax]*phase.shape[ant_ax]
 
-    # sum per time
-    for a in axs:
-        p = np.sum(p, axis=a)
+def get_scalarphasediff_measure(h5):
+    H = tables.open_file(h5)
 
-    # normalize
-    p /= dpoints
+    stations = list(H.root.sol000.antenna[:]['name'])
+    distant_stations_idx = [stations.index(station) for station in stations if
+                            ('RS' not in station) &
+                            ('ST' not in station) &
+                            ('CS' not in station) &
+                            ('DE' not in station)]
+
+    axes = str(H.root.sol000.phase000.val.attrs["AXES"]).replace("b'", '').replace("'", '').split(',')
+    axes_idx = sorted({ax: axes.index(ax) for ax in axes}.items(), key=lambda x: x[1], reverse=True)
+
+    phase = H.root.sol000.phase000.val[:]
     H.close()
 
-    return np.mean(p), np.min(p), np.max(p)
+    phasemod = phase % (2 * np.pi)
+
+    for ax in axes_idx:
+        if ax[0] == 'pol':  # YX should be zero
+            phasemod = phasemod.take(indices=0, axis=ax[1])
+        elif ax[0] == 'dir':  # there should just be one direction
+            if phasemod.shape[ax[1]] == 1:
+                phasemod = phasemod.take(indices=0, axis=ax[1])
+            else:
+                sys.exit('ERROR: This solution file should only contain one direction, but it has ' +
+                         str(phasemod.shape[ax[1]]) + ' directions')
+        elif ax[0] == 'freq':  # faraday corrected
+            phasemod = np.diff(phasemod, axis=ax[1])
+        elif ax[0] == 'ant':  # take only international stations
+            phasemod = phasemod.take(indices=distant_stations_idx, axis=ax[1])
+
+    return circstd(phasemod)
+
 
 h5s = glob("P*_scalarphasediff/scalarphasediff0*.h5")
 
 f = open('scalarphasediff_output.csv', 'w')
 writer = csv.writer(f)
-writer.writerow(["file", "mean_xydiff", "min_xydiff", "max_xydiff"])
+writer.writerow(["file", "circ_score"])
 for h5 in h5s:
     print(h5.split("_")[0])
-    pmean, pmin, pmax = get_scalarphasediff_measure(h5)
-
-    writer.writerow([h5.split("_")[0], pmean, pmin, pmax])
+    std = get_scalarphasediff_measure(h5)
+    print(std)
+    writer.writerow([h5.split("_")[0], std])
 
 f.close()
