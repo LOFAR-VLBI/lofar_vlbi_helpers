@@ -31,7 +31,7 @@ singularity exec -B ${SING_BIND} /project/lofarvwf/Public/fsweijen/lofar_sksp_v4
 --DS9regionout facets.reg \
 --imsize 60000 \
 --ms ${LIST[0]} \
---pixelscale 0.2
+--pixelscale 0.15
 
 echo "Move data to tmpdir..."
 mkdir "$TMPDIR"/wscleandata
@@ -57,9 +57,9 @@ wsclean \
 -auto-mask 2.5 \
 -auto-threshold 1.0 \
 -pol i \
--name image_test \
+-name 0.4image \
 -scale 0.15arcsec \
--taper-gaussian 0.3asec \
+-taper-gaussian 0.4asec \
 -niter 50000 \
 -log-time \
 -multiscale-scale-bias 0.7 \

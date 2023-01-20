@@ -57,9 +57,9 @@ wsclean \
 -auto-mask 2.5 \
 -auto-threshold 1.0 \
 -pol i \
--name image_test \
+-name 0.6image \
 -scale 0.2arcsec \
--taper-gaussian 0.4asec \
+-taper-gaussian 0.6asec \
 -niter 50000 \
 -log-time \
 -multiscale-scale-bias 0.7 \
