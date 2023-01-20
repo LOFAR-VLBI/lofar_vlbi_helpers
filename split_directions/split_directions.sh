@@ -6,7 +6,7 @@ L_LIST=$1
 #Catalogue with sources
 CATALOG=$2
 
-SCRIPTS=/home/lofarvwf-jdejong/scripts/prefactor_helpers
+SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi

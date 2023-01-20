@@ -14,4 +14,4 @@ cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/subtr
 cp /project/lofarvwf/Share/jdejong/output/ELAIS/7C1604+5529.skymodel .
 
 singularity exec -B $BIND $SIMG \
-/home/lofarvwf-jdejong/scripts/prefactor_helpers/delayselfcal/delaycal.sh ${MSIN}
+/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/delayselfcal/delaycal.sh ${MSIN}

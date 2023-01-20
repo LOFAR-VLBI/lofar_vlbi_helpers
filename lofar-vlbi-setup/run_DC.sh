@@ -18,8 +18,8 @@ cd $RUNDIR
 
 echo "RETRIEVING INPUT DATA ..."
 # Run the pipeline
-cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/lofar-vlbi-setup/pipeline.cfg .
-cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/lofar-vlbi-setup/Delay-Calibration.parset .
+cp /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/lofar-vlbi-setup/pipeline.cfg .
+cp /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/lofar-vlbi-setup/Delay-Calibration.parset .
 
 sed -i "s?DDF_OUTPUT?$DDF_OUTPUT?g" Delay-Calibration.parset
 sed -i "s?CORES?$CORES?g" Delay-Calibration.parset
@@ -28,7 +28,7 @@ sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" pipeline.cfg
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG CleanSHM.py
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG genericpipeline.py -d -c pipeline.cfg Delay-Calibration.parset
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG python /home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/change_hash_name.py --path ${RUNDIR}/Delay-Calibration --suffix msdpppconcat
+singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/helper_scripts/change_hash_name.py --path ${RUNDIR}/Delay-Calibration --suffix msdpppconcat
 
 echo "... done"
 echo "GENERIC PIPELINE FINISHED"

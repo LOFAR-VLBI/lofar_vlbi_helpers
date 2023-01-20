@@ -66,7 +66,7 @@ ls -1 -d avg_applycal* > mslist.txt
 
 # check output
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-python /home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/check_missing_freqs_in_ms.py \
+python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/helper_scripts/check_missing_freqs_in_ms.py \
 --ms avg*.ms
 
 #rm -rf applycal*

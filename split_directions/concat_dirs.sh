@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -N 1 -c 1 --job-name=concat
 
-SCRIPTS=/home/lofarvwf-jdejong/scripts/prefactor_helpers
+SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
 
 export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
 

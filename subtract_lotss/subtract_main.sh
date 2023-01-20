@@ -18,7 +18,7 @@ mkdir -p subtract_lotss
 echo "Make boxfile: boxfile.reg with /home/lofarvwf-jdejong/scripts/lofar-highres-widefield/utils/make_box.py"
 
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG python \
-/home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/make_box.py \
+/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/subtract_lotss/make_box.py \
 ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat 2.5
 
 cd ${DIR}
@@ -50,6 +50,6 @@ do
   mv ${FILE} ${SUBBAND}_subrun/${SUBBAND}.pre-cal.ms
   cd ${SUBBAND}_subrun
   echo ${SUBBAND}.pre-cal.ms > mslist.txt
-  sbatch /home/lofarvwf-jdejong/scripts/prefactor_helpers/subtract_lotss/subtraction.sh mslist.txt
+  sbatch /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/subtract_lotss/subtraction.sh mslist.txt
   cd ../
 done

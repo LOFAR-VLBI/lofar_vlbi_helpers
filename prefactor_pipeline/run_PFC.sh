@@ -16,8 +16,8 @@ cd $RUNDIR
 
 echo "RETRIEVING INPUT DATA ..."
 # Run the pipeline
-cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/prefactor_pipeline/pipeline.cfg .
-cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/prefactor_pipeline/Pre-Facet-Calibrator.parset .
+cp /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/prefactor_pipeline/pipeline.cfg .
+cp /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/prefactor_pipeline/Pre-Facet-Calibrator.parset .
 
 sed -i "s?CORES?$CORES?g" Pre-Facet-Calibrator.parset
 sed -i "s?RESULTS_DIR?$RESULTS_DIR?g" Pre-Facet-Calibrator.parset

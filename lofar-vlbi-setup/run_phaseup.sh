@@ -22,7 +22,7 @@ fi
 
 echo RETRIEVING TEMPLATE PARSET ...
 
-cp /home/lofarvwf-jdejong/scripts/prefactor_helpers/prefactor_pipeline/dppp_phaseup.parset .
+cp /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/prefactor_pipeline/dppp_phaseup.parset .
 
 sed -i "s%INPUT_DATA%$INPUT_DATA%g" dppp_phaseup.parset
 sed -i "s?OUTPUT_FILE?$OUTPUT_FILE?g" dppp_phaseup.parset

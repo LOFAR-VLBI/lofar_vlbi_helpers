@@ -9,7 +9,7 @@
 ! scripts			 	= /project/lofarvwf/Software/prefactor/bin
 ! widefield_dir = /home/lofarvwf-jdejong/scripts/lofar-highres-widefield
 ! ddf_pipeline_dir = /project/lofarvwf/Software/ddf-pipeline
-! helper_scripts = /home/lofarvwf-jdejong/scripts/prefactor_helpers
+! helper_scripts = /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
 # Directory with results from the ddf-pipeline
 ! ddf_dir		  = DDF_OUTPUT
 ! prefactor_dir                         = PREFACTOR_SCRATCH_DIR/pipelines/prefactor

@@ -15,7 +15,7 @@ re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
 PATH_MS=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/subtract_lotss
-SCRIPTS=/home/lofarvwf-jdejong/scripts/prefactor_helpers
+SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
 
 for FILE in ${PATH_MS}/sub6asec_${OBSERVATION}*.ms
 do

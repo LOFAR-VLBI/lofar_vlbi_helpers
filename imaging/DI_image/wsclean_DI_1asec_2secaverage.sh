@@ -13,7 +13,7 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-source /home/lofarvwf-jdejong/scripts/prefactor_helpers/imaging/prep_data/1asec_2secaverage.sh
+source /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/prep_data/1asec_2secaverage.sh
 
 echo "----------START WSCLEAN----------"
 
