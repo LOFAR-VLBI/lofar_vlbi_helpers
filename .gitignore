@@ -10,3 +10,4 @@
 *.txt
 *.csv
 !notes/prefactor.png
+*.sif

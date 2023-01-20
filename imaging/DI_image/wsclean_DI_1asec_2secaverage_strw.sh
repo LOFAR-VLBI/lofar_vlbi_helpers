@@ -2,7 +2,7 @@
 
 #SINGULARITY SETTINGS
 SING_BIND=$PWD
-SING_IMAGE_WSCLEAN=${PWD}/lofar_sksp_v4.0.1_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
+SING_IMAGE_WSCLEAN=/net/achterrijn/data1/sweijen/software/containers/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
 OUT_DIR=DI1.2image
 mkdir -p ${OUT_DIR}

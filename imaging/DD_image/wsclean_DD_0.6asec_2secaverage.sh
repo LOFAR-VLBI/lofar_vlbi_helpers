@@ -6,19 +6,19 @@
 #SBATCH -p infinite
 #SBATCH --constraint=mem950G
 #SBATCH --exclusive
-#SBATCH --job-name=DD_1_imaging
+#SBATCH --job-name=DD_0.3_imaging
 
 OUT_DIR=$PWD
 
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
-SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/lofar_sksp_v3.4_znver2_znver2_noavx512_cuda_ddf.sif
+SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-source /home/lofarvwf-jdejong/scripts/prefactor_helpers/imaging/prep_data/bda_1asec_2secaverage.sh
+source /home/lofarvwf-jdejong/scripts/prefactor_helpers/imaging/prep_data/bda_0.6asec_2secaverage.sh
 
 cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/ddcal/selfcals/master_merged.h5 .
 
@@ -28,15 +28,15 @@ singularity exec -B ${SING_BIND} /project/lofarvwf/Public/fsweijen/lofar_sksp_v4
 /home/lofarvwf-jdejong/scripts/prefactor_helpers/helper_scripts/ds9facetgenerator.py \
 --h5 master_merged.h5 \
 --DS9regionout facets.reg \
---imsize 22500 \
+--imsize 45000 \
 --ms ${LIST[0]} \
---pixelscale 0.4
+--pixelscale 0.2
 
 echo "Move data to tmpdir..."
 mkdir "$TMPDIR"/wscleandata
 mv master_merged.h5 "$TMPDIR"/wscleandata
 mv facets.reg "$TMPDIR"/wscleandata
-mv -r bdaavg*.ms "$TMPDIR"/wscleandata
+mv bdaavg*.ms "$TMPDIR"/wscleandata
 cd "$TMPDIR"/wscleandata
 
 echo "----------START WSCLEAN----------"
@@ -46,7 +46,7 @@ wsclean \
 -update-model-required \
 -use-wgridder \
 -minuv-l 80.0 \
--size 22500 22500 \
+-size 45000 45000 \
 -weighting-rank-filter 3 \
 -reorder \
 -weight briggs -1.5 \
@@ -56,9 +56,9 @@ wsclean \
 -auto-mask 2.5 \
 -auto-threshold 1.0 \
 -pol i \
--name 1.2asec_I \
--scale 0.4arcsec \
--taper-gaussian 1.2asec \
+-name image_test \
+-scale 0.2arcsec \
+-taper-gaussian 0.4asec \
 -niter 50000 \
 -log-time \
 -multiscale-scale-bias 0.7 \
@@ -77,10 +77,10 @@ wsclean \
 -join-channels \
 -fit-spectral-pol 3 \
 bdaavg*.ms
-#${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
+#${OBSERVATION}_120_168MHz_applied_bda.ms
 
 rm -rf bdaavg*.ms
-#
+
 tar cf output.tar *
 cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
 
