@@ -48,7 +48,7 @@ do
   steps=[bda] \
   bda.type=bdaaverager \
   bda.maxinterval=64. \
-  bda.timebase=1000000
+  bda.timebase=200000
 
   rm -rf avg_${MS}
 

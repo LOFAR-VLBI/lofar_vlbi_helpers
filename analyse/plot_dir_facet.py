@@ -196,7 +196,119 @@ class Imaging:
 
         return self
 
+    def make_subimages(self, regionfile, cmap='CMRmap', save=None, beamsize=None, convolve=None):
 
+        r = pyregion.open(regionfile).as_imagecoord(header=self.hdu[0].header)
+
+        fig = plt.figure(figsize=(9, 15))
+        fig.subplots_adjust(hspace=0.2, wspace=0.4)
+
+        rows, cols = len(r)//2, 2
+
+        for k, shape in enumerate(r):
+
+            if k==0:
+                k=1
+            elif k==1:
+                k=3
+            elif k==2:
+                k=4
+            elif k==3:
+                k=5
+            elif k==4:
+                k=0
+            elif k==5:
+                k=2
+
+            s = np.array(shape.coord_list)
+
+            crd = self.wcs.all_pix2world(s[0], s[1], 0)
+
+
+            out = Cutout2D(
+                data=self.image_data,
+                position=(s[0], s[1]),
+                size=(s[3], s[2]),
+                wcs=self.wcs,
+                mode='partial'
+            )
+            norm = SymLogNorm(linthresh=self.rms * 5, vmin=self.rms, vmax=self.rms*30)
+
+            if convolve:
+                image_data = self.convolve_image(out.data, convolve)
+            else:
+                image_data = out.data
+
+            plt.subplot(rows, cols, k+1, projection=out.wcs)
+            im = plt.imshow(image_data, origin='lower', cmap=cmap, norm=norm)
+            if k%2==0 and self.resolution==6:
+                plt.ylabel('Declination (J2000)', size=14)
+            else:
+                plt.ylabel(' ')
+
+            if k>=4:
+                plt.xlabel('Right Ascension (J2000)', size=14)
+            else:
+                plt.xlabel(' ')
+            plt.tick_params(axis='both', which='major', labelsize=12)
+
+            if type(self.resolution) == int and beamsize:
+                beampix = self.resolution / (self.header['CDELT2'] * u.deg).to(u.arcsec).value/2
+                x, y = beampix*1.5+out.data.shape[0]*0.03, beampix*1.5+out.data.shape[1]*0.03
+                circle = plt.Circle((x, y), beampix, color='g',
+                                    fill=True)
+                rectanglefill = plt.Rectangle(
+                    (x - beampix*3/2, y - beampix*3/2), beampix * 3,
+                    beampix * 3, fill=True, color='white')
+                rectangle = plt.Rectangle(
+                    (x - beampix*3/2, y - beampix*3/2), beampix * 3,
+                    beampix * 3, fill=False, color='black', linewidth=2)
+                plt.gcf().gca().add_artist(rectangle)
+                plt.gcf().gca().add_artist(rectanglefill)
+                plt.gcf().gca().add_artist(circle)
+            # plt.grid(False)
+
+            def fixed_color(shape, saved_attrs):
+                attr_list, attr_dict = saved_attrs
+                attr_dict["color"] = "green"
+                kwargs = properties_func_default(shape, (attr_list, attr_dict))
+
+                return kwargs
+
+            # r3 = pyregion.open('../regions/optical.reg').as_imagecoord(header=out.wcs.to_header())
+            #
+            # optical_sources = [np.array(r3[i].coord_list) for i in range(len(r3))]
+            # optical_sources = [i for i in optical_sources if i[0]<s[3] and i[1]<s[2] and i[0]>0 and i[1]>0]
+            # plt.scatter([i[0] for i in optical_sources], [i[1] for i in optical_sources], color='red', marker='x', s=80)
+
+            r4 = pyregion.open('../regions/sourcelabels.reg').as_imagecoord(header=out.wcs.to_header())
+
+            patch_list, artist_list = r4.get_mpl_patches_texts(fixed_color)
+
+            # fig.add_axes(ax)
+            for patch in patch_list:
+                print(patch)
+                plt.gcf().gca().add_patch(patch)
+            for artist in artist_list:
+                plt.gca().add_artist(artist)
+
+        fig.subplots_adjust(top=0.8)
+        # cbar_ax = fig.add_axes([0.22, 0.88, 0.6, 0.03]) # l, b, w, h
+        # cbar = fig.colorbar(im, cax=cbar_ax, orientation='horizontal')
+        # cbar.ax.set_xscale('log')
+        # cbar.locator = LogLocator()
+        # cbar.formatter = LogFormatter()
+        # cbar.update_normal(im)
+        # cbar.set_label('Surface brightness [Jy/beam]')
+
+        plt.grid('off')
+        plt.grid(False)
+        if save:
+            plt.savefig(save, dpi=250, bbox_inches="tight")
+            plt.close()
+
+        else:
+            plt.show()
 
 def make_selfcal_csv(path_to_folder='.', ms=False, h5=False):
     if not ms and not h5:
@@ -237,6 +349,8 @@ if __name__ == "__main__":
     parser.add_argument('--resolution', type=float, help='resolution', default=1.2)
     parser.add_argument('--saveimage', action='store_true', help='save image')
     parser.add_argument('--selfcalnames', action='store_true', help='give selfcal names')
+    parser.add_argument('--subregion', type=str, help='region file for cutout')
+    parser.add_argument('--widefield', action='store_true', help='make widefield image')
     args = parser.parse_args()
 
     if args.saveimage:
@@ -246,9 +360,15 @@ if __name__ == "__main__":
 
     im = Imaging(fits_file=args.fits,
                  resolution=args.resolution)
+
     if args.selfcal_folder is not None:
         make_selfcal_csv(args.selfcal_folder)
-    im.make_image(show_regions=args.region,
-                  h5=args.h5,
-                  selfcalnames=args.selfcalnames,
-                  save=save)
+
+    if args.widefield:
+        im.make_image(show_regions=args.region,
+                      h5=args.h5,
+                      selfcalnames=args.selfcalnames,
+                      save=save)
+
+    if args.subregion is not None:
+        im.make_subimages(args.subregion, cmap='CMRmap', save=None)

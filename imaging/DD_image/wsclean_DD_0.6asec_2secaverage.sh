@@ -12,8 +12,7 @@ OUT_DIR=$PWD
 
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
-#TODO: Wrong singularity
-SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
+SING_IMAGE_WSCLEAN=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.2_x86-64_znver2_znver2_cuda_ddf_dp3_master20012023.sif
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
@@ -73,7 +72,7 @@ wsclean \
 -apply-facet-beam \
 -facet-beam-update 600 \
 -use-differential-lofar-beam \
--channels-out 3 \
+-channels-out 6 \
 -deconvolution-channels 3 \
 -join-channels \
 -fit-spectral-pol 3 \

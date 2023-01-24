@@ -2,41 +2,40 @@
 #SBATCH -c 48
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
-#SBATCH --constraint=amd
+#SBATCH --constraint=intel
 #SBATCH -p infinite
-#SBATCH --constraint=mem950G
 #SBATCH --exclusive
-#SBATCH --job-name=DD_0.3_imaging
+#SBATCH --job-name=DD_1_imaging
 
 OUT_DIR=$PWD
 
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
-SING_IMAGE_WSCLEAN=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.2_x86-64_znver2_znver2_cuda_ddf_dp3_master20012023.sif
+SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/lofar_sksp_v3.4_znver2_znver2_noavx512_cuda_ddf.sif
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-source /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/prep_data/bda_0.3asec_2secaverage.sh
+source /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/prep_data/1asec_2secaverage.sh
 
 cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/ddcal/selfcals/master_merged.h5 .
 
-LIST=(bdaavg*.ms)
+LIST=(avg*.ms)
 
 singularity exec -B ${SING_BIND} /project/lofarvwf/Public/fsweijen/lofar_sksp_v4.0.0_x84-64_generic_noavx512_mkl_cuda_ddf_test3.sif python \
 /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/helper_scripts/ds9facetgenerator.py \
 --h5 master_merged.h5 \
 --DS9regionout facets.reg \
---imsize 60000 \
+--imsize 22500 \
 --ms ${LIST[0]} \
---pixelscale 0.15
+--pixelscale 0.4
 
 echo "Move data to tmpdir..."
 mkdir "$TMPDIR"/wscleandata
 mv master_merged.h5 "$TMPDIR"/wscleandata
 mv facets.reg "$TMPDIR"/wscleandata
-mv bdaavg*.ms "$TMPDIR"/wscleandata
+mv avg_applycal*.ms "$TMPDIR"/wscleandata
 cd "$TMPDIR"/wscleandata
 
 echo "----------START WSCLEAN----------"
@@ -46,7 +45,7 @@ wsclean \
 -update-model-required \
 -use-wgridder \
 -minuv-l 80.0 \
--size 60000 60000 \
+-size 22500 22500 \
 -weighting-rank-filter 3 \
 -reorder \
 -weight briggs -1.5 \
@@ -56,9 +55,9 @@ wsclean \
 -auto-mask 2.5 \
 -auto-threshold 1.0 \
 -pol i \
--name 0.4image \
--scale 0.15arcsec \
--taper-gaussian 0.4asec \
+-name 1.2image \
+-scale 0.4arcsec \
+-taper-gaussian 1.2asec \
 -niter 50000 \
 -log-time \
 -multiscale-scale-bias 0.7 \
@@ -76,11 +75,11 @@ wsclean \
 -deconvolution-channels 3 \
 -join-channels \
 -fit-spectral-pol 3 \
-bdaavg*.ms
-#${OBSERVATION}_120_168MHz_applied_bda.ms
+avg_applycal*.ms
+#${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
 
-rm -rf bdaavg*.ms
-
+rm -rf avg_applycal*.ms
+#
 tar cf output.tar *
 cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
 

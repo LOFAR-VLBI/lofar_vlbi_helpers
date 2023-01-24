@@ -7,7 +7,6 @@ SING_IMAGE_WSCLEAN=/net/achterrijn/data1/sweijen/software/containers/lofar_sksp_
 echo "Copy data"
 
 cp -r DATA/* .
-cp ../DD_1asec_old/master_merged.h5 .
 
 echo "...Finished copying"
 
@@ -28,9 +27,9 @@ wsclean \
 -auto-mask 2.5 \
 -auto-threshold 1.0 \
 -pol i \
--name image_test \
+-name 0.6image \
 -scale 0.2arcsec \
--taper-gaussian 0.4asec \
+-taper-gaussian 0.6asec \
 -niter 50000 \
 -log-time \
 -multiscale-scale-bias 0.7 \
@@ -44,7 +43,7 @@ wsclean \
 -apply-facet-beam \
 -facet-beam-update 600 \
 -use-differential-lofar-beam \
--channels-out 3 \
+-channels-out 6 \
 -deconvolution-channels 3 \
 -join-channels \
 -fit-spectral-pol 3 \

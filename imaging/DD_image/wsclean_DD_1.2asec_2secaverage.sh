@@ -11,14 +11,13 @@ OUT_DIR=$PWD
 
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
-#TODO: Wrong singularity
-SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
+SING_IMAGE_WSCLEAN=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.2_x86-64_znver2_znver2_cuda_ddf_dp3_master20012023.sif
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-source /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/prep_data/bda_1asec_2secaverage.sh
+source /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/prep_data/bda_1.2asec_2secaverage.sh
 
 cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/ddcal/selfcals/master_merged.h5 .
 
@@ -36,7 +35,7 @@ echo "Move data to tmpdir..."
 mkdir "$TMPDIR"/wscleandata
 mv master_merged.h5 "$TMPDIR"/wscleandata
 mv facets.reg "$TMPDIR"/wscleandata
-mv -r bdaavg*.ms "$TMPDIR"/wscleandata
+mv bdaavg*.ms "$TMPDIR"/wscleandata
 cd "$TMPDIR"/wscleandata
 
 echo "----------START WSCLEAN----------"
