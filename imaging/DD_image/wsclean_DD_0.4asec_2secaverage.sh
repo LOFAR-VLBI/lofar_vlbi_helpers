@@ -6,7 +6,7 @@
 #SBATCH -p infinite
 #SBATCH --constraint=mem950G
 #SBATCH --exclusive
-#SBATCH --job-name=DD_0.3_imaging
+#SBATCH --job-name=DD_0.4_imaging
 
 OUT_DIR=$PWD
 
@@ -83,5 +83,8 @@ rm -rf bdaavg*.ms
 
 tar cf output.tar *
 cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
+
+cd ${OUT_DIR}
+tar -xf output.tar *fits
 
 echo "----FINISHED----"

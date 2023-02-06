@@ -83,4 +83,7 @@ rm -rf bdaavg*.ms
 tar cf output.tar *
 cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
 
+cd ${OUT_DIR}
+tar -xf output.tar *fits
+
 echo "----FINISHED----"
