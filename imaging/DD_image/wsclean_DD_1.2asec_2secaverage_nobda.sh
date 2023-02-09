@@ -75,6 +75,7 @@ wsclean \
 -deconvolution-channels 3 \
 -join-channels \
 -fit-spectral-pol 3 \
+-dd-psf-grid 3 3 \
 avg_applycal*.ms
 #${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
 

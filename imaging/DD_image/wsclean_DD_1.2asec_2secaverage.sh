@@ -71,10 +71,11 @@ wsclean \
 -apply-facet-beam \
 -facet-beam-update 600 \
 -use-differential-lofar-beam \
--channels-out 3 \
+-channels-out 6 \
 -deconvolution-channels 3 \
 -join-channels \
 -fit-spectral-pol 3 \
+-dd-psf-grid 3 3 \
 bdaavg*.ms
 #${OBSERVATION}_120_168MHz_averaged_applied_bda.ms
 
