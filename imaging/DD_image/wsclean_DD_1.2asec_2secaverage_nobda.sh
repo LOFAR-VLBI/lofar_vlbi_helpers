@@ -2,7 +2,7 @@
 #SBATCH -c 48
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
-#SBATCH --constraint=intel
+#SBATCH --constraint=amd
 #SBATCH -p infinite
 #SBATCH --exclusive
 #SBATCH --job-name=DD_1_imaging
@@ -11,7 +11,7 @@ OUT_DIR=$PWD
 
 #SINGULARITY SETTINGS
 SING_BIND=/project/lofarvwf/Share/jdejong,/home
-SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/lofar_sksp_v3.4_znver2_znver2_noavx512_cuda_ddf.sif
+SING_IMAGE_WSCLEAN=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.2_znver2_znver2_noavx512_ddf_10_02_2023.sif
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"

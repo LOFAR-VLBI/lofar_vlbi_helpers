@@ -6,7 +6,7 @@
 #SBATCH -p infinite
 #SBATCH --constraint=mem950G
 #SBATCH --exclusive
-#SBATCH --job-name=DD_0.4_imaging
+#SBATCH --job-name=DD_0.6_imaging
 
 OUT_DIR=$PWD
 
@@ -18,25 +18,25 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-source /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/prep_data/bda_0.3asec_2secaverage.sh
+source /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/prep_data/0.6asec_2secaverage.sh
 
 cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/ddcal/selfcals/master_merged.h5 .
 
-LIST=(bdaavg*.ms)
+LIST=(avg*.ms)
 
 singularity exec -B ${SING_BIND} /project/lofarvwf/Public/fsweijen/lofar_sksp_v4.0.0_x84-64_generic_noavx512_mkl_cuda_ddf_test3.sif python \
 /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/helper_scripts/ds9facetgenerator.py \
 --h5 master_merged.h5 \
 --DS9regionout facets.reg \
---imsize 60000 \
+--imsize 45000 \
 --ms ${LIST[0]} \
---pixelscale 0.15
+--pixelscale 0.2
 
 echo "Move data to tmpdir..."
 mkdir "$TMPDIR"/wscleandata
 mv master_merged.h5 "$TMPDIR"/wscleandata
 mv facets.reg "$TMPDIR"/wscleandata
-mv bdaavg*.ms "$TMPDIR"/wscleandata
+mv avg*.ms "$TMPDIR"/wscleandata
 cd "$TMPDIR"/wscleandata
 
 echo "----------START WSCLEAN----------"
@@ -46,7 +46,7 @@ wsclean \
 -update-model-required \
 -use-wgridder \
 -minuv-l 80.0 \
--size 60000 60000 \
+-size 45000 45000 \
 -weighting-rank-filter 3 \
 -reorder \
 -weight briggs -1.5 \
@@ -56,9 +56,9 @@ wsclean \
 -auto-mask 2.5 \
 -auto-threshold 1.0 \
 -pol i \
--name 0.4image \
--scale 0.15arcsec \
--taper-gaussian 0.4asec \
+-name 0.6image \
+-scale 0.2arcsec \
+-taper-gaussian 0.6asec \
 -niter 50000 \
 -log-time \
 -multiscale-scale-bias 0.7 \
@@ -76,10 +76,11 @@ wsclean \
 -deconvolution-channels 3 \
 -join-channels \
 -fit-spectral-pol 3 \
-bdaavg*.ms
+-dd-psf-grid 3 3 \
+avg*.ms
 #${OBSERVATION}_120_168MHz_applied_bda.ms
 
-rm -rf bdaavg*.ms
+rm -rf avg*.ms
 
 tar cf output.tar *
 cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
