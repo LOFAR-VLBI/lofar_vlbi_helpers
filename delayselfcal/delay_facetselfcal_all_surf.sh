@@ -1,6 +1,5 @@
 #!/bin/bash
 #SBATCH -N 1 -c 24 --job-name=delayselfcal
-#SBATCH --exclusive
 
 
 SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif

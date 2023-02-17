@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export PYTHONPATH=/opt/lofar/DPPP/lib/python3.7/site-packages:$PYTHONPATH
+export APPTAINERENV_MPLBACKEND=agg
 
 python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
 --imsize=1600 \
