@@ -97,7 +97,7 @@ def find_candidates(cat, ms, fluxcut=25e-3):
     return candidates
 
 
-def make_parset(ms=None, candidate=None, prefix=''):
+def make_parset(ms=None, h5=None, candidate=None, prefix=''):
     ''' Create a DPPP ready parset for phaseshifting towards the sources.
     Args:
         candidate (Table): candidate.
@@ -111,13 +111,20 @@ def make_parset(ms=None, candidate=None, prefix=''):
     parset = 'msin='+ms
     parset += '\nmsout=' + prefix+'_'+freqband+'_P{:d}.ms'.format(int(candidate['Source_id']))
     parset += '\nmsin.datacolumn=DATA' \
-             '\nmsout.storagemanager=dysco' \
-             '\nmsout.writefullresflag=False' \
-             '\nsteps=[ps,avg]' \
-             '\nps.type=phaseshifter' \
-             '\navg.type=averager' \
-             '\navg.freqresolution=390.56kHz' \
-             '\navg.timeresolution=60'
+              '\nmsout.storagemanager=dysco' \
+              '\nmsout.writefullresflag=False' \
+              '\nsteps=[ps,beam,ac,avg]' \
+              '\nps.type=phaseshifter' \
+              '\navg.type=averager' \
+              '\navg.freqresolution=390.56kHz' \
+              '\navg.timeresolution=60' \
+              '\nbeam.type=applybeam' \
+              '\nbeam.updateweights=True' \
+              '\nbeam.direction=[]' \
+              '\nac.type=applycal' \
+              f'\nac.parmdb={h5}' \
+              '\nac.correction=fulljones' \
+              '\nac.soltab=[amplitude000,phase000]'
 
     t = ct.table(ms+'::FIELD')
     phasedir = t.getcol("PHASE_DIR").squeeze()
@@ -134,6 +141,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--ms', dest='ms', help='Measurement set to read phase dir from')
+    parser.add_argument('--h5', dest='h5', help='Delayselfcal solutions')
     parser.add_argument('--catalog', dest='catalog', help='Catalog to select candidate calibrators from.')
     parser.add_argument('--prefix', dest='prefix', help='Prefix', default='')
 
@@ -143,4 +151,4 @@ if __name__ == '__main__':
 
     candidates.write('dde_calibrators.csv', format='ascii.csv', overwrite=True)
     for candidate in candidates:
-        parset = make_parset(ms=args.ms, candidate=candidate, prefix=args.prefix)
+        parset = make_parset(ms=args.ms, candidate=candidate, prefix=args.prefix, h5=args.h5)
