@@ -5,6 +5,8 @@
 L_LIST=$1
 #Catalogue with sources
 CATALOG=$2
+#H5 solutions
+SOLUTIONS=$3
 
 SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
 
@@ -24,7 +26,7 @@ while read -r LNUM; do
   for MS in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/apply_delaycal/applycal_sub6asec_${LNUM}*.ms; do
 
     #Make calibrator parsets
-    singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_directions_parsets.py --catalog ${CATALOG} --prefix ${LNUM} --ms ${MS}
+    singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_directions_parsets.py --catalog ${CATALOG} --prefix ${LNUM} --ms ${MS} --h5 ${SOLUTIONS}
     echo "Made parsets for ${LNUM}"
 
   done
