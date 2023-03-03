@@ -122,7 +122,7 @@ def make_parset(ms=None, h5=None, candidate=None, prefix=''):
               '\nbeam.updateweights=True' \
               '\nbeam.direction=[]' \
               '\nac.type=applycal' \
-              f'\nac.parmdb={h5}' \
+              '\nac.parmdb='+h5+ \
               '\nac.correction=fulljones' \
               '\nac.soltab=[amplitude000,phase000]'
 

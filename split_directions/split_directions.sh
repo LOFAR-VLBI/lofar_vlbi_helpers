@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH -N 1 -c 5 --job-name=split_directions
 
-#List with L-numbers
+#List with L-numbers --> TEXT FILE
 L_LIST=$1
-#Catalogue with sources
+#Catalogue with sources --> FITS FILE
 CATALOG=$2
 
 SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
@@ -32,9 +32,9 @@ while read -r LNUM; do
 
   done
 
-  sbatch ${SCRIPTS}/split_directions/phaseshift_batch1.sh ${LNUM}
-  sbatch ${SCRIPTS}/split_directions/phaseshift_batch2.sh ${LNUM}
-  sbatch ${SCRIPTS}/split_directions/phaseshift_batch3.sh ${LNUM}
+#  sbatch ${SCRIPTS}/split_directions/phaseshift_batch1.sh ${LNUM}
+#  sbatch ${SCRIPTS}/split_directions/phaseshift_batch2.sh ${LNUM}
+#  sbatch ${SCRIPTS}/split_directions/phaseshift_batch3.sh ${LNUM}
 
 done <$L_LIST
 
