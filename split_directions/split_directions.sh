@@ -5,8 +5,6 @@
 L_LIST=$1
 #Catalogue with sources
 CATALOG=$2
-#H5 solutions
-SOLUTIONS=$3
 
 SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
 
@@ -21,6 +19,9 @@ echo "Job landed on $(hostname)"
 echo "-----------------STARTED SPLIT DIRECTIONS-----------------"
 
 while read -r LNUM; do
+
+  #WHEN YOU RUN WITH SKYMODEL
+  SOLUTIONS=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/delayselfcal/merged_selfcalcyle000_linearfulljones_${LNUM}_120_168MHz_averaged.ms.avg.h5
 
   echo "Copy applycal ms"
   for MS in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/subtract/subtract_lotss/sub6asec_${LNUM}*.ms; do
