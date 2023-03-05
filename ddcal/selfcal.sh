@@ -2,7 +2,7 @@
 #SBATCH -c 12
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
-#SBATCH
+#SBATCH --constraint=amd
 
 MS=$1
 
