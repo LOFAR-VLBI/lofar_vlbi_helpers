@@ -18,7 +18,7 @@ python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
 --makeimage-ILTlowres-HBA \
 --targetcalILT='scalarphase' \
 --stop=12 \
---no_beamcor \
+--no-beamcor \
 --makeimage-fullpol \
 --helperscriptspath=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal \
 --helperscriptspathh5merge=/home/lofarvwf-jdejong/scripts/lofar_helpers \
