@@ -25,6 +25,7 @@ echo "...Finished copying from applycal folder"
 
 echo "Average data in DPPP..."
 
+#Average to 4seconds and 4ch/SB
 for MS in applycal*.ms
 do
   singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \

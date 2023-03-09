@@ -28,7 +28,7 @@ while read -r LNUM; do
 
     #Make calibrator parsets
     singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_directions_parsets.py --catalog ${CATALOG} --prefix ${LNUM} --ms ${MS} --h5 ${SOLUTIONS}
-    echo "Made parsets for ${LNUM}"
+    echo "Made parsets for ${MS}"
 
   done
 
