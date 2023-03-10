@@ -9,7 +9,7 @@ Step 3) run prefactor_pipeline/run_PFC.sh to calibrate for the calibrator from t
 Step 4) run prefactor_pipeline/run_PFT.sh to calibrate the target from the target folder \
 Step 5) run the DDF pipeline to obtain a 6" image (solutions/model can be used for higher resolutions), example: ddf_pipeline/ddfrun.sh \
 After DDF need to run helper_scripts/getfreqs_scales.py to get frequency scales used in ddf \
-Step 6) run prefactor_pipeline/run_DC.sh to make the setup for the delay calibration from lofar-vlbi \
+Step 6) run lofar-vlbi-setup/run_DC.sh to make the setup for the delay calibration from lofar-vlbi \
 Step 7) run subtract_lotss/subtract_main.sh to subtract 6" LoTSS map from the input data \
 Step 8) concat the subtracted output and phase shift to delaycalibrator subtract_lotss/concat.sh \
 Step 9) run delayselfcal/delay_facetselfcal.sh to do a delayselfcal on concattenated file \
