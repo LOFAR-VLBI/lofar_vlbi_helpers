@@ -59,7 +59,7 @@ wsclean \
 -name 0.6image \
 -scale 0.2arcsec \
 -taper-gaussian 0.6asec \
--niter 50000 \
+-niter 150000 \
 -log-time \
 -multiscale-scale-bias 0.7 \
 -parallel-deconvolution 2600 \

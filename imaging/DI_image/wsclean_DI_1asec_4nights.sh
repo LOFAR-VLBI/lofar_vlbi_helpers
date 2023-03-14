@@ -41,7 +41,7 @@ wsclean \
 -parallel-deconvolution 2600 \
 -multiscale \
 -multiscale-max-scales 9 \
--nmiter 9 \
+-nmiter 12 \
 -channels-out 6 \
 -join-channels \
 -fit-spectral-pol 3 \
