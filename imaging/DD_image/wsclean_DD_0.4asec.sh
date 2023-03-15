@@ -25,7 +25,7 @@ cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/ddcal/selfcals/ma
 LIST=(*.ms)
 
 singularity exec -B ${SING_BIND} /project/lofarvwf/Public/fsweijen/lofar_sksp_v4.0.0_x84-64_generic_noavx512_mkl_cuda_ddf_test3.sif python \
-/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/helper_scripts/ds9facetgenerator.py \
+/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/ds9facetgenerator.py \
 --h5 master_merged.h5 \
 --DS9regionout facets.reg \
 --imsize 60000 \
