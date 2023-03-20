@@ -33,7 +33,7 @@ def in_fits(fitsfile, boxfile, coor):
     return bool(mask[index[0], index[1]])
 
 
-def find_candidates(cat, ms, fluxcut=25e-3):
+def find_candidates(cat, ms, fluxcut=25e-3, extra_candidates=[]):
     ''' Identify candidate sources for DDE calibration.
     The given catalog is searched for potential calibrator sources based on a cut in peak intensity.
     An attempt is made to remove duplicate entries by clustering multiple components based on their
@@ -83,15 +83,20 @@ def find_candidates(cat, ms, fluxcut=25e-3):
 
         if len(comps) == 1:
             # Nothing needs to merge with this direction.
-            candidates.add_row((tab['Source_id'][i], tab['RA'][i], tab['DEC'][i]))
+            candidates.add_row(('P'+str(int(tab['Source_id'][i])), tab['RA'][i], tab['DEC'][i]))
             continue
         else:
             ra_mean = np.mean(tab['RA'][idx])
             dec_mean = np.mean(tab['DEC'][idx])
             if (ra_mean not in candidates['RA']) and (dec_mean not in candidates['DEC']):
-                candidates.add_row((tab['Source_id'][i], ra_mean, dec_mean))
+                candidates.add_row(('P'+str(int(tab['Source_id'][i])), ra_mean, dec_mean))
             else:
                 print('Direction {:d} has been merged already.\n'.format(tab['Source_id'][i]))
+
+    for candidate in extra_candidates:
+        name, ra, dec = candidate
+        candidates.add_row((name, ra, dec))
+
 
 
     return candidates
@@ -133,6 +138,7 @@ def make_parset(ms=None, h5=None, candidate=None, prefix=''):
     parset += '\nps.phasecenter=' + '[{:f}deg,{:f}deg]\n'.format(candidate['RA'], candidate['DEC'])
     with open(prefix+'_'+freqband+'_P{:d}.parset'.format(int(candidate['Source_id'])), 'w') as f:
         f.write(parset)
+
     return parset
 
 
@@ -147,7 +153,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    candidates = find_candidates(cat=args.catalog, ms=args.ms)
+    candidates = find_candidates(cat=args.catalog, ms=args.ms, extra_candidates=[['P99999', 244.0989, 55.4513], ['P99998', 243.2815, 56.1325]])
 
     candidates.write('dde_calibrators.csv', format='ascii.csv', overwrite=True)
     for candidate in candidates:
