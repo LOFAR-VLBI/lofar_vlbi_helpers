@@ -44,7 +44,7 @@ echo "----------START WSCLEAN----------"
 singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} \
 wsclean \
 -update-model-required \
--gridder \
+-gridder wgridder \
 -minuv-l 80.0 \
 -size 60000 60000 \
 -weighting-rank-filter 3 \
