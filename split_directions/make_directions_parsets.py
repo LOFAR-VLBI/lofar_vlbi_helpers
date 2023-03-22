@@ -83,13 +83,13 @@ def find_candidates(cat, ms, fluxcut=25e-3, extra_candidates=[]):
 
         if len(comps) == 1:
             # Nothing needs to merge with this direction.
-            candidates.add_row(('P'+str(int(tab['Source_id'][i])), tab['RA'][i], tab['DEC'][i]))
+            candidates.add_row((tab['Source_id'][i], tab['RA'][i], tab['DEC'][i]))
             continue
         else:
             ra_mean = np.mean(tab['RA'][idx])
             dec_mean = np.mean(tab['DEC'][idx])
             if (ra_mean not in candidates['RA']) and (dec_mean not in candidates['DEC']):
-                candidates.add_row(('P'+str(int(tab['Source_id'][i])), ra_mean, dec_mean))
+                candidates.add_row((tab['Source_id'][i], ra_mean, dec_mean))
             else:
                 print('Direction {:d} has been merged already.\n'.format(tab['Source_id'][i]))
 
@@ -153,7 +153,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    candidates = find_candidates(cat=args.catalog, ms=args.ms, extra_candidates=[['P99999', 244.0989, 55.4513], ['P99998', 243.2815, 56.1325]])
+    candidates = find_candidates(cat=args.catalog, ms=args.ms, extra_candidates=[[99999, 244.0989, 55.4513], [99998, 243.2815, 56.1325]])
 
     candidates.write('dde_calibrators.csv', format='ascii.csv', overwrite=True)
     for candidate in candidates:
