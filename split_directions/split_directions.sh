@@ -21,7 +21,7 @@ echo "-----------------STARTED SPLIT DIRECTIONS-----------------"
 while read -r LNUM; do
 
   # WHEN YOU RUN WITH SKYMODEL
-  SOLUTIONS=${PROJPATH}/ALL_L/delayselfcal/merged_selfcalcyle000_linearfulljones_${LNUM}_120_168MHz_averaged.ms.avg.h5
+  SOLUTIONS=${PROJPATH}/ALL_L/delayselfcal/merged_skyselfcalcyle000_${LNUM}_120_168MHz_averaged.ms.avg.h5
 
   echo "Copy applycal ms"
   for MS in ${PROJPATH}/${LNUM}/subtract/subtract_lotss/sub6asec_${LNUM}*.ms; do
@@ -37,7 +37,7 @@ done <$L_LIST
 
 # RUN PARSETS
 PARSET_COUNT=$(ls *.parset | wc -l)
-BATCHES=$(($V1 / 1000))
+BATCHES=$(($PARSET_COUNT/1000))
 for B in `seq ${BATCHES}`; do
   sbatch ${SCRIPTS}/split_directions/phaseshift_batch.sh $((${B} * 1000))
 done
