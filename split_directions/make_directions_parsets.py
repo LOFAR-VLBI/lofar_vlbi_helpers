@@ -52,7 +52,7 @@ def find_candidates(cat, ms, fluxcut=25e-3, extra_candidates=[]):
     tab.rename_column('DEC', 'DEC')
 
     # In case of multiple components of a single source being found, calculate the mean position.
-    candidates = Table(names=['Source_id', 'RA', 'DEC'], dtype=[str, float, float])
+    candidates = Table(names=['Source_id', 'RA', 'DEC'])
 
     # Get phase dir of observation
     t = ct.table(ms+'::FIELD')
