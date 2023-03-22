@@ -37,9 +37,9 @@ done <$L_LIST
 
 # RUN PARSETS
 PARSET_COUNT=$(ls *.parset | wc -l)
-BATCHES=$(($PARSET_COUNT/1000))
+BATCHES=$(($PARSET_COUNT/5000))
 for B in `seq ${BATCHES}`; do
-  sbatch ${SCRIPTS}/split_directions/phaseshift_batch.sh $((${B} * 1000))
+  sbatch ${SCRIPTS}/split_directions/phaseshift_batch.sh $((${B} * 5000))
 done
 
 
