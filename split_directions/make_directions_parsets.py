@@ -102,7 +102,7 @@ def find_candidates(cat, ms, fluxcut=25e-3, extra_candidates=[]):
     return candidates
 
 
-def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False):
+def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False, selection=[]):
     ''' Create a DPPP ready parset for phaseshifting towards the sources.
     Args:
         candidate (Table): candidate.
@@ -122,14 +122,14 @@ def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False):
         freqres='390.56kHz'
         timeres='60'
 
-    parset += f'\nmsin.datacolumn=DATA' \
+    parset += '\nmsin.datacolumn=DATA' \
               '\nmsout.storagemanager=dysco' \
               '\nmsout.writefullresflag=False' \
               '\nsteps=[ps,beam,ac,avg]' \
               '\nps.type=phaseshifter' \
               '\navg.type=averager' \
-              '\navg.freqresolution=195.28kHz' \
-              '\navg.timeresolution=8' \
+              f'\navg.freqresolution={freqres}' \
+              f'\navg.timeresolution={timeres}' \
               '\nbeam.type=applybeam' \
               '\nbeam.updateweights=True' \
               '\nbeam.direction=[]' \
@@ -143,9 +143,16 @@ def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False):
     phasedir = t.getcol("PHASE_DIR").squeeze()
     phasedir *= 180/pi
 
-    parset += '\nps.phasecenter=' + '[{:f}deg,{:f}deg]\n'.format(candidate['RA'], candidate['DEC'])
-    with open(prefix+'_'+freqband+'_P{:d}.parset'.format(int(candidate['Source_id'])), 'w') as f:
-        f.write(parset)
+    if len(args.selection)>0:
+        if 'P{:d}'.format(int(candidate['Source_id'])) in selection:
+            parset += '\nps.phasecenter=' + '[{:f}deg,{:f}deg]\n'.format(candidate['RA'], candidate['DEC'])
+            with open(prefix+'_'+freqband+'_P{:d}.parset'.format(int(candidate['Source_id'])), 'w') as f:
+                f.write(parset)
+    else:
+        parset += '\nps.phasecenter=' + '[{:f}deg,{:f}deg]\n'.format(candidate['RA'], candidate['DEC'])
+        with open(prefix + '_' + freqband + '_P{:d}.parset'.format(int(candidate['Source_id'])), 'w') as f:
+            f.write(parset)
+
 
     return parset
 
@@ -160,11 +167,14 @@ if __name__ == '__main__':
     parser.add_argument('--h5', dest='h5', help='Delayselfcal solutions')
     parser.add_argument('--catalog', dest='catalog', help='Catalog to select candidate calibrators from.')
     parser.add_argument('--prefix', dest='prefix', help='Prefix', default='')
+    parser.add_argument('--selection', type=str, nargs='+', help='specific selection of P* sources')
 
     args = parser.parse_args()
 
-    candidates = find_candidates(cat=args.catalog, ms=args.ms, extra_candidates=[[99999, 244.0989, 55.4513], [99998, 243.2815, 56.1325]])
 
+    candidates = find_candidates(cat=args.catalog, ms=args.ms, extra_candidates=[[99999, 244.0989, 55.4513], [99998, 243.2815, 56.1325]])
     candidates.write('dde_calibrators.csv', format='ascii.csv', overwrite=True)
+
     for candidate in candidates:
-        parset = make_parset(ms=args.ms, candidate=candidate, prefix=args.prefix, h5=args.h5)
+        parset = make_parset(ms=args.ms, candidate=candidate, prefix=args.prefix, h5=args.h5, selection=args.selection)
+
