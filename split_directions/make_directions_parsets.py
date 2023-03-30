@@ -102,7 +102,7 @@ def find_candidates(cat, ms, fluxcut=25e-3, extra_candidates=[]):
     return candidates
 
 
-def make_parset(ms=None, h5=None, candidate=None, prefix=''):
+def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False):
     ''' Create a DPPP ready parset for phaseshifting towards the sources.
     Args:
         candidate (Table): candidate.
@@ -115,21 +115,29 @@ def make_parset(ms=None, h5=None, candidate=None, prefix=''):
 
     parset = 'msin='+ms
     parset += '\nmsout=' + prefix+'_'+freqband+'_P{:d}.ms'.format(int(candidate['Source_id']))
-    parset += '\nmsin.datacolumn=DATA' \
+    if brighter:
+        freqres='195.28kHz'
+        timeres='8'
+    else:
+        freqres='390.56kHz'
+        timeres='60'
+
+    parset += f'\nmsin.datacolumn=DATA' \
               '\nmsout.storagemanager=dysco' \
               '\nmsout.writefullresflag=False' \
               '\nsteps=[ps,beam,ac,avg]' \
               '\nps.type=phaseshifter' \
               '\navg.type=averager' \
-              '\navg.freqresolution=390.56kHz' \
-              '\navg.timeresolution=60' \
+              '\navg.freqresolution=195.28kHz' \
+              '\navg.timeresolution=8' \
               '\nbeam.type=applybeam' \
               '\nbeam.updateweights=True' \
               '\nbeam.direction=[]' \
               '\nac.type=applycal' \
-              '\nac.parmdb='+h5+ \
+              '\nac.parmdb=' + h5 + \
               '\nac.correction=fulljones' \
               '\nac.soltab=[amplitude000,phase000]'
+
 
     t = ct.table(ms+'::FIELD')
     phasedir = t.getcol("PHASE_DIR").squeeze()
@@ -140,6 +148,8 @@ def make_parset(ms=None, h5=None, candidate=None, prefix=''):
         f.write(parset)
 
     return parset
+
+
 
 
 if __name__ == '__main__':
