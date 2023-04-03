@@ -79,20 +79,20 @@ def find_candidates(cat, ms, fluxcut=25e-3, extra_candidates=[]):
         sourcedir_x = SkyCoord(ra=sourcedir[0]*u.degree, dec=phasedir[1]*u.degree, frame='fk5')
         sourcedir_y = SkyCoord(ra=phasedir[0]*u.degree, dec=sourcedir[1]*u.degree, frame='fk5')
 
-        if phasedir_coor.separation(sourcedir_x).value>1.25 or phasedir_coor.separation(sourcedir_y).value>1.25:
-            continue
-
-        if len(comps) == 1:
-            # Nothing needs to merge with this direction.
-            candidates.add_row((tab['Source_id'][i], tab['RA'][i], tab['DEC'][i]))
-            continue
+        # if phasedir_coor.separation(sourcedir_x).value>1.25 or phasedir_coor.separation(sourcedir_y).value>1.25:
+        #     continue
+        #
+        # if len(comps) == 1:
+        #     # Nothing needs to merge with this direction.
+        #     candidates.add_row((tab['Source_id'][i], tab['RA'][i], tab['DEC'][i]))
+        #     continue
+        # else:
+        ra_mean = np.mean(tab['RA'][idx])
+        dec_mean = np.mean(tab['DEC'][idx])
+        if (ra_mean not in candidates['RA']) and (dec_mean not in candidates['DEC']):
+            candidates.add_row((tab['Source_id'][i], ra_mean, dec_mean))
         else:
-            ra_mean = np.mean(tab['RA'][idx])
-            dec_mean = np.mean(tab['DEC'][idx])
-            if (ra_mean not in candidates['RA']) and (dec_mean not in candidates['DEC']):
-                candidates.add_row((tab['Source_id'][i], ra_mean, dec_mean))
-            else:
-                print('Direction {:d} has been merged already.\n'.format(tab['Source_id'][i]))
+            print('Direction {:d} has been merged already.\n'.format(tab['Source_id'][i]))
 
     for candidate in extra_candidates:
         name, ra, dec = candidate
