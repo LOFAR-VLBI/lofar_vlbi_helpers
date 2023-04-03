@@ -119,6 +119,7 @@ def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False, sel
 
     parset = 'msin='+ms
     parset += '\nmsout=' + prefix+'_'+freqband+'_P{:d}.ms'.format(int(candidate['Source_id']))
+
     if brighter:
         freqres='195.28kHz'
         timeres='8'
@@ -175,6 +176,7 @@ if __name__ == '__main__':
     parser.add_argument('--catalog', dest='catalog', help='Catalog to select candidate calibrators from.')
     parser.add_argument('--prefix', dest='prefix', help='Prefix', default='')
     parser.add_argument('--selection', type=str, nargs='+', help='specific selection of P* sources')
+    parser.add_argument('--brighter', action='store_true', help='brigher sources that need longer solution intervals', default=False)
 
     args = parser.parse_args()
 
@@ -183,5 +185,5 @@ if __name__ == '__main__':
     candidates.write('dde_calibrators.csv', format='ascii.csv', overwrite=True)
 
     for candidate in candidates:
-        parset = make_parset(ms=args.ms, candidate=candidate, prefix=args.prefix, h5=args.h5, selection=args.selection)
+        parset = make_parset(ms=args.ms, candidate=candidate, prefix=args.prefix, h5=args.h5, selection=args.selection, brighter=args.brighter)
 
