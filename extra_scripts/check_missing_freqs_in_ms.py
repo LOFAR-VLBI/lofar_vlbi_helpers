@@ -39,23 +39,26 @@ def check_channels(input, make_dummies, output_name):
     """
     chans, mslist = get_channels(input)
     chan_diff = np.abs(np.diff(chans, n=2))
+    file = open(output_name, 'w')
 
     # check gaps in freqs
     if np.sum(chan_diff) != 0:
         if not make_dummies:
             sys.exit("ERROR: there are channel gaps.")
         else:
-
             dummy_idx = set(1 - np.ndarray.flatten(np.argwhere(chan_diff > 0)) // len(mslist))
             for n, idx in enumerate(dummy_idx):
                 print('dummy_'+str(n)+' between '+str(mslist[idx-1])+' and '+str(mslist[idx]))
                 mslist.insert(idx, 'dummy_'+str(n))
-            file = open(output_name, 'w')
             for ms in mslist:
                 file.write(ms+'\n')
-            file.close()
-
-    return True
+        file.close()
+        return False
+    else:
+        for ms in mslist:
+            file.write(ms + '\n')
+        file.close()
+        return True
 
 
 if __name__ == '__main__':
