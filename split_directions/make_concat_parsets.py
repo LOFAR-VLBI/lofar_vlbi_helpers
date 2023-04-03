@@ -17,7 +17,7 @@ for observation in all_obs:
         os.system(f'python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/check_missing_freqs_in_ms.py --ms {mschain} --make_dummies --output_name {txt_name}')
         with open(txt_name) as f:
             lines = f.readlines()
-        parset = 'msin=' + '['+', '.join(lines).replace('\n', '')+']'
+        parset = 'msin=' + '['+', '.join(lines).replace('\n', '')+']\n'
         parset += 'msout=' + observation + '_' + dir + '.ms'
         parset += '\nmsin.datacolumn=DATA' \
                   '\nmsin.missingdata=True' \

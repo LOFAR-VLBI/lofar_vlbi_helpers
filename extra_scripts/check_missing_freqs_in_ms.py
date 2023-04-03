@@ -29,7 +29,7 @@ def get_channels(input):
 
         t.close()
 
-    return np.sort(chans), input
+    return np.sort(chans), sorted(input)
 
 
 def check_channels(input, make_dummies, output_name):
