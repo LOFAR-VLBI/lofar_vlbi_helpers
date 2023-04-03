@@ -17,7 +17,7 @@ def get_channels(input):
     :return: sorted concatenated channels
     """
     if type(input) == str:
-        input = glob(input)
+        input = sorted(glob(input))
 
     for n, ms in enumerate(input):
         t = ct.table(ms + '/::SPECTRAL_WINDOW')
@@ -29,28 +29,31 @@ def get_channels(input):
 
         t.close()
 
-    return np.sort(chans)
+    return np.sort(chans), input
 
 
-def check_channels(input, make_dummies):
+def check_channels(input, make_dummies, output_name):
     """
     :param input: list or string with measurement sets
     :return: True if no error, otherwise sys.exit
     """
-    chans = get_channels(input)
+    chans, mslist = get_channels(input)
     chan_diff = np.abs(np.diff(chans, n=2))
+
     # check gaps in freqs
     if np.sum(chan_diff) != 0:
         if not make_dummies:
             sys.exit("ERROR: there are channel gaps.")
         else:
-            dummy_num = np.sum(chan_diff > 0) // 2
-            file = open('mslist.txt', 'a')
-            for n in range(dummy_num):
-                print('dummy'+'_'+str(n)+'.ms added to mslist.txt')
-                file.write('dummy'+'_'+str(n)+'.ms\n')
+
+            dummy_idx = set(1 - np.ndarray.flatten(np.argwhere(chan_diff > 0)) // len(mslist))
+            for n, idx in enumerate(dummy_idx):
+                print('dummy_'+str(n)+' between '+str(mslist[idx-1])+' and '+str(mslist[idx]))
+                mslist.insert(idx, 'dummy_'+str(n))
+            file = open(output_name, 'w')
+            for ms in mslist:
+                file.write(ms+'\n')
             file.close()
-            sys.exit("WARNING: there is/are " + str(dummy_num) + " gaps.")
 
     return True
 
@@ -61,8 +64,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Validate MS')
     parser.add_argument('--ms', nargs='+', help='MS', required=True)
     parser.add_argument('--make_dummies', help='Make dummies for missing MS', action='store_true')
+    parser.add_argument('--output_name', help='Output txt name', type=str, default='mslist.txt')
 
     args = parser.parse_args()
 
-    if check_channels(input=args.ms, make_dummies=args.make_dummies):
+    if check_channels(input=args.ms, make_dummies=args.make_dummies, output_name=args.output_name):
         print('--- SUCCESS: freq gaps checked and no gaps found ---')

@@ -32,4 +32,4 @@ avg.timestep=4
 
 # check output
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/check_missing_freqs_in_ms.py --ms ${OBSERVATION}_120_168MHz_averaged.ms
+python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/check_missing_freqs_in_ms.py --ms ${OBSERVATION}_120_168MHz_averaged.ms --make_dummies
