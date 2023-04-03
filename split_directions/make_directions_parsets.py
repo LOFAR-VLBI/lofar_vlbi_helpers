@@ -103,7 +103,7 @@ def find_candidates(cat, ms, fluxcut=25e-3, extra_candidates=[]):
     return candidates
 
 
-def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False, selection=[]):
+def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False, selection=None):
     ''' Create a DPPP ready parset for phaseshifting towards the sources.
     Args:
         candidate (Table): candidate.
@@ -113,6 +113,9 @@ def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False, sel
     '''
 
     freqband = ms.split('_')[-1].split('.')[0]
+
+    if selection is None:
+        selection = []
 
     parset = 'msin='+ms
     parset += '\nmsout=' + prefix+'_'+freqband+'_P{:d}.ms'.format(int(candidate['Source_id']))
