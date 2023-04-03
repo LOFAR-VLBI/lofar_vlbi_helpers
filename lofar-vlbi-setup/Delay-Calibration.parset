@@ -133,6 +133,7 @@ pipeline.steps.apply_ddf = [ createmap_ddf, ddf_solutions, ddf_h5parms, convert_
 #pipeline.steps.delaycal = [ delay_cal_model, delay_solve ]
 #pipeline.steps.applydelay = [ createmap_selfcal, copyST_gains, copy_delay_sols, expand_h5_map, ndppp_apply_delay ]
 #pipeline.steps.cleanup = [ delete_prep_target, delete_phaseup, make_results_compress, make_summary ]
+pipeline.steps.cleanup = [ delete_prep_target ]
 
 ##################################################################################################################
 ##                                                                                                              ##
