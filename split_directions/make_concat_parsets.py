@@ -14,8 +14,7 @@ for observation in all_obs:
         mslist = glob(observation + '*' + dir + '.ms')
         mschain = ' '.join(mslist)
         txt_name = observation + '_' + dir + '.txt'
-        os.system(f'python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/check_missing_freqs_in_ms.py '
-                  f'--ms {mschain} --make_dummies --output_name {txt_name}')
+        os.system(f'python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/check_missing_freqs_in_ms.py --ms {mschain} --make_dummies --output_name {txt_name}')
         with open(txt_name) as f:
             lines = f.readlines()
         parset = 'msin=' + '['+', '.join(lines).replace('\n', '')+']'
