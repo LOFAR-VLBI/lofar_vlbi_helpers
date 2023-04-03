@@ -7,7 +7,7 @@ OFFSET=$1 # OFFSET BECAUSE SLURM CAN ONLY HAVE MAX 1000
 
 echo "Job landed on $(hostname)"
 
-pattern="*.parset"
+pattern="*MHz*.parset"
 files=( $pattern )
 N=$(( ${SLURM_ARRAY_TASK_ID}+${OFFSET} ))
 

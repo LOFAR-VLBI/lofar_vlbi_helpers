@@ -13,6 +13,7 @@ from astropy import units as u
 from astropy.coordinates import SkyCoord
 from astropy.wcs import WCS
 from astropy.wcs.utils import skycoord_to_pixel
+from glob import glob
 
 def in_fits(fitsfile, boxfile, coor):
     """
@@ -143,14 +144,17 @@ def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False, sel
     phasedir = t.getcol("PHASE_DIR").squeeze()
     phasedir *= 180/pi
 
+    parsetname = prefix+'_'+freqband+'_P{:d}.parset'.format(int(candidate['Source_id']))
+
     if len(args.selection)>0:
         if 'P{:d}'.format(int(candidate['Source_id'])) in selection:
             parset += '\nps.phasecenter=' + '[{:f}deg,{:f}deg]\n'.format(candidate['RA'], candidate['DEC'])
-            with open(prefix+'_'+freqband+'_P{:d}.parset'.format(int(candidate['Source_id'])), 'w') as f:
-                f.write(parset)
+            if parsetname.replace('.parset','ms') not in glob('*.ms'):
+                with open(parsetname, 'w') as f:
+                    f.write(parset)
     else:
         parset += '\nps.phasecenter=' + '[{:f}deg,{:f}deg]\n'.format(candidate['RA'], candidate['DEC'])
-        with open(prefix + '_' + freqband + '_P{:d}.parset'.format(int(candidate['Source_id'])), 'w') as f:
+        with open(parsetname, 'w') as f:
             f.write(parset)
 
 
