@@ -12,7 +12,7 @@ if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 export SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
 export PROJPATH=/project/lofarvwf/Share/jdejong/output/ELAIS/
 export RESULTS_DIR=$PWD
-export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
+export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.3_znver2_znver2_noavx512_aocl4_cuda_ddf.sif
 
 echo "Job landed on $(hostname)"
 
@@ -36,11 +36,11 @@ done <$L_LIST
 
 
 # RUN PARSETS
-PARSET_COUNT=$(ls *.parset | wc -l)
-BATCHES=$(($PARSET_COUNT/5000))
-for B in `seq ${BATCHES}`; do
-  sbatch ${SCRIPTS}/split_directions/phaseshift_batch.sh $((${B} * 5000))
-done
+#PARSET_COUNT=$(ls *.parset | wc -l)
+#BATCHES=$(($PARSET_COUNT/5000))
+#for B in `seq ${BATCHES}`; do
+#  sbatch ${SCRIPTS}/split_directions/phaseshift_batch.sh $((${B} * 5000))
+#done
 
 
 echo "-----------------FINISHED SPLIT DIRECTIONS-----------------"
