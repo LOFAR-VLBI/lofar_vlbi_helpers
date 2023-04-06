@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 1 --job-name=concat_parset
+#SBATCH -N 1 -c 2 --job-name=concat_parset
 
 PARSET=$1
 

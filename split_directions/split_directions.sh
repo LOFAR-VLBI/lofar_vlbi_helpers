@@ -10,7 +10,7 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
 export SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
-export PROJPATH=/project/lofarvwf/Share/jdejong/output/ELAIS/
+export PROJPATH=/project/lofarvwf/Share/jdejong/output/ELAIS
 export RESULTS_DIR=$PWD
 export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.3_znver2_znver2_noavx512_aocl4_cuda_ddf.sif
 
@@ -21,7 +21,7 @@ echo "-----------------STARTED SPLIT DIRECTIONS-----------------"
 while read -r LNUM; do
 
   # WHEN YOU RUN WITH SKYMODEL
-  SOLUTIONS=${PROJPATH}/ALL_L/delayselfcal/merged_skyselfcalcyle000_${LNUM}_120_168MHz_averaged.ms.avg.h5
+  SOLUTIONS=${PROJPATH}/ALL_L/delayselfcal/merged_skyselfcalcyle000_linearfulljones_${LNUM}_120_168MHz_averaged.ms.avg.h5
 
   echo "Copy applycal ms"
   for MS in ${PROJPATH}/${LNUM}/subtract/subtract_lotss/sub6asec_${LNUM}*.ms; do

@@ -21,7 +21,7 @@ echo "-----------------STARTED SPLIT DIRECTIONS-----------------"
 while read -r LNUM; do
 
   # WHEN YOU RUN WITH SKYMODEL
-  SOLUTIONS=${PROJPATH}/ALL_L/delayselfcal/merged_skyselfcalcyle000_${LNUM}_120_168MHz_averaged.ms.avg.h5
+  SOLUTIONS=${PROJPATH}/ALL_L/delayselfcal/merged_skyselfcalcyle000_linearfulljones_${LNUM}_120_168MHz_averaged.ms.avg.h5
 
   echo "Copy applycal ms"
   for MS in ${PROJPATH}/${LNUM}/subtract/subtract_lotss/sub6asec_${LNUM}*.ms; do

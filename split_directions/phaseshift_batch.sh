@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 4 --job-name=phaseshift --array=0-4999%1000 --constraint=amd
+#SBATCH -c 8 --job-name=phaseshift --array=0-4999%1000 --constraint=amd
 
 export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.2_znver2_znver2_noavx512_ddf_10_02_2023.sif
 
