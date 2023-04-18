@@ -3,7 +3,7 @@
 
 #RUN DELAYSELFCAL FOR MULTIPLE NIGHTS
 
-SIMG=/net/achterrijn/data1/sweijen/software/containers/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
+SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
 BIND=$PWD,/project,/home/lofarvwf-jdejong/scripts
 
 cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/L769393/subtract/subtract_lotss/L769393_120_168MHz_averaged.ms .

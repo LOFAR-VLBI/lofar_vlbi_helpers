@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -c 8 --job-name=phaseshift --array=0-4999%1000 --constraint=amd
+#SBATCH -c 6 --job-name=phaseshift --array=0-4999%1000 --constraint=amd
 
-export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.2_znver2_znver2_noavx512_ddf_10_02_2023.sif
+export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.1.0_znver2_znver2_noavx512_aocl3_cuda_ddf.sif
 
 OFFSET=$1 # OFFSET BECAUSE SLURM CAN ONLY HAVE MAX 1000
 

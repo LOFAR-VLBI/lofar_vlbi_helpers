@@ -103,7 +103,7 @@ def find_candidates(cat, ms, fluxcut=25e-3, extra_candidates=[]):
     return candidates
 
 
-def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False, selection=None):
+def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False, selection=None, preavg=False):
     ''' Create a DPPP ready parset for phaseshifting towards the sources.
     Args:
         candidate (Table): candidate.
@@ -127,21 +127,41 @@ def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False, sel
         freqres='390.56kHz'
         timeres='60'
 
-    parset += '\nmsin.datacolumn=DATA' \
-              '\nmsout.storagemanager=dysco' \
-              '\nmsout.writefullresflag=False' \
-              '\nsteps=[ps,beam,ac,avg]' \
-              '\nps.type=phaseshifter' \
-              '\navg.type=averager' \
-              f'\navg.freqresolution={freqres}' \
-              f'\navg.timeresolution={timeres}' \
-              '\nbeam.type=applybeam' \
-              '\nbeam.updateweights=True' \
-              '\nbeam.direction=[]' \
-              '\nac.type=applycal' \
-              '\nac.parmdb=' + h5 + \
-              '\nac.correction=fulljones' \
-              '\nac.soltab=[amplitude000,phase000]'
+
+    if not preavg:
+        parset += '\nmsin.datacolumn=DATA' \
+                  '\nmsout.storagemanager=dysco' \
+                  '\nmsout.writefullresflag=False' \
+                  '\nsteps=[ps,beam,ac,avg]' \
+                  '\nps.type=phaseshifter' \
+                  '\navg.type=averager' \
+                  f'\navg.freqresolution={freqres}' \
+                  f'\navg.timeresolution={timeres}' \
+                  '\nbeam.type=applybeam' \
+                  '\nbeam.updateweights=True' \
+                  '\nbeam.direction=[]' \
+                  '\nac.type=applycal' \
+                  '\nac.parmdb=' + h5 + \
+                  '\nac.correction=fulljones' \
+                  '\nac.soltab=[amplitude000,phase000]'
+    else:
+        parset += '\nmsin.datacolumn=DATA' \
+                  '\nmsout.storagemanager=dysco' \
+                  '\nmsout.writefullresflag=False' \
+                  '\nsteps=[preavg,ps,beam,ac,avg]' \
+                  '\npreavg.type=averager' \
+                  '\npreavg.timeresolution=2' \
+                  '\nps.type=phaseshifter' \
+                  '\navg.type=averager' \
+                  f'\navg.freqresolution={freqres}' \
+                  f'\navg.timeresolution={timeres}' \
+                  '\nbeam.type=applybeam' \
+                  '\nbeam.updateweights=True' \
+                  '\nbeam.direction=[]' \
+                  '\nac.type=applycal' \
+                  '\nac.parmdb=' + h5 + \
+                  '\nac.correction=fulljones' \
+                  '\nac.soltab=[amplitude000,phase000]'
 
 
     t = ct.table(ms+'::FIELD')
@@ -177,6 +197,7 @@ if __name__ == '__main__':
     parser.add_argument('--prefix', dest='prefix', help='Prefix', default='')
     parser.add_argument('--selection', type=str, nargs='+', help='specific selection of P* sources')
     parser.add_argument('--brighter', action='store_true', help='brigher sources that need longer solution intervals', default=False)
+    parser.add_argument('--preavg', action='store_true', help='pre average to 2 sec before phaseshift', default=False)
 
     args = parser.parse_args()
 
@@ -185,5 +206,5 @@ if __name__ == '__main__':
     candidates.write('dde_calibrators.csv', format='ascii.csv', overwrite=True)
 
     for candidate in candidates:
-        parset = make_parset(ms=args.ms, candidate=candidate, prefix=args.prefix, h5=args.h5, selection=args.selection, brighter=args.brighter)
+        parset = make_parset(ms=args.ms, candidate=candidate, prefix=args.prefix, h5=args.h5, selection=args.selection, brighter=args.brighter, preavg=args.preavg)
 

@@ -3,7 +3,7 @@
 
 SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
 
-export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.3_znver2_znver2_noavx512_aocl4_cuda_ddf.sif
+export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.1.0_znver2_znver2_noavx512_aocl3_cuda_ddf.sif
 
 mkdir -p sub_parsets
 mkdir -p concat_parsets
