@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 1 --job-name=split_directions
+#SBATCH -N 1 -c 5 --job-name=split_directions
 
 #List with L-numbers --> TEXT FILE WITH L-NUMBERS FOR EACH LINE
 L_LIST=$1
@@ -10,7 +10,7 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
 export SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
-export PROJPATH=/project/lofarvwf/Share/jdejong/output/ELAIS
+export PROJPATH=/project/lofarvwf/Share/jdejong/output/ELAIS/
 export RESULTS_DIR=$PWD
 export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.3_znver2_znver2_noavx512_aocl4_cuda_ddf.sif
 
@@ -27,20 +27,19 @@ while read -r LNUM; do
   for MS in ${PROJPATH}/${LNUM}/subtract/subtract_lotss/sub6asec_${LNUM}*.ms; do
 
     #Make calibrator parsets
-    singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_directions_parsets.py --catalog ${CATALOG} --prefix ${LNUM} --ms ${MS} --h5 ${SOLUTIONS} --preavg
+    singularity exec -B $PWD,/project $SIMG python ${SCRIPTS}/split_directions/make_directions_parsets.py \
+    --catalog ${CATALOG} --prefix ${LNUM} --ms ${MS} --h5 ${SOLUTIONS} --brighter \
+    --selection P35307 P50980 P40952 P27648 P31553 P54920 P22459 P44832 P50716 P52238 P53426 P37145 \
+    --preavg
+
     echo "Made parsets for ${MS}"
 
   done
 
 done <$L_LIST
 
-
 # RUN PARSETS
-#PARSET_COUNT=$(ls *.parset | wc -l)
-#BATCHES=$(($PARSET_COUNT/5000))
-#for B in `seq ${BATCHES}`; do
-#  sbatch ${SCRIPTS}/split_directions/phaseshift_batch.sh $((${B} * 5000))
-#done
+sbatch ${SCRIPTS}/split_directions/phaseshift_batch_small.sh
 
 
 echo "-----------------FINISHED SPLIT DIRECTIONS-----------------"
