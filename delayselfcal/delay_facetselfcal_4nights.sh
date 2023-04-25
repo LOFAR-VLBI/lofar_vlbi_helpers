@@ -3,8 +3,9 @@
 
 #RUN DELAYSELFCAL FOR MULTIPLE NIGHTS
 
-SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
-BIND=$PWD,/project,/home/lofarvwf-jdejong/scripts
+SIMG=$( python ../parse_settings.py --SIMG )
+BIND=$( python ../parse_settings.py --BIND )
+echo "SINGULARITY IS $SIMG"
 
 cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/L769393/subtract/subtract_lotss/L769393_120_168MHz_averaged.ms .
 cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/L816272/subtract/subtract_lotss/L816272_120_168MHz_averaged.ms .

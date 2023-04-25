@@ -7,8 +7,8 @@
 #SBATCH -p infinite
 
 #SINGULARITY SETTINGS
-SING_BIND=/project/lofarvwf/Share/jdejong,/home
-SING_IMAGE_WSCLEAN=/home/lofarvwf-jdejong/singularities/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
+SING_BIND=$( python ../../parse_settings.py --BIND )
+SIMG=$( python ../../parse_settings.py --SIMG )
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
@@ -18,7 +18,7 @@ source /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/prep_data/1asec
 
 echo "----------START WSCLEAN----------"
 
-singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} \
+singularity exec -B ${SING_BIND} ${SIMG} \
 wsclean \
 -update-model-required \
 -minuv-l 80.0 \

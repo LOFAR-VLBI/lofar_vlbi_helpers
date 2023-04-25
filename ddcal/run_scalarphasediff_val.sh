@@ -11,8 +11,9 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
 #SINGULARITY SETTINGS
-BIND=$PWD,/project,/home/lofarvwf-jdejong/scripts
-SIMG=/home/lofarvwf-jdejong/singularities/lofar_sksp_v4.0.1_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
+SIMG=$( python ../parse_settings.py --SIMG )
+BIND=$( python ../parse_settings.py --BIND )
+echo "SINGULARITY IS $SIMG"
 
 PATH_DIR=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/ddcal/all_directions
 pattern="${PATH_DIR}/*.ms"

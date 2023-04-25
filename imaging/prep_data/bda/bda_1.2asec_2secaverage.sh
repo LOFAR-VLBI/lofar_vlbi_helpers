@@ -7,8 +7,8 @@
 echo $SLURM_JOB_NAME
 
 #SINGULARITY SETTINGS
-SING_BIND=/project/lofarvwf/Share/jdejong,/home
-SING_IMAGE_WSCLEAN=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
+SING_BIND=$( python ../../parse_settings.py --BIND )
+SIMG=$( python ../../parse_settings.py --SIMG )
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
@@ -42,7 +42,7 @@ do
   rm -rf ${MS}
 
   #Baseline-dependent-averaging
-  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN}  DP3 \
+  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
   msin=avg_${MS} \
   msout=bdaavg_${MS} \
   steps=[bda] \
@@ -81,7 +81,7 @@ echo "...Finished concat"
 
 # check output
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/helper_scripts/check_missing_freqs_in_ms.py \
+python ../../../extra_scripts/check_missing_freqs_in_ms.py \
 --ms bda*.ms
 
 #rm -rf applycal*

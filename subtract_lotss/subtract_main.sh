@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 4 --job-name=subtract_main
+#SBATCH -N 1 -c 1 --job-name=subtract_main
 
 echo "Job landed on $(hostname)"
 
@@ -7,17 +7,21 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
+SIMG=$( python ../parse_settings.py --SIMG )
+SING_BIND=$( python ../parse_settings.py --BIND )
+echo "SINGULARITY IS $SIMG"
 
 DELAYCAL_RESULT=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/delaycal/Delay-Calibration
 DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf/
+DELAYCAL_RESULT=$PWD
+DDF_OUTPUT=$PWD
 DIR=subtract_lotss
 
-mkdir -p subtract_lotss
+mkdir -p ${DIR}
 
-echo "Make boxfile: boxfile.reg with /home/lofarvwf-jdejong/scripts/lofar-highres-widefield/utils/make_box.py"
+echo "Make boxfile: boxfile.reg with /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/subtract_lotss/make_box.py"
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG python \
+singularity exec -B $SING_BIND $SIMG python \
 /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/subtract_lotss/make_box.py \
 ${DELAYCAL_RESULT}/${OBSERVATION}*.msdpppconcat 2.5
 
@@ -44,7 +48,8 @@ do
   cp ${DDF_OUTPUT}/image_dirin_SSD_m.npy.ClusterCat.npy ${SUBBAND}_subrun
   cp ${DDF_OUTPUT}/DDS3_full_*_merged.npz ${SUBBAND}_subrun
   cp ${DDF_OUTPUT}/DDS3_full_*_smoothed.npz ${SUBBAND}_subrun
-  cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/boxfile.reg ${SUBBAND}_subrun
+#  cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/subtract/boxfile.reg ${SUBBAND}_subrun
+  cp ../boxfile.reg ${SUBBAND}_subrun
   #cp cutoutmask.fits ${SUBBAND}_subrun
   cp -r ${DDF_OUTPUT}/SOLSDIR ${SUBBAND}_subrun
   mv ${FILE} ${SUBBAND}_subrun/${SUBBAND}.pre-cal.ms

@@ -4,8 +4,9 @@
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
-BIND=$PWD,/project,/home/lofarvwf-jdejong/scripts
+SIMG=$( python ../parse_settings.py --SIMG )
+BIND=$( python ../parse_settings.py --BIND )
+echo "SINGULARITY IS $SIMG"
 
 #INPUT CONCATTENATED MS FILE
 MSIN=${OBSERVATION}_120_168MHz_averaged.ms

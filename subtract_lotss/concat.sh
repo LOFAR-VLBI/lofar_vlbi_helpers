@@ -4,7 +4,9 @@
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
+SIMG=$( python ../parse_settings.py --SIMG )
+SING_BIND=$( python ../parse_settings.py --BIND )
+echo "SINGULARITY IS $SIMG"
 
 ls sub6asec*.ms -1d > "mslist.txt"
 
@@ -15,7 +17,7 @@ ls sub6asec*.ms -1d > "mslist.txt"
 
 MS_VECTOR=[$(cat  mslist.txt |tr "\n" ",")]
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DP3 \
+singularity exec -B $SING_BIND $SIMG DP3 \
 msin=${MS_VECTOR} \
 msin.orderms=False \
 msin.missingdata=True \
@@ -31,5 +33,5 @@ avg.freqstep=8 \
 avg.timestep=4
 
 # check output
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
+singularity exec -B $SING_BIND $SIMG \
 python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/check_missing_freqs_in_ms.py --ms ${OBSERVATION}_120_168MHz_averaged.ms --make_dummies

@@ -6,10 +6,13 @@ CORES=16
 echo "Job landed on $(hostname)"
 echo "GENERIC PIPELINE STARTING"
 
-export RUNDIR=$(mktemp -d -p "$TMPDIR")
-export RESULTS_DIR=$1
-export CAL_DIR=$2
-export SIMG=/project/lofarvwf/Software/singularity/test_lofar_sksp_v3.3.4_x86-64_generic_avx512_ddf.sif
+RUNDIR=$(mktemp -d -p "$TMPDIR")
+RESULTS_DIR=$1
+CAL_DIR=$2
+SIMG=$( python ../parse_settings.py --SIMG )
+SING_BIND=$( python ../parse_settings.py --BIND )
+
+echo "SINGULARITY IS $SIMG"
 
 echo "RUNDIR is $(readlink -f $RUNDIR)"
 cd $RUNDIR
@@ -24,7 +27,7 @@ sed -i "s?RESULTS_DIR?$RESULTS_DIR?g" Pre-Facet-Target.parset
 sed -i "s?CAL_DIR?$CAL_DIR?g" Pre-Facet-Target.parset
 sed -i "s?PREFACTOR_SCRATCH_DIR?$RUNDIR?g" pipeline.cfg
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG genericpipeline.py -d -c pipeline.cfg Pre-Facet-Target.parset
+singularity exec -B $SING_BIND $SIMG genericpipeline.py -d -c pipeline.cfg Pre-Facet-Target.parset
 
 echo "Copying results to $RESULTS_DIR ..."
 mkdir -p $RESULTS_DIR

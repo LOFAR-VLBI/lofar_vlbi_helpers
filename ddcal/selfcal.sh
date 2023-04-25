@@ -7,14 +7,16 @@
 MS=$1
 
 #SINGULARITY SETTINGS
-BIND=$PWD,/project,/home/lofarvwf-jdejong/scripts
-SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.2_znver2_znver2_noavx512_ddf_10_02_2023.sif
+SIMG=$( python ../parse_settings.py --SIMG )
+BIND=$( python ../parse_settings.py --BIND )
+echo "SINGULARITY IS $SIMG"
 
 singularity exec -B $BIND $SIMG \
 python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
 -i selfcal \
 --phaseupstations='core' \
 --auto \
+--useaoflagger \
 --makeimage-ILTlowres-HBA \
 --targetcalILT='scalarphase' \
 --stop=12 \

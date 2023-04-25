@@ -11,3 +11,4 @@
 *.csv
 !notes/prefactor.png
 *.sif
+*.info

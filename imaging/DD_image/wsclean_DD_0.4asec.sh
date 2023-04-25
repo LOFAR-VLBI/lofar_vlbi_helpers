@@ -11,20 +11,20 @@
 OUT_DIR=$PWD
 
 #SINGULARITY SETTINGS
-SING_BIND=/project/lofarvwf/Share/jdejong,/home
-SING_IMAGE_WSCLEAN=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.3_znver2_znver2_noavx512_aocl4_cuda_ddf.sif
+SING_BIND=$( python ../../parse_settings.py --BIND )
+SIMG=$( python ../../parse_settings.py --SIMG )
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-source /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/prep_data/0.4asec.sh
+source ../prep_data/0.4asec.sh
 
 cp /project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/ddcal/selfcals/master_merged.h5 .
 
 LIST=(*.ms)
 
-singularity exec -B ${SING_BIND} /project/lofarvwf/Public/fsweijen/lofar_sksp_v4.0.0_x84-64_generic_noavx512_mkl_cuda_ddf_test3.sif python \
+singularity exec -B ${SING_BIND} ${SIMG} python \
 /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/ds9facetgenerator.py \
 --h5 master_merged.h5 \
 --DS9regionout facets.reg \
@@ -41,7 +41,7 @@ cd "$TMPDIR"/wscleandata
 
 echo "----------START WSCLEAN----------"
 
-singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} \
+singularity exec -B ${SING_BIND} ${SIMG} \
 wsclean \
 -update-model-required \
 -gridder wgridder \

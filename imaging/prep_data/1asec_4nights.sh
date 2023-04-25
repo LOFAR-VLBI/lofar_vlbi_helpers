@@ -7,8 +7,8 @@
 echo $SLURM_JOB_NAME
 
 #SINGULARITY SETTINGS
-SING_BIND=/project/lofarvwf/Share/jdejong,/home
-SING_IMAGE_WSCLEAN=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
+SING_BIND=$( python ../../parse_settings.py --BIND )
+SIMG=$( python ../../parse_settings.py --SIMG )
 
 
 OUT_DIR=$PWD
@@ -25,7 +25,7 @@ echo "Average data in DPPP..."
 #Average to 4seconds and 4ch/SB
 for MS in applycal*.ms
 do
-  singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
+  singularity exec -B ${SING_BIND} ${SIMG} DP3 \
   msin=${MS} \
   msout=avg_${MS} \
   msin.datacolumn=DATA \
@@ -41,6 +41,8 @@ do
 done
 
 echo "... Finished averaging data in DPPP"
+
+#TODO: CHECK OUTPUT
 
 #MSLIST
 ls -1 -d avg_applycal* > mslist.txt

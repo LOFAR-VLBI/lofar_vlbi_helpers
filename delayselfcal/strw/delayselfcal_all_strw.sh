@@ -1,7 +1,8 @@
 #!/bin/bash
 
-SIMG=/net/rijn3/data2/jurjendejong/ELAIS/delayselfcal_new/lofar_sksp_v4.0.1_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
-BIND=/tmp,/dev/shm,/disks/paradata,/data1,/net/lofar1,/net/rijn,/net/nederrijn/,/net/bovenrijn,/net/botlek,/net/para10,/net/lofar2,/net/lofar3,/net/lofar4,/net/lofar5,/net/lofar6,/net/lofar7,/disks/ftphome,/net/krommerijn,/net/voorrijn,/net/achterrijn,/net/tussenrijn,/net/ouderijn,/net/nieuwerijn,/net/lofar8,/net/lofar9,/net/rijn8,/net/rijn7,/net/rijn5,/net/rijn4,/net/rijn3,/net/rijn2
+SIMG=$( python ../parse_settings.py --SIMG )
+BIND=$( python ../parse_settings.py --BIND )
+echo "SINGULARITY IS $SIMG"
 
 singularity exec -B $BIND $SIMG python \
 /net/rijn/data2/rvweeren/LoTSS_ClusterCAL/facetselfcalDec6_2022.py \

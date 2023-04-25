@@ -3,8 +3,9 @@
 MS=$1
 
 #SINGULARITY SETTINGS
-BIND=$PWD,/home/jurjendejong,/net/rijn
-SIMG=/net/achterrijn/data1/sweijen/software/containers/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif
+SIMG=$( python ../parse_settings.py --SIMG )
+BIND=$( python ../parse_settings.py --BIND )
+echo "SINGULARITY IS $SIMG"
 
 singularity exec -B $BIND $SIMG \
 python /net/rijn/data2/rvweeren/LoTSS_ClusterCAL/lofar_facet_selfcal/facetselfcal.py \
@@ -13,6 +14,7 @@ python /net/rijn/data2/rvweeren/LoTSS_ClusterCAL/lofar_facet_selfcal/facetselfca
 --auto \
 --makeimage-ILTlowres-HBA \
 --targetcalILT='scalarphase' \
+--useaoflagger \
 --stop=1 \
 --no-beamcor \
 --makeimage-fullpol \

@@ -7,9 +7,11 @@ if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
 DDF_OUTPUT=/project/lotss/Public/jdejong/ELAIS/${OBSERVATION}/ddf
 
-export SIMG=/home/lofarvwf-jdejong/singularities/lofar_sksp_fedora31_ddf_fixed.sif
+SIMG=$( python ../parse_settings.py --SIMG )
+SING_BIND=$( python ../parse_settings.py --BIND )
+echo "SINGULARITY IS $SIMG"
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG CleanSHM.py
+singularity exec -B $SING_BIND $SIMG CleanSHM.py
 
 #
 MSIN=$1
@@ -26,13 +28,13 @@ cp ${DDF_OUTPUT}/image_full_ampphase_di_m.NS.DicoModel imagetest_${MSIN}
 
 cd imagetest_${MSIN}
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DPPP msin=${MSIN} test.parset
+singularity exec -B $SING_BIND $SIMG DPPP msin=${MSIN} test.parset
 
 
 echo ${MSIN}-cal.ms > mslist.txt
 
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG DDF.py \
+singularity exec -B $SING_BIND $SIMG DDF.py \
 --Output-Name=test_sub --Data-MS=mslist.txt --Deconv-PeakFactor \
 0.001000 --Data-ColName DATA --Parallel-NCPU=32 --Beam-CenterNorm=1 \
 --Deconv-CycleFactor=0 --Deconv-MaxMinorIter=1000000 \

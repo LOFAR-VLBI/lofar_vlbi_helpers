@@ -3,14 +3,19 @@
 
 SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
 
-export SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.1.0_znver2_znver2_noavx512_aocl3_cuda_ddf.sif
+#SINGULARITY
+SING_BIND=$( python ../parse_settings.py --BIND )
+SIMG=$( python ../parse_settings.py --SIMG )
 
+#BOOKKEEPING
 mkdir -p sub_parsets
 mkdir -p concat_parsets
 mv *.parset sub_parsets
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts ${SIMG} python ${SCRIPTS}/split_directions/make_concat_parsets.py
+#MAKE PARSETS
+singularity exec -B $SING_BIND ${SIMG} python ${SCRIPTS}/split_directions/make_concat_parsets.py
 
+#CONCAT PARSETS
 for P in *.parset; do
   sbatch ${SCRIPTS}/split_directions/run_concat_parset.sh ${P}
 done

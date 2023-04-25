@@ -5,9 +5,11 @@
 MSIN=$1
 H5=$2
 
-export SIMG=/home/lofarvwf-jdejong/singularities/lofar_sksp_fedora31_ddf_fixed.sif
+SIMG=$( python ../parse_settings.py --SIMG )
+BIND=$( python ../parse_settings.py --BIND )
+echo "SINGULARITY IS $SIMG"
 
-singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
+singularity exec -B $BIND $SIMG \
 python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/applycal/applycal.py \
 --msin ${MSIN} \
 --h5 ${H5} \
