@@ -3,11 +3,12 @@
 SIMG=$( python ../parse_settings.py --SIMG )
 BIND=$( python ../parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
+#SCRIPTS
+lofar_facet_selfcal=$( python ../parse_settings.py --lofar_facet_selfcal )
 
 MSIN=$1
 
-singularity exec -B $BIND $SIMG \
-python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
+singularity exec -B $BIND $SIMG python $lofar_facet_selfcal \
 --imsize=1600 \
 -i selfcal_allstations4_LBCS_final \
 --pixelscale=0.075 \

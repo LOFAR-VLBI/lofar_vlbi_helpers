@@ -3,9 +3,10 @@
 SIMG=$( python ../parse_settings.py --SIMG )
 BIND=$( python ../parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
+#SCRIPTS
+lofar_facet_selfcal=$( python ../parse_settings.py --lofar_facet_selfcal )
 
-singularity exec -B $BIND $SIMG python \
-/net/rijn/data2/rvweeren/LoTSS_ClusterCAL/facetselfcalDec6_2022.py \
+singularity exec -B $BIND $SIMG python $lofar_facet_selfcal \
 --imsize=1600 \
 -i selfcal_allstations_LBCS_4sets_default \
 --pixelscale=0.075 \

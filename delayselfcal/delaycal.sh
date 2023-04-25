@@ -1,10 +1,13 @@
 #!/bin/bash
 
-export PYTHONPATH=/opt/lofar/DPPP/lib/python3.7/site-packages:$PYTHONPATH
+PYTHONPATH=/opt/lofar/DPPP/lib/python3.7/site-packages:$PYTHONPATH
 #export APPTAINERENV_MPLBACKEND=agg
 
-python \
-/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
+#SCRIPTS
+lofar_facet_selfcal=$( python ../parse_settings.py --lofar_facet_selfcal )
+
+
+python $lofar_facet_selfcal \
 --imsize=1600 \
 -i selfcal_allstations_LBCS_4sets_default \
 --pixelscale=0.075 \

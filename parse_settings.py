@@ -3,12 +3,24 @@ import sys
 from argparse import ArgumentParser
 
 class Paths:
+    """
+    Read out paths to singularity and lofar_facet_selfcal and h5_merger
+    """
     def __init__(self, singfile=None):
+        """
 
+        :param singfile: singularity file located in ~/singularity.info
+        """
         if singfile is None:
             singfile = os.path.expanduser('~') + '/singularity.info'
             if not os.path.isfile(singfile):
-                sys.exit(singfile + ' does not exist.\nPlease make a file with\n-----------\nBIND=<SINGULARITYBIND>\nSIMG=<SINGULARITY>\n-----------\nAnd name it ' + singfile)
+                sys.exit(singfile + ' does not exist.'
+                                    '\nPlease make a file with'
+                                    '\n-----------'
+                                    '\nBIND=<SINGULARITYBIND>'
+                                    '\nSIMG=<SINGULARITY>'
+                                    '\n-----------'
+                                    '\nAnd name it ' + singfile)
 
         # parse singularity
         with open(singfile) as f:
