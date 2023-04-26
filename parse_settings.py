@@ -39,6 +39,9 @@ class ScriptPaths:
         self.myhost = os.uname()[1]
 
         if singfile is None:
+            singfile = home + '/singularity.info'
+
+        if not os.path.isfile(singfile):
 
             if 'surfsara.nl' in self.myhost:
                 self.BIND= surf_bind
@@ -52,15 +55,13 @@ class ScriptPaths:
                 self.SIMG = leiden_simg
 
             else:
-                singfile = home + '/singularity.info'
-                if not os.path.isfile(singfile):
-                    sys.exit(singfile + ' does not exist.'
-                                        '\nPlease make a file with'
-                                        '\n-----------'
-                                        '\nBIND=<SINGULARITYBIND>'
-                                        '\nSIMG=<SINGULARITY>'
-                                        '\n-----------'
-                                        '\nAnd name it ' + singfile)
+                sys.exit(singfile + ' does not exist.'
+                                    '\nPlease make a file with'
+                                    '\n-----------'
+                                    '\nBIND=<SINGULARITYBIND>'
+                                    '\nSIMG=<SINGULARITY>'
+                                    '\n-----------'
+                                    '\nAnd name it ' + singfile)
         else:
             # parse singularity from ~/singularity.info
             with open(singfile) as f:
