@@ -4,6 +4,8 @@ import os
 import sys
 from argparse import ArgumentParser
 import subprocess
+from urllib import request
+from glob import glob
 
 home = os.path.expanduser('~')
 
@@ -80,10 +82,24 @@ class ScriptPaths:
             self.lofar_facet_selfcal = leiden_lofar_facet_selfcal
             self.h5_merger = leiden_h5_merger
         else:
-            os.system('wget '+h5_merger_path)
-            os.system('wget '+lofar_facet_selfcal_path)
-            self.lofar_facet_selfcal = os.getcwd()+'/facetselfcal.py'
-            self.h5_merger = os.getcwd()+'/h5_merger.py'
+            if self.internet_connection:
+                os.system('wget '+h5_merger_path)
+                os.system('wget '+lofar_facet_selfcal_path)
+
+            elif 'h5_merger.py' in [py.split('/')[-1] for py in glob('*.py')] and 'facetselfcal.py' in [py.split('/')[-1] for py in glob('*.py')]:
+                self.lofar_facet_selfcal = os.getcwd()+'/facetselfcal.py'
+                self.h5_merger = os.getcwd()+'/h5_merger.py'
+            else:
+                print('No internet connection and cannot find h5_merger.py or facetselfcal.py')
+
+    @property
+    def internet_connection(self):
+        try:
+            request.urlopen(h5_merger_path, timeout=1)
+            return True
+        except:
+            return False
+
 
 
 if __name__ == "__main__":
