@@ -126,9 +126,3 @@ if __name__ == "__main__":
         print(paths.lofar_facet_selfcal)
     if args.h5_merger:
         print(paths.h5_merger)
-
-
-
-
-
-
