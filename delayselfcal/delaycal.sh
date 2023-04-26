@@ -6,7 +6,6 @@ PYTHONPATH=/opt/lofar/DPPP/lib/python3.7/site-packages:$PYTHONPATH
 #SCRIPTS
 lofar_facet_selfcal=$( python ../parse_settings.py --lofar_facet_selfcal )
 
-
 python $lofar_facet_selfcal \
 --imsize=1600 \
 -i selfcal_allstations_LBCS_4sets_default \

@@ -4,7 +4,7 @@ SIMG=$( python ../parse_settings.py --SIMG )
 BIND=$( python ../parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 #SCRIPTS
-lofar_facet_selfcal=$( python ../parse_settings.py --lofar_facet_selfcal )
+lofar_facet_selfcal=$( python ../../parse_settings.py --lofar_facet_selfcal )
 
 MSIN=$1
 
