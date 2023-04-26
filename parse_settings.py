@@ -42,7 +42,7 @@ class ScriptPaths:
             singfile = home + '/singularity.info'
 
         if not os.path.isfile(singfile):
-
+            # check system and extract paths from there
             if 'surfsara.nl' in self.myhost:
                 self.BIND= surf_bind
                 if 'intel' in (subprocess.check_output("lscpu", shell=True).strip()).decode().lower():
