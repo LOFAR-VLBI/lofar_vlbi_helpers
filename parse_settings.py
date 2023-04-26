@@ -11,14 +11,14 @@ home = os.path.expanduser('~')
 leiden_bind = "$PWD,/tmp,/dev/shm,/net/tussenrijn,/net/achterrijn,/net/krommerijn,/net/nieuwerijn,/net/rijn,/net/rijn1,/net/rijn2,/net/rijn3,/net/rijn4,/net/rijn5,/net/rijn6,/net/rijn7,/net/rijn8,/net/rijn9,/net/rijn10,/net/rijn11,"+home
 leiden_simg = "/net/achterrijn/data1/sweijen/software/containers/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif"
 leiden_h5_merger = '/net/tussenrijn/data2/jurjendejong/lofar_helpers/h5_merger.py'
-leiden_lofar_facet_selfcal = '/net/rijn/data2/rvweeren/LoTSS_ClusterCAL/lofar_facet_selfcal.py'
+leiden_lofar_facet_selfcal = '/net/rijn/data2/rvweeren/LoTSS_ClusterCAL/facetselfcal.py'
 
 #SURFSARA HAS INTEL AND AMD NODES
 surf_bind = "$PWD,/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,"+home
 surf_simg_amd = "/project/lofarvwf/Software/singularity/lofar_sksp_v4.1.0_znver2_znver2_noavx512_aocl3_cuda_ddf.sif"
 surf_simg_intel = "/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif"
 surf_h5_merger = '/project/lofarvwf/Software/lofar_helpers/h5_merger.py'
-surf_lofar_facet_selfcal = '/project/lofarvwf/Software/lofar_facet_selfcal/lofar_facet_selfcal.py'
+surf_lofar_facet_selfcal = '/project/lofarvwf/Software/lofar_facet_selfcal/facetselfcal.py'
 
 #SCRIPT PATHS
 h5_merger_path = "https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/facetselfcal.py"
@@ -82,7 +82,7 @@ class ScriptPaths:
         else:
             os.system('wget '+h5_merger_path)
             os.system('wget '+lofar_facet_selfcal_path)
-            self.lofar_facet_selfcal = os.getcwd()+'/lofar_facet_selfcal.py'
+            self.lofar_facet_selfcal = os.getcwd()+'/facetselfcal.py'
             self.h5_merger = os.getcwd()+'/h5_merger.py'
 
 
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     parser = ArgumentParser(description='Return settings')
     parser.add_argument('--BIND', help='Singularity Bind', default="", action='store_true')
     parser.add_argument('--SIMG', help='Singularity Image', default="", action='store_true')
-    parser.add_argument('--lofar_facet_selfcal', help='lofar_facet_selfcal.py in lofar_facet_selfcal', default="", action='store_true')
+    parser.add_argument('--lofar_facet_selfcal', help='facetselfcal.py in lofar_facet_selfcal', default="", action='store_true')
     parser.add_argument('--h5_merger', help='h5_merger.py in lofar_helpers', default="", action='store_true')
     args = parser.parse_args()
 
