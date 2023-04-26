@@ -4,7 +4,7 @@ PYTHONPATH=/opt/lofar/DPPP/lib/python3.7/site-packages:$PYTHONPATH
 #export APPTAINERENV_MPLBACKEND=agg
 
 #SCRIPTS
-lofar_facet_selfcal=$( python ../parse_settings.py --lofar_facet_selfcal )
+lofar_facet_selfcal=$( python ../parse_settings.py --facet_selfcal )
 
 python $lofar_facet_selfcal \
 --imsize=1600 \
