@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import os
 import sys
 from argparse import ArgumentParser
@@ -31,6 +33,9 @@ class ScriptPaths:
 
         :param singfile: singularity file located in ~/singularity.info
         """
+
+        self.myhost = os.uname()[1]
+
         if singfile is None:
 
             if 'surfsara.nl' in self.myhost:
@@ -67,8 +72,6 @@ class ScriptPaths:
                 elif args.SIMG:
                     sys.exit('SIMG=<SINGULARITY> is missing in ' + singfile)
 
-        self.myhost = os.uname()[1]
-
         # verify host and give paths
         if 'surfsara.nl' in self.myhost:
             self.lofar_facet_selfcal = surf_lofar_facet_selfcal
@@ -95,19 +98,19 @@ if __name__ == "__main__":
     paths = ScriptPaths()
     if args.BIND:
         print(paths.BIND)
-    elif args.SIMG:
+    if args.SIMG:
         if 'surfsara.nl' in paths.myhost and \
                 'intel' in (subprocess.check_output("lscpu", shell=True).strip()).decode().lower() and \
                 'cascadelake' not in args.SIMG:
             print(surf_simg_intel)
         else:
             print(paths.SIMG)
-    elif args.lofar_facet_selfcal:
+    if args.lofar_facet_selfcal:
         print(paths.lofar_facet_selfcal)
-    elif args.h5_merger:
+    if args.h5_merger:
         print(paths.h5_merger)
-    else:
-        sys.exit('ERROR: NOTHING TO RETURN')
+
+
 
 
 
