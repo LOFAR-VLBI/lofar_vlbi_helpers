@@ -4,19 +4,23 @@ import os
 import sys
 from argparse import ArgumentParser
 import subprocess
-from urllib import request
+if sys.version_info.major == 2:
+    from urllib2 import urlopen
+else:
+    from urllib.request import urlopen
 from glob import glob
 
 home = os.path.expanduser('~')
 
 #LEIDEN HAS ONLY INTEL NODES
-leiden_bind = "$PWD,/tmp,/dev/shm,/net/tussenrijn,/net/achterrijn,/net/krommerijn,/net/nieuwerijn,/net/rijn,/net/rijn1,/net/rijn2,/net/rijn3,/net/rijn4,/net/rijn5,/net/rijn6,/net/rijn7,/net/rijn8,/net/rijn9,/net/rijn10,/net/rijn11,"+home
+leiden_bind = "/tmp,/dev/shm,/net/tussenrijn,/net/achterrijn,/net/krommerijn,/net/nieuwerijn,/net/rijn,/net/rijn1," \
+              "/net/rijn2,/net/rijn3,/net/rijn4,/net/rijn5,/net/rijn6,/net/rijn7,/net/rijn8,/net/rijn9,/net/rijn10,/net/rijn11,"+home
 leiden_simg = "/net/achterrijn/data1/sweijen/software/containers/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif"
 leiden_h5_merger = '/net/tussenrijn/data2/jurjendejong/lofar_helpers/h5_merger.py'
 leiden_lofar_facet_selfcal = '/net/rijn/data2/rvweeren/LoTSS_ClusterCAL/facetselfcal.py'
 
 #SURFSARA HAS INTEL AND AMD NODES
-surf_bind = "$PWD,/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,"+home
+surf_bind = "/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,"+home
 surf_simg_amd = "/project/lofarvwf/Software/singularity/lofar_sksp_v4.1.0_znver2_znver2_noavx512_aocl3_cuda_ddf.sif"
 surf_simg_intel = "/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif"
 surf_h5_merger = '/project/lofarvwf/Software/lofar_helpers/h5_merger.py'
@@ -96,7 +100,7 @@ class ScriptPaths:
     @property
     def internet_connection(self):
         try:
-            request.urlopen(h5_merger_path, timeout=1)
+            urlopen(h5_merger_path, timeout=1)
             return True
         except:
             return False
