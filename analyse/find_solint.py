@@ -13,12 +13,11 @@ except:
 # set std score, for which you want to find the solint
 optimal_score = 0.5
 
-
 def get_circvar(phasediff):
     """
     Get circular variance
 
-    Derived from: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.circstd.html
+    From: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.circstd.html
 
     :param phasediff: phase difference between XX and YY
     """
@@ -61,7 +60,7 @@ def circvar_to_normvar(circ_var):
 
     return: circular variance
     """
-    # return -2*np.log(1-circ_var)
+    #     return -2*np.log(1-circ_var/np.pi)
     return (1 - np.exp(-circ_var / 2))
 
 
@@ -85,9 +84,9 @@ def get_C(phasediff):
     return normvar * solint
 
 
-def get_optimal_solint(phasediff):
+def get_optimal_solint(phasediff, C):
     """
-    Get optimal solution interval from phasediff
+    Get optimal solution interval from phasediff, given C
 
     :param phasediff: phase difference between XX and YY
     :param solint: solution interval
@@ -96,17 +95,17 @@ def get_optimal_solint(phasediff):
     """
     C = get_C(phasediff)
     optimal_cirvar = optimal_score ** 2
-    return C / (circvar_to_normvar(optimal_cirvar))
+    return C / (circvar_to_normvar(optimal_cirvar)) / 2
 
 
 if __name__ == "__main__":
 
     # random data
-    data = normal(0, 100, 100000)
+    x = np.cos(normal(0, 1.7, 100000))
+    y = np.sin(normal(0, 1.6, 100000))
+    data = np.angle(x + y * 1j)
 
     # find C
     C = get_C(data)
-    print("C=" + str(round(get_C(data), 3)) + " for this distribution")
-
-    # plot
-    plot_C(C, "T=" + str(round(get_optimal_solint(data) * 10 / 2, 2)) + " min")
+    print("C=" + str(round(C, 3)) + " for this distribution")
+    plot_C(C, "T=" + str(round(get_optimal_solint(data, C), 2)) + " min")
