@@ -6,7 +6,7 @@ echo "Job landed on $(hostname)"
 MS=$1
 
 SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.4_x86-64_generic_noavx512_ddf.sif
-SING_BIND=$( python ../parse_settings.py --BIND )
+SING_BIND=$( python $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 
 singularity exec -B $SING_BIND $SIMG /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/sub-sources-outside-region.py \

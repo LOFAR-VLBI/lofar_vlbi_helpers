@@ -9,8 +9,8 @@ echo "Job landed on $(hostname)"
 echo "GENERIC PIPELINE STARTING"
 RUNDIR=$(mktemp -d -p "$TMPDIR")
 RESULTS_DIR=$1
-SIMG=$( python ../parse_settings.py --SIMG )
-SING_BIND=$( python ../parse_settings.py --BIND )
+SIMG=$( python $HOME/parse_settings.py --SIMG )
+SING_BIND=$( python $HOME/parse_settings.py --BIND )
 
 echo $SIMG
 echo $SING_BIND

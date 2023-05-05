@@ -3,8 +3,8 @@
 
 echo "Job landed on $(hostname)"
 
-SIMG=$( python ../parse_settings.py --SIMG )
-SING_BIND=$( python ../parse_settings.py --BIND )
+SIMG=$( python $HOME/parse_settings.py --SIMG )
+SING_BIND=$( python $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 
 singularity exec -B $SING_BIND $SIMG /home/lofarvwf-jdejong/scripts/lofar-highres-widefield/utils/sub-sources-outside-region.py \

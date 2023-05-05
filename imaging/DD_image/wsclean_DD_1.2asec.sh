@@ -10,8 +10,8 @@
 OUT_DIR=$PWD
 
 #SINGULARITY SETTINGS
-SING_BIND=$( python ../../parse_settings.py --BIND )
-SIMG=$( python ../../parse_settings.py --SIMG )
+SING_BIND=$( python $HOME/parse_settings.py --BIND )
+SIMG=$( python $HOME/parse_settings.py --SIMG )
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"

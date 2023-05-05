@@ -4,8 +4,8 @@
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-SIMG=$( python ../parse_settings.py --SIMG )
-BIND=$( python ../parse_settings.py --BIND )
+SIMG=$( python $HOME/parse_settings.py --SIMG )
+BIND=$( python $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 
 #INPUT CONCATTENATED MS FILE

@@ -7,8 +7,8 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-SIMG=$( python ../parse_settings.py --SIMG )
-SING_BIND=$( python ../parse_settings.py --BIND )
+SIMG=$( python $HOME/parse_settings.py --SIMG )
+SING_BIND=$( python $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 
 DELAYCAL_RESULT=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/delaycal/Delay-Calibration

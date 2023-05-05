@@ -14,8 +14,8 @@ SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
 PROJPATH=/project/lofarvwf/Share/jdejong/output/ELAIS
 RESULTS_DIR=$PWD
 #SINGULARITY
-SIMG=$( python ../parse_settings.py --SIMG )
-SING_BIND=$( python ../parse_settings.py --BIND )
+SIMG=$( python $HOME/parse_settings.py --SIMG )
+SING_BIND=$( python $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 
 echo "Job landed on $(hostname)"

@@ -2,8 +2,8 @@
 #SBATCH -c 6 --job-name=phaseshift --array=0-10 --constraint=amd
 
 #SINGULARITY
-SING_BIND=$( python ../parse_settings.py --BIND )
-SIMG=$( python ../parse_settings.py --SIMG )
+SING_BIND=$( python $HOME/parse_settings.py --BIND )
+SIMG=$( python $HOME/parse_settings.py --SIMG )
 echo "SINGULARITY IS $SIMG"
 
 echo "Job landed on $(hostname)"

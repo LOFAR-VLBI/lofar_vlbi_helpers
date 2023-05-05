@@ -3,11 +3,11 @@
 MS=$1
 
 #SINGULARITY SETTINGS
-SIMG=$( python ../parse_settings.py --SIMG )
-BIND=$( python ../parse_settings.py --BIND )
+SIMG=$( python $HOME/parse_settings.py --SIMG )
+BIND=$( python $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 #SCRIPTS
-lofar_facet_selfcal=$( python ../parse_settings.py --facet_selfcal )
+lofar_facet_selfcal=$( python $HOME/parse_settings.py --facet_selfcal )
 
 singularity exec -B $BIND $SIMG \
 python $lofar_facet_selfcal \

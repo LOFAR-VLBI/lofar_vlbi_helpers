@@ -3,8 +3,8 @@
 
 OBSERVATION=$1
 
-SIMG=$( python ../parse_settings.py --SIMG )
-SING_BIND=$( python ../parse_settings.py --BIND )
+SIMG=$( python $HOME/parse_settings.py --SIMG )
+SING_BIND=$( python $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 
 echo "Start last command"
