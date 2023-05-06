@@ -104,14 +104,13 @@ class GetSolint:
         return normvar * solint
 
 
-    def get_phasediff_score(self, h5, station=False):
+    def get_phasediff_score(self, station=False):
         """
         Calculate score for phasediff
 
-        :param h5: input h5 file
         :return: circular standard deviation score
         """
-        H = tables.open_file(h5)
+        H = tables.open_file(self.h5)
 
         stations = [make_utf8(s) for s in list(H.root.sol000.antenna[:]['name'])]
 
@@ -156,7 +155,7 @@ class GetSolint:
 
         :return: value corresponding with increase solution interval
         """
-        self.cstd = self.get_phasediff_score(self.h5)
+        self.cstd = self.get_phasediff_score()
         self.C = self._get_C(self.cstd)
         optimal_cirvar = self.optimal_score ** 2
         return self.C / (self._circvar_to_normvar(optimal_cirvar)) * self.ref_solint
