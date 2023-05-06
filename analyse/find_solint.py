@@ -1,17 +1,10 @@
 import tables
-from glob import glob
-import numpy as np
-import csv
-from scipy.stats import circstd, circmean
 import sys
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.random import normal
 import scienceplots
-from scipy.stats import circstd, circvar
-import random
-import math
+from scipy.stats import circstd
 
 # pretty plots
 try:
@@ -149,6 +142,7 @@ class GetSolint:
 
         return circstd(phasemod, nan_policy='omit')
 
+    @property
     def best_solint(self):
         """
         Get optimal solution interval from phasediff, given C
@@ -171,7 +165,7 @@ if __name__ == "__main__":
     h5 = '../bad2min.h5'
 
     S = GetSolint(h5, optimal_score, ref_solint)
-    solint = S.best_solint()
+    solint = S.best_solint
 
     # OPTIONAL
     S.plot_C("T=" + str(round(solint, 2)) + " min")
