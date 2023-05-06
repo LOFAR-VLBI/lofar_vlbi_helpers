@@ -150,7 +150,7 @@ class GetSolint:
 
         return circstd(phasemod, nan_policy='omit')
 
-    def optimal_solint(self):
+    def best_solint(self):
         """
         Get optimal solution interval from phasediff, given C
 
@@ -172,7 +172,7 @@ if __name__ == "__main__":
     h5 = '../bad2min.h5'
 
     S = GetSolint(h5, optimal_score, ref_solint)
-    solint = S.optimal_solint()
+    solint = S.best_solint()
 
-    # find C
+    # OPTIONAL
     S.plot_C("T=" + str(round(solint, 2)) + " min")
