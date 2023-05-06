@@ -45,6 +45,7 @@ class GetSolint:
         self.h5 = h5
         self.optimal_score = optimal_score
         self.ref_solint = ref_solint
+        self.cstd = 0
 
     def plot_C(self, title=None, saveas=None):
         """
@@ -68,6 +69,8 @@ class GetSolint:
             plt.savefig(saveas)
         else:
             plt.show()
+
+        return self
 
     def _circvar_to_normvar(self, circ_var):
         """
@@ -140,7 +143,9 @@ class GetSolint:
 
         phasemod[phasemod == 0] = np.nan
 
-        return circstd(phasemod, nan_policy='omit')
+        self.cstd = circstd(phasemod, nan_policy='omit')
+
+        return self
 
     @property
     def best_solint(self):
@@ -149,7 +154,8 @@ class GetSolint:
 
         :return: value corresponding with increase solution interval
         """
-        self.cstd = self.get_phasediff_score()
+        if self.cstd==0:
+            self.get_phasediff_score()
         self.C = self._get_C(self.cstd)
         optimal_cirvar = self.optimal_score ** 2
         return self.C / (self._circvar_to_normvar(optimal_cirvar)) * self.ref_solint
