@@ -4,8 +4,8 @@
 SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
 
 #SINGULARITY
-SING_BIND=$( python $HOME/parse_settings.py --BIND )
-SIMG=$( python $HOME/parse_settings.py --SIMG )
+SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
 #BOOKKEEPING
 mkdir -p sub_parsets

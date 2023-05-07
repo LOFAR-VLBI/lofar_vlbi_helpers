@@ -4,8 +4,8 @@
 PARSET=$1
 
 #SINGULARITY
-SING_BIND=$( python $HOME/parse_settings.py --BIND )
-SIMG=$( python $HOME/parse_settings.py --SIMG )
+SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 echo "SINGULARITY IS $SIMG"
 
 #RUN
