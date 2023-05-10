@@ -66,7 +66,7 @@ class GetSolint:
         plt.xlim(0, max(bestsolint * 1.5, self.ref_solint * 1.5))
         plt.xlabel("solint (min)")
         plt.ylabel("circstd score")
-        plt.legend(frameon=True, loc='upper right', fontsize=5)
+        plt.legend(frameon=True, loc='upper right', fontsize=10)
         if title is not None:
             plt.title(title)
         if saveas is not None:
