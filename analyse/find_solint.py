@@ -3,15 +3,14 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.random import normal
-import scienceplots
 from scipy.stats import circstd
 
 # pretty plots
-try:
-    import scienceplots
-    plt.style.use(['science','ieee'])
-except:
-    pass
+# try:
+#     import scienceplots
+#     plt.style.use(['science','ieee'])
+# except:
+#     pass
 
 def make_utf8(inp):
     """
@@ -46,6 +45,7 @@ class GetSolint:
         self.optimal_score = optimal_score
         self.ref_solint = ref_solint
         self.cstd = 0
+        self.C = None
 
     def plot_C(self, title=None, saveas=None):
         """
@@ -54,15 +54,19 @@ class GetSolint:
         :param C: constant defining the noise level
         :param title: title for plot
         """
-        normal_sigmas = [n / 10 for n in range(0, 100)]
+        normal_sigmas = [n / 100 for n in range(1, 1000)]
         values = [circstd(normal(0, n, 10000)) for n in normal_sigmas]
-        x = self.C / (np.array(normal_sigmas) ** 2) * self.ref_solint
-        bestsolint = self.C / (self._circvar_to_normvar(self.optimal_score ** 2)) * self.ref_solint
+        x = (self.C*np.pi) / (np.array(normal_sigmas) ** 2 )/ 2
+        bestsolint = self.C / (self._circvar_to_normvar(self.optimal_score ** 2))
         plt.plot(x, values)
-        plt.scatter([bestsolint], [self.optimal_score], color='red')
-        plt.xlim(0, max(bestsolint * 2, 2.1))
+        solints = np.array(range(0, int(max(bestsolint * 2, self.ref_solint * 1.5))))
+        plt.plot(solints, [self.theoretical_curve(t) for t in solints])
+        plt.scatter([self.ref_solint], [self.cstd], c='blue', label='measurement', s=25, marker='x')
+        plt.scatter([bestsolint], [self.optimal_score], color='red', label='best solint', s=25, marker='x')
+        plt.xlim(0, max(bestsolint * 1.5, self.ref_solint * 1.5))
         plt.xlabel("solint (min)")
         plt.ylabel("circstd score")
+        plt.legend(frameon=True, loc='upper right', fontsize=5)
         if title is not None:
             plt.title(title)
         if saveas is not None:
@@ -96,8 +100,7 @@ class GetSolint:
         :return: C
         """
         normvar = self._circvar_to_normvar(cstd ** 2)
-        solint = 1  # by setting it to 1, the function returns how many times solution interval increase
-        return normvar * solint
+        return normvar * self.ref_solint
 
 
     def get_phasediff_score(self, station=False):
@@ -158,17 +161,27 @@ class GetSolint:
             self.get_phasediff_score()
         self.C = self._get_C(self.cstd)
         optimal_cirvar = self.optimal_score ** 2
-        return self.C / (self._circvar_to_normvar(optimal_cirvar)) * self.ref_solint
+        return self.C / (self._circvar_to_normvar(optimal_cirvar))
+
+    def theoretical_curve(self, t):
+        """
+        Theoretical curve based on circ statistics
+        :param t: solution interval
+        :return: circular std
+        """
+        if self.C is None:
+            self.best_solint()
+        return np.pi * np.sqrt(1 - np.exp(-(self.C / (2 * np.pi * t))))
 
 if __name__ == "__main__":
 
     # set std score, for which you want to find the solint
-    optimal_score = 0.5
+    optimal_score = 1
 
     # reference solution interval
-    ref_solint = 2
+    ref_solint = 10
 
-    h5 = '../bad2min.h5'
+    h5 = '../P51272.h5'
 
     S = GetSolint(h5, optimal_score, ref_solint)
     solint = S.best_solint
