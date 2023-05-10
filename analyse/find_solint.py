@@ -82,13 +82,8 @@ class GetSolint:
 
         return: circular variance
         """
-        # normalized circular variance
-        circ_varnorm = circ_var / np.pi
-
-        if circ_varnorm >= 1:
-            return np.pi
-        else:
-            return -2 * np.log(1 - circ_varnorm)
+        normvar = -2 * np.log(1 - circ_var / np.pi)
+        return normvar if normvar==normvar else np.pi
 
 
     def _get_C(self, cstd):
@@ -176,7 +171,7 @@ class GetSolint:
 if __name__ == "__main__":
 
     # set std score, for which you want to find the solint
-    optimal_score = 1
+    optimal_score = 1.5
 
     # reference solution interval
     ref_solint = 10
