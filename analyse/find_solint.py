@@ -85,8 +85,11 @@ class GetSolint:
 
         return: circular variance
         """
-        normvar = -2 * np.log(1 - circ_var / (np.pi**2))
-        return normvar if normvar==normvar else sys.exit('ERROR: score cannot be larger than pi')
+        if circ_var>np.pi**2:
+            sys.exit('ERROR: optimal score cannot be larger than pi')
+        else:
+            normvar = -2 * np.log(1 - circ_var / (np.pi**2))
+            return normvar if normvar==normvar else sys.exit('ERROR: variance gives NaN')
 
 
     def _get_C(self, cstd):
@@ -177,7 +180,7 @@ class GetSolint:
 if __name__ == "__main__":
 
     # set std score, for which you want to find the solint
-    optimal_score = 0.1
+    optimal_score = 1.5
 
 
     # reference solution interval
