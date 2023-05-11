@@ -26,6 +26,7 @@ def make_utf8(inp):
     except (UnicodeDecodeError, AttributeError):
         return inp
 
+
 class GetSolint:
     def __init__(self, h5, optimal_score=0.5, ref_solint=10):
         """
@@ -47,6 +48,7 @@ class GetSolint:
         self.cstd = 0
         self.C = None
 
+
     def plot_C(self, title=None, saveas=None):
         """
         Plot circstd score in function of solint for given C
@@ -56,11 +58,11 @@ class GetSolint:
         """
         normal_sigmas = [n / 100 for n in range(1, 1000)]
         values = [circstd(normal(0, n, 10000)) for n in normal_sigmas]
-        x = (self.C*np.pi) / (np.array(normal_sigmas) ** 2 )/ 2
+        x = (self.C*np.pi**2) / (np.array(normal_sigmas) ** 2 )/ 2
         bestsolint = self.C / (self._circvar_to_normvar(self.optimal_score ** 2))
-        plt.plot(x, values)
-        solints = np.array(range(0, int(max(bestsolint * 2, self.ref_solint * 1.5))))
-        plt.plot(solints, [self.theoretical_curve(t) for t in solints])
+        plt.plot(x, values, alpha=0.5)
+        solints = np.array(range(1, int(max(bestsolint * 200, self.ref_solint * 150))))/100
+        plt.plot(solints, [self.theoretical_curve(float(t)) for t in solints])
         plt.scatter([self.ref_solint], [self.cstd], c='blue', label='measurement', s=25, marker='x')
         plt.scatter([bestsolint], [self.optimal_score], color='red', label='best solint', s=25, marker='x')
         plt.xlim(0, max(bestsolint * 1.5, self.ref_solint * 1.5))
@@ -76,14 +78,15 @@ class GetSolint:
 
         return self
 
+
     def _circvar_to_normvar(self, circ_var):
         """
         Convert circular variance to normal variance
 
         return: circular variance
         """
-        normvar = -2 * np.log(1 - circ_var / np.pi)
-        return normvar if normvar==normvar else np.pi
+        normvar = -2 * np.log(1 - circ_var / (np.pi**2))
+        return normvar if normvar==normvar else sys.exit('ERROR: score cannot be larger than pi')
 
 
     def _get_C(self, cstd):
@@ -145,6 +148,7 @@ class GetSolint:
 
         return self
 
+
     @property
     def best_solint(self):
         """
@@ -158,6 +162,7 @@ class GetSolint:
         optimal_cirvar = self.optimal_score ** 2
         return self.C / (self._circvar_to_normvar(optimal_cirvar))
 
+
     def theoretical_curve(self, t):
         """
         Theoretical curve based on circ statistics
@@ -166,17 +171,19 @@ class GetSolint:
         """
         if self.C is None:
             self.best_solint()
-        return np.pi * np.sqrt(1 - np.exp(-(self.C / (2 * np.pi * t))))
+        return np.pi * np.sqrt(1 - np.exp(-(self.C / (2 * t))))
+
 
 if __name__ == "__main__":
 
     # set std score, for which you want to find the solint
-    optimal_score = 1.5
+    optimal_score = 0.1
+
 
     # reference solution interval
     ref_solint = 10
 
-    h5 = '../P51272.h5'
+    h5 = '../P23872.h5'
 
     S = GetSolint(h5, optimal_score, ref_solint)
     solint = S.best_solint
