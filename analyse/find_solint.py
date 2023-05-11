@@ -56,13 +56,13 @@ class GetSolint:
         :param C: constant defining the noise level
         :param title: title for plot
         """
-        normal_sigmas = [n / 100 for n in range(1, 1000)]
-        values = [circstd(normal(0, n, 10000)) for n in normal_sigmas]
-        x = (self.C*np.pi**2) / (np.array(normal_sigmas) ** 2 )/ 2
+        # normal_sigmas = [n / 100 for n in range(1, 1000)]
+        # values = [circstd(normal(0, n, 10000)) for n in normal_sigmas]
+        # x = (self.C*np.pi**2) / (np.array(normal_sigmas) ** 2) / 2
         bestsolint = self.C / (self._circvar_to_normvar(self.optimal_score ** 2))
-        plt.plot(x, values, alpha=0.5)
+        # plt.plot(x, values, alpha=0.5)
         solints = np.array(range(1, int(max(bestsolint * 200, self.ref_solint * 150))))/100
-        plt.plot(solints, [self.theoretical_curve(float(t)) for t in solints])
+        plt.plot(solints, [self.theoretical_curve(float(t)) for t in solints], color='green')
         plt.scatter([self.ref_solint], [self.cstd], c='blue', label='measurement', s=25, marker='x')
         plt.scatter([bestsolint], [self.optimal_score], color='red', label='best solint', s=25, marker='x')
         plt.xlim(0, max(bestsolint * 1.5, self.ref_solint * 1.5))
@@ -85,7 +85,7 @@ class GetSolint:
 
         return: circular variance
         """
-        if circ_var>np.pi**2:
+        if circ_var > np.pi**2:
             sys.exit('ERROR: optimal score cannot be larger than pi')
         else:
             normvar = -2 * np.log(1 - circ_var / (np.pi**2))
@@ -180,13 +180,13 @@ class GetSolint:
 if __name__ == "__main__":
 
     # set std score, for which you want to find the solint
-    optimal_score = 1.5
+    optimal_score = 2.5
 
 
     # reference solution interval
     ref_solint = 10
 
-    h5 = '../P23872.h5'
+    h5 = '../P51272.h5'
 
     S = GetSolint(h5, optimal_score, ref_solint)
     solint = S.best_solint
