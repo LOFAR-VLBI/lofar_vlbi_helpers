@@ -63,8 +63,8 @@ class GetSolint:
         # plt.plot(x, values, alpha=0.5)
         solints = np.array(range(1, int(max(bestsolint * 200, self.ref_solint * 150))))/100
         plt.plot(solints, [self.theoretical_curve(float(t)) for t in solints], color='green')
-        plt.scatter([self.ref_solint], [self.cstd], c='blue', label='measurement', s=25, marker='x')
-        plt.scatter([bestsolint], [self.optimal_score], color='red', label='best solint', s=25, marker='x')
+        plt.scatter([self.ref_solint], [self.cstd], c='blue', label='measurement', s=80, marker='x')
+        plt.scatter([bestsolint], [self.optimal_score], color='red', label='best solint', s=80, marker='x')
         plt.xlim(0, max(bestsolint * 1.5, self.ref_solint * 1.5))
         plt.xlabel("solint (min)")
         plt.ylabel("circstd score")
@@ -180,7 +180,7 @@ class GetSolint:
 if __name__ == "__main__":
 
     # set std score, for which you want to find the solint
-    optimal_score = 2.5
+    optimal_score = 0.3
 
 
     # reference solution interval
