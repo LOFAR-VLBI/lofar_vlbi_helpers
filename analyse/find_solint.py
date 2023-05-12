@@ -12,7 +12,7 @@ from scipy.stats import circstd
 # except:
 #     pass
 
-conf68 = np.pi
+limit = np.pi
 
 def make_utf8(inp):
     """
@@ -50,7 +50,7 @@ class GetSolint:
         self.C = None
 
 
-    def plot_C(self, title=None, saveas=None):
+    def plot_C(self, title=None, saveas=None, extrapoints=None):
         """
         Plot circstd score in function of solint for given C
 
@@ -58,15 +58,18 @@ class GetSolint:
         :param title: title for plot
         """
         normal_sigmas = [n / 1000 for n in range(1, 10000)]
-        values = [circstd(normal(0, n, 10000)) for n in normal_sigmas]
-        x = (self.C*conf68**2) / (np.array(normal_sigmas) ** 2) / 2
-        bestsolint = self.C / (self._circvar_to_normvar(self.optimal_score ** 2))
+        values = [circstd(normal(0, n, 300)) for n in normal_sigmas]
+        x = (self.C*limit**2) / (np.array(normal_sigmas) ** 2) / 2
+        bestsolint = self.best_solint
         plt.plot(x, values, alpha=0.5)
         solints = np.array(range(1, int(max(bestsolint * 200, self.ref_solint * 150))))/100
         plt.plot(solints, [self.theoretical_curve(float(t)) for t in solints], color='green')
         plt.scatter([self.ref_solint], [self.cstd], c='blue', label='measurement', s=80, marker='x')
         plt.scatter([bestsolint], [self.optimal_score], color='red', label='best solint', s=80, marker='x')
+        if extrapoints is not None:
+            plt.scatter(extrapoints[0], extrapoints[1], color='orange', label='other measurements', s=80, marker='x')
         plt.xlim(0, max(bestsolint * 1.5, self.ref_solint * 1.5))
+        # plt.xlim(0, 0.2)
         plt.xlabel("solint (min)")
         plt.ylabel("circstd score")
         plt.legend(frameon=True, loc='upper right', fontsize=10)
@@ -86,14 +89,15 @@ class GetSolint:
 
         return: circular variance
         """
-        if circ_var > conf68**2:
+        if circ_var > limit**2:
             sys.exit('ERROR: optimal score cannot be larger than pi')
         else:
-            normvar = -2 * np.log(1 - circ_var / (conf68**2))
+            normvar = -2 * np.log(1 - circ_var / (limit**2))
             return normvar if normvar==normvar else sys.exit('ERROR: variance gives NaN')
 
 
-    def _get_C(self, cstd):
+    @property
+    def _get_C(self):
         """
         Get constant defining the normal circular distribution
 
@@ -101,7 +105,9 @@ class GetSolint:
 
         :return: C
         """
-        normvar = self._circvar_to_normvar(cstd ** 2)
+        if self.cstd==0:
+            self.get_phasediff_score()
+        normvar = self._circvar_to_normvar(self.cstd ** 2)
         return normvar * self.ref_solint
 
 
@@ -162,7 +168,7 @@ class GetSolint:
         """
         if self.cstd==0:
             self.get_phasediff_score()
-        self.C = self._get_C(self.cstd)
+        self.C = self._get_C
         optimal_cirvar = self.optimal_score ** 2
         return self.C / (self._circvar_to_normvar(optimal_cirvar))
 
@@ -174,22 +180,25 @@ class GetSolint:
         :return: circular std
         """
         if self.C is None:
-            self.best_solint()
-        return conf68 * np.sqrt(1 - np.exp(-(self.C / (2 * t))))
+            self.C = self._get_C
+        return limit * np.sqrt(1 - np.exp(-(self.C / (2 * t))))
 
 
 if __name__ == "__main__":
 
     # set std score, for which you want to find the solint
-    optimal_score = 3
+    optimal_score = 0.5
 
     # reference solution interval
     ref_solint = 10
 
-    h5 = '../P23872.h5'
+    # solution file
+    h5 = '../P50980.h5'
 
+    # get solution interval
     S = GetSolint(h5, optimal_score, ref_solint)
     solint = S.best_solint
 
-    # OPTIONAL
+    # OPTIONAL: plot fit
     S.plot_C("T=" + str(round(solint, 2)) + " min")
+
