@@ -12,6 +12,8 @@ from scipy.stats import circstd
 # except:
 #     pass
 
+conf68 = np.pi
+
 def make_utf8(inp):
     """
     Convert input to utf8 instead of bytes
@@ -25,7 +27,6 @@ def make_utf8(inp):
         return inp
     except (UnicodeDecodeError, AttributeError):
         return inp
-
 
 class GetSolint:
     def __init__(self, h5, optimal_score=0.5, ref_solint=10):
@@ -56,11 +57,11 @@ class GetSolint:
         :param C: constant defining the noise level
         :param title: title for plot
         """
-        # normal_sigmas = [n / 100 for n in range(1, 1000)]
-        # values = [circstd(normal(0, n, 10000)) for n in normal_sigmas]
-        # x = (self.C*np.pi**2) / (np.array(normal_sigmas) ** 2) / 2
+        normal_sigmas = [n / 1000 for n in range(1, 10000)]
+        values = [circstd(normal(0, n, 10000)) for n in normal_sigmas]
+        x = (self.C*conf68**2) / (np.array(normal_sigmas) ** 2) / 2
         bestsolint = self.C / (self._circvar_to_normvar(self.optimal_score ** 2))
-        # plt.plot(x, values, alpha=0.5)
+        plt.plot(x, values, alpha=0.5)
         solints = np.array(range(1, int(max(bestsolint * 200, self.ref_solint * 150))))/100
         plt.plot(solints, [self.theoretical_curve(float(t)) for t in solints], color='green')
         plt.scatter([self.ref_solint], [self.cstd], c='blue', label='measurement', s=80, marker='x')
@@ -85,10 +86,10 @@ class GetSolint:
 
         return: circular variance
         """
-        if circ_var > np.pi**2:
+        if circ_var > conf68**2:
             sys.exit('ERROR: optimal score cannot be larger than pi')
         else:
-            normvar = -2 * np.log(1 - circ_var / (np.pi**2))
+            normvar = -2 * np.log(1 - circ_var / (conf68**2))
             return normvar if normvar==normvar else sys.exit('ERROR: variance gives NaN')
 
 
@@ -174,19 +175,18 @@ class GetSolint:
         """
         if self.C is None:
             self.best_solint()
-        return np.pi * np.sqrt(1 - np.exp(-(self.C / (2 * t))))
+        return conf68 * np.sqrt(1 - np.exp(-(self.C / (2 * t))))
 
 
 if __name__ == "__main__":
 
     # set std score, for which you want to find the solint
-    optimal_score = 0.3
-
+    optimal_score = 3
 
     # reference solution interval
     ref_solint = 10
 
-    h5 = '../P51272.h5'
+    h5 = '../P23872.h5'
 
     S = GetSolint(h5, optimal_score, ref_solint)
     solint = S.best_solint

@@ -29,8 +29,8 @@ steps=[ps,avg] \
 ps.type=phaseshifter \
 ps.phasecenter=[16h06m07.61855,55d21m35.4166] \
 avg.type=averager \
-avg.freqstep=8 \
-avg.timestep=4
+avg.freqresolution='97656.25kHz' \
+avg.timeresolution=4
 
 # check output
 singularity exec -B $SING_BIND $SIMG \
