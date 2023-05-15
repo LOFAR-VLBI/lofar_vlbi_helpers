@@ -29,7 +29,7 @@ def make_utf8(inp):
         return inp
 
 class GetSolint:
-    def __init__(self, h5, optimal_score=0.5, ref_solint=10):
+    def __init__(self, h5, optimal_score=0.5, ref_solint=10, station=None):
         """
         Get a score based on the phase difference between XX and YY. This reflects the noise in the observation.
         From this score we can determine an optimal solution interval, by fitting a wrapped normal distribution.
@@ -48,6 +48,7 @@ class GetSolint:
         self.ref_solint = ref_solint
         self.cstd = 0
         self.C = None
+        self.station = station
 
 
     def plot_C(self, title=None, saveas=None, extrapoints=None):
@@ -106,7 +107,7 @@ class GetSolint:
         :return: C
         """
         if self.cstd==0:
-            self.get_phasediff_score()
+            self.get_phasediff_score(station=self.station)
         normvar = self._circvar_to_normvar(self.cstd ** 2)
         return normvar * self.ref_solint
 
@@ -167,7 +168,7 @@ class GetSolint:
         :return: value corresponding with increase solution interval
         """
         if self.cstd==0:
-            self.get_phasediff_score()
+            self.get_phasediff_score(station=self.station)
         self.C = self._get_C
         optimal_cirvar = self.optimal_score ** 2
         return self.C / (self._circvar_to_normvar(optimal_cirvar))
@@ -187,13 +188,13 @@ class GetSolint:
 if __name__ == "__main__":
 
     # set std score, for which you want to find the solint
-    optimal_score = 0.5
+    optimal_score = 2
 
     # reference solution interval
     ref_solint = 10
 
     # solution file
-    h5 = '../P50980.h5'
+    h5 = '../P23872.h5'
 
     # get solution interval
     S = GetSolint(h5, optimal_score, ref_solint)
@@ -202,23 +203,3 @@ if __name__ == "__main__":
     # OPTIONAL: plot fit
     S.plot_C("T=" + str(round(solint, 2)) + " min")
 
-    S1 = GetSolint('../bad1min.h5', optimal_score, ref_solint)
-    S1.get_phasediff_score()
-
-    S2 = GetSolint('../bad2min.h5', optimal_score, ref_solint)
-    S2.get_phasediff_score()
-
-    S4 = GetSolint('../bad4min.h5', optimal_score, ref_solint)
-    S4.get_phasediff_score()
-
-    S10 = GetSolint('../bad10min.h5', optimal_score, ref_solint)
-    solint10 = S10.best_solint
-
-    S15 = GetSolint('../bad15min.h5', optimal_score, ref_solint)
-    S15.get_phasediff_score()
-
-    S20 = GetSolint('../bad20min.h5', optimal_score, ref_solint)
-    S20.get_phasediff_score()
-
-    # OPTIONAL
-    S10.plot_C("T=" + str(round(solint10, 2)) + " min", extrapoints=[[1, 2, 4, 15, 20], [S1.cstd, S2.cstd, S4.cstd, S15.cstd, S20.cstd]])

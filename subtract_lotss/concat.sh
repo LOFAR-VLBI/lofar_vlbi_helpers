@@ -4,8 +4,8 @@
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
-SIMG=$( python $HOME/parse_settings.py --SIMG )
-SING_BIND=$( python $HOME/parse_settings.py --BIND )
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
+SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 
 ls sub6asec*.ms -1d > "mslist.txt"

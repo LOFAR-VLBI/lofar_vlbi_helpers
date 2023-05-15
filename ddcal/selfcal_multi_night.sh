@@ -4,7 +4,7 @@
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --constraint=amd
 
-MS=$1
+DIR=$1
 
 #SINGULARITY SETTINGS
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
@@ -22,8 +22,7 @@ python $lofar_facet_selfcal \
 --makeimage-ILTlowres-HBA \
 --targetcalILT='scalarphase' \
 --stop=12 \
---no-beamcor \
 --makeimage-fullpol \
 --helperscriptspath=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal \
 --helperscriptspathh5merge=/home/lofarvwf-jdejong/scripts/lofar_helpers \
-${MS}
+L??????_${DIR}.ms
