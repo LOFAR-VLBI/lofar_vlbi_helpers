@@ -157,7 +157,7 @@ class GetSolint:
 
         self.cstd = circstd(phasemod, nan_policy='omit')
 
-        return self
+        return circstd(phasemod, nan_policy='omit')
 
 
     @property
