@@ -124,8 +124,7 @@ if __name__ == "__main__":
         print(paths.BIND)
     if args.SIMG:
         if 'surfsara.nl' in paths.myhost and \
-                'intel' in (subprocess.check_output("lscpu", shell=True).strip()).decode().lower() and \
-                'cascadelake' not in args.SIMG:
+                'intel' in (subprocess.check_output("lscpu", shell=True).strip()).decode().lower():
             print(surf_simg_intel)
         else:
             print(paths.SIMG)

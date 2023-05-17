@@ -7,8 +7,8 @@
 echo $SLURM_JOB_NAME
 
 #SINGULARITY SETTINGS
-SING_BIND=$( python $HOME/parse_settings.py --BIND )
-SIMG=$( python $HOME/parse_settings.py --SIMG )
+SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
