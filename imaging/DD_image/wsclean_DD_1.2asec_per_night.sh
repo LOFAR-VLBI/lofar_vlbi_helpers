@@ -1,40 +1,41 @@
 #!/bin/bash
-#SBATCH -c 60
+#SBATCH -c 31
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --constraint=amd
 #SBATCH -p infinite
-#SBATCH --exclusive
-#SBATCH --constraint=mem950G
 #SBATCH --job-name=DD_1_imaging
-
-OUT_DIR=$PWD
 
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
-SIMG=$( python3 $HOME/parse_settings.py --SIMG )
+SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.2_znver2_znver2_noavx512_ddf_10_02_2023.sif
 
-#source ../prep_data/1asec_4nights.sh
-cp -r ../avg*.ms .
-cp ../*.h5 .
+NIGHT=$1 # L*
+
+OUT_DIR=$PWD/${NIGHT}
+
+mkdir -p ${OUT_DIR}
+cp -r avg*${NIGHT}*.ms ${OUT_DIR}
+cp merged_${NIGHT}.h5 ${OUT_DIR}
+cp facets.reg ${OUT_DIR}
+
+cd ${OUT_DIR}
 
 LIST=(*.ms)
-H5S=(*.h5)
-HH=${H5S[@]}
 
-singularity exec -B ${SING_BIND} ${SIMG} python \
-/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/ds9facetgenerator.py \
---h5 ${H5S[0]} \
---DS9regionout facets.reg \
---imsize 22500 \
---ms ${LIST[0]} \
---pixelscale 0.4
+#singularity exec -B ${SING_BIND} ${SIMG} python \
+#/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/ds9facetgenerator.py \
+#--h5 merged_${NIGHT}.h5 \
+#--DS9regionout facets.reg \
+#--imsize 22500 \
+#--ms ${LIST[0]} \
+#--pixelscale 0.4
 
 echo "Move data to tmpdir..."
 mkdir "$TMPDIR"/wscleandata
-mv *.h5 "$TMPDIR"/wscleandata
+mv merged_${NIGHT}.h5 "$TMPDIR"/wscleandata
 mv facets.reg "$TMPDIR"/wscleandata
-mv avg*.ms "$TMPDIR"/wscleandata
+mv *.ms "$TMPDIR"/wscleandata
 cd "$TMPDIR"/wscleandata
 
 echo "----------START WSCLEAN----------"
@@ -57,7 +58,7 @@ wsclean \
 -name 1.2image \
 -scale 0.4arcsec \
 -taper-gaussian 1.2asec \
--niter 150000 \
+-niter 100000 \
 -log-time \
 -multiscale-scale-bias 0.7 \
 -parallel-deconvolution 2600 \
@@ -65,7 +66,7 @@ wsclean \
 -multiscale-max-scales 9 \
 -nmiter 9 \
 -facet-regions facets.reg \
--apply-facet-solutions ${HH// /,} amplitude000,phase000 \
+-apply-facet-solutions merged_${NIGHT}.h5 amplitude000,phase000 \
 -parallel-gridding 6 \
 -apply-facet-beam \
 -facet-beam-update 600 \
@@ -74,10 +75,9 @@ wsclean \
 -deconvolution-channels 3 \
 -join-channels \
 -fit-spectral-pol 3 \
--dd-psf-grid 3 3 \
 avg*.ms
 
-rm -rf avg*.ms
+rm -rf *.ms
 #
 tar cf output.tar *
 cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}

@@ -15,7 +15,7 @@ SIMG=$( python $HOME/parse_settings.py --SIMG )
 BIND=$( python $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 #SCRIPTS
-lofar_facet_selfcal=$( python $HOME/parse_settings.py --lofar_facet_selfcal )
+lofar_facet_selfcal=$( python $HOME/parse_settings.py --facet_selfcal )
 
 PATH_DIR=/project/lofarvwf/Share/jdejong/output/ELAIS/${OBSERVATION}/ddcal/all_directions
 pattern="${PATH_DIR}/*.ms"

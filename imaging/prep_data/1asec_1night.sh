@@ -48,22 +48,6 @@ echo "... Finished averaging data in DPPP"
 #MSLIST
 ls -1 -d avg_applycal* > mslist.txt
 
-#MS_VECTOR=[$(cat  mslist.txt |tr "\n" ",")]
-#
-#echo "Concat data..."
-#
-##CONCAT
-#singularity exec -B ${SING_BIND} ${SING_IMAGE_WSCLEAN} DP3 \
-#msin=${MS_VECTOR} \
-#msin.orderms=False \
-#msin.missingdata=True \
-#msin.datacolumn=DATA \
-#msout=${OBSERVATION}_120_168MHz_averaged_applied.ms \
-#msout.storagemanager=dysco \
-#msout.writefullresflag=False \
-#steps=[]
-#
-#echo "...Finished concat"
 
 # check output
 singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \

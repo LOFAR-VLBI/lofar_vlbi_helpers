@@ -4,7 +4,6 @@
 #SBATCH --array=0-85
 #SBATCH --constraint=intel
 
-
 APPTAINERENV_MPLBACKEND=agg
 
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"

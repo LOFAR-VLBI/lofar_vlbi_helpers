@@ -1,10 +1,10 @@
 #!/bin/bash
 
-SIMG=$( python $HOME/parse_settings.py --SIMG )
-BIND=$( python $HOME/parse_settings.py --BIND )
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
+BIND=$( python3 $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 #SCRIPTS
-lofar_facet_selfcal=$( python $HOME/parse_settings.py --lofar_facet_selfcal )
+lofar_facet_selfcal=$( python3 $HOME/parse_settings.py --facet_selfcal )
 
 MSIN=$1
 
