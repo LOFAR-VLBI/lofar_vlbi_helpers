@@ -22,9 +22,9 @@ if __name__ == "__main__":
     lnum = args.nights.replace(' ','').split(',')
 
     h5s = sorted([os.path.abspath(h5) for h5 in glob('../merged*.h5') if isin(h5, lnum)])
-    mss = sorted([os.path.abspath(ms) for ms in glob('../avg*.ms') if isin(ms, lnum)])
+    mss = sorted([os.path.abspath(ms) for ms in glob('../*.ms') if isin(ms, lnum)])
 
-    os.system('[ -e h5s.txt ] && rm h5s.txt && [ -e mss.txt ] && rm mss.txt')
+    os.system('[ -e h5list.txt ] && rm h5list.txt && [ -e mslist.txt ] && rm mslist.txt')
     f = open("h5list.txt", "a+")
     g = open("mslist.txt", "a+")
     for l in lnum:

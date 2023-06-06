@@ -18,8 +18,6 @@ SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.2_znver2_znver2_noav
 mkdir ${NIGHT}
 cp -r ../*${NIGHT}*.ms .
 
-#source /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/prep_data/0.6asec_per_night.sh ${NIGHT}
-
 cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/ddcal/merged_${NIGHT}.h5 .
 
 LIST=(*.ms)
