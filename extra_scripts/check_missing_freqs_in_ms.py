@@ -62,6 +62,7 @@ def check_channels(input, make_dummies, output_name):
 
 
 if __name__ == '__main__':
+
     import argparse
 
     parser = argparse.ArgumentParser(description='Validate MS')

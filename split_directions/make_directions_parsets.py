@@ -185,8 +185,6 @@ def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False, sel
     return parset
 
 
-
-
 if __name__ == '__main__':
     import argparse
 

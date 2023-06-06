@@ -23,13 +23,13 @@ cd ${OUT_DIR}
 
 LIST=(*.ms)
 
-#singularity exec -B ${SING_BIND} ${SIMG} python \
-#/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/ds9facetgenerator.py \
-#--h5 merged_${NIGHT}.h5 \
-#--DS9regionout facets.reg \
-#--imsize 22500 \
-#--ms ${LIST[0]} \
-#--pixelscale 0.4
+singularity exec -B ${SING_BIND} ${SIMG} python \
+/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/ds9facetgenerator.py \
+--h5 merged_${NIGHT}.h5 \
+--DS9regionout facets.reg \
+--imsize 22500 \
+--ms ${LIST[0]} \
+--pixelscale 0.4
 
 echo "Move data to tmpdir..."
 mkdir "$TMPDIR"/wscleandata

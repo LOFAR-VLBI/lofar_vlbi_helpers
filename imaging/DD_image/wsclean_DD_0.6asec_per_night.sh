@@ -1,40 +1,42 @@
 #!/bin/bash
-#SBATCH -c 60
+#SBATCH -c 48
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --constraint=amd
 #SBATCH -p infinite
-#SBATCH --exclusive
 #SBATCH --constraint=mem950G
-#SBATCH --job-name=DD_1_imaging
+#SBATCH --exclusive
+#SBATCH --job-name=DD_0.6_imaging
 
+NIGHT=$1
 OUT_DIR=$PWD
 
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
-SIMG=$( python3 $HOME/parse_settings.py --SIMG )
+SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.2_znver2_znver2_noavx512_ddf_10_02_2023.sif
 
-#source ../prep_data/1asec_4nights.sh
-cp -r ../avg*.ms .
-cp ../*.h5 .
+mkdir ${NIGHT}
+cp -r ../*${NIGHT}*.ms .
+
+#source /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/prep_data/0.6asec_per_night.sh ${NIGHT}
+
+cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/ddcal/merged_${NIGHT}.h5 .
 
 LIST=(*.ms)
-H5S=(*.h5)
-HH=${H5S[@]}
 
 singularity exec -B ${SING_BIND} ${SIMG} python \
 /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/ds9facetgenerator.py \
---h5 ${H5S[0]} \
+--h5 merged_${NIGHT}.h5 \
 --DS9regionout facets.reg \
---imsize 22500 \
+--imsize 45000 \
 --ms ${LIST[0]} \
---pixelscale 0.4
+--pixelscale 0.2
 
 echo "Move data to tmpdir..."
 mkdir "$TMPDIR"/wscleandata
 mv *.h5 "$TMPDIR"/wscleandata
 mv facets.reg "$TMPDIR"/wscleandata
-mv avg*.ms "$TMPDIR"/wscleandata
+mv *.ms "$TMPDIR"/wscleandata
 cd "$TMPDIR"/wscleandata
 
 echo "----------START WSCLEAN----------"
@@ -44,7 +46,7 @@ wsclean \
 -update-model-required \
 -gridder wgridder \
 -minuv-l 80.0 \
--size 22500 22500 \
+-size 45000 45000 \
 -weighting-rank-filter 3 \
 -reorder \
 -weight briggs -1.5 \
@@ -54,9 +56,9 @@ wsclean \
 -auto-mask 2.5 \
 -auto-threshold 1.0 \
 -pol i \
--name 1.2image \
--scale 0.4arcsec \
--taper-gaussian 1.2asec \
+-name 0.6image \
+-scale 0.2arcsec \
+-taper-gaussian 0.6asec \
 -niter 150000 \
 -log-time \
 -multiscale-scale-bias 0.7 \
@@ -65,7 +67,7 @@ wsclean \
 -multiscale-max-scales 9 \
 -nmiter 9 \
 -facet-regions facets.reg \
--apply-facet-solutions ${HH// /,} amplitude000,phase000 \
+-apply-facet-solutions merged_${NIGHT}.h5 amplitude000,phase000 \
 -parallel-gridding 6 \
 -apply-facet-beam \
 -facet-beam-update 600 \
@@ -75,10 +77,10 @@ wsclean \
 -join-channels \
 -fit-spectral-pol 3 \
 -dd-psf-grid 3 3 \
-avg*.ms
+*.ms
 
-rm -rf avg*.ms
-#
+rm -rf *.ms
+
 tar cf output.tar *
 cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
 
