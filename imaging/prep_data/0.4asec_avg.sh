@@ -2,7 +2,7 @@
 #SBATCH -c 6
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
-#SBATCH --job-name=prep_0.6
+#SBATCH --job-name=prep_0.4
 #SBATCH --array=0-100
 
 #SINGULARITY SETTINGS
@@ -22,14 +22,11 @@ echo "Average data in DPPP..."
 #Averaging to 2seconds and 8ch/SB
 singularity exec -B ${SING_BIND} ${SIMG} DP3 \
 msin=${MSIN} \
-msout=avg0.6_${MSOUT} \
+msout=avg0.4_${MSOUT} \
 msin.datacolumn=DATA \
 msout.storagemanager=dysco \
 msout.writefullresflag=False \
-steps=[avg,ps] \
-avg.type=averager \
-avg.freqstep=2 \
-avg.timeresolution=2 \
+steps=[ps] \
 ps.type=phaseshifter \
 ps.phasecenter=[16h11m00.00000,54d57m00.0000]
 

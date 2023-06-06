@@ -17,12 +17,17 @@ OUT_DIR=$PWD
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
+#COMPARE PHASE CENTERS
+singularity exec -B ${SING_BIND} ${SIMG} python \
+/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/have_same_phasecenters.py --ms ../avg*${L}*.ms
+
+#COPY AND MAKE FACETS
 IFS=',' ;for L in $NIGHTS
 do
   cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/ddcal/merged_${L}.h5 .
-  cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/applycal*${L}*.ms .
+  cp -r ../avg*${L}*.ms .
 
-  LIST=(applycal*${L}*.ms)
+  LIST=(avg*${L}*.ms)
 
   singularity exec -B ${SING_BIND} ${SIMG} python \
   /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/ds9facetgenerator.py \
@@ -42,12 +47,13 @@ done
 #mv avg*.ms "$TMPDIR"/wscleandata
 #cd "$TMPDIR"/wscleandata
 
-#aoflagger
-for MS in applycal*.ms
+#AOFLAGGER
+for MS in avg*.ms
 do
   singularity exec -B ${SING_BIND} ${SING_IMAGE} aoflagger ${MS}
 done
 
+#MAKE MAPPING FOR SOLUTIONS AND MS
 singularity exec -B ${SING_BIND} ${SIMG} \
 python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/mapping_solutions_ms.py $NIGHTS
 

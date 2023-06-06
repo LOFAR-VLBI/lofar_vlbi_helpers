@@ -22,13 +22,15 @@ echo "Average data in DPPP..."
 #Average to 4seconds and 4ch/SB
 singularity exec -B ${SING_BIND} ${SIMG} DP3 \
 msin=${MSIN} \
-msout=avg_${MSOUT} \
+msout=avg1.2_${MSOUT} \
 msin.datacolumn=DATA \
 msout.storagemanager=dysco \
 msout.writefullresflag=False \
-steps=[avg] \
+steps=[avg,ps] \
 avg.type=averager \
 avg.freqstep=4 \
-avg.timeresolution=4
+avg.timeresolution=4 \
+ps.type=phaseshifter \
+ps.phasecenter=[16h11m00.00000,54d57m00.0000]
 
 echo "... Finished averaging data in DPPP"

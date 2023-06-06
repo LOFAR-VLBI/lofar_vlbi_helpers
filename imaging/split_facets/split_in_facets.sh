@@ -5,6 +5,17 @@
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
+SOURCEDIR=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal
+MAX_PARALLEL=8
+nroffiles=$(ls -1d $SOURCEDIR/*.ms|wc -w)
+setsize=$(( nroffiles/MAX_PARALLEL + 1 ))
+ls -1d $SOURCEDIR/* | xargs -n $setsize | while read workset; do
+  cp -r $workset .
+done
+wait
+
+#TODO: copies H5
+
 LISTMS=(*.ms)
 H5S=(*.h5)
 HH=${H5S[@]}
@@ -20,7 +31,7 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 
 #loop over facets from merged h5
 singularity exec -B ${SING_BIND} ${SIMG} python \
-/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/split_facets.py \
+/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets/split_facets.py \
 --h5 ${H5S[0]} \
 --reg facets.reg
 
