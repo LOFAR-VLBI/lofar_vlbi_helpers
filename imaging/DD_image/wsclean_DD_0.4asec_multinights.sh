@@ -78,8 +78,8 @@ wsclean \
 -auto-threshold 1.0 \
 -pol i \
 -name 0.6image \
--scale 0.2arcsec \
--taper-gaussian 0.15asec \
+-scale 0.1arcsec \
+-taper-gaussian 0.4asec \
 -niter 150000 \
 -log-time \
 -multiscale-scale-bias 0.7 \

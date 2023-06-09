@@ -1,41 +1,24 @@
 #!/bin/bash
-#SBATCH -c 48
+#SBATCH -c 60
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --constraint=amd
 #SBATCH -p infinite
-#SBATCH --constraint=mem950G
 #SBATCH --exclusive
-#SBATCH --job-name=DD_0.6_imaging
+#SBATCH --constraint=mem950G
+#SBATCH --job-name=DD_1_imaging
 
-NIGHT=$1
+#EXAMPLE: 'L12312,L87654,...'
+NIGHTS=$1
+
 OUT_DIR=$PWD
 
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
-mkdir ${NIGHT}
-cp -r ../*${NIGHT}*.ms .
-
-cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/ddcal/merged_${NIGHT}.h5 .
-
-LIST=(*.ms)
-
-singularity exec -B ${SING_BIND} ${SIMG} python \
-/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/ds9facetgenerator.py \
---h5 merged_${NIGHT}.h5 \
---DS9regionout facets.reg \
---imsize 45000 \
---ms ${LIST[0]} \
---pixelscale 0.2
-
-echo "Move data to tmpdir..."
-mkdir "$TMPDIR"/wscleandata
-mv *.h5 "$TMPDIR"/wscleandata
-mv facets.reg "$TMPDIR"/wscleandata
-mv *.ms "$TMPDIR"/wscleandata
-cd "$TMPDIR"/wscleandata
+FACET=facets.reg
+H5=merged_L686962.h5
 
 echo "----------START WSCLEAN----------"
 
@@ -44,7 +27,7 @@ wsclean \
 -update-model-required \
 -gridder wgridder \
 -minuv-l 80.0 \
--size 45000 45000 \
+-size 60000 60000 \
 -weighting-rank-filter 3 \
 -reorder \
 -weight briggs -1.5 \
@@ -54,9 +37,9 @@ wsclean \
 -auto-mask 2.5 \
 -auto-threshold 1.0 \
 -pol i \
--name 0.6image \
--scale 0.2arcsec \
--taper-gaussian 0.6asec \
+-name 0.4image \
+-scale 0.15arcsec \
+-taper-gaussian 0.4asec \
 -niter 150000 \
 -log-time \
 -multiscale-scale-bias 0.7 \
@@ -64,8 +47,8 @@ wsclean \
 -multiscale \
 -multiscale-max-scales 9 \
 -nmiter 9 \
--facet-regions facets.reg \
--apply-facet-solutions merged_${NIGHT}.h5 amplitude000,phase000 \
+-facet-regions ${FACET} \
+-apply-facet-solutions ${H5} amplitude000,phase000 \
 -parallel-gridding 6 \
 -apply-facet-beam \
 -facet-beam-update 600 \
@@ -77,12 +60,12 @@ wsclean \
 -dd-psf-grid 3 3 \
 *.ms
 
-rm -rf *.ms
-
-tar cf output.tar *
-cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
-
-cd ${OUT_DIR}
-tar -xf output.tar *fits
+#rm -rf avg*.ms
+#
+#tar cf output.tar *
+#cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
+#
+#cd ${OUT_DIR}
+#tar -xf output.tar *fits
 
 echo "----FINISHED----"

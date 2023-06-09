@@ -4,6 +4,10 @@
 #SBATCH --array=0-XXXX
 #SBATCH --constraint=amd
 
+#SINGULARITY SETTINGS
+SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
+
 mkdir -p facet_${SLURM_ARRAY_TASK_ID}
 cp -r avg*.ms facet_${SLURM_ARRAY_TASK_ID}
 cp poly_${SLURM_ARRAY_TASK_ID}.reg facet_${SLURM_ARRAY_TASK_ID}

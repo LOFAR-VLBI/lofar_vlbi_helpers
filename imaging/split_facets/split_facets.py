@@ -33,13 +33,13 @@ def split_polygons_ds9(regionfile):
         poly_file.writelines([poly])
     regionfile.close()
 
-def point_in_ds9_poly(point, poly_reg):
+def ds9_poly_info(point, poly_reg):
     """
     Is point in polygon region file
 
     :param point: list or tuple with 2D coordinate
     :param poly_reg: polygon region file
-    :return:
+    :return: point in geo, polygon area
     """
     polyregion = open(poly_reg, 'r')
     lines = polyregion.readlines()
@@ -48,7 +48,7 @@ def point_in_ds9_poly(point, poly_reg):
     polyp = [float(p) for p in poly.replace('polygon(', '').replace(')', '').replace('\n', '').split(',')]
     poly_geo = geometry.Polygon(tuple(zip(polyp[0::2], polyp[1::2])))
     point_geo = geometry.Point(point)
-    return poly_geo.contains(point_geo)
+    return poly_geo.contains(point_geo), poly_geo.area
 
 
 if __name__ == "__main__":
@@ -73,13 +73,16 @@ if __name__ == "__main__":
         dirs %= (2*np.pi)
         dirs *= 360/(2*np.pi)
 
-    f = open('polygon_point.csv', 'w')
+    f = open('polygon_phasecenter.csv', 'w')
     writer = csv.writer(f)
-    writer.writerow(['idx', 'dir_name', 'polygon_file', 'dir'])
+    writer.writerow(['idx', 'dir_name', 'polygon_file', 'dir', 'area', 'avg'])
     for n, dir in enumerate(dirs):
         for polygonregion_file in glob('poly_*.reg'):
-            if point_in_ds9_poly(dir, polygonregion_file):
+            point_in_poly, poly_area = ds9_poly_info(dir, polygonregion_file)
+            if point_in_poly:
                 print(n, make_utf8(dirname[n]), polygonregion_file)
-                writer.writerow([n, make_utf8(dirname[n]), polygonregion_file, '['+str(dir[0])+'deg'+','+str(dir[1])+'deg'+']'])
+                writer.writerow([n, make_utf8(dirname[n]), polygonregion_file,
+                                 '['+str(dir[0])+'deg'+','+str(dir[1])+'deg'+']', poly_area,
+                                 max(int(np.sqrt(2.5*2.5/poly_area))-1, 1)])
     f.close()
 
