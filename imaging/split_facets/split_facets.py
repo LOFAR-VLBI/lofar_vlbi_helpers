@@ -73,7 +73,7 @@ if __name__ == "__main__":
         dirs %= (2*np.pi)
         dirs *= 360/(2*np.pi)
 
-    f = open('polygon_phasecenter.csv', 'w')
+    f = open('polygon_info.csv', 'w')
     writer = csv.writer(f)
     writer.writerow(['idx', 'dir_name', 'polygon_file', 'dir', 'area', 'avg'])
     for n, dir in enumerate(dirs):

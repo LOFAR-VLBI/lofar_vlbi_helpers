@@ -22,20 +22,18 @@ for NIGHT in L686962 L769393 L798074 L816272; do
   mkdir -p ${NIGHT}
   mv avg*${NIGHT} ${NIGHT}
   cp merged_${NIGHT}.h5 ${NIGHT}
-  #TODO cp MODELIMAGES FROM SOMEWHERE INTO
 
   cd ${NIGHT}
 
   #subtract ms with wsclean for each facet
   singularity exec -B ${SING_BIND} ${SIMG} python \
-  /home/lofar_helpers/subtract_with_wsclean/subtract_with_wsclean.py \
+  /home/lofarvwf-jdejong/scripts/lofar_helpers/subtract_with_wsclean/subtract_with_wsclean.py \
   --mslist avg*.ms \
   --region ../poly_${SLURM_ARRAY_TASK_ID}.reg \
+  --model_image_folder .. \
   --facet_region ../facets.reg \
   --h5parm_predict merged_${NIGHT}.h5 \
-  --phaseshift ${PHASECENTER} \
-  #TODO EXTRA AVERAGING?
-  #TODO APPLY SOLUTIONS
+  --forwidefield
 
   rm -rf avg*.ms
 
