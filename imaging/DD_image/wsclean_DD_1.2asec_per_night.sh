@@ -45,7 +45,7 @@ do
   singularity exec -B ${SING_BIND} ${SIMG} aoflagger ${M}
   singularity exec -B ${SING_BIND} ${SIMG} DP3 msin=${M} \
   steps=[filter] \
-  filter.baseline=\!RS409HBA \
+  filter.baseline='!RS409HBA' \
   filter.remove=true \
   msin.datacolumn=DATA \
   msout.storagemanager=dysco
