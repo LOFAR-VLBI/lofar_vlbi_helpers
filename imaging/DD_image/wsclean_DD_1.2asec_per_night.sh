@@ -8,7 +8,7 @@
 
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
-SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.0.2_znver2_znver2_noavx512_ddf_10_02_2023.sif
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
 NIGHT=$1 # L*
 
@@ -97,5 +97,6 @@ cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
 
 cd ${OUT_DIR}
 tar -xf output.tar *fits
+tar -xf output.tar *.reg
 
 echo "----FINISHED----"

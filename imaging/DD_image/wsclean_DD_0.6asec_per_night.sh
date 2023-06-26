@@ -84,5 +84,6 @@ cp "$TMPDIR"/wscleandata/output.tar ${OUT_DIR}
 
 cd ${OUT_DIR}
 tar -xf output.tar *fits
+tar -xf output.tar *.reg
 
 echo "----FINISHED----"
