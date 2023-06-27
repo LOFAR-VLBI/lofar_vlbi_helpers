@@ -41,7 +41,6 @@ cd "$TMPDIR"/wscleandata
 #extra flagging
 for M in *.ms
 do
-  cp -r ${FROM}/${M} ${TO} && wait
 
   # flagging RS409
   singularity exec -B ${SING_BIND} ${SIMG} DP3 msin=${M} \
