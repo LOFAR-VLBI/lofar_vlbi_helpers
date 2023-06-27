@@ -42,13 +42,21 @@ cd "$TMPDIR"/wscleandata
 for M in *.ms
 do
   cp -r ${FROM}/${M} ${TO} && wait
-  singularity exec -B ${SING_BIND} ${SIMG} aoflagger ${M}
+
+  # flagging RS409
   singularity exec -B ${SING_BIND} ${SIMG} DP3 msin=${M} \
   steps=[filter] \
   filter.baseline='!RS409HBA' \
   filter.remove=true \
   msin.datacolumn=DATA \
-  msout.storagemanager=dysco
+  msout.storagemanager=dysco \
+  msout=flag_${M}
+
+  # remove old MS
+  rm -rf ${M}
+
+  # aoflagger
+  singularity exec -B ${SING_BIND} ${SIMG} aoflagger flag_${M} .
 done
 
 echo "----------START WSCLEAN----------"
@@ -88,7 +96,7 @@ wsclean \
 -deconvolution-channels 3 \
 -join-channels \
 -fit-spectral-pol 3 \
-avg*.ms
+*.ms
 
 rm -rf *.ms
 #
