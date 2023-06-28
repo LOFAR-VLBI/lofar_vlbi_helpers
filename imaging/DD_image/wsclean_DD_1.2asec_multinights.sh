@@ -51,7 +51,7 @@ done
 #AOFLAGGER
 for MS in avg*.ms
 do
-  singularity exec -B ${SING_BIND} ${SING_IMAGE} aoflagger ${MS}
+  singularity exec -B ${SING_BIND} ${SING_IMAGE} aoflagger ${MS} .
 done
 
 #MAKE MAPPING FOR SOLUTIONS AND MS

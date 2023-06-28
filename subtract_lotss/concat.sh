@@ -29,7 +29,7 @@ steps=[ps,avg] \
 ps.type=phaseshifter \
 ps.phasecenter=[16h06m07.61855,55d21m35.4166] \
 avg.type=averager \
-avg.freqresolution='97656.25kHz' \
+avg.freqresolution='97656.25Hz' \
 avg.timeresolution=4
 
 # check output

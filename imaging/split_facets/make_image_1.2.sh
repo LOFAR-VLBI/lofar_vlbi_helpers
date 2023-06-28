@@ -5,6 +5,8 @@
 #SBATCH --constraint=intel
 #SBATCH --job-name=DI_1_imaging
 
+IMSIZE=$1
+
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
@@ -16,7 +18,7 @@ wsclean \
 -use-idg \
 -update-model-required \
 -minuv-l 80.0 \
--size 22500 22500 \
+-size ${IMSIZE} ${IMSIZE} \
 -weighting-rank-filter 3 \
 -reorder \
 -weight briggs -1.5 \

@@ -31,7 +31,7 @@ for NIGHT in L686962 L769393 L798074 L816272; do
   --mslist avg*.ms \
   --region ../poly_${SLURM_ARRAY_TASK_ID}.reg \
   --model_image_folder .. \
-  --facet_region ../facets.reg \
+  --facets_predict ../facets.reg \
   --h5parm_predict merged_${NIGHT}.h5 \
   --forwidefield
 
@@ -41,7 +41,11 @@ for NIGHT in L686962 L769393 L798074 L816272; do
 
 mv L??????/sub*.ms .
 
-sbatch /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets/make_image_1.2.sh
+K=$(( ${SLURM_ARRAY_TASK_ID}+2 ))
+AVG=$(cat polygon_info.csv | head -n $K | tail -n 1 | cut -d',' -f7)
+IMSIZE=$(( 22500/${AVG} ))
+
+sbatch /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets/make_image_1.2.sh $IMSIZE
 
 #apply solutions to new subtracted MS
 #make image

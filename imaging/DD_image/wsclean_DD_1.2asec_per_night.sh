@@ -5,6 +5,7 @@
 #SBATCH --constraint=amd
 #SBATCH -p infinite
 #SBATCH --job-name=DD_1_imaging
+#SBATCH -t=192:00:00
 
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
