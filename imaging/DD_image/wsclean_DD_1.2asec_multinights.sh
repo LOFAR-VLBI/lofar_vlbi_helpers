@@ -31,7 +31,7 @@ do
 
   singularity exec -B ${SING_BIND} ${SIMG} python \
   /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/ds9facetgenerator.py \
-  --h5 merged_$L.h5 \
+  --h5 merged_${L}.h5 \
   --DS9regionout facets_${L}.reg \
   --imsize 22500 \
   --ms ${LIST[0]} \
@@ -51,7 +51,7 @@ done
 #AOFLAGGER
 for MS in avg*.ms
 do
-  singularity exec -B ${SING_BIND} ${SING_IMAGE} aoflagger ${MS} .
+  singularity exec -B ${SING_BIND} ${SIMG} aoflagger ${MS} .
 done
 
 #MAKE MAPPING FOR SOLUTIONS AND MS
