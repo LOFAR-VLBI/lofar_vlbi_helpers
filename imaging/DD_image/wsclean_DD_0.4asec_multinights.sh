@@ -50,7 +50,7 @@ done
 #AOFLAGGER
 for MS in avg*.ms
 do
-  singularity exec -B ${SING_BIND} ${SING_IMAGE} aoflagger ${MS}
+  singularity exec -B ${SING_BIND} ${SIMG} aoflagger ${MS}
 done
 
 #MAKE MAPPING FOR SOLUTIONS AND MS
@@ -77,7 +77,7 @@ wsclean \
 -auto-mask 2.5 \
 -auto-threshold 1.0 \
 -pol i \
--name 0.6image \
+-name 0.4image \
 -scale 0.1arcsec \
 -taper-gaussian 0.4asec \
 -niter 150000 \

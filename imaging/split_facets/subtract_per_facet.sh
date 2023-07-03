@@ -20,7 +20,7 @@ PHASECENTER=$( cat ../polygon_point.csv | grep -m1 '1,' | cut -d',' -f4 )
 for NIGHT in L686962 L769393 L798074 L816272; do
 
   mkdir -p ${NIGHT}
-  mv avg*${NIGHT} ${NIGHT}
+  mv avg*${NIGHT}*.ms ${NIGHT}
   cp merged_${NIGHT}.h5 ${NIGHT}
 
   cd ${NIGHT}

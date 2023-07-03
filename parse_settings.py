@@ -30,8 +30,8 @@ surf_h5_merger = '/project/lofarvwf/Software/lofar_helpers/h5_merger.py'
 surf_facet_selfcal = '/project/lofarvwf/Software/lofar_facet_selfcal/facetselfcal.py'
 
 #SCRIPT PATHS
-h5_merger_path = "https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/facetselfcal.py"
-facet_selfcal_path = "https://raw.githubusercontent.com/jurjen93/lofar_helpers/master/h5_merger.py"
+facet_selfcal_path = "https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/facetselfcal.py"
+h5_merger_path = "https://raw.githubusercontent.com/jurjen93/lofar_helpers/master/h5_merger.py"
 
 class ScriptPaths:
     """

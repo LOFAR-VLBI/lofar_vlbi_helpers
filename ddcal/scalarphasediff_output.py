@@ -98,4 +98,3 @@ if __name__ == '__main__':
         writer.writerow([h5.split("_")[0].split('/')[0]+'_'+h5.split("_")[2], std, dir[0], dir[1]])
 
     f.close()
-
