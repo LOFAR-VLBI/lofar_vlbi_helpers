@@ -17,6 +17,8 @@ OUT_DIR=$PWD
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
+echo $SIMG
+
 #COMPARE PHASE CENTERS
 singularity exec -B ${SING_BIND} ${SIMG} python \
 /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/have_same_phasecenters.py --ms ../avg*${L}*.ms

@@ -24,7 +24,7 @@ leiden_facet_selfcal = '/net/rijn/data2/rvweeren/LoTSS_ClusterCAL/facetselfcal.p
 
 #SURFSARA HAS INTEL AND AMD NODES
 surf_bind = "/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,"+home
-surf_simg_amd = "/project/lofarvwf/Software/singularity/lofar_sksp_v4.2.1_znver2_znver2_aocl3.sif"
+surf_simg_amd = "/project/lofarvwf/Software/singularity/lofar_sksp_v4.2.3_znver2_znver2_aocl4_debug_manualfftwtest.sif"
 surf_simg_intel = "/project/lofarvwf/Software/singularity/lofar_sksp_v4.2.1_sandybridge_sandybridge_ddf_cuda.sif"
 surf_h5_merger = '/project/lofarvwf/Software/lofar_helpers/h5_merger.py'
 surf_facet_selfcal = '/project/lofarvwf/Software/lofar_facet_selfcal/facetselfcal.py'
