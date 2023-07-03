@@ -29,30 +29,6 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 --ms ${LISTMS[0]} \
 --pixelscale 0.4
 
-singularity exec -B ${SING_BIND} ${SIMG} python \
-/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/ds9facetgenerator.py \
---h5 ${H5S[0]} \
---DS9regionout facets_0.6.reg \
---imsize 45000 \
---ms ${LISTMS[0]} \
---pixelscale 0.2
-
-singularity exec -B ${SING_BIND} ${SIMG} python \
-/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/ds9facetgenerator.py \
---h5 ${H5S[0]} \
---DS9regionout facets_0.4.reg \
---imsize 67500 \
---ms ${LISTMS[0]} \
---pixelscale 0.1
-
-singularity exec -B ${SING_BIND} ${SIMG} python \
-/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/ds9facetgenerator.py \
---h5 ${H5S[0]} \
---DS9regionout facets_0.3.reg \
---imsize 90000 \
---ms ${LISTMS[0]} \
---pixelscale 0.1
-
 #loop over facets from merged h5
 singularity exec -B ${SING_BIND} ${SIMG} python \
 ${SCRIPT_DIR}/split_facets.py \

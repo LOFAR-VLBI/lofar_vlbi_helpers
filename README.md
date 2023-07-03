@@ -22,6 +22,7 @@ Step 14) run ddcal/run_selfcal.sh to run selfcals in parallel (alternatively ddc
 Step 15) run ddcal/dir_selection.py to do selfcal direction selection \
 Step 16) run merge/fullmerge.py to merge solutions for best calibrators \
 Step 17) run imaging/DD_image/* to do DD imaging
+Step 17.2) run imaging/split_facets/split_in_facets.sh to image splitted in facets
 
 
 See main prefactor --> https://github.com/lofar-astron/prefactor \

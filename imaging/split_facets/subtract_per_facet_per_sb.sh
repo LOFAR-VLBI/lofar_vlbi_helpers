@@ -12,7 +12,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 mkdir -p facet_${SLURM_ARRAY_TASK_ID}
 cp -r *.ms facet_${SLURM_ARRAY_TASK_ID}
 cp poly_${SLURM_ARRAY_TASK_ID}.reg facet_${SLURM_ARRAY_TASK_ID}
-cp facets.reg facet_${SLURM_ARRAY_TASK_ID}
+cp facets_1.2.reg facet_${SLURM_ARRAY_TASK_ID}
 cp merged_*.h5 facet_${SLURM_ARRAY_TASK_ID}
 cd facet_${SLURM_ARRAY_TASK_ID}
 
@@ -30,6 +30,7 @@ for NIGHT in L686962 L769393 L798074 L816272; do
     sbatch ${SCRIPT_DIR}/subtract_sb.sh ${SB}
 
   cd ../
+
 
 
 #<RUNFOLDER> (with output from split_in_facets.sh)

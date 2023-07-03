@@ -11,7 +11,7 @@ SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 mkdir -p facet_${SLURM_ARRAY_TASK_ID}
 cp -r avg*.ms facet_${SLURM_ARRAY_TASK_ID}
 cp poly_${SLURM_ARRAY_TASK_ID}.reg facet_${SLURM_ARRAY_TASK_ID}
-cp facets.reg facet_${SLURM_ARRAY_TASK_ID}
+cp facets_1.2.reg facet_${SLURM_ARRAY_TASK_ID}
 cp merged_*.h5 facet_${SLURM_ARRAY_TASK_ID}
 cd facet_${SLURM_ARRAY_TASK_ID}
 
@@ -31,7 +31,7 @@ for NIGHT in L686962 L769393 L798074 L816272; do
   --mslist avg*.ms \
   --region ../poly_${SLURM_ARRAY_TASK_ID}.reg \
   --model_image_folder .. \
-  --facets_predict ../facets.reg \
+  --facets_predict ../facets_1.2.reg \
   --h5parm_predict merged_${NIGHT}.h5 \
   --forwidefield
 
