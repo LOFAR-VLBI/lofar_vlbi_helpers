@@ -101,6 +101,20 @@ class ScriptPaths:
             if self.internet_connection:
                 os.system('wget '+h5_merger_path)
                 os.system('wget '+facet_selfcal_path)
+                os.system("wget https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/facetselfcal.py")
+                os.system("wget https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/lib_multiproc.py")
+                os.system("wget https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/plot_tecandphase.py")
+                os.system("wget https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/lin2circ.py")
+                os.system("wget https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/BLsmooth.py")
+                os.system("wget https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/polconv.py")
+                os.system("wget https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/vlass_search.py")
+                os.system("wget https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/VLASS_dyn_summary.php")
+                os.system("wget https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/find_solint.py")
+                os.system("wget https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/ds9facetgenerator.py")
+                os.system("wget https://raw.githubusercontent.com/rvweeren/lofar_facet_selfcal/main/default_StokesV.lua")
+                os.system("wget https://raw.githubusercontent.com/jurjen93/lofar_helpers/master/h5_merger.py")
+                self.facet_selfcal = os.getcwd()+'/facetselfcal.py'
+                self.h5_merger = os.getcwd()+'/h5_merger.py'
 
             elif 'h5_merger.py' in [py.split('/')[-1] for py in glob('*.py')] and 'facetselfcal.py' in [py.split('/')[-1] for py in glob('*.py')]:
                 self.facet_selfcal = os.getcwd()+'/facetselfcal.py'
