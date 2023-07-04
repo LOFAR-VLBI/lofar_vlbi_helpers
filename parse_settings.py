@@ -20,6 +20,7 @@ leiden_bind = "/tmp,/dev/shm,/net/tussenrijn,/net/achterrijn,/net/krommerijn,/ne
               "/net/rijn2,/net/rijn3,/net/rijn4,/net/rijn5,/net/rijn6,/net/rijn7,/net/rijn8,/net/rijn9,/net/rijn10,/net/rijn11,"+home
 leiden_simg = "/net/achterrijn/data1/sweijen/software/containers/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif"
 leiden_h5_merger = '/net/tussenrijn/data2/jurjendejong/lofar_helpers/h5_merger.py'
+leiden_lofar_helpers = '/net/tussenrijn/data2/jurjendejong/lofar_helpers'
 leiden_facet_selfcal = '/net/rijn/data2/rvweeren/LoTSS_ClusterCAL/facetselfcal.py'
 
 #SURFSARA HAS INTEL AND AMD NODES
@@ -27,6 +28,7 @@ surf_bind = "/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/projec
 surf_simg_amd = "/project/lofarvwf/Software/singularity/lofar_sksp_v4.2.3_znver2_znver2_aocl4_debug_manualfftwtest.sif"
 surf_simg_intel = "/project/lofarvwf/Software/singularity/lofar_sksp_v4.2.1_sandybridge_sandybridge_ddf_cuda.sif"
 surf_h5_merger = '/project/lofarvwf/Software/lofar_helpers/h5_merger.py'
+surf_lofar_helpers = '/project/lofarvwf/Software/lofar_helpers'
 surf_facet_selfcal = '/project/lofarvwf/Software/lofar_facet_selfcal/facetselfcal.py'
 
 #SCRIPT PATHS
@@ -86,9 +88,11 @@ class ScriptPaths:
         if 'surfsara.nl' in self.myhost:
             self.facet_selfcal = surf_facet_selfcal
             self.h5_merger = surf_h5_merger
+            self.lofar_helpers = surf_lofar_helpers
         elif 'leidenuniv.nl' in self.myhost:
             self.facet_selfcal = leiden_facet_selfcal
             self.h5_merger = leiden_h5_merger
+            self.lofar_helpers = leiden_lofar_helpers
         else:
             if self.internet_connection:
                 os.system('wget '+h5_merger_path)
@@ -117,6 +121,7 @@ if __name__ == "__main__":
     parser.add_argument('--SIMG', help='Singularity Image', default="", action='store_true')
     parser.add_argument('--facet_selfcal', help='facetselfcal.py in facet_selfcal', default="", action='store_true')
     parser.add_argument('--h5_merger', help='h5_merger.py in lofar_helpers', default="", action='store_true')
+    parser.add_argument('--lofar_helpers', help='find lofar_helpers', default="", action='store_true')
     args = parser.parse_args()
 
     paths = ScriptPaths()
@@ -132,7 +137,8 @@ if __name__ == "__main__":
         print(paths.facet_selfcal)
     if args.h5_merger:
         print(paths.h5_merger)
-
+    if args.lofar_helpers:
+        print(paths.lofar_helpers)
 
 """
 USAGE:
