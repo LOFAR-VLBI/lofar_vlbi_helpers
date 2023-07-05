@@ -4,17 +4,20 @@
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets
 
+echo "COPY DATA"
 SOURCEDIR=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal
 MAX_PARALLEL=8
 nroffiles=$(ls -1d $SOURCEDIR/*.ms|wc -w)
 setsize=$(( nroffiles/MAX_PARALLEL + 1 ))
 ls -1d $SOURCEDIR/* | xargs -n $setsize | while read workset; do
+  echo "COPY $workset"
   cp -r $workset .
 done
 wait
 
+echo "COPY SOLUTION FILES"
 cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/ddcal/merged_L??????.h5 .
 
 LISTMS=(*.ms)

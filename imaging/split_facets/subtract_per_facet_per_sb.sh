@@ -4,14 +4,12 @@
 #SBATCH --array=0-150
 #SBATCH --constraint=amd
 
-#SINGULARITY SETTINGS
-SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
-SIMG=$( python3 $HOME/parse_settings.py --SIMG )
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
+SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets
+POLYREG=poly_${SLURM_ARRAY_TASK_ID}.reg
+echo "COPY DATA"
 mkdir -p facet_${SLURM_ARRAY_TASK_ID}
 cp -r *.ms facet_${SLURM_ARRAY_TASK_ID}
-cp poly_${SLURM_ARRAY_TASK_ID}.reg facet_${SLURM_ARRAY_TASK_ID}
+cp ${POLYREG} facet_${SLURM_ARRAY_TASK_ID}
 cp facets_1.2.reg facet_${SLURM_ARRAY_TASK_ID}
 cp merged_*.h5 facet_${SLURM_ARRAY_TASK_ID}
 cd facet_${SLURM_ARRAY_TASK_ID}
@@ -27,7 +25,7 @@ for NIGHT in L686962 L769393 L798074 L816272; do
   cd ${NIGHT}
 
   for SB in *${NIGHT}*.ms; do
-    sbatch ${SCRIPT_DIR}/subtract_sb.sh ${SB}
+    sbatch ${SCRIPT_DIR}/subtract_sb.sh ${SB} ${NIGHT} ${POLYREG}
 
   cd ../
 
