@@ -7,13 +7,14 @@
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
+RUNFOLDER=facet_${SLURM_ARRAY_TASK_ID}
 
-mkdir -p facet_${SLURM_ARRAY_TASK_ID}
-cp -r avg*.ms facet_${SLURM_ARRAY_TASK_ID}
-cp poly_${SLURM_ARRAY_TASK_ID}.reg facet_${SLURM_ARRAY_TASK_ID}
-cp facets_1.2.reg facet_${SLURM_ARRAY_TASK_ID}
-cp merged_*.h5 facet_${SLURM_ARRAY_TASK_ID}
-cd facet_${SLURM_ARRAY_TASK_ID}
+mkdir -p ${RUNFOLDER}
+cp -r avg*.ms ${RUNFOLDER}
+cp poly_${SLURM_ARRAY_TASK_ID}.reg ${RUNFOLDER}
+cp facets_1.2.reg ${RUNFOLDER}
+cp merged_*.h5 ${RUNFOLDER}
+cd ${RUNFOLDER}
 
 PHASECENTER=$( cat ../polygon_point.csv | grep -m1 '1,' | cut -d',' -f4 )
 

@@ -4,6 +4,7 @@ import tables
 from glob import glob
 import csv
 from argparse import ArgumentParser
+from shapely import affinity
 
 def make_utf8(inp):
     """
@@ -17,10 +18,11 @@ def make_utf8(inp):
     except (UnicodeDecodeError, AttributeError):
         return inp
 
-def split_polygons_ds9(regionfile):
+def split_polygons_ds9(regionfile, extra_boundary=0.):
     """
     Split polygons in ds9
     :param regionfile: region file
+    :param extra_boundary: adding extra boundary layer
     :return:
     """
     regionfile = open(regionfile, 'r')
@@ -30,7 +32,14 @@ def split_polygons_ds9(regionfile):
     for n, poly in enumerate(polygons):
         poly_file = open('poly_' + str(n) + '.reg', 'w')
         poly_file.writelines(header)
-        poly_file.writelines([poly])
+        polyp = [float(p) for p in poly.replace('polygon(', '').replace(')', '').replace('\n', '').split(',')]
+        poly_geo = geometry.Polygon(tuple(zip(polyp[0::2], polyp[1::2])))
+        print(poly_geo.area)
+        if extra_boundary!=0.:
+            poly_geo = poly_geo.buffer(extra_boundary, resolution=len(polyp[0::2]), join_style=2)
+            print(poly_geo.area)
+        poly = 'polygon'+str(tuple(item for sublist in poly_geo.exterior.coords[:] for item in sublist))
+        poly_file.writelines(poly)
     regionfile.close()
 
 def ds9_poly_info(point, poly_reg):
@@ -61,7 +70,7 @@ if __name__ == "__main__":
     reg = args.reg
     solutionfile = args.h5
 
-    split_polygons_ds9(reg)
+    split_polygons_ds9(regionfile=reg, extra_boundary=0.1)
 
     H = tables.open_file(solutionfile)
     dirs = H.root.sol000.source[:]['dir']
