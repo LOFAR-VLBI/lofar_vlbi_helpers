@@ -58,8 +58,8 @@ if __name__ == "__main__":
     parser.add_argument('--h5', help='h5 file to write directions from', type=str, required=True)
     args = parser.parse_args()
 
-    reg = 'facets.reg'
-    solutionfile = "merged_L686962.h5"
+    reg = args.reg
+    solutionfile = args.h5
 
     split_polygons_ds9(reg)
 
