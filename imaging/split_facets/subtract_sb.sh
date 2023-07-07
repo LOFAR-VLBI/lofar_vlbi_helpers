@@ -17,7 +17,7 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 /home/lofarvwf-jdejong/scripts/lofar_helpers/subtract_with_wsclean/subtract_with_wsclean.py \
 --mslist ${SB} \
 --region ../../${POLYREG} \
---model_image_folder ../../ \
+--model_image_folder /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/DD_1.2/${NIGHT}_2606/ \
 --facets_predict ../../facets_1.2.reg \
 --h5parm_predict ../merged_${NIGHT}.h5 \
 --forwidefield

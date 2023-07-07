@@ -36,6 +36,6 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 singularity exec -B ${SING_BIND} ${SIMG} python \
 ${SCRIPT_DIR}/split_facets.py \
 --h5 ${H5S[0]} \
---reg facets_1.2.reg #TODO: CHANGE THIS FOR OTHER RESOLUTIONS
+--reg facets_1.2.reg
 
 sbatch ${SCRIPT_DIR}/subtract_per_facet_per_sb.sh
