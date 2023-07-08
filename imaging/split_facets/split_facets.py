@@ -34,10 +34,8 @@ def split_polygons_ds9(regionfile, extra_boundary=0.):
         poly_file.writelines(header)
         polyp = [float(p) for p in poly.replace('polygon(', '').replace(')', '').replace('\n', '').split(',')]
         poly_geo = geometry.Polygon(tuple(zip(polyp[0::2], polyp[1::2])))
-        print(poly_geo.area)
         if extra_boundary!=0.:
             poly_geo = poly_geo.buffer(extra_boundary, resolution=len(polyp[0::2]), join_style=2)
-            print(poly_geo.area)
         poly = 'polygon'+str(tuple(item for sublist in poly_geo.exterior.coords[:] for item in sublist))
         poly_file.writelines(poly)
     regionfile.close()
@@ -70,7 +68,7 @@ if __name__ == "__main__":
     reg = args.reg
     solutionfile = args.h5
 
-    split_polygons_ds9(regionfile=reg, extra_boundary=0.1)
+    split_polygons_ds9(regionfile=reg, extra_boundary=0)
 
     H = tables.open_file(solutionfile)
     dirs = H.root.sol000.source[:]['dir']
@@ -93,5 +91,7 @@ if __name__ == "__main__":
                 writer.writerow([n, make_utf8(dirname[n]), polygonregion_file,
                                  '['+str(dir[0])+'deg'+','+str(dir[1])+'deg'+']', poly_area,
                                  max(int(np.sqrt(2.5*2.5/poly_area))-1, 1)])
+    split_polygons_ds9(regionfile=reg, extra_boundary=0.1)
+
     f.close()
 

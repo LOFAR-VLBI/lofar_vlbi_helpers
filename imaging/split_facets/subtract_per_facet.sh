@@ -10,7 +10,7 @@ SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 RUNFOLDER=facet_${SLURM_ARRAY_TASK_ID}
 
 mkdir -p ${RUNFOLDER}
-cp -r avg*.ms ${RUNFOLDER}
+cp -r *.ms ${RUNFOLDER}
 cp poly_${SLURM_ARRAY_TASK_ID}.reg ${RUNFOLDER}
 cp facets_1.2.reg ${RUNFOLDER}
 cp merged_*.h5 ${RUNFOLDER}
@@ -19,7 +19,7 @@ cd ${RUNFOLDER}
 for NIGHT in L686962 L769393 L798074 L816272; do
 
   mkdir -p ${NIGHT}
-  mv avg*${NIGHT}*.ms ${NIGHT}
+  mv *${NIGHT}*.ms ${NIGHT}
   cp merged_${NIGHT}.h5 ${NIGHT}
 
   cd ${NIGHT}
@@ -27,18 +27,18 @@ for NIGHT in L686962 L769393 L798074 L816272; do
   #subtract ms with wsclean for each facet
   singularity exec -B ${SING_BIND} ${SIMG} python \
   /home/lofarvwf-jdejong/scripts/lofar_helpers/subtract_with_wsclean/subtract_with_wsclean.py \
-  --mslist avg*.ms \
+  --mslist *.ms \
   --region ../poly_${SLURM_ARRAY_TASK_ID}.reg \
   --model_image_folder /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/DD_1.2/${NIGHT}_2606/ \
   --facets_predict ../facets_1.2.reg \
   --h5parm_predict merged_${NIGHT}.h5 \
   --forwidefield
 
-  rm -rf avg*.ms
+  rm -rf *.ms
 
   cd ../
 
-#mv L??????/sub*.ms .
+mv L??????/sub*.ms .
 #
 #K=$(( ${SLURM_ARRAY_TASK_ID}+2 ))
 #AVG=$(cat polygon_info.csv | head -n $K | tail -n 1 | cut -d',' -f7)

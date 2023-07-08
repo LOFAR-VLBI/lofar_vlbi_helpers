@@ -11,6 +11,10 @@ IMSIZE=$1
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
+K=$(( ${SLURM_ARRAY_TASK_ID}+2 )) #TODO: Change slurm_array_task_id
+AVG=$(cat polygon_info.csv | head -n $K | tail -n 1 | cut -d',' -f7)
+IMSIZE=$(( 22500/${AVG} )) #TODO: Currently fails
+
 echo "----------START WSCLEAN----------"
 
 singularity exec -B ${SING_BIND} ${SIMG} \
