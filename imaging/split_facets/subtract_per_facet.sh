@@ -1,16 +1,19 @@
 #!/bin/bash
-#SBATCH -c 10
+#SBATCH -c 15
 #SBATCH --job-name=subtract
 #SBATCH --array=0-36%4
 #SBATCH --constraint=amd
 
+
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
-RUNFOLDER=facet_${SLURM_ARRAY_TASK_ID}
+OUTPUTFOLDER=${PWD}/facet_${SLURM_ARRAY_TASK_ID}
+RUNFOLDER=${TMPDIR}/facet_${SLURM_ARRAY_TASK_ID}
 
+mkdir -p ${OUTPUTFOLDER}
 mkdir -p ${RUNFOLDER}
-cp -r *.ms ${RUNFOLDER}
+cp -r apply*.ms ${RUNFOLDER}
 cp poly_${SLURM_ARRAY_TASK_ID}.reg ${RUNFOLDER}
 cp facets_1.2.reg ${RUNFOLDER}
 cp merged_*.h5 ${RUNFOLDER}
@@ -19,7 +22,7 @@ cd ${RUNFOLDER}
 for NIGHT in L686962 L769393 L798074 L816272; do
 
   mkdir -p ${NIGHT}
-  mv *${NIGHT}*.ms ${NIGHT}
+  mv apply*${NIGHT}*.ms ${NIGHT}
   cp merged_${NIGHT}.h5 ${NIGHT}
 
   cd ${NIGHT}
@@ -34,11 +37,11 @@ for NIGHT in L686962 L769393 L798074 L816272; do
   --h5parm_predict merged_${NIGHT}.h5 \
   --forwidefield
 
-  rm -rf *.ms
+  rm -rf apply*.ms
 
   cd ../
 
-mv L??????/sub*.ms .
+mv L??????/sub*.ms ${OUTPUTFOLDER}
 #
 #K=$(( ${SLURM_ARRAY_TASK_ID}+2 ))
 #AVG=$(cat polygon_info.csv | head -n $K | tail -n 1 | cut -d',' -f7)

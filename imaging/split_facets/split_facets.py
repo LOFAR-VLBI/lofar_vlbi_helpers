@@ -91,6 +91,7 @@ if __name__ == "__main__":
                 writer.writerow([n, make_utf8(dirname[n]), polygonregion_file,
                                  '['+str(dir[0])+'deg'+','+str(dir[1])+'deg'+']', poly_area,
                                  max(int(np.sqrt(2.5*2.5/poly_area))-1, 1)])
+
     split_polygons_ds9(regionfile=reg, extra_boundary=0.1)
 
     f.close()
