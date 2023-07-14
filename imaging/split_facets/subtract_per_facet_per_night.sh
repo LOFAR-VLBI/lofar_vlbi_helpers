@@ -20,6 +20,8 @@ cp -r apply*${NIGHT}*.ms ${RUNFOLDER}
 cp poly_${SLURM_ARRAY_TASK_ID}.reg ${RUNFOLDER}
 cp facets_1.2.reg ${RUNFOLDER}
 cp merged_${NIGHT}.h5 ${RUNFOLDER}
+cp polygon_info.csv ${RUNFOLDER}
+
 
 cd ${RUNFOLDER}
 

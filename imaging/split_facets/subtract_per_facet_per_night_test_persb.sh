@@ -1,23 +1,28 @@
 #!/bin/bash
-#SBATCH -c 15
+#SBATCH -c 10
 #SBATCH --job-name=subtract
 #SBATCH --constraint=amd
+#SBATCH --array=0-24
 
 NIGHT=$1
-SLURM_ARRAY_TASK_ID=15
+FACETID=15
 
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
-OUTPUTFOLDER=${PWD}/facet_${SLURM_ARRAY_TASK_ID}
-RUNFOLDER=${TMPDIR}/facet_${SLURM_ARRAY_TASK_ID}/${NIGHT}
+OUTPUTFOLDER=${PWD}/facet_${FACETID}
+RUNFOLDER=${TMPDIR}/facet_${FACETID}/${NIGHT}
 
 mkdir -p ${OUTPUTFOLDER}
 mkdir -p ${RUNFOLDER}
 
-cp -r apply*${NIGHT}*.ms ${RUNFOLDER}
-cp poly_${SLURM_ARRAY_TASK_ID}.reg ${RUNFOLDER}
+pattern="apply*${NIGHT}*.ms"
+MS_FILES=( $pattern )
+SB=${MS_FILES[${SLURM_ARRAY_TASK_ID}]}
+
+cp -r ${SB} ${RUNFOLDER}
+cp poly_${FACETID}.reg ${RUNFOLDER}
 cp facets_1.2.reg ${RUNFOLDER}
 cp merged_${NIGHT}.h5 ${RUNFOLDER}
 cp polygon_info.csv ${RUNFOLDER}
@@ -27,8 +32,8 @@ cd ${RUNFOLDER}
 #subtract ms with wsclean for each facet
 singularity exec -B ${SING_BIND} ${SIMG} python \
 /home/lofarvwf-jdejong/scripts/lofar_helpers/subtract_with_wsclean/subtract_with_wsclean.py \
---mslist apply*${NIGHT}*.ms \
---region poly_${SLURM_ARRAY_TASK_ID}.reg \
+--mslist ${SB} \
+--region poly_${FACETID}.reg \
 --model_image_folder /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/DD_1.2/${NIGHT}_2606/ \
 --facets_predict facets_1.2.reg \
 --h5parm_predict merged_${NIGHT}.h5 \
