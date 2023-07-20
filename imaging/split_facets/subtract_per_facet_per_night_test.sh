@@ -35,6 +35,10 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 --forwidefield
 
 mv sub*${NIGHT}.ms ${OUTPUTFOLDER}
+mkdir -p ${OUTPUTFOLDER}/facet_${SLURM_ARRAY_TASK_ID}_${NIGHT}
+ls -1d * > ${OUTPUTFOLDER}/facet_${SLURM_ARRAY_TASK_ID}_${NIGHT}/sb_${SLURM_ARRAY_TASK_ID}.txt
+mv *.log ${OUTPUTFOLDER}/facet_${SLURM_ARRAY_TASK_ID}_${NIGHT}
+mv *.txt ${OUTPUTFOLDER}/facet_${SLURM_ARRAY_TASK_ID}_${NIGHT}
 
 #
 #K=$(( ${SLURM_ARRAY_TASK_ID}+2 ))

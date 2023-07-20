@@ -38,7 +38,11 @@ ${SCRIPT_DIR}/split_facets.py \
 --h5 ${H5S[0]} \
 --reg facets_1.2.reg
 
-sbatch ${SCRIPT_DIR}/subtract_per_facet_per_night_test.sh L686962
-sbatch ${SCRIPT_DIR}/subtract_per_facet_per_night_test.sh L769393
-sbatch ${SCRIPT_DIR}/subtract_per_facet_per_night_test.sh L798074
-sbatch ${SCRIPT_DIR}/subtract_per_facet_per_night_test.sh L816272
+# give night names
+COUNT=$( ls -1d poly_*.reg | wc -l )
+for ((i=1;i<=COUNT;i++)); do
+  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L686962
+  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L769393
+  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L798074
+  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L816272
+done

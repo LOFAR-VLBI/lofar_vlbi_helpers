@@ -11,8 +11,8 @@ FACETID=15
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
-OUTPUTFOLDER=${PWD}/facet_${FACETID}
-RUNFOLDER=${TMPDIR}/facet_${FACETID}/${NIGHT}
+OUTPUTFOLDER=${PWD}/facet_${FACETID}/${NIGHT}
+RUNFOLDER=${TMPDIR}/facet_${FACETID}/${NIGHT}_${SLURM_ARRAY_TASK_ID}
 
 mkdir -p ${OUTPUTFOLDER}
 mkdir -p ${RUNFOLDER}
@@ -39,14 +39,9 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 --h5parm_predict merged_${NIGHT}.h5 \
 --forwidefield
 
-mv sub*${NIGHT}.ms ${OUTPUTFOLDER}
+mv sub*${NIGHT}*.ms ${OUTPUTFOLDER}
 
-#
-#K=$(( ${SLURM_ARRAY_TASK_ID}+2 ))
-#AVG=$(cat polygon_info.csv | head -n $K | tail -n 1 | cut -d',' -f7)
-#IMSIZE=$(( 22500/${AVG} ))
-#
-#sbatch /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets/make_image_1.2.sh $IMSIZE
-
-#apply solutions to new subtracted MS
-#make image
+mkdir -p ${OUTPUTFOLDER}/SB_${SLURM_ARRAY_TASK_ID}
+ls -1d * > ${OUTPUTFOLDER}/SB_${SLURM_ARRAY_TASK_ID}/sb_${SLURM_ARRAY_TASK_ID}.txt
+mv *.log ${OUTPUTFOLDER}/SB_${SLURM_ARRAY_TASK_ID}
+mv *.txt ${OUTPUTFOLDER}/SB_${SLURM_ARRAY_TASK_ID}
