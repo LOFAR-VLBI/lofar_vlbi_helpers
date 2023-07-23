@@ -33,6 +33,7 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 --model_image_folder /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/DD_1.2/${NIGHT}_2606/ \
 --facets_predict facets_1.2.reg \
 --h5parm_predict merged_${NIGHT}.h5 \
+--applycal \
 --forwidefield
 
 mv sub*${NIGHT}.ms ${OUTPUTFOLDER}
