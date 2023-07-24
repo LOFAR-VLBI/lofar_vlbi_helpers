@@ -73,7 +73,7 @@ def get_cycle_num(fitsfile):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Validate selfcal output')
-    parser.add_argument('--dirs', nargs='+', help='selfcal directions', default=None)
+    parser.add_argument('--dirs', nargs='+', help='selfcal folder(s)', default=None)
 
     args = parser.parse_args()
 

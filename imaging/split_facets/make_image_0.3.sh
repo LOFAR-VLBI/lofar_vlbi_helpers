@@ -21,7 +21,7 @@ wsclean \
 -gridder wgridder \
 -no-update-model-required \
 -minuv-l 80.0 \
--size 7000 7000 \
+-size 20000 20000 \
 -weighting-rank-filter 3 \
 -reorder \
 -weight briggs -0.5 \
@@ -32,8 +32,7 @@ wsclean \
 -auto-threshold 1.0 \
 -pol i \
 -name 0.3asec_I \
--scale 0.4arcsec \
--taper-gaussian 1.2asec \
+-scale 0.07arcsec \
 -niter 150000 \
 -log-time \
 -multiscale-scale-bias 0.6 \

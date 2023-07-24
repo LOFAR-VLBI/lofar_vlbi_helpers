@@ -36,6 +36,7 @@ for NIGHT in L686962 L769393 L798074 L816272; do
   --facets_predict ../facets_1.2.reg \
   --h5parm_predict merged_${NIGHT}.h5 \
   --applycal \
+  --applybeam \
   --forwidefield
 
   rm -rf apply*.ms

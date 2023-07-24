@@ -34,6 +34,7 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 --facets_predict facets_1.2.reg \
 --h5parm_predict merged_${NIGHT}.h5 \
 --applycal \
+--applybeam \
 --forwidefield
 
 mv sub*${NIGHT}.ms ${OUTPUTFOLDER}

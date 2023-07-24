@@ -11,10 +11,16 @@ NIGHT=$2
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
-OUTPUTFOLDER=${PWD}/facet_${FACETID}/${NIGHT}
+MAINFOLDER=${PWD}
+IMAGINGFOLDER=${MAINFOLDER}/facet_${FACETID}/imaging
+OUTPUTFOLDER=${MAINFOLDER}/facet_${FACETID}/${NIGHT}
+LOGFOLDER=${OUTPUTFOLDER}/SB_${SLURM_ARRAY_TASK_ID}
 RUNFOLDER=${TMPDIR}/facet_${FACETID}/${NIGHT}_${SLURM_ARRAY_TASK_ID}
 
+mkdir -p ${MAINFOLDER}/facet_${FACETID}
+mkdir -p ${IMAGINGFOLDER}
 mkdir -p ${OUTPUTFOLDER}
+mkdir -p ${LOGFOLDER}
 mkdir -p ${RUNFOLDER}
 
 pattern="apply*${NIGHT}*.ms"
@@ -38,11 +44,11 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 --facets_predict facets_1.2.reg \
 --h5parm_predict merged_${NIGHT}.h5 \
 --applycal \
+--applybeam \
 --forwidefield
 
-mv sub*${NIGHT}*.ms ${OUTPUTFOLDER}
+mv sub*${NIGHT}*.ms ${IMAGINGFOLDER}
 
-mkdir -p ${OUTPUTFOLDER}/SB_${SLURM_ARRAY_TASK_ID}
-ls -1d * > ${OUTPUTFOLDER}/SB_${SLURM_ARRAY_TASK_ID}/sb_${SLURM_ARRAY_TASK_ID}.txt
-mv *.log ${OUTPUTFOLDER}/SB_${SLURM_ARRAY_TASK_ID}
-mv *.txt ${OUTPUTFOLDER}/SB_${SLURM_ARRAY_TASK_ID}
+ls -1d * > ${LOGFOLDER}/sb_${SLURM_ARRAY_TASK_ID}.txt
+mv *.log ${LOGFOLDER}
+mv *.txt ${LOGFOLDER}
