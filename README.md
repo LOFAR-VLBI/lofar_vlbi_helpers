@@ -12,21 +12,24 @@ After DDF need to run helper_scripts/getfreqs_scales.py to get frequency scales 
 Step 6) run lofar-vlbi-setup/run_DC.sh to make the setup for the delay calibration from lofar-vlbi \
 Step 7) run subtract_lotss/subtract_main.sh to subtract 6" LoTSS map from the input data \
 Step 8) concat the subtracted output and phase shift to delaycalibrator subtract_lotss/concat.sh \
-Step 9) run delayselfcal/delay_facetselfcal.sh to do a delayselfcal on concattenated file \
-Optional: run delayselfcal/test_station.sh to check if there is any corrupt station \
-Step 10) run applycal/applycal_multiple.sh to apply the solutions to the subbands \
-Step 11) run imaging/DI_image/wsclean_DI_1asec_1secaverage.sh to make DD image at 1" as first image (test) \
+Step 9) run delayselfcal/delay_facetselfcal_?nights.sh to do a delayselfcal on concattenated file \
+Optional: run delayselfcal/tests/test_station.sh to check if there is any corrupt station \
+Step 10) run applycal/applycal_multiple_multiple*.sh to apply the solutions to the subbands \
+Step 11) run imaging/DI_image/wsclean_DI_1asec_?nights.sh to make DD image at 1" as first image (test) \
 Step 12) run split_directions/split_directions.sh to split the bright directions to selfcal \
 Step 13) run split_directions/concat_dirs.sh to concat the individual subbands per observation \
-Step 14) run ddcal/run_selfcal.sh to run selfcals in parallel (alternatively ddcal/selfcal.sh for individual selfcals) \
-Step 15) run ddcal/dir_selection.py to do selfcal direction selection \
-Step 16) run merge/fullmerge.py to merge solutions for best calibrators \
-Step 17) run imaging/DD_image/* to do DD imaging
-Step 17.2) run imaging/split_facets/split_in_facets.sh to image splitted in facets
+Step 14) run selfcal_selection/pre_phasediff_selection.sh to use phase differences in RR/LL to select good directions \
+Step 15) run ddcal/run_selfcal.sh to run selfcals in parallel (alternatively ddcal/selfcal.sh for individual selfcals) \
+Step 16) run selfcal_selection/after_selfcal_selection.py to do selfcal direction selection \
+Step 17) run merge/fullmerge.py to merge solutions for best calibrators \
+Step 18.1) run imaging/DD_image/* to do DD imaging
+Step 18.2) run imaging/split_facets/split_in_facets.sh to image splitted in facets
 
 
 See main prefactor --> https://github.com/lofar-astron/prefactor \
 See main lofar-vlbi pipeline --> https://github.com/lmorabit/lofar-vlbi/blob/master/Delay-Calibration.parset \
 Clone lofar-highres-widefield --> ```git clone https://github.com/tikk3r/lofar-highres-widefield.git```
+Clone lofar_helpers --> ```git clone https://github.com/jurjen93/lofar_helpers```
+Clone lofar_facet_selfcal --> ```git clone https://github.com/rvweeren/lofar_facet_selfcal```
 
 Also see --> de Gasperin et al 2019: https://www.aanda.org/articles/aa/pdf/2019/02/aa33867-18.pdf
