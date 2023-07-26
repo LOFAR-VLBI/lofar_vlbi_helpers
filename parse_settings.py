@@ -18,7 +18,7 @@ home = os.path.expanduser('~')
 #LEIDEN HAS ONLY INTEL NODES
 leiden_bind = "/tmp,/dev/shm,/net/tussenrijn,/net/achterrijn,/net/krommerijn,/net/nieuwerijn,/net/rijn,/net/rijn1," \
               "/net/rijn2,/net/rijn3,/net/rijn4,/net/rijn5,/net/rijn6,/net/rijn7,/net/rijn8,/net/rijn9,/net/rijn10,/net/rijn11,"+home
-leiden_simg = "/net/achterrijn/data1/sweijen/software/containers/lofar_sksp_v4.0.2_x86-64_cascadelake_cascadelake_avx512_mkl_cuda_ddf.sif"
+leiden_simg = "/net/achterrijn/data1/sweijen/software/containers/lofar_sksp_v4.3.0_sandybridge_sandybridge_ddf_mkl_cuda.sif"
 leiden_h5_merger = '/net/tussenrijn/data2/jurjendejong/lofar_helpers/h5_merger.py'
 leiden_lofar_helpers = '/net/tussenrijn/data2/jurjendejong/lofar_helpers'
 leiden_facet_selfcal = '/net/rijn/data2/rvweeren/LoTSS_ClusterCAL/facetselfcal.py'

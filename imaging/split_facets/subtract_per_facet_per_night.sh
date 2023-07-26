@@ -3,6 +3,8 @@
 #SBATCH --job-name=subtract
 #SBATCH --array=0-36%4
 #SBATCH --constraint=amd
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 
 NIGHT=$1
 

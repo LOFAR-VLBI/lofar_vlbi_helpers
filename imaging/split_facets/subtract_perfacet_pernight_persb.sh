@@ -3,6 +3,8 @@
 #SBATCH --job-name=subtract
 #SBATCH --constraint=amd
 #SBATCH --array=0-25
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 
 FACETID=$1
 NIGHT=$2
@@ -40,7 +42,7 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 /home/lofarvwf-jdejong/scripts/lofar_helpers/subtract_with_wsclean/subtract_with_wsclean.py \
 --mslist ${SB} \
 --region poly_${FACETID}.reg \
---model_image_folder /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/DD_1.2/${NIGHT}_2606/ \
+--model_image_folder /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/modelimages/${NIGHT}/ \
 --facets_predict facets_1.2.reg \
 --h5parm_predict merged_${NIGHT}.h5 \
 --applycal \
@@ -50,5 +52,13 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 mv sub*${NIGHT}*.ms ${IMAGINGFOLDER}
 
 ls -1d * > ${LOGFOLDER}/sb_${SLURM_ARRAY_TASK_ID}.txt
-mv *.log ${LOGFOLDER}
-mv *.txt ${LOGFOLDER}
+mv *.log ${LOGFOLDER} # copy log files
+mv *.txt ${LOGFOLDER} # copy text files
+mv *.cmd ${LOGFOLDER} # copy command files
+
+#ONLY FOR TESTING
+mv *-pb.fits ${LOGFOLDER}
+mv applycal*.ms ${LOGFOLDER}
+mv *.h5 ${LOGFOLDER}
+mv *.reg ${LOGFOLDER}
+mv polygon_info.csv ${LOGFOLDER}

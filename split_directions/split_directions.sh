@@ -16,6 +16,7 @@ RESULTS_DIR=$PWD
 #SINGULARITY
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
+
 echo "SINGULARITY IS $SIMG"
 
 echo "Job landed on $(hostname)"

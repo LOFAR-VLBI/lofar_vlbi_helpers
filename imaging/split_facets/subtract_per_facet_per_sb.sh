@@ -3,6 +3,8 @@
 #SBATCH --job-name=subtract
 #SBATCH --array=0-40%4
 #SBATCH --constraint=amd
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets
 POLYREG=poly_${SLURM_ARRAY_TASK_ID}.reg

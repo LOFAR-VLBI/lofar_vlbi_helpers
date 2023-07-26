@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 10 --job-name=phaseshift --array=0-410 --constraint=amd
+#SBATCH -c 10 --job-name=phaseshift --array=0-410 --constraint=amd -t 10:00:00
 
 #SINGULARITY
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
