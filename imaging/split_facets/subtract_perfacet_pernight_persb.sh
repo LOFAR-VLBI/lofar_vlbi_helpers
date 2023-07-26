@@ -1,7 +1,6 @@
 #!/bin/bash
 #SBATCH -c 10
 #SBATCH --job-name=subtract
-#SBATCH --constraint=amd
 #SBATCH --array=0-25
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
