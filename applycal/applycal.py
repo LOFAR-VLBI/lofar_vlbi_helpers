@@ -1,111 +1,89 @@
 from multiprocessing import cpu_count
 import tables
-import sys
 from subprocess import call
 from argparse import ArgumentParser
+from numpy import pi
 
+class ApplyCal:
+    def __init__(self, msin: str = None, h5: str = None, msincol: str ="DATA", msoutcol: str ="CORRECTED_DATA", msout: str ='.', dysco: bool = True):
+        """
+        Apply calibration solutions
 
-def run(command):
-    retval = call(command, shell=True)
-    if retval != 0:
-        print('FAILED to run ' + command + ': return value is ' + str(retval))
-        raise Exception(command)
-    return retval
+        :param msin: input measurement set
+        :param h5: solution file to apply
+        :param msincol: input column
+        :param msoutcol: output column
+        :param msout: output measurement set
+        :param dysco: compress with dysco
+        """
 
+        self.cmd = ['DPPP numthreads= ' + str(cpu_count()) + ' msin=' + msin]
+        self.cmd += ['msout=' + msout]
+        self.cmd += ['msin.datacolumn=' + msincol]
+        if msout == '.':
+            self.cmd += ['msout.datacolumn=' + msoutcol]
+        if dysco:
+            self.cmd += ['msout.storagemanager=dysco']
 
-def fulljonesparmdb(h5):
-    H = tables.open_file(h5)
-    try:
-        phase = H.root.sol000.phase000.val[:]
-        amplitude = H.root.sol000.amplitude000.val[:]
-        if phase.shape[-1] == 4 and amplitude.shape[-1] == 4:
-            fulljones = True
+        steps = []
+
+        steps.append('beam_dir')
+        T = tables.open_file(h5)
+        dir=T.root.sol000.source[:]['dir'][0]*360/2/pi # convert to degree
+        self.cmd += [f'beam.type=applybeam beam.direction=[{dir[0]}deg,{dir[1]}deg]']
+        T.close()
+
+        if self.isfulljones(h5):
+            steps.append('ac')
+            self.cmd += ['ac.type=applycal',
+                        'ac.parmdb=' + h5,
+                        'ac.correction=fulljones',
+                        'ac.soltab=[amplitude000,phase000]']
+        # add non-fulljones solutions apply
         else:
-            fulljones = False
-    except:
-        fulljones = False
-    H.close()
-    return fulljones
+            ac_count = 0
+            T = tables.open_file(h5)
+            for corr in T.root.sol000._v_groups.keys():
+                self.cmd += [f'ac{ac_count}.type=applycal',
+                            f'ac{ac_count}.parmdb={h5}',
+                            f'ac{ac_count}.correction={corr}']
+                steps.append(f'ac{ac_count}')
+                ac_count += 1
+
+        # this step inverts the beam at the infield and corrects beam at phase center
+        steps.append('beam_center')
+        self.cmd += ['beam_center.type=applybeam beam_center.direction=[]']
+        self.cmd += ['steps=' + str(steps).replace(" ", "").replace("\'", "")]
 
 
-def applycal(ms, inparmdblist, msincol='DATA', msoutcol='CORRECTED_DATA', msout='.', dysco=True):
-    # to allow both a list or a single file (string)
-    if not isinstance(inparmdblist, list):
-        inparmdblist = [inparmdblist]
+    @staticmethod
+    def isfulljones(h5: str = None):
+        """
+        Verify if file is fulljones
 
-    cmd = 'DPPP numthreads= ' + str(cpu_count()) + ' msin=' + ms + ' '
-    cmd += 'msout=' + msout + ' '
-    cmd += 'msin.datacolumn=' + msincol + ' '
-    if msout == '.':
-        cmd += 'msout.datacolumn=' + msoutcol + ' '
-    if dysco:
-        cmd += 'msout.storagemanager=dysco '
-    count = 0
-    for parmdb in inparmdblist:
+        :param h5: h5 file
+        """
+        T = tables.open_file(h5)
+        soltab = list(T.root.sol000._v_groups.keys())[0]
+        if 'pol' in T.root.sol000._f_get_child(soltab).val.attrs["AXES"].decode('utf8'):
+            if T.root.sol000._f_get_child(soltab).pol[:].shape[0] == 4:
+                T.close()
+                return True
+        T.close()
+        return False
 
+    def print_cmd(self):
+        """Print DP3 command"""
+        print('\n'.join(self.cmd))
+        return self
 
-        if fulljonesparmdb(parmdb):
-            cmd += 'ac' + str(count) + '.parmdb=' + parmdb + ' '
-            cmd += 'ac' + str(count) + '.type=applycal '
-            cmd += 'ac' + str(count) + '.correction=fulljones '
-            cmd += 'ac' + str(count) + '.soltab=[amplitude000,phase000] '
-            count = count + 1
-        else:
-            H = tables.open_file(parmdb)
-            try:
-                H.root.sol000.phase000.val[:]
-                cmd += 'ac' + str(count) + '.parmdb=' + parmdb + ' '
-                cmd += 'ac' + str(count) + '.type=applycal '
-                cmd += 'ac' + str(count) + '.correction=phase000 '
-                count = count + 1
-            except:
-                pass
-
-            try:
-                H.root.sol000.tec000.val[:]
-                cmd += 'ac' + str(count) + '.parmdb=' + parmdb + ' '
-                cmd += 'ac' + str(count) + '.type=applycal '
-                cmd += 'ac' + str(count) + '.correction=tec000 '
-                count = count + 1
-            except:
-                pass
-
-            try:
-                H.root.sol000.rotation000.val[:]
-                cmd += 'ac' + str(count) + '.parmdb=' + parmdb + ' '
-                cmd += 'ac' + str(count) + '.type=applycal '
-                cmd += 'ac' + str(count) + '.correction=rotation000 '
-                count = count + 1
-            except:
-                pass
-
-            try:
-                H.root.sol000.amplitude000.val[:]
-                cmd += 'ac' + str(count) + '.parmdb=' + parmdb + ' '
-                cmd += 'ac' + str(count) + '.type=applycal '
-                cmd += 'ac' + str(count) + '.correction=amplitude000 '
-                count = count + 1
-            except:
-                pass
-
-            H.close()
-    cmd += 'beam.type=applybeam beam.direction=[16h06m07.61855,55d21m35.4166] '#TODO: NOTE THAT THIS ONLY WORKS FOR ELAIS-N1
-    cmd += 'beamwf.type=applybeam beamwf.direction=[] '
-    if count < 1:
-        print('Something went wrong, cannot build the applycal command. H5 file is valid?')
-        sys.exit(1)
-    # build the steps command
-    cmd += 'steps=[beam,'
-    for i in range(count):
-        cmd += 'ac' + str(i)
-        if i < count - 1:  # to avoid last comma in the steps list
-            cmd += ','
-    cmd += ',beamwf]'
-
-    print('DPPP applycal:', cmd)
-    run(cmd)
-    return
-
+    def run(self):
+        """Run DP3 command"""
+        retval = call(' '.join(self.cmd), shell=True)
+        if retval != 0:
+            print('FAILED to run ' + ' '.join(self.cmd) + ': return value is ' + str(retval))
+            raise Exception(' '.join(self.cmd))
+        return retval
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='Applycal on MS with H5')
@@ -116,4 +94,6 @@ if __name__ == '__main__':
     parser.add_argument('--colout', type=str, default=None, help='output column name')
     args = parser.parse_args()
 
-    applycal(args.msin, inparmdblist=args.h5, msincol=args.colin, msoutcol=args.colout, msout=args.msout)
+    Ac = ApplyCal(msin=args.msin, h5=args.h5, msincol=args.colin, msoutcol=args.colout, msout=args.msout)
+    Ac.print_cmd()
+    Ac.run()
