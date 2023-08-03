@@ -17,7 +17,7 @@ class ApplyCal:
         :param dysco: compress with dysco
         """
 
-        self.cmd = ['DPPP numthreads= ' + str(cpu_count()) + ' msin=' + msin]
+        self.cmd = ['DP3 numthreads=' + str(cpu_count()), ' msin=' + msin]
         self.cmd += ['msout=' + msout]
         self.cmd += ['msin.datacolumn=' + msincol]
         if msout == '.':
