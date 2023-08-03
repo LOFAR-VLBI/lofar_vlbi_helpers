@@ -96,4 +96,4 @@ if __name__ == '__main__':
 
     Ac = ApplyCal(msin=args.msin, h5=args.h5, msincol=args.colin, msoutcol=args.colout, msout=args.msout)
     Ac.print_cmd()
-    Ac.run()
+    # Ac.run()
