@@ -30,7 +30,7 @@ class ApplyCal:
         steps.append('beam_dir')
         T = tables.open_file(h5)
         dir=T.root.sol000.source[:]['dir'][0]*360/2/pi # convert to degree
-        self.cmd += [f'beam.type=applybeam beam.direction=[{dir[0]}deg,{dir[1]}deg]']
+        self.cmd += [f'beam_dir.type=applybeam beam_dir.direction=[{dir[0]}deg,{dir[1]}deg]']
         T.close()
 
         if self.isfulljones(h5):
