@@ -42,6 +42,8 @@ def applycal(ms, inparmdblist, msincol='DATA', msoutcol='CORRECTED_DATA', msout=
         cmd += 'msout.storagemanager=dysco '
     count = 0
     for parmdb in inparmdblist:
+
+
         if fulljonesparmdb(parmdb):
             cmd += 'ac' + str(count) + '.parmdb=' + parmdb + ' '
             cmd += 'ac' + str(count) + '.type=applycal '
@@ -51,7 +53,7 @@ def applycal(ms, inparmdblist, msincol='DATA', msoutcol='CORRECTED_DATA', msout=
         else:
             H = tables.open_file(parmdb)
             try:
-                phase = H.root.sol000.phase000.val[:]
+                H.root.sol000.phase000.val[:]
                 cmd += 'ac' + str(count) + '.parmdb=' + parmdb + ' '
                 cmd += 'ac' + str(count) + '.type=applycal '
                 cmd += 'ac' + str(count) + '.correction=phase000 '
@@ -60,7 +62,7 @@ def applycal(ms, inparmdblist, msincol='DATA', msoutcol='CORRECTED_DATA', msout=
                 pass
 
             try:
-                phase = H.root.sol000.tec000.val[:]
+                H.root.sol000.tec000.val[:]
                 cmd += 'ac' + str(count) + '.parmdb=' + parmdb + ' '
                 cmd += 'ac' + str(count) + '.type=applycal '
                 cmd += 'ac' + str(count) + '.correction=tec000 '
@@ -69,7 +71,7 @@ def applycal(ms, inparmdblist, msincol='DATA', msoutcol='CORRECTED_DATA', msout=
                 pass
 
             try:
-                phase = H.root.sol000.rotation000.val[:]
+                H.root.sol000.rotation000.val[:]
                 cmd += 'ac' + str(count) + '.parmdb=' + parmdb + ' '
                 cmd += 'ac' + str(count) + '.type=applycal '
                 cmd += 'ac' + str(count) + '.correction=rotation000 '
@@ -78,7 +80,7 @@ def applycal(ms, inparmdblist, msincol='DATA', msoutcol='CORRECTED_DATA', msout=
                 pass
 
             try:
-                phase = H.root.sol000.amplitude000.val[:]
+                H.root.sol000.amplitude000.val[:]
                 cmd += 'ac' + str(count) + '.parmdb=' + parmdb + ' '
                 cmd += 'ac' + str(count) + '.type=applycal '
                 cmd += 'ac' + str(count) + '.correction=amplitude000 '
@@ -88,6 +90,7 @@ def applycal(ms, inparmdblist, msincol='DATA', msoutcol='CORRECTED_DATA', msout=
 
             H.close()
     cmd += 'beam.type=applybeam beam.direction=[16h06m07.61855,55d21m35.4166] '#TODO: NOTE THAT THIS ONLY WORKS FOR ELAIS-N1
+    cmd += 'beamwf.type=applybeam beamwf.direction=[] '
     if count < 1:
         print('Something went wrong, cannot build the applycal command. H5 file is valid?')
         sys.exit(1)
@@ -97,7 +100,7 @@ def applycal(ms, inparmdblist, msincol='DATA', msoutcol='CORRECTED_DATA', msout=
         cmd += 'ac' + str(i)
         if i < count - 1:  # to avoid last comma in the steps list
             cmd += ','
-    cmd += ']'
+    cmd += ',beamwf]'
 
     print('DPPP applycal:', cmd)
     run(cmd)
