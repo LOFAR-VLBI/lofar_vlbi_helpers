@@ -5,8 +5,8 @@
 MSIN=$1
 H5=$2
 
-SIMG=$( python $HOME/parse_settings.py --SIMG )
-BIND=$( python $HOME/parse_settings.py --BIND )
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
+BIND=$( python3 $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 
 singularity exec -B $BIND $SIMG \
