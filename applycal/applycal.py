@@ -29,7 +29,7 @@ class ApplyCal:
 
         steps.append('beam_dir')
         T = tables.open_file(h5)
-        dir=T.root.sol000.source[:]['dir'][0]*360/2/pi # convert to degree
+        dir=(T.root.sol000.source[:]['dir'][0]*360/2/pi)%360 # convert to degree
         self.cmd += ['beam_dir.type=applybeam', f'beam_dir.direction=[{round(dir[0], 5)}deg,{round(dir[1], 5)}deg]']
         T.close()
 
