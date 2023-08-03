@@ -87,12 +87,12 @@ def applycal(ms, inparmdblist, msincol='DATA', msoutcol='CORRECTED_DATA', msout=
                 pass
 
             H.close()
-
+    cmd += 'beam.type=applybeam beam.direction=[16h06m07.61855,55d21m35.4166] '#TODO: NOTE THAT THIS ONLY WORKS FOR ELAIS-N1
     if count < 1:
         print('Something went wrong, cannot build the applycal command. H5 file is valid?')
         sys.exit(1)
     # build the steps command
-    cmd += 'steps=['
+    cmd += 'steps=[beam,'
     for i in range(count):
         cmd += 'ac' + str(i)
         if i < count - 1:  # to avoid last comma in the steps list

@@ -17,7 +17,7 @@ def get_largest_divider(inp, max=1000):
         if inp % r == 0:
             return r
 
-def make_wsclean_cmd(imsize, scale, name, taper, ms):
+def make_wsclean_cmd(imsize, scale, name, taper, ms, tmpdir):
     """
     Make wsclean commando
 
@@ -25,6 +25,7 @@ def make_wsclean_cmd(imsize, scale, name, taper, ms):
     :param scale: scale in arcsec
     :param name: name prefix
     :param ms: list with measurement sets
+    :param tmpdir: use scratch
 
     :return:
     """
@@ -33,7 +34,6 @@ def make_wsclean_cmd(imsize, scale, name, taper, ms):
 
     from parse_settings import ScriptPaths
     paths = ScriptPaths()
-    bind = paths.BIND
     simg = paths.SIMG
 
     cmd = \
@@ -43,7 +43,22 @@ f"""#!/bin/bash
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --job-name=imaging_facet
 
-singularity exec -B {bind} {simg} wsclean \\
+"""
+
+    if tmpdir:
+        cmd += \
+f"""OUTPUT=$PWD
+cp {simg} $TMPDIR
+for MS in {' '.join(ms)}; do
+    cp -r $MS $TMPDIR
+done
+cd $TMPDIR
+
+"""
+
+    cmd+= \
+f"""
+singularity exec -B $OUTPUT {simg.split('/')[-1]} wsclean \\
 -gridder wgridder \\
 -no-update-model-required \\
 -minuv-l 80.0 \\
@@ -66,6 +81,7 @@ singularity exec -B {bind} {simg} wsclean \\
 -multiscale \\
 -multiscale-max-scales 9 \\
 -nmiter 9 \\
+-parallel-gridding 6 \\
 -channels-out 6 \\
 -join-channels \\
 -fit-spectral-pol 3 \\
@@ -75,6 +91,13 @@ singularity exec -B {bind} {simg} wsclean \\
         cmd += f'\ntaper-gaussian {taper} \\'
 
     cmd += f"\n\'{' '.join(ms)}\'\n"
+
+    if tmpdir:
+        cmd+= \
+"""
+
+cp *.fits $OUTPUT
+"""
 
     f = open("wsclean.cmd", "w")
     f.write(cmd)
@@ -89,6 +112,8 @@ if __name__=='__main__':
     parser.add_argument('--facet', help='facet_number (polygon number)', required=True, type=int)
     parser.add_argument('--facet_info', help='polygon_info.csv', required=True)
     parser.add_argument('--ms', help='measurement set(s)', required=True,  nargs='+')
+    parser.add_argument('--tmpdir', action='store_true', help='use tmpdir',
+                        default=False)
     args = parser.parse_args()
 
     if args.resolution==0.3:
@@ -116,6 +141,6 @@ if __name__=='__main__':
     divide_size = get_largest_divider(channum, facet_avg)
     imsize = int(fullpixsize//divide_size)
 
-    make_wsclean_cmd(imsize, pixelscale, 'facet_'+str(args.facet), taper, args.ms)
+    make_wsclean_cmd(imsize, pixelscale, 'facet_'+str(args.facet), taper, args.ms, args.tmpdir)
 
     os.system('sbatch wsclean.cmd')

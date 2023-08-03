@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 10
+#SBATCH -c 15
 #SBATCH --job-name=subtract
 #SBATCH --array=0-25
 #SBATCH --mail-type=FAIL
@@ -38,7 +38,7 @@ cd ${RUNFOLDER}
 
 #subtract ms with wsclean for each facet
 singularity exec -B ${SING_BIND} ${SIMG} python \
-/home/lofarvwf-jdejong/scripts/lofar_helpers/subtract_with_wsclean/subtract_with_wsclean.py \
+/home/lofarvwf-jdejong/scripts/lofar_helpers/subtract/subtract_with_wsclean.py \
 --mslist ${SB} \
 --region poly_${FACETID}.reg \
 --model_image_folder /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/modelimages/${NIGHT}/ \
@@ -56,8 +56,8 @@ mv *.txt ${LOGFOLDER} # copy text files
 mv *.cmd ${LOGFOLDER} # copy command files
 
 #ONLY FOR TESTING
-mv *-pb.fits ${LOGFOLDER}
-mv applycal*.ms ${LOGFOLDER}
-mv *.h5 ${LOGFOLDER}
-mv *.reg ${LOGFOLDER}
-mv polygon_info.csv ${LOGFOLDER}
+#mv *-pb.fits ${LOGFOLDER}
+#mv applycal*.ms ${LOGFOLDER}
+#mv *.h5 ${LOGFOLDER}
+#mv *.reg ${LOGFOLDER}
+#mv polygon_info.csv ${LOGFOLDER}
