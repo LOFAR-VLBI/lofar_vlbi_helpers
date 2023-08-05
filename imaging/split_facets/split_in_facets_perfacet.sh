@@ -12,7 +12,7 @@ SOURCEDIR=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal
 MAX_PARALLEL=8
 nroffiles=$(ls -1d $SOURCEDIR/*.ms|wc -w)
 setsize=$(( nroffiles/MAX_PARALLEL + 1 ))
-ls -1d $SOURCEDIR/* | xargs -n $setsize | while read workset; do
+ls -1d $SOURCEDIR/*.ms | xargs -n $setsize | while read workset; do
   echo "COPY $workset"
   cp -r $workset .
 done
