@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -c 15
+#SBATCH -c 20
 #SBATCH --job-name=subtract
-#SBATCH --array=0-25
+#SBATCH --array=0-24
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 
