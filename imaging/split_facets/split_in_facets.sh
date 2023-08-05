@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 2
+#SBATCH -c 10
 
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
