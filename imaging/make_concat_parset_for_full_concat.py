@@ -3,7 +3,7 @@
 from glob import glob
 import os
 
-MS = '../*.ms'
+MS = '*.ms'
 
 all_ms = [f for f in glob(MS) if 'L' in f and 'MHz' in f and 'sub6asec' not in f]
 
@@ -12,7 +12,7 @@ all_freqs = list(set([f.split('_')[-1].split('.')[0]  for f in all_ms if 'MHz' i
 
 for observation in all_obs:
     try:
-        mslist = glob('../*'+observation+MS.split('/')[-1])
+        mslist = glob('*'+observation+MS.split('/')[-1])
         mschain = ' '.join(mslist)
         txt_name = observation + '_concat.txt'
         os.system(f'python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/check_missing_freqs_in_ms.py --ms {mschain} --make_dummies --output_name {txt_name}')

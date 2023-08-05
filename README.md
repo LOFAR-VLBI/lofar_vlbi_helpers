@@ -22,8 +22,10 @@ Step 14) run selfcal_selection/pre_phasediff_selection.sh to use phase differenc
 Step 15) run ddcal/run_selfcal.sh to run selfcals in parallel (alternatively ddcal/selfcal.sh for individual selfcals) \
 Step 16) run selfcal_selection/after_selfcal_selection.py to do selfcal direction selection \
 Step 17) run merge/fullmerge.py to merge solutions for best calibrators \
-Step 18.1) run imaging/DD_image/* to do DD imaging
-Step 18.2) run imaging/split_facets/split_in_facets.sh to image splitted in facets
+Step 18.1) run imaging/DD_image/* to do DD imaging \
+Step 18.2) run imaging/split_facets/split_in_facets.sh to image splitted in facets \
+Step 19) run imaging/split_facets/make_image.py to image with correct resolution \
+Step 20) run imaging/split_facets/feathering/* to feather facets
 
 
 See main prefactor --> https://github.com/lofar-astron/prefactor \

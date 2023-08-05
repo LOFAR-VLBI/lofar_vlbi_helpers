@@ -43,7 +43,7 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 --region poly_${FACETID}.reg \
 --model_image_folder /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/modelimages/${NIGHT}/ \
 --facets_predict facets_1.2.reg \
---h5parm_predict merged_${NIGHT}.h5 \
+--h5parm_predict merged_${NIGHT}_polrot.h5 \
 --applycal \
 --applybeam \
 --forwidefield

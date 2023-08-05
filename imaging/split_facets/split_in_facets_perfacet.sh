@@ -5,6 +5,7 @@
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets
+FACETNUMBER=$1
 
 echo "COPY DATA"
 SOURCEDIR=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal
@@ -40,10 +41,7 @@ ${SCRIPT_DIR}/split_facets.py \
 --extra_boundary 0.1
 
 # give night names
-COUNT=$( ls -1d poly_*.reg | wc -l )
-for ((i=1;i<=COUNT;i++)); do
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L686962
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L769393
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L798074
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L816272
-done
+sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh ${FACETNUMBER} L686962
+sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh ${FACETNUMBER} L769393
+sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh ${FACETNUMBER} L798074
+sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh ${FACETNUMBER} L816272

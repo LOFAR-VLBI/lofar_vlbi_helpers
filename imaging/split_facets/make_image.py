@@ -58,7 +58,7 @@ cd $TMPDIR
 
     cmd+= \
 f"""
-singularity exec -B $OUTPUT {simg.split('/')[-1]} wsclean \\
+singularity exec -B $OUTPUT {simg} wsclean \\
 -gridder wgridder \\
 -no-update-model-required \\
 -minuv-l 80.0 \\
@@ -139,7 +139,7 @@ if __name__=='__main__':
 
     # factor to divide full size by
     divide_size = get_largest_divider(channum, facet_avg)
-    imsize = int(fullpixsize//divide_size)
+    imsize = int((fullpixsize//divide_size)*1.15)
 
     make_wsclean_cmd(imsize, pixelscale, 'facet_'+str(args.facet), taper, args.ms, args.tmpdir)
 
