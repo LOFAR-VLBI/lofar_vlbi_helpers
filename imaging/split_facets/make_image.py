@@ -85,7 +85,7 @@ singularity exec -B $OUTPUT {simg} wsclean \\
 -channels-out 6 \\
 -join-channels \\
 -fit-spectral-pol 3 \\
--deconvolution-channels 3 \\"""
+-deconvolution-channels 3 -local-rms -local-rms-window 50 \\"""
 
     if taper is not None:
         cmd += f'\ntaper-gaussian {taper} \\'

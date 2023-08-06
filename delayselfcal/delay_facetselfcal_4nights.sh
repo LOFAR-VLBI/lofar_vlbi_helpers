@@ -3,8 +3,8 @@
 
 #RUN DELAYSELFCAL FOR MULTIPLE NIGHTS
 
-SIMG=$( python $HOME/parse_settings.py --SIMG )
-BIND=$( python $HOME/parse_settings.py --BIND )
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
+BIND=$( python3 $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 
 cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/L769393/subtract/subtract_lotss/L769393_120_168MHz_averaged.ms .

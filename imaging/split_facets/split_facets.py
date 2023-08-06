@@ -32,7 +32,7 @@ def split_polygons_ds9(regionfile, extra_boundary=0.):
     polygons = lines[4:]
     for n, poly in enumerate(polygons):
         if extra_boundary>0:
-            poly_file = open('poly_' + str(n) + '_'+str(extra_boundary) + 'buffer.reg', 'w')
+            poly_file = open('poly_' + str(n)+'.reg', 'w')
         else:
             poly_file = open('poly_' + str(n) + '.reg', 'w')
         poly_file.writelines(header)
