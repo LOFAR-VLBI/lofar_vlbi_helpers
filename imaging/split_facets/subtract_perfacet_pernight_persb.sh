@@ -31,7 +31,7 @@ SB=${MS_FILES[${SLURM_ARRAY_TASK_ID}]}
 cp -r ${SB} ${RUNFOLDER}
 cp poly_${FACETID}.reg ${RUNFOLDER}
 cp facets_1.2.reg ${RUNFOLDER}
-cp merged_${NIGHT}.h5 ${RUNFOLDER}
+cp merged_${NIGHT}_polrot.h5 ${RUNFOLDER}
 cp polygon_info.csv ${RUNFOLDER}
 
 cd ${RUNFOLDER}
