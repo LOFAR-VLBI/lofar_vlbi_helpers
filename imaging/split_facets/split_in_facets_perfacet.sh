@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 10
+#SBATCH -c 1
 
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
@@ -7,19 +7,19 @@ SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets
 FACETNUMBER=$1
 
-echo "COPY DATA"
-SOURCEDIR=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal
-MAX_PARALLEL=8
-nroffiles=$(ls -1d $SOURCEDIR/*.ms|wc -w)
-setsize=$(( nroffiles/MAX_PARALLEL + 1 ))
-ls -1d $SOURCEDIR/*.ms | xargs -n $setsize | while read workset; do
-  echo "COPY $workset"
-  cp -r $workset .
-done
-wait
-
-echo "COPY SOLUTION FILES"
-cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/dd_solutions/merged_L??????_polrot.h5 .
+#echo "COPY DATA"
+#SOURCEDIR=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal
+#MAX_PARALLEL=8
+#nroffiles=$(ls -1d $SOURCEDIR/*.ms|wc -w)
+#setsize=$(( nroffiles/MAX_PARALLEL + 1 ))
+#ls -1d $SOURCEDIR/*.ms | xargs -n $setsize | while read workset; do
+#  echo "COPY $workset"
+#  cp -r $workset .
+#done
+#wait
+#
+#echo "COPY SOLUTION FILES"
+#cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/dd_solutions/merged_L??????_polrot.h5 .
 
 LISTMS=(*.ms)
 H5S=(*.h5)
