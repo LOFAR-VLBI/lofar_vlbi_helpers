@@ -81,7 +81,7 @@ if __name__ == '__main__':
 
     import argparse
 
-    parser = argparse.ArgumentParser(description='Validate MS')
+    parser = argparse.ArgumentParser(description='Check for frequency gaps in MS')
     parser.add_argument('--ms', nargs='+', help='MS', required=True)
     parser.add_argument('--make_dummies', help='Make dummies for missing MS', action='store_true')
     parser.add_argument('--output_name', help='Output txt name', type=str, default='mslist.txt')
