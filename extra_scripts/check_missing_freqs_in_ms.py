@@ -5,11 +5,12 @@ Example:
     python check_missing_freqs_in_ms.py --ms myms*.ms
 """
 
+__author__ = "Jurjen de Jong"
+
 import casacore.tables as ct
 import numpy as np
 import sys
 from glob import glob
-
 
 def get_channels(input):
     """
@@ -73,4 +74,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if check_channels(input=args.ms, make_dummies=args.make_dummies, output_name=args.output_name):
-        print('--- SUCCESS: freq gaps checked and no gaps found ---')
+        print('--- SUCCESS: no frequency gaps found ---')
