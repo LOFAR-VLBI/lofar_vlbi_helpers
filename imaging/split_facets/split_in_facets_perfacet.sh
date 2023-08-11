@@ -21,7 +21,7 @@ FACETNUMBER=$1
 #echo "COPY SOLUTION FILES"
 #cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/dd_solutions/merged_L??????_polrot.h5 .
 
-LISTMS=(*.ms)
+LISTMS=(/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/*.ms)
 H5S=(*.h5)
 
 #make facets based on merged h5

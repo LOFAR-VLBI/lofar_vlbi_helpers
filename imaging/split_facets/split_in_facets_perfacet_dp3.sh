@@ -1,10 +1,12 @@
 #!/bin/bash
-#SBATCH -c 10
+#SBATCH -c 1
 
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets
+
+FACETNUMBER=$1
 
 #echo "COPY DATA"
 #SOURCEDIR=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal
@@ -19,6 +21,11 @@ SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facet
 
 echo "COPY SOLUTION FILES"
 cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/dd_solutions/merged_L??????_polrot.h5 .
+mkdir -p solutions
+cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/ddcal/allselfcals/P?????/merged_addCS_selfcalcyle011_*phaseup.h5 solutions
+
+echo "COPY SKYMODELS"
+cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/ddcal/allselfcals/skymodels .
 
 LISTMS=(/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/*.ms)
 H5S=(*.h5)
@@ -40,10 +47,7 @@ ${SCRIPT_DIR}/split_facets.py \
 --extra_boundary 0.1
 
 # give night names
-COUNT=$( ls -1d poly_*.reg | wc -l )
-for ((i=1;i<=COUNT;i++)); do
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L686962
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L769393
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L798074
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L816272
-done
+sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_dp3.sh ${FACETNUMBER} L686962
+sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_dp3.sh ${FACETNUMBER} L769393
+sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_dp3.sh ${FACETNUMBER} L798074
+sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_dp3.sh ${FACETNUMBER} L816272

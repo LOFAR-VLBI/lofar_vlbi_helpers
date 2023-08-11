@@ -10,6 +10,8 @@ import pickle
 import sys
 from argparse import ArgumentParser
 import pyregion
+from reproj_test import reproject_interp_chunk_2d
+from auxcodes import flatten
 
 def make_header(fitsfile):
     hdu = fits.open(fitsfile)
@@ -64,9 +66,11 @@ if __name__=='__main__':
 
     fullpixsize = int(2.5 * 3600 / pixelscale)
 
-    header = make_header(facets[0])
-    xsize = header['NAXIS1']
-    ysize = header['NAXIS2']
+    header_new = make_header(facets[0])
+    print(header_new)
+
+    xsize = header_new['NAXIS1']
+    ysize = header_new['NAXIS2']
 
     isum = np.zeros([ysize, xsize], dtype="float32")
     wsum = np.zeros_like(isum, dtype="float32")
@@ -76,17 +80,20 @@ if __name__=='__main__':
         print(f)
 
         hdu = fits.open(f)
-        imagedata = hdu[0].data
+        hduflatten = flatten(hdu)
 
-        facet = f #TODO GIVE FACET NAME
+        imagedata, _ = reproject_interp_chunk_2d(hduflatten, header_new, hdu_in=0, parallel=False)
 
-        r = pyregion.open(facet).as_imagecoord(header=header)
-        mask = r.get_mask(hdu=hdu[0], shape=(header["NAXIS1"], header["NAXIS2"])).astype(int)
+        reg = 'poly_'+f.split('-')[0].split('_')[-1]+'.reg'
+
+        r = pyregion.open(reg).as_imagecoord(header=header_new)
+        mask = r.get_mask(hdu=hdu[0], shape=(header_new["NAXIS1"], header_new["NAXIS2"])).astype(int)
+
         imagedata*=mask
 
-        m = ~np.isnan(imagedata)  # << Use region info to make mask here to zero-weight subtracted regions of facet images? - module named pyregion for ds9 regions
+        m = ~np.isnan(imagedata)
         w = 1.0 * m
-        hdu[0].data[~m] = 0  # so we can add
+        imagedata[np.isnan(imagedata)] = 0  # so we can add
         isum += imagedata
         wsum += w
         mask |= m
@@ -96,6 +103,6 @@ if __name__=='__main__':
     isum /= wsum
     isum[~mask] = np.nan
 
-    hdu = fits.PrimaryHDU(header=header, data=isum)
+    hdu = fits.PrimaryHDU(header=header_new, data=isum)
 
     hdu.writeto('full-mosaic.fits', overwrite=True)

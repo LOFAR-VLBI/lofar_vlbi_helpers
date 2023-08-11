@@ -58,7 +58,7 @@ cd $TMPDIR
 
     cmd+= \
 f"""
-singularity exec -B $OUTPUT {simg} wsclean \\
+singularity exec -B $PWD {simg.split('/')[-1]} wsclean \\
 -gridder wgridder \\
 -no-update-model-required \\
 -minuv-l 80.0 \\

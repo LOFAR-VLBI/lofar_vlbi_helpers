@@ -94,7 +94,6 @@ def find_candidates(cat, ms, fluxcut=25e-3, extra_candidates=[]):
                     candidates.add_row((tab['Source_id'][i], ra_mean, dec_mean))
                 else:
                     print('Direction {:d} has been merged already.\n'.format(tab['Source_id'][i]))
-        t.close()
 
     for candidate in extra_candidates:
         name, ra, dec = candidate
@@ -105,7 +104,7 @@ def find_candidates(cat, ms, fluxcut=25e-3, extra_candidates=[]):
     return candidates
 
 
-def make_parset(ms=None, candidate=None, prefix='', brighter=False, selection=None, preavg=False):
+def make_parset(ms=None, h5=None, candidate=None, prefix='', brighter=False, selection=None, preavg=False):
     ''' Create a DPPP ready parset for phaseshifting towards the sources.
     Args:
         candidate (Table): candidate.
@@ -134,19 +133,23 @@ def make_parset(ms=None, candidate=None, prefix='', brighter=False, selection=No
         parset += '\nmsin.datacolumn=DATA' \
                   '\nmsout.storagemanager=dysco' \
                   '\nmsout.writefullresflag=False' \
-                  '\nsteps=[ps,beam,avg]' \
+                  '\nsteps=[ps,beam,ac,avg]' \
                   '\nps.type=phaseshifter' \
                   '\navg.type=averager' \
                   f'\navg.freqresolution={freqres}' \
                   f'\navg.timeresolution={timeres}' \
                   '\nbeam.type=applybeam' \
                   '\nbeam.updateweights=True' \
-                  '\nbeam.direction=[]'
+                  '\nbeam.direction=[]' \
+                  '\nac.type=applycal' \
+                  '\nac.parmdb=' + h5 + \
+                  '\nac.correction=fulljones' \
+                  '\nac.soltab=[amplitude000,phase000]'
     else:
         parset += '\nmsin.datacolumn=DATA' \
                   '\nmsout.storagemanager=dysco' \
                   '\nmsout.writefullresflag=False' \
-                  '\nsteps=[preavg,ps,beam,avg]' \
+                  '\nsteps=[preavg,ps,beam,ac,avg]' \
                   '\npreavg.type=averager' \
                   '\npreavg.timeresolution=2' \
                   '\nps.type=phaseshifter' \
@@ -155,7 +158,16 @@ def make_parset(ms=None, candidate=None, prefix='', brighter=False, selection=No
                   f'\navg.timeresolution={timeres}' \
                   '\nbeam.type=applybeam' \
                   '\nbeam.updateweights=True' \
-                  '\nbeam.direction=[]'
+                  '\nbeam.direction=[]' \
+                  '\nac.type=applycal' \
+                  '\nac.parmdb=' + h5 + \
+                  '\nac.correction=fulljones' \
+                  '\nac.soltab=[amplitude000,phase000]'
+
+
+    t = ct.table(ms+'::FIELD')
+    phasedir = t.getcol("PHASE_DIR").squeeze()
+    phasedir *= 180/pi
 
     parsetname = prefix+'_'+freqband+'_P{:d}.parset'.format(int(candidate['Source_id']))
 
@@ -179,6 +191,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--ms', dest='ms', help='Measurement set to read phase dir from')
+    parser.add_argument('--h5', dest='h5', help='Delayselfcal solutions')
     parser.add_argument('--catalog', dest='catalog', help='Catalog to select candidate calibrators from.')
     parser.add_argument('--prefix', dest='prefix', help='Prefix', default='')
     parser.add_argument('--selection', type=str, nargs='+', help='specific selection of P* sources')
@@ -192,5 +205,5 @@ if __name__ == '__main__':
     candidates.write('dde_calibrators.csv', format='ascii.csv', overwrite=True)
 
     for candidate in candidates:
-        parset = make_parset(ms=args.ms, candidate=candidate, prefix=args.prefix,  selection=args.selection, brighter=args.brighter, preavg=args.preavg)
+        parset = make_parset(ms=args.ms, candidate=candidate, prefix=args.prefix, h5=args.h5, selection=args.selection, brighter=args.brighter, preavg=args.preavg)
 

@@ -1,6 +1,7 @@
 from glob import glob
 import os
 import tables
+import pandas as pd
 
 
 def make_utf8(inp):
@@ -18,26 +19,23 @@ def make_utf8(inp):
 
 if __name__ == "__main__":
 
+    selfcalperformance = pd.read_csv('selfcal_performance.csv').set_index('source')
+
     selected = ['P16883',
                 'P17010',
-                'P17340',
                 'P17565',
-                'P18696',
                 'P19951',
                 'P20075',
-                'P22181',
                 'P22459',
                 'P23167',
                 'P23872',
                 'P24227',
                 'P27648',
-                'P29603',
                 'P31553',
                 'P31933',
                 'P34557',
                 'P35307',
                 'P37145',
-                'P37686',
                 'P40952',
                 'P41028',
                 'P44832',
@@ -47,7 +45,6 @@ if __name__ == "__main__":
                 'P50735',
                 'P50892',
                 'P50980',
-                'P51272',
                 'P51372',
                 'P52238',
                 'P53426',
@@ -60,15 +57,14 @@ if __name__ == "__main__":
 
     nights = ['L769393', 'L686962', 'L816272', 'L798074']
 
-    allh5 = glob('P?????/merged_addCS_selfcalcyle011*.h5')
-
     for n in nights:
         print("########\n"+n+"\n########\n")
         solutionfiles = []
-        for h5 in allh5:
-            for s in selected:
-                if s in h5 and n in h5:
-                    solutionfiles.append(h5)
+        for s in selected:
+            best_cycle = selfcalperformance.loc[s].best_cycle
+            besth5 = sorted(glob(s+f'/merged_addCS_selfcalcyle0*{n}_P?????.ms.copy.phaseup.h5'))[int(best_cycle)]
+            print(besth5)
+            solutionfiles.append(besth5)
         infiles = ' '.join(solutionfiles)
         outfile = 'merged_' + n + '.h5'
         os.system(
