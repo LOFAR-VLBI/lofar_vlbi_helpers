@@ -101,7 +101,7 @@ class Imaging:
         return beamarea_pix
 
     def make_image(self, image_data=None, cmap: str = 'CMRmap', vmin=None, vmax=None, show_regions=None, wcs=None,
-                   h5=None, selfcalnames=False, save=None):
+                   h5=None, selfcalnames=None, save=None):
         plt.style.use('ggplot')
         """
         Image your data with this method.
@@ -142,7 +142,7 @@ class Imaging:
         else:
             im.set_norm(PowerNorm(vmin=0, vmax=vmax, gamma=1 / 2))
 
-        if selfcalnames is not None:
+        if selfcalnames:
             if not os.path.exists('selfcal_pointings.csv'):
                 make_selfcal_csv()
             for name, pointing in pd.read_csv('selfcal_pointings.csv').set_index('name').iterrows():
@@ -159,7 +159,7 @@ class Imaging:
             for d in dirs:
                 c = SkyCoord(d[0] * u.rad, d[1] * u.rad)
                 cpix = utils.skycoord_to_pixel(c, self.wcs)
-                plt.scatter(float(cpix[0]), float(cpix[1]), s=80, marker='x', color='red')
+                plt.scatter(float(cpix[0]), float(cpix[1]), s=80, marker='x', color='red', alpha=0.65)
 
         plt.xlabel('Right Ascension (J2000)', size=14)
         plt.ylabel('Declination (J2000)', size=14)
@@ -225,7 +225,7 @@ if __name__ == "__main__":
     im = Imaging(fits_file=args.fits,
                  resolution=args.resolution)
 
-    if args.selfcal_folder is not None:
+    if args.solution_folder is not None:
         make_selfcal_csv(args.solution_folder, h5=True)
 
     if args.widefield:

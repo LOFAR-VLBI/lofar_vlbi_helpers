@@ -32,7 +32,7 @@ cp facets_1.2.reg ${RUNFOLDER}
 cp merged_${NIGHT}_polrot.h5 ${RUNFOLDER}
 cp polygon_info.csv ${RUNFOLDER}
 cp $SIMG ${RUNFOLDER}
-cp -r skymodels ${RUNFOLDER}
+cp -r skymodels_${FACETID} ${RUNFOLDER}
 cp -r solutions ${RUNFOLDER}
 
 cd ${RUNFOLDER}
@@ -40,11 +40,9 @@ cd ${RUNFOLDER}
 #subtract ms with wsclean for each facet
 singularity exec -B $PWD ${SIMG##*/} python \
 /home/lofarvwf-jdejong/scripts/lofar_helpers/subtract/subtract_with_dp3.py \
---mslist ${SB} \
---sourcedb skymodels_${FACETID}/*.txt \
+--mslist ${SB##*/} \
+--sourcedb skymodels_${FACETID}/*${NIGHT}*.txt \
 --region poly_${FACETID}.reg \
---model_image_folder /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/modelimages/${NIGHT}/ \
---facets_predict facets_1.2.reg \
 --h5parm_predict solutions/*.h5 \
 --applycal_h5 merged_${NIGHT}_polrot.h5 \
 --applycal \

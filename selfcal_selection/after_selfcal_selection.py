@@ -23,6 +23,7 @@ from scipy.stats import linregress
 import pandas as pd
 
 plt.style.use('ggplot')
+plt.rcParams['axes.facecolor']='w'
 
 def get_rms(fitsfile, maskSup=1e-7):
     """
@@ -118,8 +119,12 @@ if __name__ == '__main__':
         ax2.plot(cycles, minmaxs, color=color)
         ax2.tick_params(axis='y', labelcolor=color)
 
+        ax1.grid(False)
+        ax1.grid('off')
+        ax2.grid(False)
+        ax2.grid('off')
         fig.tight_layout()
-        plt.savefig('selfcal_performance_'+dirname+'.png')
+        plt.savefig('selfcal_performance_'+dirname+'.png', dpi=300)
 
         # SCORING
         best_rms_cycle, best_minmax_cycle = np.array(rmss[1:]).argmin()+1, np.array(minmaxs[1:]).argmin()+1

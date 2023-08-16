@@ -6,12 +6,15 @@ import pickle
 import os.path
 from glob import glob
 from astropy.io import fits
+from astropy.wcs import WCS
 import pickle
 import sys
 from argparse import ArgumentParser
 import pyregion
 from reproj_test import reproject_interp_chunk_2d
 from auxcodes import flatten
+from astropy.coordinates import SkyCoord
+from shapely import geometry
 
 def make_header(fitsfile):
     hdu = fits.open(fitsfile)
@@ -46,6 +49,43 @@ def make_header(fitsfile):
     header['OBJECT'] = 'ELAIS-N1'
     return header
 
+def get_polygon_center(regionfile):
+    """
+    get polygon center
+    :param regionfile: region file
+    :return:
+    """
+    regionfile = open(regionfile, 'r')
+    lines = regionfile.readlines()
+    regionfile.close()
+    polygon = lines[4]
+    polyp = [float(p) for p in polygon.replace('polygon(', '').replace(')', '').replace('\n', '').split(',')]
+    poly_geo = geometry.Polygon(tuple(zip(polyp[0::2], polyp[1::2])))
+    return SkyCoord(f'{poly_geo.centroid.x}deg', f'{poly_geo.centroid.y}deg', frame='icrs')
+
+
+def get_array_coordinates(pix_array, wcsheader):
+    """
+    Get coordinates from pixel
+
+    :param pix_array: array with pixel coordinates
+    :param wcsheader: wcs header
+    :return:
+    """
+    pixarray = np.argwhere(pix_array)
+    return wcsheader.pixel_to_world(pixarray[:, 0], pixarray[:, 1],0,0)[0]
+
+def get_distance_weights(center, coord_array):
+    """
+    Get weights based on center polygon to coordinates in array
+
+    :param center: center polygon
+    :param coord_array: coordinates field
+    :return:
+    """
+    return 1/center.separation(coord_array).value
+
+
 if __name__=='__main__':
     parser = ArgumentParser(description='make wide-field')
     parser.add_argument('--resolution', help='resolution in arcsecond', required=True, type=float)
@@ -73,35 +113,39 @@ if __name__=='__main__':
     ysize = header_new['NAXIS2']
 
     isum = np.zeros([ysize, xsize], dtype="float32")
-    wsum = np.zeros_like(isum, dtype="float32")
-    mask = np.zeros_like(isum, dtype=np.bool)
+    weights = np.zeros_like(isum, dtype="float32")
+    fullmask = np.zeros_like(isum, dtype=bool)
 
     for f in facets:
         print(f)
 
         hdu = fits.open(f)
         hduflatten = flatten(hdu)
+        wcsheader = WCS(hdu[0].header)
 
         imagedata, _ = reproject_interp_chunk_2d(hduflatten, header_new, hdu_in=0, parallel=False)
 
         reg = 'poly_'+f.split('-')[0].split('_')[-1]+'.reg'
 
+        polycenter = get_polygon_center(reg)
+
         r = pyregion.open(reg).as_imagecoord(header=header_new)
         mask = r.get_mask(hdu=hdu[0], shape=(header_new["NAXIS1"], header_new["NAXIS2"])).astype(int)
 
-        imagedata*=mask
+        coordinates = get_array_coordinates(imagedata, wcsheader)
+        facetweight = get_distance_weights(polycenter, coordinates).reshape(imagedata.shape)
 
-        m = ~np.isnan(imagedata)
-        w = 1.0 * m
+        imagedata*=facetweight
+
+        fullmask |= ~np.isnan(imagedata)
         imagedata[np.isnan(imagedata)] = 0  # so we can add
         isum += imagedata
-        wsum += w
-        mask |= m
+        weights += facetweight
 
     print('Finalizing...')
 
-    isum /= wsum
-    isum[~mask] = np.nan
+    isum /= weights
+    isum[~fullmask] = np.nan
 
     hdu = fits.PrimaryHDU(header=header_new, data=isum)
 
