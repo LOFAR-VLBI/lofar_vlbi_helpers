@@ -33,6 +33,7 @@ cp facets_1.2.reg ${RUNFOLDER}
 cp merged_${NIGHT}_polrot.h5 ${RUNFOLDER}
 cp polygon_info.csv ${RUNFOLDER}
 cp $SIMG ${RUNFOLDER}
+cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/modelimages/${NIGHT}/*.fits ${RUNFOLDER}
 
 cd ${RUNFOLDER}
 
@@ -41,7 +42,7 @@ singularity exec -B $PWD ${SIMG##*/} python \
 /home/lofarvwf-jdejong/scripts/lofar_helpers/subtract/subtract_with_wsclean.py \
 --mslist ${SB##*/} \
 --region poly_${FACETID}.reg \
---model_image_folder /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/modelimages/${NIGHT}/ \
+--model_image_folder $PWD \
 --facets_predict facets_1.2.reg \
 --h5parm_predict merged_${NIGHT}_polrot.h5 \
 --applycal \
