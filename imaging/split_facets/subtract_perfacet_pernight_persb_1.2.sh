@@ -1,9 +1,10 @@
 #!/bin/bash
-#SBATCH -c 20
+#SBATCH -c 15
 #SBATCH --job-name=subtract
 #SBATCH --array=0-24
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
+#SBATCH -t 60:00:00
 
 FACETID=$1
 NIGHT=$2
@@ -28,7 +29,7 @@ SB=${MS_FILES[${SLURM_ARRAY_TASK_ID}]}
 
 cp -r ${SB} ${RUNFOLDER}
 cp poly_${FACETID}.reg ${RUNFOLDER}
-cp facets_0.6.reg ${RUNFOLDER}
+cp facets_1.2.reg ${RUNFOLDER}
 cp merged_${NIGHT}_polrot.h5 ${RUNFOLDER}
 cp polygon_info.csv ${RUNFOLDER}
 cp $SIMG ${RUNFOLDER}
@@ -40,8 +41,8 @@ singularity exec -B $PWD ${SIMG##*/} python \
 /home/lofarvwf-jdejong/scripts/lofar_helpers/subtract/subtract_with_wsclean.py \
 --mslist ${SB##*/} \
 --region poly_${FACETID}.reg \
---model_image_folder /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/modelimages_0.6/${NIGHT}/ \
---facets_predict facets_0.6.reg \
+--model_image_folder /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/modelimages/${NIGHT}/ \
+--facets_predict facets_1.2.reg \
 --h5parm_predict merged_${NIGHT}_polrot.h5 \
 --applycal \
 --applybeam \

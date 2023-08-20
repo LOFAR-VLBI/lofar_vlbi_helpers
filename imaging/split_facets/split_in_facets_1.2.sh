@@ -42,8 +42,8 @@ ${SCRIPT_DIR}/split_facets.py \
 # give night names
 COUNT=$( ls -1d poly_*.reg | wc -l )
 for ((i=1;i<=COUNT;i++)); do
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L686962
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L769393
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L798074
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb.sh $i L816272
+  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_1.2.sh $i L686962
+  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_1.2.sh $i L769393
+  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_1.2.sh $i L798074
+  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_1.2.sh $i L816272
 done
