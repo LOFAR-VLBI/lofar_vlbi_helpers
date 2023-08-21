@@ -79,7 +79,7 @@ def ds9_poly_info(point, poly_reg):
                 max_point = [list_x[i], list_y[i]]
 
         # calculate averaging factor based on 2.5 by 2.5 degrees field size
-        avg = max(int(2.5//(2*max(distance([c_x, c_y], [max_point[0], c_y]), distance([c_x, c_y], [c_x, max_point[1]])))), 1)
+        avg = max(int(2.5//(2*max(distance([c_x, c_y], [max_point[0], c_y]), distance([c_x, c_y], [c_x, max_point[1]])))), 1) + 1
 
         print(c_x, c_y, max_point, avg)
         return poly_geo.contains(point_geo), poly_geo.area, [c_x, c_y], avg
