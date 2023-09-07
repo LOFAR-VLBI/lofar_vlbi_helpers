@@ -133,9 +133,9 @@ if __name__=='__main__':
         mask = r.get_mask(hdu=hdu[0], shape=(header_new["NAXIS1"], header_new["NAXIS2"])).astype(int)
 
         coordinates = get_array_coordinates(imagedata, wcsheader)
-        facetweight = get_distance_weights(polycenter, coordinates).reshape(imagedata.shape)
+        facetweight = get_distance_weights(polycenter, coordinates).reshape(imagedata.shape)*mask
 
-        imagedata*=facetweight
+        imagedata *= facetweight
 
         fullmask |= ~np.isnan(imagedata)
         imagedata[np.isnan(imagedata)] = 0  # so we can add

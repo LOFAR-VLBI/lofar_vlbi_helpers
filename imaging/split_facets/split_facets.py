@@ -100,7 +100,7 @@ if __name__ == "__main__":
     reg = args.reg
     solutionfile = args.h5
 
-    split_polygons_ds9(regionfile=reg, extra_boundary=args.extra_boundary)
+    split_polygons_ds9(regionfile=reg, extra_boundary=0)
 
     H = tables.open_file(solutionfile)
     dirs = H.root.sol000.source[:]['dir']
@@ -129,4 +129,6 @@ if __name__ == "__main__":
                                  avg])
 
     f.close()
+
+    split_polygons_ds9(regionfile=reg, extra_boundary=args.extra_boundary)
 

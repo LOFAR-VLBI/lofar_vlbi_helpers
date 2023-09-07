@@ -90,7 +90,7 @@ singularity exec -B $PWD {simg.split('/')[-1]} wsclean \\
     if taper is not None:
         cmd += f'\ntaper-gaussian {taper} \\'
 
-    cmd += f"\n\'{' '.join(ms)}\'\n"
+    cmd += f"\n\'*.ms\'\n"
 
     if tmpdir:
         cmd+= \
@@ -142,5 +142,3 @@ if __name__=='__main__':
     imsize = int((fullpixsize//divide_size)*1.15)
 
     make_wsclean_cmd(imsize, pixelscale, 'facet_'+str(args.facet), taper, args.ms, args.tmpdir)
-
-    os.system('sbatch wsclean.cmd')
