@@ -90,7 +90,7 @@ singularity exec -B $PWD {simg.split('/')[-1]} wsclean \\
     if taper is not None:
         cmd += f'\ntaper-gaussian {taper} \\'
 
-    cmd += f"\n\'*.ms\'\n"
+    cmd += f"\n*.ms\n"
 
     if tmpdir:
         cmd+= \
