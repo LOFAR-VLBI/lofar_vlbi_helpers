@@ -127,7 +127,7 @@ def make_parset(ms=None, candidate=None, prefix='', brighter=False, selection=No
         timeres='8'
     else:
         freqres='390.56kHz'
-        timeres='60'
+        timeres='32'
 
 
     if not preavg:

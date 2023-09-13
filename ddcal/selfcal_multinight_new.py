@@ -46,6 +46,7 @@ python $lofar_facet_selfcal \\
 --solint-list="[{solint_scalarphase},{solint_complexgain}]" \\
 --uvmin=20000 \\
 --imsize=2048 \\
+--flagtimesmeared \\
 --paralleldeconvolution=1024 \\
 --makeimage-ILTlowres-HBA \\
 --targetcalILT='scalarphase' \\
