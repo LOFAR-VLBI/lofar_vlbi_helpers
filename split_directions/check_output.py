@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(description='Check folder sizes')
     parser.add_argument('--folder', help='folder location', type=str, default=".")
-    parser.add_argument('--size_lim', help='lowest allowed data size in MB', type=int, default=130)
+    parser.add_argument('--size_lim', help='lowest allowed data size in MB', type=int, default=225)
 
     args = parser.parse_args()
 
