@@ -8,5 +8,5 @@ SIMG=$( python3 $SCRIPT_DIR/parse_settings.py --SIMG )
 
 DATA=$1
 
-printf "Run LINC calibrator from $SCRIPT_DIR"
+printf "Run LINC calibrator from $SCRIPT_DIR on Data in $DATA"
 singularity exec -B ${SING_BIND} ${SIMG} run_LINC_calibrator.sh -d $DATA
