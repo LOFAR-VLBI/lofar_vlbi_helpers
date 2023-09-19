@@ -31,7 +31,7 @@ for NIGHT in L686962 L769393 L798074 L816272; do
 
   #subtract ms with wsclean for each facet
   singularity exec -B ${SING_BIND} ${SIMG} python \
-  /home/lofarvwf-jdejong/scripts/lofar_helpers/subtract_with_wsclean/subtract_with_wsclean.py \
+  /project/lofarvwf/Software/lofar_helpers/subtract_with_wsclean/subtract_with_wsclean.py \
   --mslist *.ms \
   --region ../poly_${SLURM_ARRAY_TASK_ID}.reg \
   --model_image_folder /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/DD_1.2/${NIGHT}_2606/ \

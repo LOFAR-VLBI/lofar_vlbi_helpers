@@ -2,16 +2,28 @@ from glob import glob
 import os
 import inspect
 import pandas as pd
+import casacore.tables as ct
+import numpy as np
 
-def make_selfcal_script(solint):
+def make_selfcal_script(solint, ms):
 
-    solint_scalarphase = max(int(solint), 1)
-    solint_complexgain = max(int(solint*10), 1)
+    t = ct.table(ms, readonly=True, ack=False)
+    time = np.unique(t.getcol('TIME'))
+    t.close()
+    deltime = np.abs(time[1]-time[0])
 
-    if solint_complexgain/60 > 4:
+    solint_scalarphase = np.rint(solint*60/deltime)
+    solint_complexgain = np.rint(solint*60*10/deltime)
+
+    if solint_complexgain/3600 > 4:
         cg_cycle = 999
     else:
         cg_cycle = 3
+
+    print("solint scalarphase: "+str(int(solint_scalarphase*deltime))+" seconds")
+    print("solint complexgain: "+str(int(solint_complexgain*deltime))+" seconds")
+
+
 
     script=f"""#!/bin/bash
 #SBATCH -c 12
@@ -41,7 +53,7 @@ python $lofar_facet_selfcal \\
 --smoothnessreffrequency-list="[120.0,0.0]" \\
 --smoothnessspectralexponent-list="[-1.0,-1.0]" \\
 --smoothnessrefdistance-list="[0.0,0.0]" \\
---solint-list="[{solint_scalarphase},{solint_complexgain}]" \\
+--solint-list="[{int(solint_scalarphase)},{int(solint_complexgain)}]" \\
 --uvmin=20000 \\
 --imsize=2048 \\
 --flagtimesmeared \\
@@ -50,8 +62,8 @@ python $lofar_facet_selfcal \\
 --targetcalILT='scalarphase' \\
 --stop=12 \\
 --makeimage-fullpol \\
---helperscriptspath=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal \\
---helperscriptspathh5merge=/home/lofarvwf-jdejong/scripts/lofar_helpers \\
+--helperscriptspath=/project/lofarvwf/Software/lofar_facet_selfcal \\
+--helperscriptspathh5merge=/project/lofarvwf/Software/lofar_helpers \\
 *.ms
 """
 
@@ -73,7 +85,7 @@ if __name__ == "__main__":
         phasediff = pd.read_csv(phasediff_output)
         phasediff['direction'] = phasediff.source.str.split('/').str[0]
         solint = phasediff[phasediff['direction']==d].best_solint.mean()
-        make_selfcal_script(solint)
+        make_selfcal_script(solint, glob("L??????_P?????.ms")[0])
 
         print(d)
         tasks = ['mkdir -p '+d,

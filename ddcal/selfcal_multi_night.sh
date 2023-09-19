@@ -26,6 +26,6 @@ python $lofar_facet_selfcal \
 --flagtimesmeared \
 --makeimage-ILTlowres-HBA \
 --makeimage-fullpol \
---helperscriptspath=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal \
---helperscriptspathh5merge=/home/lofarvwf-jdejong/scripts/lofar_helpers \
+--helperscriptspath=/project/lofarvwf/Software/lofar_facet_selfcal \
+--helperscriptspathh5merge=/project/lofarvwf/Software/lofar_helpers \
 L??????_${DIR}.ms

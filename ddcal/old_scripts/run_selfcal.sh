@@ -51,8 +51,8 @@ python $lofar_facet_selfcal \
 --imsize=1600 \
 --skymodelpointsource=1.0 \
 --stopafterskysolve \
---helperscriptspath=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal \
---helperscriptspathh5merge=/home/lofarvwf-jdejong/scripts/lofar_helpers \
+--helperscriptspath=/project/lofarvwf/Software/lofar_facet_selfcal \
+--helperscriptspathh5merge=/project/lofarvwf/Software/lofar_helpers \
 *.ms
 
 cd ../${DIR}_selfcal
@@ -60,14 +60,14 @@ cp -r ${MS} .
 
 # selfcals
 singularity exec -B $BIND $SIMG \
-python /home/lofarvwf-jdejong/scripts/lofar_facet_selfcal/facetselfcal.py \
+python /project/lofarvwf/Software/lofar_facet_selfcal/facetselfcal.py \
 -i selfcal_${DIR} \
 --phaseupstations='core' \
 --auto \
 --makeimage-ILTlowres-HBA \
 --targetcalILT='scalarphase' \
 --stop=12 \
---helperscriptspath=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal \
---helperscriptspathh5merge=/home/lofarvwf-jdejong/scripts/lofar_helpers \
+--helperscriptspath=/project/lofarvwf/Software/lofar_facet_selfcal \
+--helperscriptspathh5merge=/project/lofarvwf/Software/lofar_helpers \
 *.ms
 

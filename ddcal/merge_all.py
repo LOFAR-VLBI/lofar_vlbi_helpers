@@ -68,7 +68,7 @@ if __name__ == "__main__":
         infiles = ' '.join(solutionfiles)
         outfile = 'merged_' + n + '.h5'
         os.system(
-            'python /home/lofarvwf-jdejong/scripts/lofar_helpers/h5_merger.py '
+            'python /project/lofarvwf/Software/h5_merger.py '
             '-in ' + infiles + ' -out ' + outfile + ' --propagate_flags')
         H = tables.open_file(outfile, 'r+')
         dirind = make_utf8(H.root.sol000.phase000.val.attrs['AXES']).split(',').index('dir')

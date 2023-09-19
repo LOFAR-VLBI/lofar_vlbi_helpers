@@ -38,7 +38,7 @@ cd ${RUNFOLDER}
 
 #subtract ms with wsclean for each facet
 singularity exec -B $PWD ${SIMG##*/} python \
-/home/lofarvwf-jdejong/scripts/lofar_helpers/subtract/subtract_with_wsclean.py \
+/project/lofarvwf/Software/lofar_helpers/subtract/subtract_with_wsclean.py \
 --mslist ${SB##*/} \
 --region poly_${FACETID}.reg \
 --model_image_folder $PWD \

@@ -33,6 +33,6 @@ python $lofar_facet_selfcal \
 --resetsols-list="[None,'alldutch','core',None,None,None,None]" \
 --stop=1 \
 --stopafterskysolve \
---helperscriptspath=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal \
---helperscriptspathh5merge=/home/lofarvwf-jdejong/scripts/lofar_helpers \
+--helperscriptspath=/project/lofarvwf/Software/lofar_facet_selfcal \
+--helperscriptspathh5merge=/project/lofarvwf/Software/lofar_helpers \
 *.ms

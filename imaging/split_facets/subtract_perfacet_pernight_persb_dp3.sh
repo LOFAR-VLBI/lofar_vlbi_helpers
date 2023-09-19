@@ -40,7 +40,7 @@ cd ${RUNFOLDER}
 
 #subtract ms with wsclean for each facet
 singularity exec -B $PWD ${SIMG##*/} python \
-/home/lofarvwf-jdejong/scripts/lofar_helpers/subtract/subtract_with_dp3.py \
+/project/lofarvwf/Software/lofar_helpers/subtract/subtract_with_dp3.py \
 --mslist ${SB##*/} \
 --sourcedb skymodels_${FACETID}/*${NIGHT}*.txt \
 --region poly_${FACETID}.reg \
