@@ -6,7 +6,7 @@ from glob import glob
 import argparse
 
 parser = argparse.ArgumentParser(description='')
-parser.add_argument('--path', type=str, help='path')
+parser.add_argument('--path', type=str, help='path', default='.')
 args = parser.parse_args()
 
 data_dict = {}

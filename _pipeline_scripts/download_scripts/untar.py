@@ -4,7 +4,7 @@ import argparse
 from subprocess import call
 
 parser = argparse.ArgumentParser(description='')
-parser.add_argument('--path', type=str, help='path')
+parser.add_argument('--path', type=str, help='path', default='.')
 args = parser.parse_args()
 
 for filename in glob(args.path+"/*SB*.tar*"):

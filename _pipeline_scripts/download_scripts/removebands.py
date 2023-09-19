@@ -4,7 +4,7 @@ import argparse
 import casacore.tables as ct
 
 parser = argparse.ArgumentParser(description='.')
-parser.add_argument('--datafolder', type=str, help='path')
+parser.add_argument('--datafolder', type=str, help='path', default='.')
 parser.add_argument('--freqcut', type=float, help='MHz', default=168.0)
 args = parser.parse_args()
 
