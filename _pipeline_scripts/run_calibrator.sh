@@ -2,9 +2,11 @@
 #SBATCH -N 1 -c 8 -t 72:00:00
 
 #SINGULARITY SETTINGS
-SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
-SIMG=$( python3 $HOME/parse_settings.py --SIMG )
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SING_BIND=$( python3 $SCRIPT_DIR/parse_settings.py --BIND )
+SIMG=$( python3 $SCRIPT_DIR/parse_settings.py --SIMG )
 
 DATA=$1
 
+printf "Run LINC calibrator from $SCRIPT_DIR"
 singularity exec -B ${SING_BIND} ${SIMG} run_LINC_calibrator.sh -d $DATA
