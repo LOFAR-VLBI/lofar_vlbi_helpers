@@ -11,19 +11,26 @@ if [ $# -eq 0 ]
     exit 0
 fi
 
-#SINGULARITY SETTINGS
+#GET ORIGINAL SCRIPT DIRECTORY
+if [ -n "${SLURM_JOB_ID:-}" ] ; then
+SCRIPT=$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/Command=/{print $2}')
+SCRIPT_DIR=$( echo ${SCRIPT%/*} )
+else
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+fi
+
+#SINGULARITY SETTINGS
 SING_BIND=$( python3 $SCRIPT_DIR/settings/parse_settings.py --BIND )
 SIMG=$( python3 $SCRIPT_DIR/settings/parse_settings.py --SIMG )
 
 DATA_CAL=$1
-DATA_TAR=$2
+#DATA_TAR=$2
 
 echo "Run LINC calibrator from $SCRIPT_DIR on Data in $DATA_CAL"
 singularity exec -B ${SING_BIND} ${SIMG} run_LINC_calibrator.sh -d $DATA_CAL
 
-cd $DATA_TAR
-cd ../
-
-echo "Run LINC target from $SCRIPT_DIR on Data in $DATA_TAR"
-singularity exec -B ${SING_BIND} ${SIMG} run_LINC_target.sh -d $DATA_TAR -c $DATA_CAL
+#cd $DATA_TAR
+#cd ../
+#
+#echo "Run LINC target from $SCRIPT_DIR on Data in $DATA_TAR"
+#singularity exec -B ${SING_BIND} ${SIMG} run_LINC_target.sh -d $DATA_TAR -c $DATA_CAL

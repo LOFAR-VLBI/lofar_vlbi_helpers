@@ -14,8 +14,15 @@ if [ $# -eq 0 ]
     exit 0
 fi
 
-#SINGULARITY SETTINGS
+#GET ORIGINAL SCRIPT DIRECTORY
+if [ -n "${SLURM_JOB_ID:-}" ] ; then
+SCRIPT=$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/Command=/{print $2}')
+SCRIPT_DIR=$( echo ${SCRIPT%/*} )
+else
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+fi
+
+#SINGULARITY SETTINGS
 SIMG=$( python3 $SCRIPT_DIR/settings/parse_settings.py --SIMG )
 BIND=$( python3 $SCRIPT_DIR/settings/parse_settings.py --BIND )
 
