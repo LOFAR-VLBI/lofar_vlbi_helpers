@@ -31,7 +31,7 @@ mkdir -p $LNUM
 cd $LNUM
 
 #CALIBRATOR
-if $SLURM_ARRAY_TASK_ID=0; then
+if [ $SLURM_ARRAY_TASK_ID==0 ]; then
   LNUM_CAL=$( grep -Po 'L[0-9][0-9][0-9][0-9][0-9][0-9]' $1 | head -n 1 )
   echo "DOWNLOAD DATA FOR $LNUM_CAL"
   mkdir -p calibrator
@@ -42,7 +42,7 @@ if $SLURM_ARRAY_TASK_ID=0; then
 fi
 
 #TARGET
-if $SLURM_ARRAY_TASK_ID=1; then
+if [ $SLURM_ARRAY_TASK_ID==1 ]; then
   echo "DOWNLOAD DATA FOR $LNUM"
   mkdir -p target
   wget -ci $1 -P target
