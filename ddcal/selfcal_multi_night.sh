@@ -23,7 +23,6 @@ python $lofar_facet_selfcal \
 --makeimage-ILTlowres-HBA \
 --targetcalILT='scalarphase' \
 --stop=12 \
---flagtimesmeared \
 --makeimage-ILTlowres-HBA \
 --makeimage-fullpol \
 --helperscriptspath=/project/lofarvwf/Software/lofar_facet_selfcal \
