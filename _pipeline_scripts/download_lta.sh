@@ -66,7 +66,8 @@ cd $TYPE/Data
 wget -ci $TARS
 
 # untar data
-for TAR in *.tar; do
+for TAR in *SB*.tar*; do
+  mv $TAR tmp.tar
   tar -xvf $TAR
   rm -r $TAR
 done
