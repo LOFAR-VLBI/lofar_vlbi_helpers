@@ -57,10 +57,16 @@ if [ $SLURM_ARRAY_TASK_ID==1 ]; then
 fi
 
 mkdir -p $TYPE
-wget -i $CALDAT -P $TYPE
+
+#download data
+wget -ci $CALDAT -P $TYPE
 
 # untar data
-python3 $SCRIPT_DIR/download_scripts/untar.py --path $TYPE
+for TAR in $TYPE/*.tar; do
+  tar -xvf $TAR
+  rm -r $TAR
+done
+mv $TYPE/*.MS $TYPE/Data
 
 # find missing data
 python3 $SCRIPT_DIR/download_scripts/findmissingdata.py --path $TYPE/Data
