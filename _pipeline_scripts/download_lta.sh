@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH -c 1
 #SBATCH --array=0-1
-#SBATCH --output=download_lta_%j.out
-#SBATCH --error=download_lta_%j.err
+#SBATCH --output=download_lta_%A_%a.out
+#SBATCH --error=download_lta_%A_%a.err
 
 #1 --> html_calibrator.txt
 #2 --> html_target.txt
@@ -46,14 +46,14 @@ cd $LNUM
 #CALIBRATOR
 if [[ "$SLURM_ARRAY_TASK_ID" -eq 0 ]]; then
   LNUM_CAL=$( grep -Po 'L[0-9][0-9][0-9][0-9][0-9][0-9]' $CALDAT | head -n 1 )
-  echo "DOWNLOAD DATA FOR $LNUM_CAL"
+  echo "DOWNLOAD DATA FOR CALIBRATOR $LNUM_CAL"
   TYPE=calibrator
   TARS=$CALDAT
 fi
 
 #TARGET
 if [[ "$SLURM_ARRAY_TASK_ID" -eq 1 ]]; then
-  echo "DOWNLOAD DATA FOR $LNUM"
+  echo "DOWNLOAD DATA FOR TARGET $LNUM"
   TYPE=target
   TARS=$TARDAT
 fi
@@ -69,7 +69,6 @@ for TAR in *.tar; do
   tar -xvf $TAR
   rm -r $TAR
 done
-mv $TYPE/*.MS $TYPE/Data
 
 # find missing data
 python3 $SCRIPT_DIR/download_scripts/findmissingdata.py
