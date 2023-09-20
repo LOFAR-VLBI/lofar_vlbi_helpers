@@ -7,16 +7,16 @@
 #1 --> html_calibrator.txt
 #2 --> html_target.txt
 
-if [ $# -eq 0 ]
-  then
-    echo "No arguments supplied"
-    echo "Please run script as [ download_lta.sh html_calibrator.txt html_target.txt ]"
-    exit 0
-fi
+#if [ $# -eq 0 ]
+#  then
+#    echo "No arguments supplied"
+#    echo "Please run script as [ download_lta.sh html_calibrator.txt html_target.txt ]"
+#    exit 0
+#fi
 
 #GET ORIGINAL SCRIPT DIRECTORY
-if [ -n "${SLURM_JOB_ID:-}" ] ; then
-SCRIPT=$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/Command=/{print $2}')
+if [ -n "${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" ] ; then
+SCRIPT=$(scontrol show job "${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" | awk -F= '/Command=/{print $2}')
 SCRIPT_DIR=$( echo ${SCRIPT%/*} )
 else
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
