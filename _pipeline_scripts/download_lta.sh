@@ -11,7 +11,7 @@
 #INPUT PARAMETERS
 if [ -n "$1" ]; then
   echo "You supplied $1 as calibrator html list"
-  CALDAT = $( realpath $1 )
+  CALDAT=$( realpath $1 )
 else
   echo "No arguments supplied"
   echo "Please run script as [ download_lta.sh html_calibrator.txt html_target.txt ]"
@@ -20,7 +20,7 @@ fi
 
 if [ -n "$2" ]; then
   echo "You supplied $2 as target html list"
-  TARDAT = $( realpath $2 )
+  TARDAT=$( realpath $2 )
 else
   echo "No target html list provided"
   echo "Please run script as [ download_lta.sh html_calibrator.txt html_target.txt ]"
@@ -39,13 +39,13 @@ fi
 SIMG=$( python3 $SCRIPT_DIR/settings/parse_settings.py --SIMG )
 BIND=$( python3 $SCRIPT_DIR/settings/parse_settings.py --BIND )
 
-LNUM=$( grep -Po 'L[0-9][0-9][0-9][0-9][0-9][0-9]' $2 | head -n 1 )
+LNUM=$( grep -Po 'L[0-9][0-9][0-9][0-9][0-9][0-9]' $TARDAT | head -n 1 )
 mkdir -p $LNUM
 cd $LNUM
 
 #CALIBRATOR
 if [ $SLURM_ARRAY_TASK_ID==0 ]; then
-  LNUM_CAL=$( grep -Po 'L[0-9][0-9][0-9][0-9][0-9][0-9]' $1 | head -n 1 )
+  LNUM_CAL=$( grep -Po 'L[0-9][0-9][0-9][0-9][0-9][0-9]' $CALDAT | head -n 1 )
   echo "DOWNLOAD DATA FOR $LNUM_CAL"
   TYPE=calibrator
 fi
