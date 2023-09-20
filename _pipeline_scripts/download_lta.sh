@@ -44,14 +44,14 @@ mkdir -p $LNUM
 cd $LNUM
 
 #CALIBRATOR
-if [ $SLURM_ARRAY_TASK_ID==0 ]; then
+if [ "$SLURM_ARRAY_TASK_ID" -eq 0 ]; then
   LNUM_CAL=$( grep -Po 'L[0-9][0-9][0-9][0-9][0-9][0-9]' $CALDAT | head -n 1 )
   echo "DOWNLOAD DATA FOR $LNUM_CAL"
   TYPE=calibrator
 fi
 
 #TARGET
-if [ $SLURM_ARRAY_TASK_ID==1 ]; then
+if [ "$SLURM_ARRAY_TASK_ID" -eq 1 ]; then
   echo "DOWNLOAD DATA FOR $LNUM"
   TYPE=target
 fi
