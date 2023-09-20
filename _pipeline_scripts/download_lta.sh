@@ -58,10 +58,11 @@ if [[ "$SLURM_ARRAY_TASK_ID" -eq 1 ]]; then
   TARS=$TARDAT
 fi
 
+# make data folder
 mkdir -p $TYPE/Data
 cd $TYPE/Data
 
-#download data
+# download data
 wget -ci $TARS
 
 # untar data
