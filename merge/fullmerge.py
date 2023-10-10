@@ -18,7 +18,7 @@ if __name__ == "__main__":
         print(dir)
         os.system('cp ' + sorted(glob(dir + '/merged_addCS_selfcal*'))[-1] + ' best_solutions')
 
-    os.system('python /project/lofarvwf/Software/lofar_helpers/h5_merger.py -in best_solutions/*.h5 -out master_merged.h5')
+    os.system('python /project/lofarvwf/Software/lofar_helpers/h5_merger.py -in best_solutions/*.h5 -out master_merged.h5 --no_stationflag_check --propagate_flags')
 
 
     ###########SET DELAYSELFCAL SOLUTIONS TO 1 AND 0 BECAUSE OTHERWISE TWICE SOLUTIONS APPLIED################

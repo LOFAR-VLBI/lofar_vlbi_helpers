@@ -4,6 +4,7 @@
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --job-name=prep_0.6
 #SBATCH --array=0-100
+#SBATCH -t 5:00:00
 
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )

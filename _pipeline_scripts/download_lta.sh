@@ -69,6 +69,7 @@ wget -ci $TARS
 for TAR in *SB*.tar*; do
   mv $TAR tmp.tar
   tar -xvf tmp.tar
+  rm tmp.tar
 done
 
 # find missing data

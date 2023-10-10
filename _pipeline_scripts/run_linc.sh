@@ -4,12 +4,14 @@
 #SBATCH --output=runlinc_%j.out
 #SBATCH --error=runlinc_%j.err
 
-if [ $# -eq 0 ]
-  then
-    echo "No arguments supplied"
-    echo "Please run script as [ run_linc.sh <DATA_CALIBRATOR_FOLDER> <DATA_TARGET_FOLDER> ]"
-    exit 0
-fi
+STARTDIR=$PWD
+
+#if [ $# -eq 0 ]
+#  then
+#    echo "No arguments supplied"
+#    echo "Please run script as [ run_linc.sh <DATA_CALIBRATOR_FOLDER> <DATA_TARGET_FOLDER> ]"
+#    exit 0
+#fi
 
 #GET ORIGINAL SCRIPT DIRECTORY
 if [ -n "${SLURM_JOB_ID:-}" ] ; then
@@ -20,17 +22,16 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 fi
 
 #SINGULARITY SETTINGS
-SING_BIND=$( python3 $SCRIPT_DIR/settings/parse_settings.py --BIND )
-SIMG=$( python3 $SCRIPT_DIR/settings/parse_settings.py --SIMG )
+SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
-DATA_CAL=$1
-DATA_TAR=$2
-
-echo "Run LINC calibrator from $SCRIPT_DIR on Data in $DATA_CAL"
-singularity exec -B ${SING_BIND} ${SIMG} run_LINC_calibrator.sh -d $DATA_CAL
-
-cd $DATA_TAR
+echo "Run LINC calibrator from $SCRIPT_DIR on Data in $STARTDIR/calibrator"
+cd calibrator
+singularity exec -B ${SING_BIND} ${SIMG} $PWD/run_LINC_calibrator_new.sh -d $STARTDIR/calibrator/Data
+mv tmp.* linc_calibrator_output
 cd ../
 
-echo "Run LINC target from $SCRIPT_DIR on Data in $DATA_TAR"
-singularity exec -B ${SING_BIND} ${SIMG} run_LINC_target.sh -d $DATA_TAR -c $DATA_CAL
+echo "Run LINC target from $SCRIPT_DIR on Data in $STARTDIR/target"
+cd target
+singularity exec -B ${SING_BIND} ${SIMG} run_LINC_target.sh -d $STARTDIR/target/Data -c $STARTDIR/calibrator/linc_calibrator_output/results_LINC_calibrator/cal_solutions.h5
+cd ../

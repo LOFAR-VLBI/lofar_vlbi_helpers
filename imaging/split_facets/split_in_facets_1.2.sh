@@ -7,10 +7,11 @@ SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets
 
 echo "COPY SOLUTION FILES"
-cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/dd_solutions/merged_L??????_polrot.h5 .
+cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/dd_solutions/mergedsolutions/merged_L??????.h5 .
+cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/dd_solutions/facets_1.2.reg .
 
-LISTMS=(/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/*L68*.ms)
-H5S=(*L68*.h5)
+LISTMS=(/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/*.ms)
+H5S=(*.h5)
 
 #make facets based on merged h5
 singularity exec -B ${SING_BIND} ${SIMG} python \
@@ -29,10 +30,10 @@ ${SCRIPT_DIR}/split_facets.py \
 --extra_boundary 0.1
 
 # give night names
-COUNT=$( ls -1d poly_*.reg | wc -l )
-for ((i=1;i<=COUNT;i++)); do
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_1.2.sh $i L686962
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_1.2.sh $i L769393
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_1.2.sh $i L798074
-  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_1.2.sh $i L816272
-done
+#COUNT=$( ls -1d poly_*.reg | wc -l )
+#for ((i=1;i<=COUNT;i++)); do
+#  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_1.2.sh $i L686962
+#  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_1.2.sh $i L769393
+#  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_1.2.sh $i L798074
+#  sbatch ${SCRIPT_DIR}/subtract_perfacet_pernight_persb_1.2.sh $i L816272
+#done

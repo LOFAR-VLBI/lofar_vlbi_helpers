@@ -141,4 +141,6 @@ if __name__=='__main__':
     divide_size = get_largest_divider(channum, facet_avg)
     imsize = int((fullpixsize//divide_size)*1.15)
 
+    #TODO: ADD PREAPPLY OF POLROT
+
     make_wsclean_cmd(imsize, pixelscale, 'facet_'+str(args.facet), taper, args.ms, args.tmpdir)

@@ -11,7 +11,6 @@ Example run:
 python selfcal_selection.py --dirs <YOUR_DIRECTIONS>
 """
 
-
 import numpy as np
 from astropy.io import fits
 import matplotlib.pyplot as plt
@@ -20,7 +19,6 @@ import re
 import csv
 import argparse
 from scipy.stats import linregress
-import pandas as pd
 
 plt.style.use('ggplot')
 plt.rcParams['axes.facecolor']='w'
@@ -78,13 +76,20 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    if args.dirs is None:
+        dirfolders = glob('P?????')
+    else:
+        dirfolders = args.dirs
+
     g = open('selfcal_performance.csv', 'w')
     writer_all = csv.writer(g)
     writer_all.writerow(['source', 'rms_slope', 'minmax_slope', 'best_cycle', 'accept'])
 
-    for dirpath in args.dirs:
+    for dirpath in dirfolders:
 
         fitsfiles = sorted(glob(dirpath+"/*MFS-I-image.fits"))
+        if len(fitsfiles)==0:
+            fitsfiles = sorted(glob(dirpath + "/*MFS-image.fits"))
         dirname = dirpath.split('/')[-1]
 
         f = open('selfcal_performance_'+dirname+'.csv', 'w')
