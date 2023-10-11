@@ -8,7 +8,6 @@ SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facet
 
 echo "COPY SOLUTION FILES"
 cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/dd_solutions/merged_L??????.h5 . #TODO: pol?
-cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/dd_solutions/facets_0.6.reg .
 
 LISTMS=(/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/*L68*.ms)
 H5S=(*L68*.h5)
