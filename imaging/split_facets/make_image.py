@@ -17,7 +17,7 @@ def get_largest_divider(inp, max=1000):
         if inp % r == 0:
             return r
 
-def make_wsclean_cmd(imsize, scale, name, taper, ms, tmpdir):
+def make_wsclean_cmd(imsize, scale, name, taper, tmpdir):
     """
     Make wsclean commando
 
@@ -49,9 +49,7 @@ f"""#!/bin/bash
         cmd += \
 f"""OUTPUT=$PWD
 cp {simg} $TMPDIR
-for MS in {' '.join(ms)}; do
-    cp -r $MS $TMPDIR
-done
+cp -r applycal_*.ms $TMPDIR
 cd $TMPDIR
 
 """
@@ -111,7 +109,7 @@ if __name__=='__main__':
     parser.add_argument('--resolution', help='resolution in arcsecond', required=True, type=float)
     parser.add_argument('--facet', help='facet_number (polygon number)', required=True, type=int)
     parser.add_argument('--facet_info', help='polygon_info.csv', required=True)
-    parser.add_argument('--ms', help='measurement set(s)', required=True,  nargs='+')
+    # parser.add_argument('--ms', help='measurement set(s)', required=True,  nargs='+')
     parser.add_argument('--tmpdir', action='store_true', help='use tmpdir',
                         default=False)
     args = parser.parse_args()
@@ -143,6 +141,4 @@ if __name__=='__main__':
 
     imsize = int((fullpixsize//facet_avg)*1.15)
 
-    #TODO: ADD PREAPPLY OF POLROT
-
-    make_wsclean_cmd(imsize, pixelscale, 'facet_'+str(args.facet), taper, args.ms, args.tmpdir)
+    make_wsclean_cmd(imsize, pixelscale, 'facet_'+str(args.facet), taper, args.tmpdir)
