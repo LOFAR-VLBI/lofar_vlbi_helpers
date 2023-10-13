@@ -13,4 +13,4 @@ singularity exec -B $BIND $SIMG \
 python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/applycal/applycal.py \
 --msin *$P*.ms \
 --h5 ${H5} \
---msout concat.ms
+--msout concat_$P.ms
