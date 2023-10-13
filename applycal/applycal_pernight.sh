@@ -9,7 +9,7 @@ SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 BIND=$( python3 $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 
-pattern="/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/*${P}*.ms"
+pattern="*${P}*.ms"
 MS_FILES=( $pattern )
 MS=${MS_FILES[${SLURM_ARRAY_TASK_ID}]}
 
