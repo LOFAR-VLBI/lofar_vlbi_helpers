@@ -133,13 +133,15 @@ if __name__=='__main__':
     facet_avg = facet.avg
 
     # number of channels
-    t = ct.table(args.ms[0]+"::SPECTRAL_WINDOW")
-    channum = len(t.getcol("CHAN_FREQ")[0])
-    t.close()
+    # t = ct.table(args.ms[0]+"::SPECTRAL_WINDOW")
+    # channum = len(t.getcol("CHAN_FREQ")[0])
+    # t.close()
 
     # factor to divide full size by
-    divide_size = get_largest_divider(channum, facet_avg)
-    imsize = int((fullpixsize//divide_size)*1.15)
+    # divide_size = get_largest_divider(channum, facet_avg)
+    # imsize = int((fullpixsize//divide_size)*1.15)
+
+    imsize = int((fullpixsize//facet_avg)*1.15)
 
     #TODO: ADD PREAPPLY OF POLROT
 
