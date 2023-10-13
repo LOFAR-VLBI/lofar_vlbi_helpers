@@ -5,7 +5,7 @@ from numpy import pi
 import sys
 
 class ApplyCal:
-    def __init__(self, msin: list = None, h5: str = None, msincol: str ="DATA", msoutcol: str ="CORRECTED_DATA", msout: str ='.', dysco: bool = True):
+    def __init__(self, msin: str = None, h5: str = None, msincol: str ="DATA", msoutcol: str ="CORRECTED_DATA", msout: str ='.', dysco: bool = True):
         """
         Apply calibration solutions
 
@@ -20,7 +20,7 @@ class ApplyCal:
         if len(msin)>1 and msout=='.':
             sys.exit("ERROR: --msout necessary and unequal to '.' if more than one --msin")
 
-        self.cmd = ['DP3', 'msin=' + str(msin).replace(' ','')]
+        self.cmd = ['DP3', 'msin=' + msin]
         self.cmd += ['msout=' + msout]
         self.cmd += ['msin.datacolumn=' + msincol]
         if msout == '.':
@@ -98,6 +98,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
 
-    Ac = ApplyCal(msin=args.msin, h5=args.h5, msincol=args.colin, msoutcol=args.colout, msout=args.msout)
+    if len(args.msin)==1:
+        Ac = ApplyCal(msin=args.msin[0], h5=args.h5, msincol=args.colin, msoutcol=args.colout, msout=args.msout)
+    else:
+        for ms in args.msin:
+            Ac = ApplyCal(msin=ms, h5=args.h5, msincol=args.colin, msoutcol=args.colout, msout='applycal_'+ms)
     Ac.print_cmd()
     Ac.run()
+
