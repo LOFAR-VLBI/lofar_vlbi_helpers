@@ -5,11 +5,10 @@ import pandas as pd
 import casacore.tables as ct
 import numpy as np
 
-ELAIS=True
 polarization=False
 lowres=True
 
-def make_selfcal_script(solint, ms):
+def make_selfcal_script(solint, ms, preapply):
     """
 
     :param solint: solution interval in minutes
@@ -28,6 +27,9 @@ def make_selfcal_script(solint, ms):
 
     solint_scalarphase = min(max(deltime/60, round(solint/2, 3)), 30.) # solint in minutes
     solint_complexgain = max(15., 15*solint)
+    if preapply:
+        solint_complexgain *= 5
+        solint_scalarphase *= 5
     cg_cycle = 3
 
     if solint_complexgain/60 > 4:
@@ -35,19 +37,16 @@ def make_selfcal_script(solint, ms):
     elif solint_complexgain/60 > 3:
         solint_complexgain = 240.
 
+    if solint<1:
+        smoothness_complex = 5.0
+    else:
+        smoothness_complex = 10.0
+
     print("solint scalarphase: "+str(solint_scalarphase)+" minutes")
     print("solint complexgain: "+str(solint_complexgain)+" minutes")
     if cg_cycle == 999:
         print("solint complexgain: Over 3 hours --> REMOVED")
 
-    if ELAIS: #TODO: Replace with distance from phase center function
-        for P in ['P20075', 'P16883', 'P17010', 'P17565', 'P19951', 'P23167', 'P48367', 'P57108',
-                  'P50716', 'P50735', 'P58902', 'P54920', 'P53426', 'P50892', 'P46921', 'P40952',
-                  'P31933', 'P27648', 'P23872']:
-            if P in ms:
-                flagtimesmeared = '--flagtimesmeared '
-            else:
-                flagtimesmeared=''
     else:
         flagtimesmeared = ''
 
@@ -60,6 +59,7 @@ def make_selfcal_script(solint, ms):
         lr=" --makeimage-ILTlowres-HBA "
     else:
         lr=''
+
 
 
     script=f"""#!/bin/bash
@@ -84,20 +84,21 @@ python $lofar_facet_selfcal \\
 --useaoflagger \\
 --autofrequencyaverage \\
 --update-multiscale \\
---soltypecycles-list="[0,{cg_cycle}]" \\
---soltype-list="['scalarphase','scalarcomplexgain']" \\
---smoothnessconstraint-list="[10.0,5.0]" \\
---smoothnessreffrequency-list="[120.0,0.0]" \\
---smoothnessspectralexponent-list="[-1.0,-1.0]" \\
---smoothnessrefdistance-list="[0.0,0.0]" \\
---solint-list="['{int(solint_scalarphase*60)}s','{int(solint_complexgain*60)}s']" \\
+--soltypecycles-list="[0,0,{cg_cycle}]" \\
+--soltype-list="['scalarphase','scalarphase','scalarcomplexgain']" \\
+--smoothnessconstraint-list="[15.0,40.0,{smoothness_complex}]" \\
+--smoothnessreffrequency-list="[120.0,120.0,0.0]" \\
+--smoothnessspectralexponent-list="[-1.0,-1.0,-1.0]" \\
+--solint-list="['{int(solint_scalarphase*60)}s','{int(2*solint_scalarphase*60)}s','{int(solint_complexgain*60)}s']" \\
 --uvmin=20000 \\
 --imsize=2048 \\
+--resetsols-list="['alldutch',None,None]" \\
 --paralleldeconvolution=1024 \\
 --targetcalILT='scalarphase' \\
 --stop=12 \\
+--flagtimesmeared \\
 --helperscriptspath=/project/lofarvwf/Software/lofar_facet_selfcal \\
---helperscriptspathh5merge=/project/lofarvwf/Software/lofar_helpers {flagtimesmeared}{pol}{lr}\\
+--helperscriptspathh5merge=/project/lofarvwf/Software/lofar_helpers {pol}{lr}\\
 *.ms
 """
 
@@ -119,7 +120,7 @@ if __name__ == "__main__":
     for d in directions:
 
         solint = phasediff[phasediff['source'].str.contains(d)].best_solint.min()
-        make_selfcal_script(solint, glob("*L??????_P?????.ms")[0])
+        make_selfcal_script(solint, glob("*L??????_P?????.ms")[0], True)
 
         print(d)
         tasks = ['mkdir -p '+d,

@@ -1,11 +1,11 @@
-from multiprocessing import cpu_count
 import tables
 from subprocess import call
 from argparse import ArgumentParser
 from numpy import pi
+import sys
 
 class ApplyCal:
-    def __init__(self, msin: str = None, h5: str = None, msincol: str ="DATA", msoutcol: str ="CORRECTED_DATA", msout: str ='.', dysco: bool = True):
+    def __init__(self, msin: list = None, h5: str = None, msincol: str ="DATA", msoutcol: str ="CORRECTED_DATA", msout: str ='.', dysco: bool = True):
         """
         Apply calibration solutions
 
@@ -17,7 +17,10 @@ class ApplyCal:
         :param dysco: compress with dysco
         """
 
-        self.cmd = ['DP3', 'msin=' + msin]
+        if len(msin)>1 and msout=='.':
+            sys.exit("ERROR: --msout necessary and unequal to '.' if more than one --msin")
+
+        self.cmd = ['DP3', 'msin=' + str(msin).replace(' ','')]
         self.cmd += ['msout=' + msout]
         self.cmd += ['msin.datacolumn=' + msincol]
         if msout == '.':
@@ -87,12 +90,13 @@ class ApplyCal:
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='Applycal on MS with H5')
-    parser.add_argument('--msin', type=str, help='input measurement set', required=True)
+    parser.add_argument('--msin',  nargs='+', type=str, help='input measurement set', required=True)
     parser.add_argument('--msout', type=str, default='.', help='output measurement set')
     parser.add_argument('--h5', type=str, help='h5 calibration', required=True)
     parser.add_argument('--colin', type=str, default='DATA', help='input column name')
     parser.add_argument('--colout', type=str, default=None, help='output column name')
     args = parser.parse_args()
+
 
     Ac = ApplyCal(msin=args.msin, h5=args.h5, msincol=args.colin, msoutcol=args.colout, msout=args.msout)
     Ac.print_cmd()

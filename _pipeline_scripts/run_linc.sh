@@ -27,7 +27,7 @@ SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
 echo "Run LINC calibrator from $SCRIPT_DIR on Data in $STARTDIR/calibrator"
 cd calibrator
-singularity exec -B ${SING_BIND} ${SIMG} $PWD/run_LINC_calibrator_new.sh -d $STARTDIR/calibrator/Data
+singularity exec -B ${SING_BIND} ${SIMG} run_LINC_calibrator.sh -d $STARTDIR/calibrator/Data
 mv tmp.* linc_calibrator_output
 cd ../
 
