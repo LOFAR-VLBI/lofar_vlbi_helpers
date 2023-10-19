@@ -37,11 +37,11 @@ def findrms(mIn,maskSup=1e-7):
 
 cmap = 'RdBu_r'
 
-for source in glob('/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/ddcal/allselfcals/P?????'):
+for source in glob('/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/new_ddcal/allselfcals/P*'):
 
     print(source)
 
-    fitsfiles = sorted(glob(source+'/selfcal_fullpol???-MFS-I-image.fits'))
+    fitsfiles = sorted(glob(source+'/selfcal_fullpol???-MFS-I-image.fits')+glob(source+'/selfcal_???-MFS-image.fits'))
 
 
 
