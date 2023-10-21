@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 import casacore.tables as ct
 import os
 import sys
+import random
 
 def get_largest_divider(inp, max=1000):
     """
@@ -36,21 +37,24 @@ def make_wsclean_cmd(imsize, scale, name, taper, tmpdir):
     paths = ScriptPaths()
     simg = paths.SIMG
 
+
     cmd = \
 f"""#!/bin/bash
-#SBATCH -c 15
+#SBATCH -c 30
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --job-name=imaging_facet
+#SBATCH -p infinite
 
 """
 
     if tmpdir:
         cmd += \
 f"""OUTPUT=$PWD
-cp {simg} $TMPDIR
-cp -r applycal_*.ms $TMPDIR
-cd $TMPDIR
+RUNDIR=$TMPDIR/{str(random.getrandbits(20))}
+cp {simg} $RUNDIR
+cp -r sub*.ms $RUNDIR
+cd $RUNDIR
 
 """
 
