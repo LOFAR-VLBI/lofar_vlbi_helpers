@@ -26,7 +26,7 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 ~/scripts/lofar_vlbi_helpers/imaging/split_facets/make_image.py \
 --resolution 0.3 \
 --facet $facetnum \
---facet_info ../../polygon_info.csv
+--facet_info ../../polygon_info.csv \
 --tmpdir
 
 sbatch --dependency=afterok:${jobid1}:${jobid2}:${jobid3}:${jobid4} wsclean.cmd

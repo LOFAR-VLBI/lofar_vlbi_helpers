@@ -9,14 +9,14 @@ SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facet
 FACETNUMBER=$1
 
 echo "COPY SOLUTION FILES"
-cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/dd_solutions/merged_L??????_polrot.h5 .
+cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/dd_solutions/mergedsolutions/merged_L??????.h5 .
 mkdir -p solutions
-cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/ddcal/allselfcals/P?????/merged_addCS_selfcalcyle011_*phaseup.h5 solutions
+cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/dd_solutions/solutions/*.h5 solutions
 
 echo "COPY SKYMODELS"
-cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/ddcal/allselfcals/skymodels .
+cp -r /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/new_ddcal/allselfcals/skymodels .
 
-LISTMS=(/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/*.ms)
+LISTMS=(/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/flag*.ms)
 H5S=(*.h5)
 
 #make facets based on merged h5

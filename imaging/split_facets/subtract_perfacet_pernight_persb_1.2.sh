@@ -38,7 +38,7 @@ cp /project/lofarvwf/Software/lofar_helpers/subtract/subtract_with_wsclean.py ${
 
 cd ${RUNFOLDER}
 
-#subtract ms with wsclean for each facet
+#subtract ms with wsclean for each facet TODO: removed the --applycal
 singularity exec -B $PWD ${SIMG##*/} python \
 subtract_with_wsclean.py \
 --mslist ${SB##*/} \
@@ -46,8 +46,8 @@ subtract_with_wsclean.py \
 --model_image_folder $PWD \
 --facets_predict facets_1.2.reg \
 --h5parm_predict merged_${NIGHT}.h5 \
---applycal \
 --applybeam \
+--applycal \
 --forwidefield
 
 mv sub*${NIGHT}*.ms ${IMAGINGFOLDER}

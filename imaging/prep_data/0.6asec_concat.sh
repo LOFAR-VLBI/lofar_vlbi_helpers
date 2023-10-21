@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 20
+#SBATCH -c 10
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --job-name=prep_0.6
@@ -17,7 +17,7 @@ cd ${OUT_DIR}
 
 singularity exec -B $SING_BIND $SIMG python \
 /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/check_missing_freqs_in_ms.py \
---ms /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/applycal*${NIGHT}*.ms \
+--ms avg0.6*${NIGHT}*.ms \
 --make_dummies --output_name ${NIGHT}_list.txt
 
 MS_VECTOR=[$(cat  ${NIGHT}_list.txt |tr "\n" ",")]
@@ -27,15 +27,12 @@ echo "Start concat..."
 #Averaging
 singularity exec -B ${SING_BIND} ${SIMG} DP3 \
 msin=${MS_VECTOR} \
-msout=concat_${NIGHT} \
+msout=concat_${NIGHT}.ms \
 msin.datacolumn=DATA \
 msout.storagemanager=dysco \
 msout.writefullresflag=False \
 msin.orderms=False \
 msin.missingdata=True \
-steps=[avg] \
-avg.type=averager \
-avg.freqstep=2 \
-avg.timeresolution=2
+steps=[]
 
 echo "...Finished concat"

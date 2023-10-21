@@ -65,14 +65,14 @@ singularity exec -B $PWD {simg.split('/')[-1]} wsclean \\
 -reorder \\
 -weight briggs -1.5 \\
 -parallel-reordering 6 \\
--mgain 0.65 \\
+-mgain 0.75 \\
 -data-column DATA \\
--auto-mask 3 \\
+-auto-mask 2.5 \\
 -auto-threshold 1.0 \\
 -pol i \\
 -name {name} \\
 -scale {scale}arcsec \\
--niter 150000 \\
+-niter 500000 \\
 -log-time \\
 -multiscale-scale-bias 0.6 \\
 -parallel-deconvolution 2600 \\
@@ -83,10 +83,10 @@ singularity exec -B $PWD {simg.split('/')[-1]} wsclean \\
 -channels-out 6 \\
 -join-channels \\
 -fit-spectral-pol 3 \\
--deconvolution-channels 3 -local-rms -local-rms-window 50 \\"""
+-local-rms -local-rms-window 50 \\"""
 
     if taper is not None:
-        cmd += f'\ntaper-gaussian {taper} \\'
+        cmd += f'\n-taper-gaussian {taper} \\'
 
     cmd += f"\n*.ms\n"
 
@@ -115,8 +115,8 @@ if __name__=='__main__':
     args = parser.parse_args()
 
     if args.resolution==0.3:
-        taper = None
-        pixelscale = 0.07 #arcsec
+        taper = '0.3asec'
+        pixelscale = 0.1 #arcsec
     elif args.resolution==1.2:
         taper = '1.2asec'
         pixelscale = 0.4

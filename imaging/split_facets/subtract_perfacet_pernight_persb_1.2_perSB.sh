@@ -23,30 +23,31 @@ mkdir -p ${IMAGINGFOLDER}
 mkdir -p ${OUTPUTFOLDER}
 mkdir -p ${RUNFOLDER}
 
-pattern="/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/apply*${NIGHT}*.ms"
+pattern="/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/flagged*${NIGHT}*.ms"
 MS_FILES=( $pattern )
 SB=${MS_FILES[${SLURM_ARRAY_TASK_ID}]}
 
 cp -r ${SB} ${RUNFOLDER}
 cp poly_${FACETID}.reg ${RUNFOLDER}
 cp facets_1.2.reg ${RUNFOLDER}
-cp merged_${NIGHT}_polrot.h5 ${RUNFOLDER}
+cp merged_${NIGHT}.h5 ${RUNFOLDER}
 cp polygon_info.csv ${RUNFOLDER}
 cp $SIMG ${RUNFOLDER}
 cp /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/modelimages/${NIGHT}/*.fits ${RUNFOLDER}
+cp /project/lofarvwf/Software/lofar_helpers/subtract/subtract_with_wsclean.py ${RUNFOLDER}
 
 cd ${RUNFOLDER}
 
-#subtract ms with wsclean for each facet
+#subtract ms with wsclean for each facet TODO: removed the --applycal
 singularity exec -B $PWD ${SIMG##*/} python \
-/project/lofarvwf/Software/lofar_helpers/subtract/subtract_with_wsclean.py \
+subtract_with_wsclean.py \
 --mslist ${SB##*/} \
 --region poly_${FACETID}.reg \
 --model_image_folder $PWD \
 --facets_predict facets_1.2.reg \
---h5parm_predict merged_${NIGHT}_polrot.h5 \
---applycal \
+--h5parm_predict merged_${NIGHT}.h5 \
 --applybeam \
+--applycal \
 --forwidefield
 
 mv sub*${NIGHT}*.ms ${IMAGINGFOLDER}
