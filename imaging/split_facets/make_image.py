@@ -51,7 +51,8 @@ f"""#!/bin/bash
     if tmpdir:
         cmd += \
 f"""OUTPUT=$PWD
-RUNDIR=$TMPDIR/{str(random.getrandbits(20))}
+RUNDIR=$TMPDIR/DIR{str(random.getrandbits(20))}
+mkdir -p $RUNDIR
 cp {simg} $RUNDIR
 cp -r sub*.ms $RUNDIR
 cd $RUNDIR

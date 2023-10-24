@@ -23,7 +23,7 @@ mkdir -p ${IMAGINGFOLDER}
 mkdir -p ${OUTPUTFOLDER}
 mkdir -p ${RUNFOLDER}
 
-pattern="/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/flagged*${NIGHT}*.ms"
+pattern="/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/phaseshift*${NIGHT}*.ms"
 MS_FILES=( $pattern )
 SB=${MS_FILES[${SLURM_ARRAY_TASK_ID}]}
 
