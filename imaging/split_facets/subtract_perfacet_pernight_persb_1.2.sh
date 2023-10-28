@@ -25,7 +25,7 @@ mkdir -p ${RUNFOLDER}
 
 if (( $SLURM_ARRAY_TASK_ID == 1 ))
 then
-  python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets/make_image.py \
+  singularity exec -B $PWD python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets/make_image.py \
   --resolution 0.3 \
   --facet $FACETID \
   --facet_info polygon_info.csv \
