@@ -25,7 +25,7 @@ mkdir -p ${RUNFOLDER}
 
 if (( $SLURM_ARRAY_TASK_ID == 1 ))
 then
-  singularity exec -B $PWD python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets/make_image.py \
+  singularity exec -B $SING_BIND $SIMG python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets/make_image.py \
   --resolution 0.3 \
   --facet $FACETID \
   --facet_info polygon_info.csv \
@@ -51,7 +51,7 @@ cp /project/lofarvwf/Software/lofar_helpers/subtract/subtract_with_wsclean.py ${
 
 cd ${RUNFOLDER}
 
-#subtract ms with wsclean for each facet TODO: removed the --applycal
+#subtract ms with wsclean for each facet
 singularity exec -B $PWD ${SIMG##*/} python \
 subtract_with_wsclean.py \
 --mslist ${SB##*/} \
