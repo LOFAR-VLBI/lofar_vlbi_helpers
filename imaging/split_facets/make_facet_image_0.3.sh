@@ -21,7 +21,6 @@ jobid2=${jobstring2##* }
 jobid3=${jobstring3##* }
 jobid4=${jobstring4##* }
 
-
 singularity exec -B ${SING_BIND} ${SIMG} python \
 ~/scripts/lofar_vlbi_helpers/imaging/split_facets/make_image.py \
 --resolution 0.3 \

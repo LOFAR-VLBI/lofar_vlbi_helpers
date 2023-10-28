@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH -c 8
-#SBATCH -t 72:00:00
+#SBATCH -c 60
+#SBATCH -p infinite
 #SBATCH --output=runlinc_%j.out
 #SBATCH --error=runlinc_%j.err
 

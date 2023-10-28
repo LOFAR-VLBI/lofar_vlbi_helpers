@@ -102,7 +102,7 @@ singularity exec -B $PWD {simg.split('/')[-1]} wsclean \\
 cp *.fits $OUTPUT
 """
 
-    f = open("wsclean.cmd", "w")
+    f = open(f"wsclean_facet{args.facet}.cmd", "w")
     f.write(cmd)
     f.close()
 

@@ -23,6 +23,19 @@ mkdir -p ${IMAGINGFOLDER}
 mkdir -p ${OUTPUTFOLDER}
 mkdir -p ${RUNFOLDER}
 
+if (( $SLURM_ARRAY_TASK_ID == 1 ))
+then
+  python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets/make_image.py \
+  --resolution 0.3 \
+  --facet $FACETID \
+  --facet_info polygon_info.csv \
+  --tmpdir
+
+  cp wsclean_facet${FACETID}.cmd ${IMAGINGFOLDER}
+  cp poly_${FACETID}.reg ${IMAGINGFOLDER}
+
+fi
+
 pattern="/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/apply_delaycal/phaseshift*${NIGHT}*.ms"
 MS_FILES=( $pattern )
 SB=${MS_FILES[${SLURM_ARRAY_TASK_ID}]}
