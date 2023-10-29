@@ -97,7 +97,7 @@ if __name__=='__main__':
 
     if resolution == 0.3:
         taper = None
-        pixelscale = 0.07  # arcsec
+        pixelscale = 0.1  # arcsec
     elif resolution == 1.2:
         taper = '1.2asec'
         pixelscale = 0.4
