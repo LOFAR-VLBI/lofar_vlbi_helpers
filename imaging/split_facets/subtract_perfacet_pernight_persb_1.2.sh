@@ -61,8 +61,7 @@ subtract_with_wsclean.py \
 --h5parm_predict merged_${NIGHT}.h5 \
 --applybeam \
 --applycal \
---forwidefield \
---even_time_avg
+--forwidefield
 
 mv sub*${NIGHT}*.ms ${IMAGINGFOLDER}
 

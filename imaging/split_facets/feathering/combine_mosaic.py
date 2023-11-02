@@ -16,6 +16,7 @@ from auxcodes import flatten
 from astropy.coordinates import SkyCoord
 from shapely import geometry
 
+
 def make_header(fitsfile):
     hdu = fits.open(fitsfile)
     himsize = fullpixsize // 2
@@ -49,6 +50,7 @@ def make_header(fitsfile):
     header['OBJECT'] = 'ELAIS-N1'
     return header
 
+
 def get_polygon_center(regionfile):
     """
     get polygon center
@@ -58,7 +60,10 @@ def get_polygon_center(regionfile):
     regionfile = open(regionfile, 'r')
     lines = regionfile.readlines()
     regionfile.close()
-    polygon = lines[4]
+    try:
+        polygon = lines[4]
+    except IndexError:
+        polygon = lines[3]
     polyp = [float(p) for p in polygon.replace('polygon(', '').replace(')', '').replace('\n', '').split(',')]
     poly_geo = geometry.Polygon(tuple(zip(polyp[0::2], polyp[1::2])))
     return SkyCoord(f'{poly_geo.centroid.x}deg', f'{poly_geo.centroid.y}deg', frame='icrs')
@@ -73,7 +78,8 @@ def get_array_coordinates(pix_array, wcsheader):
     :return:
     """
     pixarray = np.argwhere(pix_array)
-    return wcsheader.pixel_to_world(pixarray[:, 0], pixarray[:, 1],0,0)[0]
+    return wcsheader.pixel_to_world(pixarray[:, 0], pixarray[:, 1], 0, 0)[0]
+
 
 def get_distance_weights(center, coord_array):
     """
@@ -83,10 +89,10 @@ def get_distance_weights(center, coord_array):
     :param coord_array: coordinates field
     :return:
     """
-    return 1/center.separation(coord_array).value
+    return 1 / center.separation(coord_array).value
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     parser = ArgumentParser(description='make wide-field')
     parser.add_argument('--resolution', help='resolution in arcsecond', required=True, type=float)
     parser.add_argument('--facets', type=str, nargs='+', help='facets to merge')
@@ -125,10 +131,8 @@ if __name__=='__main__':
 
         imagedata, _ = reproject_interp_chunk_2d(hduflatten, header_new, hdu_in=0, parallel=False)
 
-        reg = 'poly_'+f.split('-')[0].split('_')[-1]+'.reg'
-
+        reg = 'poly_' + f.split('-')[0].split('_')[-1] + '.reg'
         polycenter = get_polygon_center(reg)
-
         r = pyregion.open(reg).as_imagecoord(header=header_new)
         mask = r.get_mask(hdu=hdu[0], shape=(header_new["NAXIS1"], header_new["NAXIS2"])).astype(int)
 
