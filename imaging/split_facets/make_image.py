@@ -61,7 +61,7 @@ cd $RUNDIR
 
     cmd+= \
 f"""
-singularity exec -B $PWD {simg.split('/')[-1]} wsclean \\
+singularity exec -B {os.getcwd()},$PWD {simg.split('/')[-1]} wsclean \\
 -gridder wgridder \\
 -no-update-model-required \\
 -minuv-l 80.0 \\
