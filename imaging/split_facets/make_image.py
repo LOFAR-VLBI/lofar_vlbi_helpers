@@ -45,6 +45,7 @@ f"""#!/bin/bash
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --job-name=imaging_facet
 #SBATCH -p infinite
+#SBATCH --job-name={name}
 
 """
 
