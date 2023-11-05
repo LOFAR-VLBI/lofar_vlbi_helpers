@@ -70,7 +70,7 @@ singularity exec -B {os.getcwd()},$PWD {simg.split('/')[-1]} wsclean \\
 -weighting-rank-filter 3 \\
 -reorder \\
 -weight briggs -1.5 \\
--parallel-reordering 6 \\
+-parallel-reordering 4 \\
 -mgain 0.75 \\
 -data-column DATA \\
 -auto-mask 2.5 \\
@@ -85,7 +85,7 @@ singularity exec -B {os.getcwd()},$PWD {simg.split('/')[-1]} wsclean \\
 -multiscale \\
 -multiscale-max-scales 9 \\
 -nmiter 9 \\
--parallel-gridding 6 \\
+-parallel-gridding 4 \\
 -channels-out 6 \\
 -join-channels \\
 -fit-spectral-pol 3 \\
