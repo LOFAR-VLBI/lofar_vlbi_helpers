@@ -1,16 +1,3 @@
-"""
-Script used to select selfcals after running facetselfcal.py
-This script is complementary to the phasediff selection.
-
-The right order to select directions for widefield imaging is:
-1) Run phasediff pre-selection
-2) Run facetselfcal on all selected directions
-3) Run this script to do a final selection based on the facetselfcal output
-
-Example run:
-python selfcal_selection.py --dirs <YOUR_DIRECTIONS>
-"""
-
 import numpy as np
 from astropy.io import fits
 import matplotlib.pyplot as plt
@@ -20,8 +7,7 @@ import csv
 import argparse
 from scipy.stats import linregress
 
-plt.style.use('ggplot')
-plt.rcParams['axes.facecolor']='w'
+plt.style.use('seaborn-paper')
 
 def get_rms(fitsfile, maskSup=1e-7):
     """
@@ -126,10 +112,12 @@ if __name__ == '__main__':
 
         ax1.grid(False)
         ax1.grid('off')
+        ax1.grid(None)
         ax2.grid(False)
         ax2.grid('off')
+        ax2.grid(None)
         fig.tight_layout()
-        plt.savefig('selfcal_performance_'+dirname+'.png', dpi=300)
+        plt.savefig('image_stability_'+dirname+'.png', dpi=300)
 
         # SCORING
         best_rms_cycle, best_minmax_cycle = np.array(rmss[1:]).argmin()+1, np.array(minmaxs[1:]).argmin()+1
