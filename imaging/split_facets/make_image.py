@@ -18,7 +18,7 @@ def get_largest_divider(inp, max=1000):
         if inp % r == 0:
             return r
 
-def make_wsclean_cmd(imsize, scale, name, taper, tmpdir):
+def make_wsclean_cmd(imsize, scale, name, taper, tmpdir, avg):
     """
     Make wsclean commando
 
@@ -27,6 +27,7 @@ def make_wsclean_cmd(imsize, scale, name, taper, tmpdir):
     :param name: name prefix
     :param ms: list with measurement sets
     :param tmpdir: use scratch
+    :param avg: averaging factor
 
     :return:
     """
@@ -41,7 +42,7 @@ def make_wsclean_cmd(imsize, scale, name, taper, tmpdir):
     cmd = \
 f"""#!/bin/bash
 #SBATCH -c 30
-#SBATCH --mail-type=FAIL
+#SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --job-name=imaging_facet
 #SBATCH -p infinite
@@ -50,7 +51,8 @@ f"""#!/bin/bash
 """
 
     if tmpdir:
-        cmd += \
+        if avg > 3:
+            cmd += \
 f"""OUTPUT=$PWD
 RUNDIR=$TMPDIR/DIR{str(random.getrandbits(20))}
 mkdir -p $RUNDIR
@@ -59,7 +61,15 @@ cp -r sub*.ms $RUNDIR
 cd $RUNDIR
 
 """
+        else:
+            cmd += \
+                f"""OUTPUT=$PWD
+            RUNDIR=$TMPDIR/DIR{str(random.getrandbits(20))}
+            mkdir -p $RUNDIR
+            cp {simg} $RUNDIR
+            cd $RUNDIR
 
+            """
     cmd+= \
 f"""
 singularity exec -B {os.getcwd()},$PWD {simg.split('/')[-1]} wsclean \\
@@ -93,8 +103,10 @@ singularity exec -B {os.getcwd()},$PWD {simg.split('/')[-1]} wsclean \\
 
     if taper is not None:
         cmd += f'\n-taper-gaussian {taper} \\'
-
-    cmd += f"\n*.ms\n"
+    if avg>3:
+        cmd += f"\n*.ms\n"
+    else:
+        cmd += f"\n{os.getcwd()}/{name}/imaging/*.ms"
 
     if tmpdir:
         cmd+= \
@@ -147,4 +159,4 @@ if __name__=='__main__':
 
     imsize = int((fullpixsize//(facet_avg-1))*1.15)
 
-    make_wsclean_cmd(imsize, pixelscale, 'facet_'+str(args.facet), taper, args.tmpdir)
+    make_wsclean_cmd(imsize, pixelscale, 'facet_'+str(args.facet), taper, args.tmpdir, facet_avg)
