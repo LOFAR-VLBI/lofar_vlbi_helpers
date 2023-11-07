@@ -180,5 +180,6 @@ if __name__ == '__main__':
         plotname = f'selfcal_stability_{source.split("_")[-1]}.png'
     finalphase = np.mean(total_phase_scores, axis=0)
     finalamp = np.mean(total_amp_scores, axis=0)
-    print(linreg_slope(finalphase), linreg_slope(finalamp[4:]))
+    if len(finalphase)>3:
+        print(linreg_slope(finalphase[:3]), linreg_slope(finalphase[-3:]), linreg_slope(finalamp[-3:]))
     make_figure(finalphase, finalamp, plotname)

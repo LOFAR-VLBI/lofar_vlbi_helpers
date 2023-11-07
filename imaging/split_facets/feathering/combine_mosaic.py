@@ -129,7 +129,7 @@ if __name__ == '__main__':
         hduflatten = flatten(hdu)
         wcsheader = WCS(hdu[0].header)
 
-        imagedata, _ = reproject_interp_chunk_2d(hduflatten, header_new, hdu_in=0, parallel=False)
+        imagedata, _ = reproject_interp_chunk_2d(hduflatten, header_new, hdu_in=np.nan, parallel=False)
 
         reg = 'poly_' + f.split('-')[0].split('_')[-1] + '.reg'
         polycenter = get_polygon_center(reg)
@@ -138,7 +138,7 @@ if __name__ == '__main__':
 
         fullmask |= ~np.isnan(imagedata)
         coordinates = get_array_coordinates(imagedata, wcsheader)
-        facetweight = get_distance_weights(polycenter, coordinates).reshape(imagedata.shape)*mask
+        facetweight = get_distance_weights(polycenter, coordinates).reshape(imagedata.shape) * mask
         facetweight[np.isnan(facetweight)] = 0  # so we can add
         imagedata *= facetweight
         imagedata[np.isnan(imagedata)] = 0  # so we can add

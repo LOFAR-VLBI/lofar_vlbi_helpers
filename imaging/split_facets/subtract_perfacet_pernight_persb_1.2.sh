@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 15
+#SBATCH -c 10
 #SBATCH --job-name=subtract
 #SBATCH --array=0-24
 #SBATCH --mail-type=FAIL
