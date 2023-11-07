@@ -4,7 +4,7 @@
 #SBATCH --array=0-24
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
-#SBATCH -t 60:00:00
+#SBATCH -t 96:00:00
 
 FACETID=$1
 NIGHT=$2
