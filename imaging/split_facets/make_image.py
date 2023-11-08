@@ -45,8 +45,15 @@ f"""#!/bin/bash
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --job-name=imaging_facet
-#SBATCH -p infinite
 #SBATCH --job-name={name}
+"""
+    if avg <= 3:
+        cmd += \
+"""
+#SBATCH -p infinite
+"""
+    cmd+=\
+"""
 
 """
 
