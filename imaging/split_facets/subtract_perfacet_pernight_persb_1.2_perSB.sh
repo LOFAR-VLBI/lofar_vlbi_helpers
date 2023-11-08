@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH -c 6
+#SBATCH -c 8
 #SBATCH --job-name=subtract
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
-#SBATCH -t 96:00:00
+#SBATCH -t 72:00:00
 
 FACETID=$1
 NIGHT=$2
