@@ -5,6 +5,7 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH -t 72:00:00
+#SBATCH --constraint=rome
 
 FACETID=$1
 NIGHT=$2

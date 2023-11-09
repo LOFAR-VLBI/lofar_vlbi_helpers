@@ -46,6 +46,7 @@ f"""#!/bin/bash
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --job-name=imaging_facet
 #SBATCH --job-name={name}
+#SBATCH --constraint=rome
 """
     if avg <= 3:
         cmd += \
