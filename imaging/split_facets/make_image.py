@@ -49,9 +49,7 @@ f"""#!/bin/bash
 #SBATCH --constraint=rome
 """
     if avg <= 3:
-        cmd += \
-"""
-#SBATCH -p infinite
+        cmd += """#SBATCH -p infinite
 """
     cmd+=\
 """
@@ -71,13 +69,13 @@ cd $RUNDIR
 """
         else:
             cmd += \
-                f"""OUTPUT=$PWD
-            RUNDIR=$TMPDIR/DIR{str(random.getrandbits(20))}
-            mkdir -p $RUNDIR
-            cp {simg} $RUNDIR
-            cd $RUNDIR
+f"""OUTPUT=$PWD
+RUNDIR=$TMPDIR/DIR{str(random.getrandbits(20))}
+mkdir -p $RUNDIR
+cp {simg} $RUNDIR
+cd $RUNDIR
 
-            """
+"""
     cmd+= \
 f"""
 singularity exec -B {os.getcwd()},$PWD {simg.split('/')[-1]} wsclean \\

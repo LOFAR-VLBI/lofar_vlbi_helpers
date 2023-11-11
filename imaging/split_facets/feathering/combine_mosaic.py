@@ -148,7 +148,7 @@ if __name__ == '__main__':
     print('Finalizing...')
 
     isum /= weights
-    #isum[isum == np.inf] = np.nan
+    isum[isum == np.inf] = np.nan
     isum[~fullmask] = np.nan
 
     hdu = fits.PrimaryHDU(header=header_new, data=isum)
