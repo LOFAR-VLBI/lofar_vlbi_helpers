@@ -5,7 +5,7 @@ import os
 
 MS = '*.ms'
 
-all_ms = [f for f in glob(MS) if 'L' in f and 'MHz' in f and 'sub6asec' not in f]
+all_ms = [f for f in glob(MS) if 'L' in f and 'MHz' in f]
 
 all_obs = ['L769393', 'L686962', 'L816272', 'L798074']
 all_freqs = list(set([f.split('_')[-1].split('.')[0]  for f in all_ms if 'MHz' in f]))
