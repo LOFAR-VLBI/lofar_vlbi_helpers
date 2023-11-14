@@ -41,7 +41,7 @@ def make_wsclean_cmd(imsize, scale, name, taper, tmpdir, avg):
 
     cmd = \
 f"""#!/bin/bash
-#SBATCH -c 30
+#SBATCH -c 31
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --job-name=imaging_facet

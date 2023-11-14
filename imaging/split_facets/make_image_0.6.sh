@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH -c 20
-#SBATCH --mail-type=FAIL
+#SBATCH -c 31
+#SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --job-name=imaging_facet
 #SBATCH -p normal
