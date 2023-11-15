@@ -62,7 +62,7 @@ f"""OUTPUT=$PWD
 RUNDIR=$TMPDIR/DIR{str(random.getrandbits(20))}
 mkdir -p $RUNDIR
 cp {simg} $RUNDIR
-cp -r sub*.ms $RUNDIR
+cp -r *sub*.ms $RUNDIR
 cd $RUNDIR
 
 """
