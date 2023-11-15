@@ -44,7 +44,6 @@ f"""#!/bin/bash
 #SBATCH -c 31
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
-#SBATCH --job-name=imaging_facet
 #SBATCH --job-name={name}
 #SBATCH --constraint=rome
 """
