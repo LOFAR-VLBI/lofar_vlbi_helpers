@@ -57,7 +57,7 @@ f"""#!/bin/bash
 """
 
     if tmpdir:
-        if avg > 3:
+        if avg > 3 and pixelscale==0.1:
             cmd += \
 f"""OUTPUT=$PWD
 RUNDIR=$TMPDIR/DIR{str(random.getrandbits(20))}
@@ -144,6 +144,9 @@ if __name__=='__main__':
     elif args.resolution==1.2:
         taper = '1.2asec'
         pixelscale = 0.4
+    elif args.resolution==0.6:
+        taper = '0.6asec'
+        pixelscale = 0.2
     else:
         sys.exit('ERROR: only use resolution 0.3 or 1.2')
 
@@ -163,6 +166,6 @@ if __name__=='__main__':
     # divide_size = get_largest_divider(channum, facet_avg)
     # imsize = int((fullpixsize//divide_size)*1.15)
 
-    imsize = int((fullpixsize//(facet_avg-1))*1.15)
+    imsize = int((fullpixsize//(facet_avg-1))*1.25)
 
     make_wsclean_cmd(imsize, pixelscale, 'facet_'+str(args.facet), taper, args.tmpdir, facet_avg)
