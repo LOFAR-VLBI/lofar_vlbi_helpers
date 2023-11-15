@@ -56,7 +56,7 @@ f"""#!/bin/bash
 """
 
     if tmpdir:
-        if avg > 3 and pixelscale==0.1:
+        if avg > 3 or pixelscale!=0.1:
             cmd += \
 f"""OUTPUT=$PWD
 RUNDIR=$TMPDIR/DIR{str(random.getrandbits(20))}
