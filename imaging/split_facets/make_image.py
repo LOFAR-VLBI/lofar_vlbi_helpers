@@ -104,6 +104,8 @@ singularity exec -B {os.getcwd()},$PWD {simg.split('/')[-1]} wsclean \\
 -channels-out 6 \\
 -join-channels \\
 -fit-spectral-pol 3 \\
+-apply-primary-beam \\
+-use-differential-lofar-beam \\
 -local-rms -local-rms-window 50 \\"""
 
     if taper is not None:
