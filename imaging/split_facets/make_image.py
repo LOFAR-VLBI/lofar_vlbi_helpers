@@ -108,7 +108,7 @@ singularity exec -B {os.getcwd()},$PWD {simg.split('/')[-1]} wsclean \\
 
     if taper is not None:
         cmd += f'\n-taper-gaussian {taper} \\'
-    if avg>3 and pixelscale==0.1:
+    if avg>3 or pixelscale!=0.1:
         cmd += f"\n*.ms\n"
     else:
         cmd += f"\n{os.getcwd()}/{name}/imaging/*.ms"
