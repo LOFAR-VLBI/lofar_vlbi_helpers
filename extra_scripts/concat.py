@@ -1,8 +1,5 @@
 """
-This script is to verify that freq bands are not missing in a measurement set.
-
-Example:
-    python check_missing_freqs_in_ms.py --ms myms*.ms
+Concat with dummies
 """
 
 __author__ = "Jurjen de Jong"
@@ -11,9 +8,13 @@ import casacore.tables as ct
 import numpy as np
 import sys
 from glob import glob
+import argparse
+import os
 
 def get_channels(input_ms):
     """
+    Get frequency channels
+
     :param input: list or string with measurement sets
     :return: sorted concatenated channels
     """
@@ -43,8 +44,11 @@ def get_channels(input_ms):
     return np.sort(chans), input_ms
 
 
-def has_freq_gaps(input, make_dummies, output_name):
+def fill_freq_gaps(input, make_dummies, output_name):
     """
+    Fill the frequency gaps between sub-blocks with dummies (if requested)
+    and return txt file with MS in order
+
     :param input: list or string with measurement sets
     :return: True if nog gaps, False if gaps
     """
@@ -76,17 +80,58 @@ def has_freq_gaps(input, make_dummies, output_name):
         file.close()
         return True
 
+def parse_args():
+    """
+    Parse input arguments
+    """
+
+    parser = argparse.ArgumentParser(description='Concattenate measurement sets, while taking into account frequency gaps')
+    parser.add_argument('--ms', nargs='+', help='MS', required=True)
+    parser.add_argument('--concat_name', help='Concat name', type=str, default='concat.ms')
+    parser.add_argument('--parset_name', help='Parset_name', type=str, default='parset.parset')
+    parser.add_argument('--data_column', help='Data column', type=str, default='DATA')
+
+    return parser.parse_args()
+
+def make_parset(parset_name, ms, concat_name, data_column):
+    """
+    Make parset for DP3
+
+    :param parset_name: Name of the parset
+    :param ms: input measurement sets
+    :param concat_name: name of concattenated measurement sets
+
+    :return: parset
+    """
+
+    txtname = parset_name.replace('.parset', '.txt')
+
+    if fill_freq_gaps(input=ms, make_dummies=True, output_name=txtname):
+        print('--- SUCCESS: no frequency gaps found ---')
+
+    # write parset
+    with open(txtname) as f:
+        lines = f.readlines()
+    parset = 'msin=' + '[' + ', '.join(lines).replace('\n', '') + ']\n'
+    parset += 'msout=' + concat_name
+    parset += '\nmsin.datacolumn='+data_column+ \
+              '\nmsin.missingdata=True' \
+              '\nmsin.orderms=False' \
+              '\nmsout.storagemanager=dysco' \
+              '\nmsout.writefullresflag=False' \
+              '\nsteps=[]'
+    with open(parset_name, 'w') as f:
+        f.write(parset)
+
+    return parset
+
+def main():
+    """
+    Main script
+    """
+    args = parse_args()
+    make_parset(args.parset_name, args.ms, args.concat_name, args.data_column)
+    os.system('DP3 '+args.parset_name)
 
 if __name__ == '__main__':
-
-    import argparse
-
-    parser = argparse.ArgumentParser(description='Check for frequency gaps in MS')
-    parser.add_argument('--ms', nargs='+', help='MS', required=True)
-    parser.add_argument('--make_dummies', help='Make dummies for missing MS', action='store_true')
-    parser.add_argument('--output_name', help='Output txt name', type=str, default='mslist.txt')
-
-    args = parser.parse_args()
-
-    if has_freq_gaps(input=args.ms, make_dummies=args.make_dummies, output_name=args.output_name):
-        print('--- SUCCESS: no frequency gaps found ---')
+    main()

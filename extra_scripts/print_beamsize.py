@@ -3,6 +3,11 @@ from astropy.io import fits
 from argparse import ArgumentParser
 
 def beamarea(fitsfile):
+    """
+    Get beam size area
+    :param fitsfile: fits file
+    :return: beam size
+    """
 
     hdu = fits.open(fitsfile)
 

@@ -5,6 +5,7 @@ import os
 import sys
 import random
 
+
 def get_largest_divider(inp, max=1000):
     """
     Get largest divider
@@ -84,6 +85,7 @@ singularity exec -B {os.getcwd()},$PWD {simg.split('/')[-1]} wsclean \\
 -size {imsize} {imsize} \\
 -weighting-rank-filter 3 \\
 -reorder \\
+-baseline-averaging {1.5e3*60000.*2.*3.1415 *1.5/(24.*60.*60*imsize)} \\
 -weight briggs -1.5 \\
 -parallel-reordering 4 \\
 -mgain 0.75 \\
