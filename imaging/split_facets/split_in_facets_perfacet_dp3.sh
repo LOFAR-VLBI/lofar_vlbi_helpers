@@ -5,6 +5,7 @@
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/imaging/split_facets
+LOFAR_HELPERS=$( python3 $HOME/parse_settings.py --lofar_helpers )
 
 FACETNUMBER=$1
 
@@ -30,7 +31,7 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 
 #loop over facets from merged h5
 singularity exec -B ${SING_BIND} ${SIMG} python \
-${SCRIPT_DIR}/split_facets.py \
+${LOFAR_HELPERS}/ds9_helpers/split_polygon_facets.py \
 --h5 ${H5S[0]} \
 --reg facets_1.2.reg \
 --extra_boundary 0.1

@@ -169,6 +169,6 @@ if __name__=='__main__':
     # divide_size = get_largest_divider(channum, facet_avg)
     # imsize = int((fullpixsize//divide_size)*1.15)
 
-    imsize = int((fullpixsize//(facet_avg-1))*1.25)
+    imsize = int((fullpixsize//(facet_avg-1))*1.1)
 
     make_wsclean_cmd(imsize, pixelscale, 'facet_'+str(args.facet), taper, args.tmpdir, facet_avg)
