@@ -46,4 +46,4 @@ singularity exec -B $SING_BIND $SIMG python /home/lofarvwf-jdejong/scripts/lofar
 --facet_info /project/lofarvwf/Share/jdejong/output/ELAIS/ALL_L/imaging/split_facets2/polygon_info.csv \
 --tmpdir
 
-sbach wsclean_facet${FACET}.cmd
+sbatch wsclean_facet${FACET}.cmd
