@@ -89,15 +89,24 @@ class ApplyCal:
             raise Exception(' '.join(self.cmd))
         return retval
 
-if __name__ == '__main__':
+
+def parse_args():
+    """Argument parser"""
+
     parser = ArgumentParser(description='Applycal on MS with H5')
     parser.add_argument('--msin',  nargs='+', type=str, help='input measurement set', required=True)
     parser.add_argument('--msout', type=str, default='.', help='output measurement set')
     parser.add_argument('--h5', type=str, help='h5 calibration', required=True)
     parser.add_argument('--colin', type=str, default='DATA', help='input column name')
     parser.add_argument('--colout', type=str, default=None, help='output column name')
-    args = parser.parse_args()
 
+    return parser.parse_args()
+
+
+def main():
+    """Main function"""
+
+    args = parse_args()
 
     if len(args.msin)==1:
         Ac = ApplyCal(msin=args.msin[0], h5=args.h5, msincol=args.colin, msoutcol=args.colout, msout=args.msout)
@@ -107,3 +116,5 @@ if __name__ == '__main__':
     Ac.print_cmd()
     Ac.run()
 
+if __name__ == '__main__':
+    main()

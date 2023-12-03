@@ -40,15 +40,31 @@ def make_wsclean_cmd(imsize, scale, name, taper, tmpdir, avg):
     simg = paths.SIMG
 
 
+    briggs=-1.5
+    # if scale==0.1:
+    #     briggs=-1.5
+    # elif scale==0.2:
+    #     briggs=-1.0
+    # elif scale==0.4:
+    #     briggs=-0.5
+    # else:
+    #     sys.exit("ERROR: Wrong resolution")
+
+
     cmd = \
 f"""#!/bin/bash
-#SBATCH -c 31
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --job-name={name}
 #SBATCH --constraint=rome
 """
-    if avg <= 3:
+    if scale!=0.4:
+        cmd += """#SBATCH -c 31
+"""
+    else:
+        cmd += """#SBATCH -c 15
+"""
+    if avg <= 3 and scale!=0.4:
         cmd += """#SBATCH -p infinite
 """
     cmd+=\
@@ -86,7 +102,7 @@ singularity exec -B {os.getcwd()},$PWD {simg.split('/')[-1]} wsclean \\
 -weighting-rank-filter 3 \\
 -reorder \\
 -baseline-averaging {1.5e3*60000.*2.*3.1415 *1.5/(24.*60.*60*imsize)} \\
--weight briggs -1.5 \\
+-weight briggs {briggs} \\
 -parallel-reordering 4 \\
 -mgain 0.75 \\
 -data-column DATA \\
