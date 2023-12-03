@@ -62,7 +62,7 @@ f"""#!/bin/bash
         cmd += """#SBATCH -c 31
 """
     else:
-        cmd += """#SBATCH -c 15
+        cmd += """#SBATCH -c 20
 """
     if avg <= 3 and scale!=0.4:
         cmd += """#SBATCH -p infinite
