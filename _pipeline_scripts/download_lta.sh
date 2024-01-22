@@ -7,20 +7,23 @@
 #1 --> html_calibrator.txt
 #2 --> html_target.txt
 
+CALHTML=$1
+TARHTML=$2
+
 
 #INPUT PARAMETERS
-if [ -n "$1" ]; then
-  echo "You supplied $1 as calibrator html list"
-  CALDAT=$( realpath $1 )
+if [ -n "$CALHTML" ]; then
+  echo "You gave $CALHTML as calibrator html list"
+  CALDAT=$( realpath $CALHTML )
 else
   echo "No arguments supplied"
   echo "Please run script as [ download_lta.sh html_calibrator.txt html_target.txt ]"
   exit 0
 fi
 
-if [ -n "$2" ]; then
-  echo "You supplied $2 as target html list"
-  TARDAT=$( realpath $2 )
+if [ -n "$TARHTML" ]; then
+  echo "You gave $TARHTML as target html list"
+  TARDAT=$( realpath $TARHTML )
 else
   echo "No target html list provided"
   echo "Please run script as [ download_lta.sh html_calibrator.txt html_target.txt ]"
@@ -29,7 +32,7 @@ fi
 
 #GET SCRIPT RUN DIRECTORY
 if [ -n "${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" ] ; then
-SCRIPT=$(scontrol show job "${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" | awk -F= '/Command=/{print $2}')
+SCRIPT=$(scontrol show job "${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" | awk -F= '/Command=/{print $TARHTML}')
 export SCRIPT_DIR=$( echo ${SCRIPT%/*} )
 else
 export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -59,8 +62,8 @@ if [[ "$SLURM_ARRAY_TASK_ID" -eq 1 ]]; then
 fi
 
 # make data folder
-mkdir -p $TYPE/Data
-cd $TYPE/Data
+mkdir -p $TYPE/data
+cd $TYPE/data
 
 # download data
 wget -ci $TARS
