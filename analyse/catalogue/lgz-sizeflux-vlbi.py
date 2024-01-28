@@ -620,9 +620,11 @@ imfile = sys.argv[3]
 print("Lengths of cats are ", len(incat), len(compcat))
 
 outcat = []
+facet = 'facet_'+sys.argv[2].split('/')[-1].split("_")[1]
+path = sys.argv[2].split("/")[0:-1]
 
 for asrc in compcat:
-    sourcename = asrc['Component_Name']
+    sourcename = str(asrc['Source_id'])
     newname = sourcename.rstrip()
     sourcera = float(asrc['RA'])
     sourcedec = float(asrc['DEC'])
@@ -708,8 +710,8 @@ for src in incat:
         # Generate mask by first masking in source components then excluding others
         # print "Extracting cats for source ",name
         # print "Size is ",size
-        mask = compcat['Parent_Source'] == name
-        mask2 = compcat['Parent_Source'] != name
+        mask = compcat['Source_id'] == name
+        mask2 = compcat['Source_id'] != name
         catinc = compcat[mask]
         dcatexc = compcat[mask2]
         # print "Lengths of included and excluded comps are:",len(catinc),len(dcatexc)
