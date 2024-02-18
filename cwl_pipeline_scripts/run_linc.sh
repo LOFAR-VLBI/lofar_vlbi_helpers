@@ -6,13 +6,6 @@
 
 STARTDIR=$PWD
 
-#if [ $# -eq 0 ]
-#  then
-#    echo "No arguments supplied"
-#    echo "Please run script as [ run_linc.sh <DATA_CALIBRATOR_FOLDER> <DATA_TARGET_FOLDER> ]"
-#    exit 0
-#fi
-
 #GET ORIGINAL SCRIPT DIRECTORY
 if [ -n "${SLURM_JOB_ID:-}" ] ; then
 SCRIPT=$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/Command=/{print $2}')

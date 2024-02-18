@@ -24,13 +24,13 @@
 ! working_directory         =  input.output.working_directory/input.output.job_name               ## specify the working_directory (intermediate data products)
 
 ## target data information
-! target_input_path             = RESULTS_DIR/Data
+! target_input_path             = RESULTS_DIR/data
 ! target_input_pattern          = L*.MS
 
 ## Prefactor solution information
 ## assumes the job directory and Pre-Facet-Target will be in the same parent directory
-! prefac_tgt_dir	= RESULTS_DIR/Pre-Facet-Target
-! cal_solutions         = {{ prefac_tgt_dir }}/results/cal_values/solutions.h5  ## location of h5parm from prefactor - should contain 'calibrator' and 'target' information
+! prefac_tgt_dir	= RESULTS_DIR
+! cal_solutions         = {{ prefac_tgt_dir }}/OBSERVATION_LINC_target/results_LINC_target/cal_solutions.h5  ## location of h5parm from prefactor - should contain 'calibrator' and 'target' information
 ! solutions             = input.output.job_directory/solutions.h5
 ! phasesol              = TGSSphase
 
