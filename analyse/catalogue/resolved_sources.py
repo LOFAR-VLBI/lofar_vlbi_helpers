@@ -18,6 +18,7 @@ from astropy.table import Table
 from past.utils import old_div
 import argparse
 from astropy.visualization.wcsaxes import WCSAxes
+import os
 
 warnings.filterwarnings("ignore")
 
@@ -297,7 +298,8 @@ class MeasureSource:
     @property
     def s_code(self):
         """Return s_code similar to pybdsf"""
-        if self.peak_flux/self.total_flux.value>0.5:
+        if self.peak_flux/self.total_flux.value>0.7 and len(self.poly_list)==1:
+            print('S')
             return 'S'
         else:
             return 'M'
@@ -305,7 +307,7 @@ class MeasureSource:
     @property
     def total_flux(self):
         """Return total flux"""
-        return self._get_convex_hull_data.sum() / self.beam_pixels * u.Jy
+        return np.nansum(self._get_convex_hull_data) / self.beam_pixels * u.Jy
 
     @property
     def _get_convex_hull_data(self):
@@ -333,7 +335,7 @@ class MeasureSource:
 
         # if len(self.poly_list) == 0:
         #     self._get_polylist()
-        peakflux = np.max(self._get_polygon_data)
+        peakflux = np.nanmax(self._get_polygon_data)
         self.peak_flux_pos = np.where(self.image_data == peakflux)
         return peakflux
 
@@ -349,9 +351,9 @@ class MeasureSource:
         y_indices, x_indices = np.indices(image.shape)
 
         # Calculate the raw moments
-        m00 = np.sum(image)
-        m10 = np.sum(x_indices * image)
-        m01 = np.sum(y_indices * image)
+        m00 = np.nansum(image)
+        m10 = np.nansum(x_indices * image)
+        m01 = np.nansum(y_indices * image)
         # m11 = np.sum(x_indices * y_indices * image)
         # m20 = np.sum(x_indices ** 2 * image)
         # m02 = np.sum(y_indices ** 2 * image)
@@ -384,10 +386,12 @@ class MeasureSource:
 
         plt.contour(imdat, [self.rms_island_threshold], colors='white', linewidths=1)
 
-        polygon = self.merged_geometry.boundary.convex_hull
-        x, y = polygon.exterior.xy
+        if self.merged_geometry.boundary is not None:
+            polygon = self.merged_geometry.boundary.convex_hull
+            x, y = polygon.exterior.xy
 
-        plt.plot(x, y, label="Merged Polygon", color='lightgreen')
+            plt.plot(x, y, label="Merged Polygon", color='lightgreen')
+
         plt.imshow(self.image_data,
                    norm=PowerNorm(gamma=0.5, vmin=self.rms, vmax=self.rms*9),
                    cmap='RdBu_r')
@@ -442,7 +446,7 @@ def get_region_mask(image, idx):
     return regionmask
 
 
-def get_source_information(table, image, makeplot):
+def get_source_information(table, image, makeplot, debug_idx=None):
     """
     Get information of source
     :param table: Astropy table
@@ -464,76 +468,121 @@ def get_source_information(table, image, makeplot):
     source_ids = []
 
 
-
     for idx in range(len(T)):
 
-        print(f'test_resolved_{idx}.png')
+        try:
 
-        ra, dec = T[idx]['RA', 'DEC']
-        RA = RA[RA != ra]
-        DEC = DEC[DEC != dec]
+            if debug_idx is not None:
+                if int(idx)!=int(debug_idx):
+                    continue
+                elif int(idx)>int(debug_idx):
+                    break
 
-        imsize = 100
-        makeim = True
-        ignoreradec = True
+            ra, dec = T[idx]['RA', 'DEC']
+            RA = RA[RA != ra]
+            DEC = DEC[DEC != dec]
 
-        peakthresh, islandthresh = 5, 1
-        trys = 0
-        while makeim and islandthresh <= 5 and imsize < 1500 and trys < 1000:
+            imsize = 100
+            cont = True
+            ignoreradec = True
 
-            regionmask = get_region_mask(image, idx)
-            try:
+            peakthresh, islandthresh = 5, 1.5
+            trys = 0
+            while cont \
+                and imsize < 1500 \
+                and trys < 100:
+
+                regionmask = get_region_mask(image, idx)
                 S = MeasureSource(fitsfile=image, rms=T[idx]['Isl_rms'], rms_peak_threshold=peakthresh,
                                   rms_island_threshold=islandthresh, region_mask=regionmask)
                 S.make_cutout((ra, dec), (imsize, imsize))
+                peakflux = S.peak_flux
                 if ignoreradec:
-                    S._get_polylist(buff=min(S.peak_flux/S.rms_island_threshold, 10), ignore_ra=RA, ignore_dec=DEC)
+                    S._get_polylist(buff=min(peakflux/S.rms_island_threshold, 10), ignore_ra=RA, ignore_dec=DEC)
                 else:
-                    S._get_polylist(buff=min(S.peak_flux/S.rms_island_threshold, 10))
-                x, y = S.merged_geometry.boundary.convex_hull.boundary.coords.xy
-                if np.max(x) > imsize/1.5 or np.max(y) > imsize/1.5 or np.min(x) < 0 or np.min(y) < 0:
-                    imsize *= 1.25
-                    print('Increase size')
+                    S._get_polylist(buff=min(peakflux/S.rms_island_threshold, 10))
+                if S.merged_geometry.boundary is None:
+                    if islandthresh < 4:
+                        islandthresh += 0.2
+                        islandthresh = min(4., max(1.5, islandthresh))
+                        imsize *= 1.1
+                    else:
+                        imsize *= 1.05
+                        islandthresh -= 0.2
+                        islandthresh = min(4., max(1.5, islandthresh))
+                        ignoreradec = False
                 else:
-                    makeim=False
-            except AttributeError:
-                if islandthresh <= 4.5:
-                    islandthresh += 0.5
-                    imsize *= 1.1
+                    x, y = S.merged_geometry.boundary.convex_hull.boundary.coords.xy
+                    if (np.max(x) * 2.5 < imsize and np.max(y) * 2.5 < imsize and np.min(x) > 0 and np.min(y) > 0):
+                        cont = False
+                    elif (np.max(x) > imsize/1.5 or np.max(y) > imsize/1.5 or np.min(x) < 0 or np.min(y) < 0)\
+                            or S.total_flux.value/T[idx]['Total_flux'] > 10:
+                        imsize *= 1.1
+                    elif S.total_flux.value/T[idx]['Total_flux'] < 10 and (imsize > 100 or trys<10):
+                        imsize /= 1.1
+                        islandthresh -= 0.2
+                        islandthresh = max(1.5, islandthresh)
+                        imsize = max(100, imsize)
+                    else:
+                        cont = False
+                try:
+                    if S.total_flux.value * 5 < T[idx]['Total_flux']:
+                        imsize *= 1.05
+                        islandthresh -= 0.2
+                        islandthresh = max(1.5, islandthresh)
+                    elif S.total_flux.value > T[idx]['Total_flux'] * 5:
+                        islandthresh += 0.2
+                        islandthresh = min(4, islandthresh)
+                        imsize /= 1.05
+                        imsize = max(100, imsize)
+                except AttributeError:
+                    imsize *= 1.05
+
+                trys += 1
+
+
+            if makeplot:
+                if S.peak_flux/T[idx]['Peak_flux'] > 2 \
+                    or T[idx]['Peak_flux']/S.peak_flux > 2 \
+                    or S.total_flux.value/T[idx]['Total_flux'] > 2.5 \
+                    or T[idx]['Total_flux']/S.total_flux.value > 2.5:
+                    if debug_idx is not None:
+                        imname = 'test.png'
+                    else:
+                        imname = f'issues/test_resolved_{idx}_{image.split("/")[-1].replace(".fits", "")}_{T["Source_id"][idx]}_{table.split("/")[-2]}.png'
+                    print(imname)
+                    S.make_plot(
+                        savefig=imname)
+                    accept = False
                 else:
-                    imsize = 150
-                    islandthresh = 1.5
-                    ignoreradec = False
-            trys += 1
+                    if debug_idx is not None:
+                        imname = 'test.png'
+                    else:
+                        imname = f'ok/test_resolved_{idx}_{image.split("/")[-1].replace(".fits", "")}_{T["Source_id"][idx]}_{table.split("/")[-2]}.png'
+                    print(imname)
+                    S.make_plot(savefig=imname)
+                    accept = True
 
-        if trys >= 1000:
-            continue
+            print('Peak flux image:', str(S.peak_flux), 'Jy/beam')
+            print('Peak flux table:', str(T[idx]['Peak_flux']), 'Jy/beam')
 
-        if makeplot:
-            if S.peak_flux/T[idx]['Peak_flux']>2 \
-                or T[idx]['Peak_flux']/S.peak_flux>2 \
-                or S.total_flux.value/T[idx]['Total_flux'] > 3 \
-                or T[idx]['Total_flux']/S.total_flux.value > 3:
-                S.make_plot(
-                    savefig=f'issues/test_resolved_{idx}_{image.split("/")[-1].replace(".fits", "")}_{T["Source_id"][idx]}_{table.split("/")[-2]}.png')
-            else:
-                S.make_plot(savefig=f'ok/test_resolved_{idx}_{image.split("/")[-1].replace(".fits", "")}_{T["Source_id"][idx]}_{table.split("/")[-2]}.png')
+            print('Total flux image:', str(S.total_flux))
+            print('Total flux table:', str(T[idx]['Total_flux']), 'Jy')
 
-        print('Peak flux image:', str(S.peak_flux), 'Jy/beam')
-        print('Peak flux table:', str(T[idx]['Peak_flux']), 'Jy/beam')
-
-        print('Total flux image:', str(S.total_flux))
-        print('Total flux table:', str(T[idx]['Total_flux']), 'Jy')
-
-        peak_flux.append(S.peak_flux)
-        total_flux.append(S.total_flux)
-        largest_dist.append(S.largest_dist)
-        s_code.append(S.s_code)
-        ra_decs.append(S.ra_dec)
-        source_ids.append(idx)
-
+            if accept:
+                peak_flux.append(S.peak_flux)
+                total_flux.append(S.total_flux)
+                largest_dist.append(S.largest_dist)
+                s_code.append(S.s_code)
+                ra_decs.append(S.ra_dec)
+                source_ids.append(T[idx]['Source_id'])
+        except:
+            pass
 
     return source_ids, peak_flux, total_flux, largest_dist, s_code, ra_decs
+
+def get_table_index(t, source_id):
+    return int(np.argwhere(t['Source_id'] == source_id).squeeze())
 
 
 def parse_args():
@@ -544,6 +593,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Find flux density, peak flux, and size for resolved sources based on pybdsf table and image')
     parser.add_argument('--table', type=str, help='astropy table')
     parser.add_argument('--image', type=str, help='fits image')
+    parser.add_argument('--debug_idx', type=int)
     return parser.parse_args()
 
 
@@ -553,8 +603,19 @@ def main():
     """
 
     args = parse_args()
-    ids, peakflux, totalflux, largestidst, scode, radecs = get_source_information(args.table, args.image, True)
-    # T = Table.read(args.table)
+    ids, peakflux, totalflux, largestidst, scode, radecs = get_source_information(args.table, args.image, True, args.debug_idx)
+    T = Table.read(args.table)
+    source_ids = [get_table_index(T, id) for id in ids]
+    for n, id in enumerate(source_ids):
+        T[id]['Peak_flux'] = peakflux[n]
+        T[id]['Total_flux'] = totalflux[n].value
+        T[id]['RA'] = float(radecs[n][0])
+        T[id]['DEC'] = float(radecs[n][1])
+        T[id]['S_Code'] = scode[n]
+
+    os.system('mkdir -p outcat')
+    T['RA'] %= 360
+    T.write('outcat/'+args.table.replace('_final.fits', '_final_updated.fits').split('/')[-1], format='fits', overwrite=True)
 
 
 

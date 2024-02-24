@@ -14,7 +14,7 @@ OUTPUT=$PWD/ddf
 
 mkdir -p $OUTPUT
 
-cp /project/lofarvwf/Share/jdejong/output/ELAIS/pipeline.cfg $TMPDIR/ddf
+cp /project/lofarvwf/Share/jdejong/output/ELAIS/scripts/ddf/pipeline.cfg $TMPDIR/ddf
 cp $DDF $TMPDIR/ddf
 cp -r $TARGET_FOLDER/*.ms $TMPDIR/ddf
 cp $DDF $TMPDIR/ddf

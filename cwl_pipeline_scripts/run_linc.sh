@@ -20,11 +20,11 @@ SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
 echo "Run LINC calibrator from $SCRIPT_DIR on Data in $STARTDIR/calibrator"
 cd calibrator
-singularity exec -B ${SING_BIND} ${SIMG} /project/lofarvwf/Software/flocs/runners/run_LINC_calibrator.sh -d $STARTDIR/calibrator/data
+singularity exec -B ${SING_BIND} ${SIMG} run_LINC_calibrator.sh -d $STARTDIR/calibrator/data
 mv tmp.* linc_calibrator_output
 cd ../
 
 echo "Run LINC target from $SCRIPT_DIR on Data in $STARTDIR/target"
 cd target
-singularity exec -B ${SING_BIND} ${SIMG} /project/lofarvwf/Software/flocs/runners/run_LINC_target.sh -d $STARTDIR/target/data -c $STARTDIR/calibrator/*_LINC_calibrator/results_LINC_calibrator/cal_solutions.h5
+singularity exec -B ${SING_BIND} ${SIMG} run_LINC_target.sh -d $STARTDIR/target/data -c $STARTDIR/calibrator/*_LINC_calibrator/results_LINC_calibrator/cal_solutions.h5
 cd ../

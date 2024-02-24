@@ -44,13 +44,13 @@ SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/_pipeline_scripts
 SIMG=$( python3 $SCRIPT_DIR/settings/parse_settings.py --SIMG )
 BIND=$( python3 $SCRIPT_DIR/settings/parse_settings.py --BIND )
 
-LNUM=$( grep -Po 'L[0-9][0-9][0-9][0-9][0-9][0-9]' $TARDAT | head -n 1 )
+LNUM=$( grep -Po 'L\d+' $TARDAT | head -n 1 )
 mkdir -p $LNUM
 cd $LNUM
 
 #CALIBRATOR
 if [[ "$SLURM_ARRAY_TASK_ID" -eq 0 ]]; then
-  LNUM_CAL=$( grep -Po 'L[0-9][0-9][0-9][0-9][0-9][0-9]' $CALDAT | head -n 1 )
+  LNUM_CAL=$( grep -Po 'L\d+' $CALDAT | head -n 1 )
   echo "DOWNLOAD DATA FOR CALIBRATOR $LNUM_CAL"
   TYPE=calibrator
   TARS=$CALDAT
