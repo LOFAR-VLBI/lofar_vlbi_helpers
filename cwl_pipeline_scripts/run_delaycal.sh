@@ -139,7 +139,7 @@ toil-cwl-runner \
 --bypass-file-store \
 --preserve-entire-environment \
 --batchSystem slurm \
-software/VLBI_cwl/delay-calibration.cwl mslist_VLBI_delay_calibration.json
+software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
 #--cleanWorkDir never \ --> for testing
 
 ########################
