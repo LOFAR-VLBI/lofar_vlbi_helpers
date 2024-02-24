@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Derived from Frits Sweijen: https://github.com/tikk3r/lofar-highres-widefield/blob/restructure/utils/make_box.py"""
+"""Based on Frits Sweijen: https://github.com/tikk3r/lofar-highres-widefield/blob/restructure/utils/make_box.py"""
 
 import argparse
 import ast

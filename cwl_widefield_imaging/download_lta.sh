@@ -38,8 +38,6 @@ else
 export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 fi
 
-SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/_pipeline_scripts
-
 #SINGULARITY SETTINGS
 SIMG=$( python3 $SCRIPT_DIR/settings/parse_settings.py --SIMG )
 BIND=$( python3 $SCRIPT_DIR/settings/parse_settings.py --BIND )

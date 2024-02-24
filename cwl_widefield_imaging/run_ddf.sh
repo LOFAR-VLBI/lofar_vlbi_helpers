@@ -12,7 +12,7 @@ TARGET_FOLDER=$1
 mkdir $TMPDIR/ddf
 
 wget https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-grid-hpccloud/amd/flocs_v4.5.0_znver2_znver2_aocl4_cuda.sif
-wget https://raw.githubusercontent.com/jurjen93/lofar_vlbi_helpers/main/ddf_pipeline/pipeline.cfg
+wget https://raw.githubusercontent.com/jurjen93/lofar_vlbi_helpers/main/cwl_widefield_imaging/ddf/pipeline.cfg
 
 SIMG=flocs_v4.5.0_znver2_znver2_aocl4_cuda.sif
 OUTPUT=$PWD/ddf
