@@ -1,10 +1,14 @@
 #!/bin/bash
 #SBATCH -c 31
 #SBATCH -p infinite
-#SBATCH --output=runlinc_%j.out
-#SBATCH --error=runlinc_%j.err
+#SBATCH --output=linc_%j.out
+#SBATCH --error=linc_%j.err
 
 STARTDIR=$PWD
+
+#SINGULARITY SETTINGS
+SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
 #GET ORIGINAL SCRIPT DIRECTORY
 if [ -n "${SLURM_JOB_ID:-}" ] ; then
@@ -13,10 +17,6 @@ SCRIPT_DIR=$( echo ${SCRIPT%/*} )
 else
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 fi
-
-#SINGULARITY SETTINGS
-SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
-SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
 echo "Run LINC calibrator from $SCRIPT_DIR on Data in $STARTDIR/calibrator"
 cd calibrator

@@ -1,4 +1,6 @@
 #!/bin/bash
+#SBATCH --output=delay_%j.out
+#SBATCH --error=delay_%j.err
 
 #NOTE: works only with TOIL>6.0.0
 
@@ -94,8 +96,8 @@ delay-calibration \
 --h5merger=$PWD/software/lofar_helpers \
 --selfcal=$PWD/software/lofar_facet_selfcal \
 --delay_calibrator=$DELAYCAL \
---linc=LINC \
---ddf_solset=DDF_merged.h5 \
+--linc=$PWD/software/LINC \
+--ddf_solset=$PWD/DDF_merged.h5 \
 --ddf_solsdir=$DDFOLDER/SOLSDIR \
 $TARGETFOLDER/data
 
