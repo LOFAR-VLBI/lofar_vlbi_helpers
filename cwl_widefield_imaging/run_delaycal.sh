@@ -45,13 +45,13 @@ if [[ "$CONTAINERSTR" == *"apptainer"* ]]; then
   export APPTAINER_TMPDIR=$APPTAINER_CACHEDIR/tmp
   export APPTAINER_PULLDIR=$APPTAINER_CACHEDIR/pull
   export APPTAINER_BIND=$SING_BIND
-  export APPTAINERENV_PYTHONPATH='${PWD}/software/VLBI_cwl/scripts:${PWD}/software/LINC/scripts:$PYTHONPATH'
+  export APPTAINERENV_PYTHONPATH=${PWD}/software/VLBI_cwl/scripts:${PWD}/software/LINC/scripts:$PYTHONPATH
 else
   export SINGULARITY_CACHEDIR=$PWD/singularity
   export SINGULARITY_TMPDIR=$SINGULARITY_CACHEDIR/tmp
   export SINGULARITY_PULLDIR=$SINGULARITY_CACHEDIR/pull
   export SINGULARITY_BIND=$SING_BIND
-  export SINGULARITYENV_PYTHONPATH='${PWD}/software/VLBI_cwl/scripts:${PWD}/software/LINC/scripts:$PYTHONPATH'
+  export SINGULARITYENV_PYTHONPATH=${PWD}/software/VLBI_cwl/scripts:${PWD}/software/LINC/scripts:$PYTHONPATH
 fi
 
 export CWL_SINGULARITY_CACHE=$APPTAINER_CACHEDIR
