@@ -64,7 +64,7 @@ export LINC_DATA_ROOT=$PWD/software/LINC
 
 # convert DDF solution files to h5parm
 C=0
-for KILLMSFILE in $DDFOLDER/DDS3_*.npz; do
+for KILLMSFILE in $DDFOLDER/SOLSDIR/*MHz_uv_pre-cal.ms/*DIS2*.sols.npz; do
   echo ${KILLMSFILE}
   singularity exec singularity/$SIMG \
   python software/losoto/bin/killMS2H5parm.py \
@@ -81,7 +81,8 @@ singularity exec singularity/$SIMG \
 python software/lofar_helpers/h5_merger.py \
 --h5_tables DDF*.h5 \
 --h5_out DDF_merged.h5 \
---propagate_flags
+--propagate_flags \
+--merge_diff_freq
 
 ########################
 
