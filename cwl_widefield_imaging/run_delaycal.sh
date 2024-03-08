@@ -9,10 +9,6 @@
 export TOIL_SLURM_ARGS="--export=ALL --job-name delaycal -p normal"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
-PYPATH=${PWD}/software/VLBI_cwl/scripts:${PWD}/software/LINC/scripts:\$PYTHONPATH
-PTH=${PWD}/software/VLBI_cwl/scripts:${PWD}/software/LINC/scripts:\$PATH
-
-
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
 
 VENV=/home/lofarvwf-jdejong/venv
@@ -22,7 +18,7 @@ VENV=/home/lofarvwf-jdejong/venv
 #SETUP
 
 DDFOLDER=$(realpath "../ddf")
-TARGETFOLDER=$(realpath "../target")
+TARGETDATA=$(realpath "../target/data")
 
 # set up software
 mkdir -p software
@@ -33,6 +29,13 @@ git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
 git clone https://git.astron.nl/RD/LINC.git
 git clone https://github.com/revoltek/losoto
+mkdir scripts
+cp LINC/scripts/* scripts
+cp VLBI_cwl/scripts/* scripts
+SCRIPTS_PATH=$PWD/scripts
+SING_BIND=${SING_BIND}",${SCRIPTS_PATH}:/opt/lofar/DynSpecMS"
+PYPATH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PYTHONPATH
+PTH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PATH
 cd ../
 
 # set up singularity
@@ -50,7 +53,6 @@ if [[ "$CONTAINERSTR" == *"apptainer"* ]]; then
   export APPTAINER_BIND=$SING_BIND
   export APPTAINERENV_PYTHONPATH=$PYPATH
   export APPTAINERENV_PATH=$PTH
-
 else
   export SINGULARITY_CACHEDIR=$PWD/singularity
   export SINGULARITY_TMPDIR=$SINGULARITY_CACHEDIR/tmp
@@ -60,6 +62,7 @@ else
   export SINGULARITYENV_PYTHONPATH=$PTH
 fi
 
+export SING_USER_DEFINED_PATH=$PTH
 export CWL_SINGULARITY_CACHE=$APPTAINER_CACHEDIR
 export TOIL_CHECK_ENV=True
 export LINC_DATA_ROOT=$PWD/software/LINC
@@ -88,6 +91,8 @@ python software/lofar_helpers/h5_merger.py \
 --h5_tables DDF*.h5 \
 --h5_out DDF_merged.h5 \
 --propagate_flags \
+--add_ms_stations \
+--ms $( ls $TARGETDATA/*.MS -1d | head -n 1) \
 --merge_diff_freq
 
 ########################
@@ -106,9 +111,9 @@ delay-calibration \
 --linc=$PWD/software/LINC \
 --ddf_solset=$PWD/DDF_merged.h5 \
 --ddf_solsdir=$DDFOLDER/SOLSDIR \
-$TARGETFOLDER/data
+$TARGETDATA
 
-#TODO: ddf_rundir?
+jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": $nv}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 
 ########################
 
