@@ -15,7 +15,7 @@ VENV=/home/lofarvwf-jdejong/venv
 
 ######################
 
-#SETUP
+# SETUP ENVIRONMENT
 
 DDFOLDER=$(realpath "../ddf")
 TARGETDATA=$(realpath "../target/data")
@@ -82,7 +82,7 @@ for KILLMSFILE in $DDFOLDER/SOLSDIR/*MHz_uv_pre-cal.ms/*DIS2*.sols.npz; do
   DDF${C}.h5 \
   ${KILLMSFILE}
 
-  ((C++))  # Increment the counter
+  ((C++))  # increment the counter
 done
 
 # merge h5parm into 1 file
@@ -97,7 +97,7 @@ python software/lofar_helpers/h5_merger.py \
 
 ########################
 
-#MAKE CONFIG FILE
+# MAKE CONFIG FILE
 
 singularity exec singularity/$SIMG \
 python software/flocs/runners/create_ms_list.py \
@@ -113,9 +113,14 @@ delay-calibration \
 --ddf_solsdir=$DDFOLDER/SOLSDIR \
 $TARGETDATA
 
+# update json
 jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": $nv}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+jq '. + {"subtract_lotss_model": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 
 ########################
+
+# MAKE TOIL STRUCTURE
 
 # make folder for running toil
 WORKDIR=$PWD/workdir
@@ -150,6 +155,7 @@ toil-cwl-runner \
 --coordinationDir ${OUTPUT} \
 --tmpdir-prefix ${TMPD}_interm/ \
 --disableAutoDeployment True \
+--no-clean True \
 --bypass-file-store \
 --preserve-entire-environment \
 --batchSystem slurm \
