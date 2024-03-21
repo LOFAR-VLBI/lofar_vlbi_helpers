@@ -15,6 +15,7 @@ import psutil
 from scipy.interpolate import InterpolatedUnivariateSpline
 
 
+
 # from builtins import str
 
 # ddf-pipeline
@@ -34,6 +35,22 @@ def getcpus():
         return int(slurmcpus)
     else:
         return get_physical_cpus()
+
+def getcpu_numbers():
+    # Get the current process ID
+    pid = os.getpid()
+
+    # Create a Process object using the current PID
+    current_process = psutil.Process(pid)
+
+    # Get the CPU cores (affinity) the current process is allowed to use
+    cpu_cores = current_process.cpu_affinity()
+
+    print("Current process is allowed to use CPU cores:", cpu_cores)
+    return cpu_cores
+
+def get_taskset():
+    return 'taskset -c ' + ','.join([str(cpu) for cpu in getcpu_numbers()])
 
 
 class bcolors(object):
@@ -101,11 +118,11 @@ def getimsize(image):
     his = hdul[0].header['HISTORY']
     for line in his:
         if 'Image-NPix' in line:
-            imsizeddf = np.int(line.split('=')[1])
+            imsizeddf = int(line.split('=')[1])
         elif 'Image-Cell' in line:
-            cellddf = np.float(line.split('=')[1])
+            cellddf = float(line.split('=')[1])
         elif 'Weight-Robust' in line:
-            robustddf = np.float(line.split('=')[1])
+            robustddf = float(line.split('=')[1])
 
     if imsizeddf is None:
         print('Could not determine the image size, should have been 20000(?) or 6000(?)')
@@ -794,7 +811,7 @@ if dopredict:
         print('Starting DDF for prediction')
         if args['h5sols'] != None:
             if not args['useHMP']:
-                run("DDF.py --Misc-IgnoreDeprecationMarking=1 --Output-Name=image_dd_SUB --Data-ChunkHours=" + str(
+                run(get_taskset()+" DDF.py --Misc-IgnoreDeprecationMarking=1 --Output-Name=image_dd_SUB --Data-ChunkHours=" + str(
                     args['chunkhours']) + " --Data-MS=" + args[
                         'mslist'] + " --Deconv-PeakFactor 0.001000 --Data-ColName " + args[
                         'column'] + " --Parallel-NCPU=" + str(
@@ -805,7 +822,7 @@ if dopredict:
                     args['h5sols'] + ":" + args[
                         'h5solstring'] + "] --Predict-InitDicoModel=" + outdico + " --Selection-UVRangeKm=" + uvsel + " --GAClean-MinSizeInit=10 --Cache-Reset 1 --Beam-Smooth=1 --Predict-ColName='PREDICT_SUB'")
             else:
-                run("DDF.py --Misc-IgnoreDeprecationMarking=1 --Output-Name=image_dd_SUB --Data-ChunkHours=" + str(
+                run(get_taskset()+" DDF.py --Misc-IgnoreDeprecationMarking=1 --Output-Name=image_dd_SUB --Data-ChunkHours=" + str(
                     args['chunkhours']) + " --Data-MS=" + args['mslist'] + " --Data-ColName " + args[
                         'column'] + " --Parallel-NCPU=" + str(
                     ncpu) + " --Facets-CatNodes=" + clustercat + " --Beam-CenterNorm=" + gethistorykey(outmask,
@@ -831,7 +848,7 @@ if dopredict:
                 else:
                     ddsolstr = "DDS3_full_smoothed,DDS3_full_slow"
 
-                run("DDF.py --Misc-IgnoreDeprecationMarking=1 --Output-Name=image_full_ampphase_di_m.NS_SUB --Data-ChunkHours=" + str(
+                run(get_taskset()+" DDF.py --Misc-IgnoreDeprecationMarking=1 --Output-Name=image_full_ampphase_di_m.NS_SUB --Data-ChunkHours=" + str(
                     args['chunkhours']) + " --Data-MS=" + args[
                         'mslist'] + " --Deconv-PeakFactor 0.001000 --Data-ColName " + args[
                         'column'] + " --Parallel-NCPU=" + str(
@@ -845,7 +862,7 @@ if dopredict:
                 else:
                     ddsolstr = "DDS3_full_smoothed,DDS3_full_slow"
 
-                run("DDF.py --Misc-IgnoreDeprecationMarking=1 --Output-Name=image_dd_SUB --Data-ChunkHours=" + str(
+                run(get_taskset()+" DDF.py --Misc-IgnoreDeprecationMarking=1 --Output-Name=image_dd_SUB --Data-ChunkHours=" + str(
                     args['chunkhours']) + " --Data-MS=" + args['mslist'] + " --Data-ColName " + args[
                         'column'] + " --Parallel-NCPU=" + str(
                     ncpu) + " --Facets-CatNodes=" + clustercat + " --Beam-CenterNorm=" + gethistorykey(outmask,
@@ -869,7 +886,7 @@ if dopredict:
         else:
             ddsolstr = "DDS3_full_smoothed"
 
-        run("DDF.py --Misc-IgnoreDeprecationMarking=1 --Output-Name=image_full_ampphase_di_m.NS_SUB --Data-MS=" + args[
+        run(get_taskset()+" DDF.py --Misc-IgnoreDeprecationMarking=1 --Output-Name=image_full_ampphase_di_m.NS_SUB --Data-MS=" + args[
             'mslist'] + " --Deconv-PeakFactor 0.001000 --Data-ColName " + args['column'] + " --Parallel-NCPU=" + str(
             ncpu) + " --Facets-CatNodes=" + clustercat + " --Beam-CenterNorm=1 --Deconv-Mode SSD --Beam-Model=LOFAR --Beam-LOFARBeamMode=A --Weight-Robust " + str(
             robust) + " --Image-NPix=" + str(
@@ -986,7 +1003,7 @@ if dokmscal:
 
     run("MaskDicoModel.py --MaskName=%s --InDicoModel=%s --OutDicoModel=%s" % (outmask_target, indico, outdico_target))
 
-    run("DDF.py --Misc-IgnoreDeprecationMarking=1 --Output-Name=image_full_ampphase_di_m.NS_TAR --Data-MS=" + args[
+    run(get_taskset()+" DDF.py --Misc-IgnoreDeprecationMarking=1 --Output-Name=image_full_ampphase_di_m.NS_TAR --Data-MS=" + args[
         'mslist'] + " --Deconv-PeakFactor 0.001000 --Data-ColName " + args['column'] + " --Parallel-NCPU=" + str(
         ncpu) + " --Facets-CatNodes=" + clustercat + " --Beam-CenterNorm=1 --Deconv-Mode SSD --Beam-Model=LOFAR --Beam-LOFARBeamMode=A --Weight-Robust -0.500000 --Image-NPix=20000 --CF-wmax 50000 --CF-Nw 100 --Output-Also onNeds --Image-Cell 1.500000 --Facets-NFacets=11 --SSDClean-NEnlargeData 0 --Freq-NDegridBand 1 --Beam-NBand 1 --Facets-DiamMax 1.5 --Facets-DiamMin 0.1 --Deconv-RMSFactor=3.000000 --SSDClean-ConvFFTSwitch 10000 --Data-Sort 1 --Cache-Dir=. --Log-Memory 1 --Cache-Weight=reset --Output-Mode=Predict --Output-RestoringBeam 6.000000 --Freq-NBand=2 --RIME-DecorrMode=FT --SSDClean-SSDSolvePars [S,Alpha] --SSDClean-BICFactor 0 --Mask-Auto=1 --Mask-SigTh=5.00 --Mask-External=" + outmask + " --DDESolutions-GlobalNorm=None --DDESolutions-DDModeGrid=AP --DDESolutions-DDModeDeGrid=AP --DDESolutions-DDSols=" + solsfile + " --Predict-InitDicoModel=" + outdico_target + " --Selection-UVRangeKm=" + uvsel + " --GAClean-MinSizeInit=10 --Cache-Reset 1 --Beam-Smooth=1 --Predict-ColName='PREDICT_TAR'")
 
@@ -1130,7 +1147,7 @@ for observation in range(number_of_unique_obsids(msfiles)):
 
     if split:
 
-        nchanperblock = np.int(20 / freqstepavg)
+        nchanperblock = int(20 / freqstepavg)
         t = pt.table(currentmsoutconcat + '/SPECTRAL_WINDOW', readonly=True)
         nchan = t.getcol('NUM_CHAN')[0]
         t.close()

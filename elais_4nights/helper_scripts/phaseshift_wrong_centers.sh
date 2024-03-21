@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH -c 5
-#SBATCH --array=0-25
+#SBATCH -c 2
+#SBATCH --array=0-272
 
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 
-pattern="../avg*L81*.ms"
+pattern="*.MS"
 MS_FILES=( $pattern )
 MS=${MS_FILES[${SLURM_ARRAY_TASK_ID}]}
 
@@ -14,7 +14,7 @@ msin=${MS} \
 msin.orderms=False \
 msin.missingdata=True \
 msin.datacolumn=DATA \
-msout=PS_SB_${SLURM_ARRAY_TASK_ID} \
+msout=${MS}.shifted \
 msout.storagemanager=dysco \
 msout.writefullresflag=False \
 steps=[ps] \

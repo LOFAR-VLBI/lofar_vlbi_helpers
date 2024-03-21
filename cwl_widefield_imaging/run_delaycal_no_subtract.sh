@@ -23,7 +23,7 @@ TARGETDATA=$(realpath "../target/data")
 # set up software
 mkdir -p software
 cd software
-git clone -b widefield https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
@@ -109,12 +109,13 @@ delay-calibration \
 --selfcal=$PWD/software/lofar_facet_selfcal \
 --delay_calibrator=$DELAYCAL \
 --linc=$PWD/software/LINC \
---ddf_solset=$PWD/DDF_merged.h5 \
---ddf_solsdir=$DDFOLDER/SOLSDIR \
 $TARGETDATA
+#--ddf_solset=$PWD/DDF_merged.h5 \
+#--ddf_solsdir=$DDFOLDER/SOLSDIR \
+
 
 # update json
-jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": $nv}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+#jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": $nv}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 #jq '. + {"subtract_lotss_model": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 
@@ -127,7 +128,7 @@ WORKDIR=$PWD/workdir
 OUTPUT=$PWD/outdir
 JOBSTORE=$PWD/jobstore
 LOGDIR=$PWD/logs
-TMPD=\$TMPDIR/tmpdir
+TMPD=$PWD/tmpdir
 
 mkdir -p ${TMPD}_interm
 mkdir -p $WORKDIR
@@ -142,7 +143,7 @@ source ${VENV}/bin/activate
 
 toil-cwl-runner \
 --no-read-only \
---retryCount 0 \
+--retryCount 2 \
 --singularity \
 --disableCaching \
 --writeLogsFromAllJobs True \
