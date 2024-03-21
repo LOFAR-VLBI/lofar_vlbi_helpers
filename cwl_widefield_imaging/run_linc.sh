@@ -26,5 +26,5 @@ cd ../
 
 echo "Run LINC target from $SCRIPT_DIR on Data in $STARTDIR/target"
 cd target
-singularity exec -B ${SING_BIND} ${SIMG} run_LINC_target.sh -d $STARTDIR/target/data -c $STARTDIR/calibrator/*_LINC_calibrator/results_LINC_calibrator/cal_solutions.h5
+singularity exec -B ${SING_BIND} ${SIMG} run_LINC_target.sh -d $STARTDIR/target/data -c $STARTDIR/calibrator/*_LINC_calibrator/results_LINC_calibrator/cal_solutions.h5 -e "--make_structure_plot=False"
 cd ../
