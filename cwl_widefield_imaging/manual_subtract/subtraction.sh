@@ -15,7 +15,7 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 /project/lofarvwf/Software/lofar_helpers/ms_helpers/applycal.py \
 --msin ${MS} \
 --colout DATA_DI_CORRECTED \
---h5 ../../delaycal_subtract/DDF_merged.h5
+--h5 ../../delaycal/DDF_merged.h5
 
 echo "SUBTRACT"
 singularity exec -B $SING_BIND $SIMG_P2 python /project/lofarvwf/Software/lofar_facet_selfcal/sub-sources-outside-region.py \
