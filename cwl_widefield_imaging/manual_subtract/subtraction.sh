@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 24 --job-name=subtract --exclusive --constraint="rome|intel" -t 36:00:00
+#SBATCH -N 1 -c 24 --job-name=subtract --exclusive -t 24:00:00
 
 echo "Job landed on $(hostname)"
 
