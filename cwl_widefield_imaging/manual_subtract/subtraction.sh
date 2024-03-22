@@ -5,7 +5,8 @@ echo "Job landed on $(hostname)"
 
 MS=$1
 
-SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v3.3.4_x86-64_generic_avx512_ddfpublic.sif
+SIMG_P2=/project/lofarvwf/Software/singularity/lofar_sksp_v3.3.4_x86-64_generic_avx512_ddfpublic.sif
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 
@@ -17,7 +18,7 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 --h5 ../../delaycal_subtract/DDF_merged.h5
 
 echo "SUBTRACT"
-singularity exec -B $SING_BIND $SIMG python /project/lofarvwf/Software/lofar_facet_selfcal/sub-sources-outside-region.py \
+singularity exec -B $SING_BIND $SIMG_P2 python /project/lofarvwf/Software/lofar_facet_selfcal/sub-sources-outside-region.py \
 --boxfile boxfile.reg \
 --column DATA_DI_CORRECTED \
 --freqavg 1 \
