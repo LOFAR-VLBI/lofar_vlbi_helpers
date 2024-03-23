@@ -3,6 +3,9 @@
 
 echo "Job landed on $(hostname)"
 
+  re="[0-9]{3}MHz"
+  if [[ $MS =~ $re ]]; then SB=${BASH_REMATCH}; fi
+
 MS=$1
 
 SIMG_P2=/project/lofarvwf/Software/singularity/lofar_sksp_v3.3.4_x86-64_generic_avx512_ddfpublic.sif
@@ -16,6 +19,9 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 --msin ${MS} \
 --colout DATA_DI_CORRECTED \
 --h5 ../../delaycal/DDF_merged.h5
+
+mkdir SOLSDIR/${MS}
+mv SOLSDIR/*${SB}*/* SOLSDIR/${MS}
 
 echo "SUBTRACT"
 singularity exec -B $SING_BIND $SIMG_P2 python /project/lofarvwf/Software/lofar_facet_selfcal/sub-sources-outside-region.py \
