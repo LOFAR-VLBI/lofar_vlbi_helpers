@@ -93,7 +93,8 @@ python software/lofar_helpers/h5_merger.py \
 --propagate_flags \
 --add_ms_stations \
 --ms $( ls $TARGETDATA/*.MS -1d | head -n 1) \
---merge_diff_freq
+--merge_diff_freq \
+--h5_time_freq true
 
 ########################
 
