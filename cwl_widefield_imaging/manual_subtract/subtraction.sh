@@ -23,6 +23,8 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 mkdir SOLSDIR/${MS}
 mv SOLSDIR/*${SB}*/* SOLSDIR/${MS}
 
+singularity exec -B $SING_BIND $SIMG_P2 python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/cwl_widefield_imaging/manual_subtract/fix_symlink.py
+
 echo "SUBTRACT"
 singularity exec -B $SING_BIND $SIMG_P2 python /project/lofarvwf/Software/lofar_facet_selfcal/sub-sources-outside-region.py \
 --boxfile boxfile.reg \
