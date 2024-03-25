@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 24 --job-name=subtract --exclusive -t 13:00:00
+#SBATCH -N 1 -c 24 --job-name=subtract --exclusive -t 20:00:00
 
 echo "Job landed on $(hostname)"
 
@@ -36,7 +36,6 @@ singularity exec -B $SING_BIND $SIMG_P2 python /project/lofarvwf/Software/lofar_
 --nophaseshift \
 --chunkhours 0.5 \
 --onlyuseweightspectrum \
---nofixsym \
 --mslist mslist.txt
 
 mv sub6asec* ../
