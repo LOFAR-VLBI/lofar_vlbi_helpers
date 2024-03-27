@@ -10,6 +10,7 @@ export TOIL_SLURM_ARGS="--export=ALL --job-name delaycal -p normal"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
+CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
 VENV=/home/lofarvwf-jdejong/venv
 
@@ -105,7 +106,7 @@ python software/flocs/runners/create_ms_list.py \
 VLBI \
 delay-calibration \
 --solset=$( ls /project/lofarvwf/Share/jdejong/output/ELAIS/L686906/L686906/target/L*_LINC_target/results_LINC_target/cal_solutions.h5 ) \
---configfile=$PWD/software/VLBI_cwl/facetselfcal_config.txt \
+--configfile=$CONFIG \
 --h5merger=$PWD/software/lofar_helpers \
 --selfcal=$PWD/software/lofar_facet_selfcal \
 --delay_calibrator=$DELAYCAL \
@@ -160,7 +161,7 @@ toil-cwl-runner \
 --bypass-file-store \
 --preserve-entire-environment \
 --batchSystem slurm \
-software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
+/project/lofarvwf/Software/VLBI-cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
 #--cleanWorkDir never \ --> for testing
 
 ########################
