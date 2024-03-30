@@ -1,16 +1,16 @@
 #!/bin/bash
-#SBATCH --output=delay_%j.out
-#SBATCH --error=delay_%j.err
+#SBATCH --output=splitdir_%j.out
+#SBATCH --error=splitdir_%j.err
 
 #NOTE: works only with TOIL>6.0.0
 
+JSON=$1
+
 #### UPDATE THESE ####
 
-export TOIL_SLURM_ARGS="--export=ALL --job-name delaycal -p normal"
+export TOIL_SLURM_ARGS="--export=ALL --job-name splitdir -p normal"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
-DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
-CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
 VENV=/home/lofarvwf-jdejong/venv
 
@@ -18,13 +18,10 @@ VENV=/home/lofarvwf-jdejong/venv
 
 # SETUP ENVIRONMENT
 
-DDFOLDER=$(realpath "../ddf")
-TARGETDATA=$(realpath "../target/data")
-
 # set up software
 mkdir -p software
 cd software
-git clone -b widefield https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+git clone -b dd_selection https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
@@ -70,57 +67,8 @@ export LINC_DATA_ROOT=$PWD/software/LINC
 
 ########################
 
-# PREP SOLUTIONS
-
-# convert DDF solution files to h5parm
-C=0
-for KILLMSFILE in $DDFOLDER/SOLSDIR/*MHz_uv_pre-cal.ms/*DIS2*.sols.npz; do
-  echo ${KILLMSFILE}
-  singularity exec singularity/$SIMG \
-  python software/losoto/bin/killMS2H5parm.py \
-  --solset sol000 \
-  --verbose \
-  DDF${C}.h5 \
-  ${KILLMSFILE}
-
-  ((C++))  # increment the counter
-done
-
-# merge h5parm into 1 file
-singularity exec singularity/$SIMG \
-python software/lofar_helpers/h5_merger.py \
---h5_tables DDF*.h5 \
---h5_out DDF_merged.h5 \
---propagate_flags \
---add_ms_stations \
---ms $( ls $TARGETDATA/*.MS -1d | head -n 1) \
---merge_diff_freq \
---h5_time_freq true
-
-########################
-
 # MAKE CONFIG FILE
-
-singularity exec singularity/$SIMG \
-python software/flocs/runners/create_ms_list.py \
-VLBI \
-delay-calibration \
---solset=$( ls /project/lofarvwf/Share/jdejong/output/ELAIS/L686906/L686906/target/L*_LINC_target/results_LINC_target/cal_solutions.h5 ) \
---configfile=$CONFIG \
---h5merger=$PWD/software/lofar_helpers \
---selfcal=$PWD/software/lofar_facet_selfcal \
---delay_calibrator=$DELAYCAL \
---linc=$PWD/software/LINC \
---ddf_solset=$PWD/DDF_merged.h5 \
---ddf_solsdir=$DDFOLDER/SOLSDIR \
-$TARGETDATA
-
-# update json
-jq --arg nv "$PWD/DDF_merged.h5" '. + {"ddf_solset": {"class": "File", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq --arg nv "$DDFOLDER/SOLSDIR" '. + {"ddf_solsdir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq '. + {"subtract_lotss_model": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+#TODO
 
 ########################
 
@@ -162,7 +110,7 @@ toil-cwl-runner \
 --bypass-file-store \
 --preserve-entire-environment \
 --batchSystem slurm \
-software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
+software/VLBI_cwl/workflows/split-directions.cwl $JSON
 #--cleanWorkDir never \ --> for testing
 
 ########################
