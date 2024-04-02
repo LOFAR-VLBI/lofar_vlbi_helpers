@@ -105,7 +105,7 @@ singularity exec singularity/$SIMG \
 python software/flocs/runners/create_ms_list.py \
 VLBI \
 delay-calibration \
---solset=$( ls /project/lofarvwf/Share/jdejong/output/ELAIS/L686906/L686906/target/L*_LINC_target/results_LINC_target/cal_solutions.h5 ) \
+--solset=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)") \
 --configfile=$CONFIG \
 --h5merger=$PWD/software/lofar_helpers \
 --selfcal=$PWD/software/lofar_facet_selfcal \
