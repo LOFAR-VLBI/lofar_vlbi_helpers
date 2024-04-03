@@ -20,6 +20,7 @@ VENV=/home/lofarvwf-jdejong/venv
 
 DDFOLDER=$(realpath "../ddf")
 TARGETDATA=$(realpath "../target/data")
+SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
 
 # set up software
 mkdir -p software
@@ -105,7 +106,7 @@ singularity exec singularity/$SIMG \
 python software/flocs/runners/create_ms_list.py \
 VLBI \
 delay-calibration \
---solset=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)") \
+--solset=$SOLSET \
 --configfile=$CONFIG \
 --h5merger=$PWD/software/lofar_helpers \
 --selfcal=$PWD/software/lofar_facet_selfcal \
@@ -120,6 +121,18 @@ $TARGETDATA
 #jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": $nv}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 #jq '. + {"subtract_lotss_model": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+
+source ${VENV}/bin/activate
+
+TGSSphase_final_lines=$(python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase_final" | wc -l)
+# Check if the line count is greater than 1
+if [ "$TGSSphase_final_lines" -ge 1 ]; then
+    echo "Use TGSSphase_final"
+    jq '. + {"phasesol": "TGSSphase_final"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+else
+    echo "Use TGSSphase"
+    jq '. + {"phasesol": "TGSSphase"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+fi
 
 ########################
 
@@ -136,8 +149,6 @@ mkdir -p ${TMPD}_interm
 mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
-
-source ${VENV}/bin/activate
 
 ########################
 

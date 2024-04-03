@@ -1,31 +1,41 @@
 #!/bin/bash
-#SBATCH -N 1 -c 24 --job-name=subtract -t 30:00:00
+#SBATCH -N 1 -c 31 --job-name=subtract -t 24:00:00 --nodelist=wn-dc-[01-18]
 
 echo "Job landed on $(hostname)"
 
 re="[0-9]{3}MHz"
 if [[ $MS =~ $re ]]; then SB=${BASH_REMATCH}; fi
 
-MS=$1
-
 SIMG=/project/lofarvwf/Software/singularity/flocs_v5.1.0_znver2_znver2_test.sif
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
-echo "SINGULARITY IS $SIMG"
+
+MS=$1
+
+OUTPUT=$(realpath ../)
+RUNDIR=$TMPDIR/subtract
+H5=$(realpath ../../delaycal/DDF_merged.h5)
+
+mkdir $RUNDIR
+cp $SIMG $RUNDIR
+cp -r * $RUNDIR
+cp $H5 $RUNDIR
+
+cd $RUNDIR
 
 echo "Applycal"
 singularity exec -B ${SING_BIND} ${SIMG} python \
 /project/lofarvwf/Software/lofar_helpers/ms_helpers/applycal.py \
 --msin ${MS} \
 --colout DATA_DI_CORRECTED \
---h5 ../../delaycal/DDF_merged.h5
+--h5 ${H5##*/}
 
 mkdir SOLSDIR/${MS}
 mv SOLSDIR/*${SB}*/* SOLSDIR/${MS}
 
-singularity exec -B $SING_BIND $SIMG python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/cwl_widefield_imaging/manual_subtract/fix_symlink.py
+singularity exec -B $SING_BIND ${SIMG##*/} python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/cwl_widefield_imaging/manual_subtract/fix_symlink.py
 
 echo "SUBTRACT"
-singularity exec -B $SING_BIND $SIMG sub-sources-outside-region.py \
+singularity exec -B $PWD ${SIMG##*/} sub-sources-outside-region.py \
 --boxfile boxfile.reg \
 --column DATA_DI_CORRECTED \
 --freqavg 1 \
@@ -39,6 +49,6 @@ singularity exec -B $SING_BIND $SIMG sub-sources-outside-region.py \
 --onlyuseweightspectrum \
 --mslist mslist.txt
 
-mv sub6asec* ../
+mv sub6asec* $OUTPUT
 
 echo "SUBTRACT END"
