@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 31 --job-name=subtract -t 24:00:00 --nodelist=wn-dc-[01-18]
+#SBATCH -N 1 -c 31 --job-name=subtract -t 24:00:00
 
 echo "Job landed on $(hostname)"
 
