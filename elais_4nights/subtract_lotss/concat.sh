@@ -10,10 +10,8 @@ echo "SINGULARITY IS $SIMG"
 
 ls sub6asec*.ms -1d > "mslist.txt"
 
-#TODO:upgrade this script (dummy now in wrong order)
-# check input
-#singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
-#python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/check_missing_freqs_in_ms.py --ms sub6asec*.ms --make_dummies
+singularity exec -B $PWD,/project,/home/lofarvwf-jdejong/scripts $SIMG \
+python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/extra_scripts/check_missing_freqs_in_ms.py --ms sub6asec*.ms --make_dummies
 
 MS_VECTOR=[$(cat  mslist.txt |tr "\n" ",")]
 

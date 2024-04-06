@@ -14,7 +14,7 @@ singularity exec -B $SING_BIND $SIMG wsclean \
 -taper-gaussian 20arcsec \
 -no-update-model-required \
 -minuv-l 80 \
--size 9000 9000 \
+-size 6000 6000 \
 -reorder \
 -weight briggs -0.5 \
 -parallel-reordering 4 \
