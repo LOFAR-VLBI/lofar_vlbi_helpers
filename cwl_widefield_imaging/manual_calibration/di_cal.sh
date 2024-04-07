@@ -15,7 +15,7 @@ lofar_facet_selfcal=$( python3 $HOME/parse_settings.py --facet_selfcal )
 
 singularity exec -B $SING_BIND $SIMG python $lofar_facet_selfcal \
 --imsize=1600 \
--i selfcal_allstations_LBCS_4sets_default \
+-i DI_selfcal \
 --pixelscale=0.075 \
 --uvmin=20000 \
 --robust=-1.5 \
