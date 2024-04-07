@@ -12,7 +12,7 @@ SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 MS=$1
 
 OUTPUT=$(realpath ../)
-RUNDIR=$TMPDIR/subtract
+RUNDIR=$TMPDIR/subtract_${SLURM_JOB_ID}
 H5=$(realpath ../../delaycal/DDF_merged.h5)
 
 mkdir $RUNDIR

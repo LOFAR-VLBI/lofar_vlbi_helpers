@@ -1,26 +1,40 @@
 #!/bin/bash
-#SBATCH -N 1 -c 16 --job-name=dical -t 24:00:00
+#SBATCH -N 1 -c 16 --job-name=dical -t 36:00:00
 
-#############
+##########################
+
 #UPDATE THESE
 SKYMODEL=/project/lofarvwf/Share/jdejong/output/ELAIS/7C1604+5529.skymodel
-#############
+FACETSELFCAL=/project/lofarvwf/Software/lofar_facet_selfcal
+LOFARHELPERS=/project/lofarvwf/Software/lofar_helpers
+
+##########################
+
+RUNDIR=$TMPDIR/dical_${SLURM_JOB_ID}
+OUTDIR=$PWD
 
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
-SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 echo "SINGULARITY IS $SIMG"
 
-#SCRIPTS
-lofar_facet_selfcal=$( python3 $HOME/parse_settings.py --facet_selfcal )
+# COPY TO RUNDIR
+cp $SIMG $RUNDIR
+cp $SKYMODEL $RUNDIR
+cp -r *.ms $RUNDIR
+cp -r $FACETSELFCAL $RUNDIR
+mkdir $RUNDIR/lofar_helpers
+cp -r $LOFARHELPERS/h5_merger.py $RUNDIR
 
-singularity exec -B $SING_BIND $SIMG python $lofar_facet_selfcal \
+cd $RUNDIR
+
+# RUN SCRIPT
+singularity exec -B $PWD ${SIMG##*/} python lofar_facet_selfcal/facetselfcal.py \
 --imsize=1600 \
 -i DI_selfcal \
 --pixelscale=0.075 \
 --uvmin=20000 \
 --robust=-1.5 \
 --uvminim=1500 \
---skymodel=$SKYMODEL \
+--skymodel=${SKYMODEL##*/} \
 --soltype-list="['scalarphasediff','scalarphase','scalarphase','scalarphase','scalarcomplexgain','fulljones','scalarcomplexgain']" \
 --soltypecycles-list="[0,0,0,0,0,0,0]" \
 --solint-list="['8min','32s','32s','2min','20min','20min','40min']" \
@@ -40,6 +54,12 @@ singularity exec -B $SING_BIND $SIMG python $lofar_facet_selfcal \
 --resetsols-list="[None,'alldutch','core',None,None,None,None]" \
 --stop=1 \
 --stopafterskysolve \
---helperscriptspath=/project/lofarvwf/Software/lofar_facet_selfcal \
---helperscriptspathh5merge=/project/lofarvwf/Software/lofar_helpers \
+--helperscriptspath=lofar_facet_selfcal \
+--helperscriptspathh5merge=lofar_helpers \
 *.ms
+
+# OUTPUT
+rm -rf lofar_facet_selfcal
+rm -rf lofar_helpers
+rm -rf *.ms
+cp -r * $OUTDIR
