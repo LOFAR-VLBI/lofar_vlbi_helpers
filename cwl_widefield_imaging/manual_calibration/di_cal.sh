@@ -12,6 +12,7 @@ LOFARHELPERS=/project/lofarvwf/Software/lofar_helpers
 
 RUNDIR=$TMPDIR/dical_${SLURM_JOB_ID}
 OUTDIR=$PWD
+mkdir -p $RUNDIR
 
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 echo "SINGULARITY IS $SIMG"
