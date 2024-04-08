@@ -55,8 +55,8 @@ singularity exec -B $PWD ${SIMG##*/} python lofar_facet_selfcal/facetselfcal.py 
 --resetsols-list="[None,'alldutch','core',None,None,None,None]" \
 --stop=1 \
 --stopafterskysolve \
---helperscriptspath=lofar_facet_selfcal \
---helperscriptspathh5merge=lofar_helpers \
+--helperscriptspath=$RUNDIR/lofar_facet_selfcal \
+--helperscriptspathh5merge=$RUNDIR/lofar_helpers \
 *.ms
 
 # OUTPUT
