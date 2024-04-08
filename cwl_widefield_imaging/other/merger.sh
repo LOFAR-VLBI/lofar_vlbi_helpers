@@ -7,7 +7,7 @@ TARGETDATA=$(realpath "../target/data")
 
 # merge h5parm into 1 file
 singularity exec -B /project/lofarvwf,$PWD singularity/$SIMG \
-python software/lofar_helpers/h5_merger.py \
+python /project/lofarvwf/Software/lofar_helpers/h5_merger.py \
 --h5_tables DDF*.h5 \
 --h5_out DDF_merged.h5 \
 --propagate_flags \
