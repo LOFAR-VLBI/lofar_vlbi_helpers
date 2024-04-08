@@ -23,7 +23,7 @@ cp $SKYMODEL $RUNDIR
 cp -r *.ms $RUNDIR
 cp -r $FACETSELFCAL $RUNDIR
 mkdir $RUNDIR/lofar_helpers
-cp -r $LOFARHELPERS/h5_merger.py $RUNDIR
+cp -r $LOFARHELPERS/h5_merger.py $RUNDIR/lofar_helpers
 
 cd $RUNDIR
 
