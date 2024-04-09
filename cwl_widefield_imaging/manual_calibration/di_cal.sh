@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -N 1 -c 16 --job-name=dical -t 36:00:00
+#SBATCH -N 1 -c 16 --job-name=dical -t 10:00:00
 
 ##########################
 
@@ -49,6 +49,7 @@ singularity exec -B $PWD ${SIMG##*/} python lofar_facet_selfcal/facetselfcal.py 
 --avgtimestep='32s' \
 --docircular \
 --skipbackup \
+--useaoflagger \
 --uvminscalarphasediff=0 \
 --makeimage-ILTlowres-HBA \
 --makeimage-fullpol \

@@ -20,11 +20,12 @@ VENV=/home/lofarvwf-jdejong/venv
 
 DDFOLDER=$(realpath "../ddf")
 TARGETDATA=$(realpath "../target/data")
+SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
 
 # set up software
 mkdir -p software
 cd software
-git clone -b widefield https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
@@ -105,22 +106,20 @@ singularity exec singularity/$SIMG \
 python software/flocs/runners/create_ms_list.py \
 VLBI \
 delay-calibration \
---solset=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)") \
+--solset=$SOLSET \
 --configfile=$CONFIG \
 --h5merger=$PWD/software/lofar_helpers \
 --selfcal=$PWD/software/lofar_facet_selfcal \
 --delay_calibrator=$DELAYCAL \
 --linc=$PWD/software/LINC \
---ddf_solset=$PWD/DDF_merged.h5 \
---ddf_solsdir=$DDFOLDER/SOLSDIR \
 $TARGETDATA
+#--ddf_solset=$PWD/DDF_merged.h5 \
+#--ddf_solsdir=$DDFOLDER/SOLSDIR \
+
 
 # update json
-jq --arg nv "$PWD/DDF_merged.h5" '. + {"ddf_solset": {"class": "File", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq --arg nv "$DDFOLDER/SOLSDIR" '. + {"ddf_solsdir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq '. + {"subtract_lotss_model": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+jq '. + {"reference_stationSB": 75}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 
 source ${VENV}/bin/activate
 
@@ -150,14 +149,13 @@ mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
 
-
 ########################
 
 # RUN TOIL
 
 toil-cwl-runner \
 --no-read-only \
---retryCount 0 \
+--retryCount 2 \
 --singularity \
 --disableCaching \
 --writeLogsFromAllJobs True \
@@ -173,7 +171,7 @@ toil-cwl-runner \
 --bypass-file-store \
 --preserve-entire-environment \
 --batchSystem slurm \
-software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
+/project/lofarvwf/Software/VLBI-cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
 #--cleanWorkDir never \ --> for testing
 
 ########################
