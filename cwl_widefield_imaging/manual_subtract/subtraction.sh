@@ -47,7 +47,8 @@ singularity exec -B $PWD ${SIMG##*/} sub-sources-outside-region.py \
 --nophaseshift \
 --chunkhours 0.5 \
 --onlyuseweightspectrum \
---mslist mslist.txt
+--mslist mslist.txt \
+--nofixsym
 
 mv sub6asec* $OUTPUT
 
