@@ -49,7 +49,6 @@ singularity exec -B $PWD ${SIMG##*/} python lofar_facet_selfcal/facetselfcal.py 
 --avgtimestep='32s' \
 --docircular \
 --skipbackup \
---useaoflagger \
 --uvminscalarphasediff=0 \
 --makeimage-ILTlowres-HBA \
 --makeimage-fullpol \
