@@ -5,7 +5,7 @@
 
 #UPDATE THESE
 SKYMODEL=/project/lofarvwf/Share/jdejong/output/ELAIS/7C1604+5529.skymodel
-FACETSELFCAL=/project/lofarvwf/Software/lofar_facet_selfcal
+FACETSELFCAL=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal
 LOFARHELPERS=/project/lofarvwf/Software/lofar_helpers
 
 ##########################
@@ -63,4 +63,5 @@ singularity exec -B $PWD ${SIMG##*/} python lofar_facet_selfcal/facetselfcal.py 
 rm -rf lofar_facet_selfcal
 rm -rf lofar_helpers
 rm -rf *.ms
+rm *-000?-*
 cp -r * $OUTDIR
