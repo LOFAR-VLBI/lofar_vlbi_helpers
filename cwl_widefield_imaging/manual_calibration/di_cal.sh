@@ -14,7 +14,7 @@ RUNDIR=$TMPDIR/dical_${SLURM_JOB_ID}
 OUTDIR=$PWD
 mkdir -p $RUNDIR
 
-SIMG=$( python3 $HOME/parse_settings.py --SIMG )
+SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.4.0_znver2_znver2_aocl4.sif
 echo "SINGULARITY IS $SIMG"
 
 # COPY TO RUNDIR
