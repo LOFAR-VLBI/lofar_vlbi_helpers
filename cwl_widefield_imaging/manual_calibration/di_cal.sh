@@ -5,7 +5,7 @@
 
 #UPDATE THESE
 SKYMODEL=/project/lofarvwf/Share/jdejong/output/ELAIS/7C1604+5529.skymodel
-FACETSELFCAL=/home/lofarvwf-jdejong/scripts/lofar_facet_selfcal
+FACETSELFCAL=/project/lofarvwf/Software/lofar_facet_selfcal
 LOFARHELPERS=/project/lofarvwf/Software/lofar_helpers
 
 ##########################
@@ -14,7 +14,7 @@ RUNDIR=$TMPDIR/dical_${SLURM_JOB_ID}
 OUTDIR=$PWD
 mkdir -p $RUNDIR
 
-SIMG=/project/lofarvwf/Software/singularity/lofar_sksp_v4.4.0_znver2_znver2_aocl4.sif
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 echo "SINGULARITY IS $SIMG"
 
 # COPY TO RUNDIR
