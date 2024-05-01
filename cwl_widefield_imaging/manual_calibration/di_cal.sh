@@ -39,7 +39,7 @@ singularity exec -B $PWD ${SIMG##*/} python lofar_facet_selfcal/facetselfcal.py 
 --soltype-list="['scalarphasediff','scalarphase','scalarphase','scalarphase','scalarcomplexgain','fulljones']" \
 --soltypecycles-list="[0,0,0,0,0,0]" \
 --solint-list="['8min','32s','32s','2min','20min','20min']" \
---nchan-list="[1,1,1,1,1]" \
+--nchan-list="[1,1,1,1,1,1]" \
 --smoothnessconstraint-list="[10.0,1.25,10.0,20.,7.5,5.0]" \
 --normamps=False \
 --smoothnessreffrequency-list="[120.,120.,120.,120,0.,0.]" \
