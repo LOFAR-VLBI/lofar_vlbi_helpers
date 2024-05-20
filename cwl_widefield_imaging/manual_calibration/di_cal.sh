@@ -10,6 +10,8 @@ LOFARHELPERS=/project/lofarvwf/Software/lofar_helpers
 
 ##########################
 
+NAME=$1
+
 RUNDIR=$TMPDIR/dical_${SLURM_JOB_ID}
 OUTDIR=$PWD
 mkdir -p $RUNDIR
@@ -30,7 +32,7 @@ cd $RUNDIR
 # RUN SCRIPT
 singularity exec -B $PWD ${SIMG##*/} python lofar_facet_selfcal/facetselfcal.py \
 --imsize=1600 \
--i DI_selfcal \
+-i DI_${NAME} \
 --pixelscale=0.075 \
 --uvmin=20000 \
 --robust=-1.5 \

@@ -24,7 +24,7 @@ TARGETDATA=$(realpath "../target/data")
 # set up software
 mkdir -p software
 cd software
-git clone -b widefield https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
@@ -42,7 +42,7 @@ cd ../
 # set up singularity
 SIMG=vlbi-cwl.sif
 mkdir -p singularity
-wget https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-grid-hpccloud/amd/flocs_v5.0.0_znver2_znver2_aocl_cuda.sif -O singularity/$SIMG
+wget https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/flocs_v5.1.0_znver2_znver2_test.sif -O singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
