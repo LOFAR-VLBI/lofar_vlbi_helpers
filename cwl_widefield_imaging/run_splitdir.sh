@@ -21,7 +21,7 @@ VENV=/home/lofarvwf-jdejong/venv
 
 # SETUP ENVIRONMENT
 
-SUBTRACTDATA=$(realpath "../subtract")
+SUBTRACTDATA=$(realpath "../../subtract")
 
 # set up software
 mkdir -p software
