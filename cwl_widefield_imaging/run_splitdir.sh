@@ -86,7 +86,7 @@ split-directions \
 --ms_suffix ".ms" \
 $SUBTRACTDATA
 
-jq '. + {"do_selection": true}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
+jq '. + {"dd_selection": true}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
 
 
 ########################
