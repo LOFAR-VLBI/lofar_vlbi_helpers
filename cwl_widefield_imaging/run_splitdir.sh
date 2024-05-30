@@ -4,19 +4,24 @@
 
 #NOTE: works only with TOIL>6.0.0
 
-JSON=$1
+LNUM=$1
 
 #### UPDATE THESE ####
 
 export TOIL_SLURM_ARGS="--export=ALL --job-name splitdir -p normal"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
+CAT=/project/lofarvwf/Share/jdejong/output/ELAIS/dd_candidate.csv
+SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/all_dicalsolutions/merged_${LNUM}_linear.h5
+CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
 VENV=/home/lofarvwf-jdejong/venv
 
 ######################
 
 # SETUP ENVIRONMENT
+
+SUBTRACTDATA=$(realpath "../subtract")
 
 # set up software
 mkdir -p software
@@ -67,12 +72,26 @@ export LINC_DATA_ROOT=$PWD/software/LINC
 
 ########################
 
-# MAKE CONFIG FILE
-#TODO
+singularity exec singularity/$SIMG \
+python software/flocs/runners/create_ms_list.py \
+VLBI \
+split-directions \
+--configfile=$CONFIG \
+--h5merger=$PWD/software/lofar_helpers \
+--selfcal=$PWD/software/lofar_facet_selfcal \
+--do_selfcal=false \
+--image_cat=$CAT \
+--linc=$PWD/software/LINC \
+--delay_solset=$SOLSET \
+--ms_suffix ".ms" \
+$SUBTRACTDATA
+
+jq '. + {"do_selection": true}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
+
 
 ########################
 
-# MAKE TOIL STRUCTURE
+# MAKE TOIL RUNNING STRUCTURE
 
 # make folder for running toil
 WORKDIR=$PWD/workdir
@@ -110,7 +129,7 @@ toil-cwl-runner \
 --bypass-file-store \
 --preserve-entire-environment \
 --batchSystem slurm \
-software/VLBI_cwl/workflows/split-directions.cwl $JSON
+software/VLBI_cwl/workflows/split-directions.cwl mslist_VLBI_split_directions.json
 #--cleanWorkDir never \ --> for testing
 
 ########################

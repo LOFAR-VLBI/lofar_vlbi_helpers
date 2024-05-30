@@ -20,6 +20,7 @@ VENV=/home/lofarvwf-jdejong/venv
 
 DDFOLDER=$(realpath "../ddf")
 TARGETDATA=$(realpath "../target/data")
+SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
 
 # set up software
 mkdir -p software
@@ -111,7 +112,6 @@ delay-calibration \
 --selfcal=$PWD/software/lofar_facet_selfcal \
 --delay_calibrator=$DELAYCAL \
 --linc=$PWD/software/LINC \
---ddf_solset=$PWD/DDF_merged.h5 \
 --ddf_solsdir=$DDFOLDER/SOLSDIR \
 $TARGETDATA
 
@@ -124,7 +124,7 @@ jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && 
 
 source ${VENV}/bin/activate
 
-TGSSphase_final_lines=$(python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase_final" | wc -l)
+TGSSphase_final_lines=$(singularity exec singularity/$SIMG python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase_final" | wc -l)
 # Check if the line count is greater than 1
 if [ "$TGSSphase_final_lines" -ge 1 ]; then
     echo "Use TGSSphase_final"
