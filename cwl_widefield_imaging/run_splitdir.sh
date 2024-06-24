@@ -8,7 +8,7 @@ LNUM=$1
 
 #### UPDATE THESE ####
 
-export TOIL_SLURM_ARGS="--export=ALL --job-name splitdir -p normal"
+export TOIL_SLURM_ARGS="--export=ALL --job-name splitdir -p normal --constraint=rome"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
 CAT=/project/lofarvwf/Share/jdejong/output/ELAIS/dd_candidate.csv
@@ -36,6 +36,7 @@ mkdir scripts
 cp LINC/scripts/* scripts
 cp VLBI_cwl/scripts/* scripts
 SCRIPTS_PATH=$PWD/scripts
+chmod 755 ${SCRIPTS_PATH}/*
 SING_BIND=${SING_BIND}",${SCRIPTS_PATH}:/opt/lofar/DynSpecMS"
 PYPATH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PYTHONPATH
 PTH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PATH
@@ -123,13 +124,12 @@ toil-cwl-runner \
 --tmp-outdir-prefix ${TMPD}/ \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
---coordinationDir ${OUTPUT} \
 --tmpdir-prefix ${TMPD}_interm/ \
 --disableAutoDeployment True \
 --bypass-file-store \
 --preserve-entire-environment \
 --batchSystem slurm \
-software/VLBI_cwl/workflows/split-directions.cwl mslist_VLBI_split_directions.json
+software/VLBI_cwl/workflows/alternative_workflows/split-directions-toil.cwl mslist_VLBI_split_directions.json
 #--cleanWorkDir never \ --> for testing
 
 ########################

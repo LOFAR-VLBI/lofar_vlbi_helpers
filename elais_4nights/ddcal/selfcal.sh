@@ -18,11 +18,11 @@ python $lofar_facet_selfcal \
 -i selfcal \
 --phaseupstations='core' \
 --auto \
---useaoflagger \
 --makeimage-ILTlowres-HBA \
 --targetcalILT='scalarphase' \
 --stop=12 \
 --makeimage-fullpol \
+--get_diagnostics \
 --helperscriptspath=/project/lofarvwf/Software/lofar_facet_selfcal \
 --helperscriptspathh5merge=/project/lofarvwf/Software/lofar_helpers \
 ${MS}
