@@ -4,11 +4,12 @@ LNUM=$1
 CSV=$2
 
 #GET SCRIPT RUN DIRECTORY
-if [ -n "${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" ] ; then
-SCRIPT=$(scontrol show job "${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" | awk -F= '/Command=/{print $TARHTML}')
-export SCRIPT_DIR=$( echo ${SCRIPT%/*} )
+
+if [ -n "${SLURM_ARRAY_JOB_ID}" ] && [ -n "${SLURM_ARRAY_TASK_ID}" ]; then
+  SCRIPT=$(scontrol show job "${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" | awk -F= '/Command=/{print $2}')
+  export SCRIPT_DIR=$(dirname "${SCRIPT}")
 else
-export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+  export SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
 
 source ${SCRIPT_DIR}/other/chunk_csv.sh $CSV
