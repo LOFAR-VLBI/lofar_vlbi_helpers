@@ -5,13 +5,14 @@
 #NOTE: works only with TOIL>6.0.0
 
 LNUM=$1
+CSV=$2
 
 #### UPDATE THESE ####
 
 export TOIL_SLURM_ARGS="--export=ALL --job-name splitdir -p normal --constraint=rome"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
-CAT=/project/lofarvwf/Share/jdejong/output/ELAIS/dd_candidate.csv
+CAT=${CSV}
 SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/all_dicalsolutions/merged_${LNUM}_linear.h5
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
