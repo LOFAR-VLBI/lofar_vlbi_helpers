@@ -14,6 +14,22 @@ fi
 
 source ${SCRIPT_DIR}/other/chunk_csv.sh $CSV
 
+# Initialize the enumeration counter
+ENUMERATE=1
+
+# Loop through each CSV chunk file with an index
 for CSV_CHUNK in chunk*.csv; do
-  sbatch ${SCRIPT_DIR}/run_splitdir.sh ${LNUM} ${CSV}
+  # Define the run folder using the enumeration counter
+  RUNFOLDER=chunk_${ENUMERATE}
+
+  # Create the run folder if it doesn't exist
+  mkdir -p ${RUNFOLDER}
+  cd ${RUNFOLDER}
+
+  # Submit the job with sbatch, passing necessary arguments
+  sbatch ${SCRIPT_DIR}/run_splitdir.sh ${LNUM} ${CSV_CHUNK}
+  cd ../
+
+  # Increment the enumeration counter
+  ((ENUMERATE++))
 done

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Input CSV file
-input_file="input.csv"
+input_file=$1
 
 # Number of entries per chunk
 chunk_size=10
