@@ -24,10 +24,11 @@ for CSV_CHUNK in chunk*.csv; do
 
   # Create the run folder if it doesn't exist
   mkdir -p ${RUNFOLDER}
+  cp ${CSV_CHUNK} ${RUNFOLDER}
   cd ${RUNFOLDER}
 
   # Submit the job with sbatch, passing necessary arguments
-  sbatch ${SCRIPT_DIR}/run_splitdir.sh ${LNUM} ${CSV_CHUNK}
+  sbatch ${SCRIPT_DIR}/run_splitdir.sh ${LNUM} $(realpath "${CSV_CHUNK}")
   cd ../
 
   # Increment the enumeration counter
