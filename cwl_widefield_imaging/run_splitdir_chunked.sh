@@ -1,4 +1,5 @@
 #!/bin/bash
+#SBATCH -t 1:00:00 -c 1
 
 LNUM=$1
 CSV=$2
@@ -14,20 +15,18 @@ fi
 
 source ${SCRIPT_DIR}/other/chunk_csv.sh $CSV
 
-# Initialize the enumeration counter
-ENUMERATE=1
 
 # Loop through each CSV chunk file with an index
+ENUMERATE=1
 for CSV_CHUNK in chunk*.csv; do
-  # Define the run folder using the enumeration counter
-  RUNFOLDER=chunk_${ENUMERATE}
 
-  # Create the run folder if it doesn't exist
+  # Create run folder
+  RUNFOLDER=chunk_${ENUMERATE}
   mkdir -p ${RUNFOLDER}
-  cp ${CSV_CHUNK} ${RUNFOLDER}
+  mv ${CSV_CHUNK} ${RUNFOLDER}
   cd ${RUNFOLDER}
 
-  # Submit the job with sbatch, passing necessary arguments
+  # Submit the job with sbatch
   sbatch ${SCRIPT_DIR}/run_splitdir.sh ${LNUM} $(realpath "${CSV_CHUNK}")
   cd ../
 
