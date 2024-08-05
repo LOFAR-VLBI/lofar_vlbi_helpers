@@ -109,7 +109,6 @@ steps:
          - id: fits_mosaic
 
 
-
 outputs:
     - id: sav_facet_ms
       type: Directory[]

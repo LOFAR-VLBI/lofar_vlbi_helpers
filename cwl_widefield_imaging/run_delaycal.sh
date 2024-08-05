@@ -2,9 +2,9 @@
 #SBATCH --output=delay_%j.out
 #SBATCH --error=delay_%j.err
 
-#NOTE: works only with TOIL>6.0.0
-
+######################
 #### UPDATE THESE ####
+######################
 
 export TOIL_SLURM_ARGS="--export=ALL --job-name delaycal -p normal"
 
@@ -14,13 +14,12 @@ CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
 VENV=/home/lofarvwf-jdejong/venv
 
-######################
-
-# SETUP ENVIRONMENT
-
 DDFOLDER=$(realpath "../ddf")
 TARGETDATA=$(realpath "../target/data")
 SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
+
+#####################
+######################
 
 # set up software
 mkdir -p software
@@ -173,8 +172,8 @@ toil-cwl-runner \
 --bypass-file-store \
 --preserve-entire-environment \
 --batchSystem slurm \
+--cleanWorkDir onSuccess \
 software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
-#--cleanWorkDir never \ --> for testing
 
 ########################
 

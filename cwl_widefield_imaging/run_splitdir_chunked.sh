@@ -1,8 +1,7 @@
 #!/bin/bash
 #SBATCH -t 1:00:00 -c 1
 
-LNUM=$1
-CSV=$2
+CSV=$1
 
 #GET SCRIPT RUN DIRECTORY
 
@@ -27,7 +26,7 @@ for CSV_CHUNK in chunk*.csv; do
   cd ${RUNFOLDER}
 
   # Submit the job with sbatch
-  sbatch ${SCRIPT_DIR}/run_splitdir.sh ${LNUM} $(realpath "${CSV_CHUNK}")
+  sbatch ${SCRIPT_DIR}/run_splitdir.sh $(realpath "${CSV_CHUNK}")
   cd ../
 
   # Increment the enumeration counter

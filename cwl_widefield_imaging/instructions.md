@@ -4,12 +4,11 @@ Input starting point: list of html files from the LTA with staged calibrator and
 
 #### Scripts:
 
-1) ```cwl_pipeline_scripts/download_lta.sh calibrator.html target.html```
-2) ```cwl_pipeline_scripts/run_linc.sh``` \
-TODO: INSERT VALIDATION STEP?
-3) ```cwl_pipeline_scripts/run_ddf.sh <TARGET_RESULTS_FOLDER>``` (example: target/L769421_LINC_target/results_LINC_target/results) \
-TODO: INSERT VALIDATION STEP?
-4) ```cwl_pipeline_scripts/run_delaycal.sh```
+1) ```cwl_widefield_imaging/download_lta.sh calibrator.html target.html```
+2) ```cwl_widefield_imaging/run_linc.sh``` \
+3) ```cwl_widefield_imaging/run_ddf.sh <TARGET_RESULTS_FOLDER>``` (example: target/L769421_LINC_target/results_LINC_target/results) \
+4) ```cwl_widefield_imaging/run_delaycal.sh``` \
+5) ```cwl_widefield_imaging/run_splitdir.sh ```
 
 #### Folder structure:
 

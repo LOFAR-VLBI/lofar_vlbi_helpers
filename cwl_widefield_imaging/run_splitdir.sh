@@ -2,27 +2,29 @@
 #SBATCH --output=splitdir_%j.out
 #SBATCH --error=splitdir_%j.err
 
-#NOTE: works only with TOIL>6.0.0
+CSV=$1
 
-LNUM=$1
-CSV=$2
-
+######################
 #### UPDATE THESE ####
+######################
 
 export TOIL_SLURM_ARGS="--export=ALL --job-name splitdir -p normal --constraint=rome"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
 CAT=${CSV}
+if [[ $PWD =~ "L[0-9][0-9][0-9][0-9][0-9][0-9]" ]]; then LNUM=${BASH_REMATCH}; fi
 SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/all_dicalsolutions/merged_${LNUM}_linear.h5
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
+DD_SELECTION=true #or false?
 
 VENV=/home/lofarvwf-jdejong/venv
 
+SUBTRACTDATA=$(realpath "../../subtract")
+
+######################
 ######################
 
 # SETUP ENVIRONMENT
-
-SUBTRACTDATA=$(realpath "../../subtract")
 
 # set up software
 mkdir -p software
@@ -89,7 +91,7 @@ split-directions \
 $SUBTRACTDATA
 
 #SELECTION WAS ALREADY DONE
-#jq '. + {"dd_selection": true}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
+jq '. + {"dd_selection": $DD_SELECTION}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
 
 ########################
 
@@ -132,7 +134,6 @@ toil-cwl-runner \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
 software/VLBI_cwl/workflows/alternative_workflows/split-directions-toil.cwl mslist_VLBI_split_directions.json
-#--cleanWorkDir never \ --> for testing
 
 ########################
 
