@@ -8,7 +8,7 @@ Input starting point: list of html files from the LTA with staged calibrator and
 2) ```cwl_widefield_imaging/run_linc.sh``` \
 3) ```cwl_widefield_imaging/run_ddf.sh <TARGET_RESULTS_FOLDER>``` (example: target/L769421_LINC_target/results_LINC_target/results) \
 4) ```cwl_widefield_imaging/run_delaycal.sh``` \
-5) ```cwl_widefield_imaging/run_splitdir.sh <CSV>``` (CSV includes ID, RA, DEC of candidates)
+5) ```cwl_widefield_imaging/run_splitdir.sh <CSV>``` (CSV should include ID, RA, DEC of candidates)
 
 Important supporting repositories: \
 https://github.com/tikk3r/flocs \
