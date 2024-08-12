@@ -1,5 +1,6 @@
 #!/bin/bash
-
+#SBATCH --output=predim_%j.out
+#SBATCH --error=predim_%j.err
 
 ######################
 #### UPDATE THESE ####
@@ -8,9 +9,6 @@
 export TOIL_SLURM_ARGS="--export=ALL --job-name facetpredict -p normal --constraint=rome"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
-CAT=${CSV}
-if [[ $PWD =~ "L[0-9][0-9][0-9][0-9][0-9][0-9]" ]]; then LNUM=${BASH_REMATCH}; fi
-SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/all_dicalsolutions/merged_${LNUM}_linear.h5
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
 MSDATA=$1
@@ -125,7 +123,7 @@ toil-cwl-runner \
 --preserve-entire-environment \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
-wide_field_imaging_only_predict.cwl mslist_VLBI_split_directions.json
+${SCRIPT_DIR}/wide_field_imaging_only_predict.cwl mslist_VLBI_split_directions.json
 
 ########################
 
