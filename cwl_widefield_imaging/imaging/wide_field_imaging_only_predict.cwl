@@ -21,10 +21,6 @@ inputs:
     - id: h5parm
       type: File
       doc: Fully merged h5parms
-    - id: sidereal_visiblity_averaging
-      type: boolean?
-      default: false
-      doc: Whether to apply sidereal visibility averaging
     - id: lofar_helpers
       type: Directory
       doc: The lofar_helpers directory.

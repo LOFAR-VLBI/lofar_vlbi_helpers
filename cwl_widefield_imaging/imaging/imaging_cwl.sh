@@ -1,25 +1,23 @@
 #!/bin/bash
-#SBATCH --output=splitdir_%j.out
-#SBATCH --error=splitdir_%j.err
 
-CSV=$1
 
 ######################
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL --job-name splitdir -p normal --constraint=rome"
+export TOIL_SLURM_ARGS="--export=ALL --job-name facetpredict -p normal --constraint=rome"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
 CAT=${CSV}
 if [[ $PWD =~ "L[0-9][0-9][0-9][0-9][0-9][0-9]" ]]; then LNUM=${BASH_REMATCH}; fi
 SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/all_dicalsolutions/merged_${LNUM}_linear.h5
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
-DD_SELECTION=true #or false?
+
+MSDATA=$1
+H5FACETS=$2
+MODELS=$3
 
 VENV=/home/lofarvwf-jdejong/venv
-
-SUBTRACTDATA=$(realpath "../../subtract")
 
 ######################
 ######################
@@ -29,20 +27,7 @@ SUBTRACTDATA=$(realpath "../../subtract")
 # set up software
 mkdir -p software
 cd software
-git clone -b dd_selection https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
-git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
-git clone https://github.com/rvweeren/lofar_facet_selfcal.git
-git clone https://git.astron.nl/RD/LINC.git
-git clone https://github.com/revoltek/losoto
-mkdir scripts
-cp LINC/scripts/* scripts
-cp VLBI_cwl/scripts/* scripts
-SCRIPTS_PATH=$PWD/scripts
-chmod 755 ${SCRIPTS_PATH}/*
-SING_BIND=${SING_BIND}",${SCRIPTS_PATH}:/opt/lofar/DynSpecMS"
-PYPATH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PYTHONPATH
-PTH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PATH
 cd ../
 
 # set up singularity
@@ -83,15 +68,14 @@ split-directions \
 --configfile=$CONFIG \
 --h5merger=$PWD/software/lofar_helpers \
 --selfcal=$PWD/software/lofar_facet_selfcal \
---do_selfcal=false \
---image_cat=$CAT \
---linc=$PWD/software/LINC \
 --delay_solset=$SOLSET \
 --ms_suffix ".ms" \
-$SUBTRACTDATA
+$MSDATA
 
 #SELECTION WAS ALREADY DONE
-jq '. + {"dd_selection": $DD_SELECTION}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
+jq '. + {"lofar_helpers": $PWD/software/lofar_helpers}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
+jq '. + {"h5parm": $H5FACETS}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
+jq '. + {"model_image_folder": $MODELS}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
 
 ########################
 
@@ -115,6 +99,14 @@ source ${VENV}/bin/activate
 
 # RUN TOIL
 
+#GET ORIGINAL SCRIPT DIRECTORY
+if [ -n "${SLURM_JOB_ID:-}" ] ; then
+SCRIPT=$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/Command=/{print $2}')
+SCRIPT_DIR=$( echo ${SCRIPT%/*} )
+else
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+fi
+
 toil-cwl-runner \
 --no-read-only \
 --retryCount 2 \
@@ -133,7 +125,7 @@ toil-cwl-runner \
 --preserve-entire-environment \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
-software/VLBI_cwl/workflows/alternative_workflows/split-directions-toil.cwl mslist_VLBI_split_directions.json
+wide_field_imaging_only_predict.cwl mslist_VLBI_split_directions.json
 
 ########################
 
