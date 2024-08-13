@@ -31,7 +31,7 @@ steps:
       in:
         - id: msin
           source: msin
-          valueFrom: $(self[0].path)
+          valueFrom: $(inputs.msin[0])
         - id: h5parm
           source: h5parm
       out:
