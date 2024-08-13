@@ -89,7 +89,7 @@ steps:
          - facet_ms
       run: steps/predict_facet.cwl
       scatter: [polygon_regions, subtracted_ms]
-      scatterMethod: crossproduct
+      scatterMethod: flat_crossproduct
 
 
 outputs:
