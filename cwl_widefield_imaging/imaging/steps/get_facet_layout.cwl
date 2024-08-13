@@ -42,7 +42,7 @@ inputs:
     doc: The name of the output DS9 region file.
     default: "facets.reg"
     inputBinding:
-      prefix "--DS9regionout"
+      prefix: "--DS9regionout"
       position: 4
 
 outputs:

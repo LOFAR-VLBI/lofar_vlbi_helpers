@@ -33,8 +33,6 @@ git clone https://github.com/jurjen93/lofar_helpers.git
 SCRIPTS_PATH=$PWD/scripts
 chmod 755 ${SCRIPTS_PATH}/*
 SING_BIND=${SING_BIND}",${SCRIPTS_PATH}:/opt/lofar/DynSpecMS"
-PYPATH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PYTHONPATH
-PTH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PATH
 cd ../
 
 # set up singularity
@@ -50,15 +48,11 @@ if [[ "$CONTAINERSTR" == *"apptainer"* ]]; then
   export APPTAINER_TMPDIR=$APPTAINER_CACHEDIR/tmp
   export APPTAINER_PULLDIR=$APPTAINER_CACHEDIR/pull
   export APPTAINER_BIND=$SING_BIND
-  export APPTAINERENV_PYTHONPATH=$PYPATH
-  export APPTAINERENV_PATH=$PTH
 else
   export SINGULARITY_CACHEDIR=$PWD/singularity
   export SINGULARITY_TMPDIR=$SINGULARITY_CACHEDIR/tmp
   export SINGULARITY_PULLDIR=$SINGULARITY_CACHEDIR/pull
   export SINGULARITY_BIND=$SING_BIND
-  export SINGULARITYENV_PYTHONPATH=$PYPATH
-  export SINGULARITYENV_PYTHONPATH=$PTH
 fi
 
 export SING_USER_DEFINED_PATH=$PTH
