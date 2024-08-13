@@ -56,6 +56,7 @@ arguments:
   - valueFrom: --inverse
 
 requirements:
+  - class: StepInputExpressionRequirement
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: InitialWorkDirRequirement

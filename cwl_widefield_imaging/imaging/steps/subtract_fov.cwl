@@ -48,6 +48,7 @@ arguments:
   - valueFrom: --h5parm_predict $(inputs.h5parm.path)
 
 requirements:
+  - class: StepInputExpressionRequirement
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: InitialWorkDirRequirement

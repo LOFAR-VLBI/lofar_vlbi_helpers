@@ -28,6 +28,7 @@ arguments:
   - valueFrom: update $(inputs.msin.path) set DATA=SUBTRACT_DATA+MODEL_DATA
 
 requirements:
+  - class: StepInputExpressionRequirement
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: InitialWorkDirRequirement

@@ -43,6 +43,7 @@ arguments:
   - valueFrom: --reg $(inputs.facet_regions.path)
 
 requirements:
+  - class: StepInputExpressionRequirement
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: InitialWorkDirRequirement
