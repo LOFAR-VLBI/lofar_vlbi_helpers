@@ -41,7 +41,7 @@ inputs:
 
 outputs:
   - id: logfile
-    type: File
+    type: File[]
     doc: Log files from subtraction fov.
     outputBinding:
       glob: subtract_fov*.log

@@ -118,7 +118,7 @@ source ${VENV}/bin/activate
 
 toil-cwl-runner \
 --no-read-only \
---retryCount 2 \
+--retryCount 0 \
 --singularity \
 --disableCaching \
 --writeLogsFromAllJobs True \

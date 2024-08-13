@@ -37,7 +37,7 @@ outputs:
     outputBinding:
       glob: "*.csv"
   - id: logfile
-    type: File
+    type: File[]
     doc: Log files from subtraction fov.
     outputBinding:
       glob: split_polygons*.log
