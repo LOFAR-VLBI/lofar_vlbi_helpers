@@ -1,23 +1,25 @@
 #!/bin/bash
-#SBATCH --output=predim_%j.out
-#SBATCH --error=predim_%j.err
+#SBATCH --output=splitdir_%j.out
+#SBATCH --error=splitdir_%j.err
 
-
-### INPUT ###
-export MSDATA=$(realpath $1)
-export H5FACETS=$(realpath $2)
-export MODELS=$(realpath $3)
+CSV=$1
 
 ######################
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL --job-name facetpredict -p normal --constraint=rome"
+export TOIL_SLURM_ARGS="--export=ALL --job-name splitdir -p normal --constraint=rome"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
-SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/cwl_widefield_imaging/imaging
+CAT=${CSV}
+if [[ $PWD =~ "L[0-9][0-9][0-9][0-9][0-9][0-9]" ]]; then LNUM=${BASH_REMATCH}; fi
+SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/all_dicalsolutions/merged_${LNUM}_linear.h5
+CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
+DD_SELECTION=true #or false?
 
 VENV=/home/lofarvwf-jdejong/venv
+
+SUBTRACTDATA=$(realpath "../../subtract")
 
 ######################
 ######################
@@ -27,9 +29,15 @@ VENV=/home/lofarvwf-jdejong/venv
 # set up software
 mkdir -p software
 cd software
-mkdir scripts
-cp $SCRIPTS/scripts/* scripts
+git clone -b dd_selection https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
+git clone https://github.com/rvweeren/lofar_facet_selfcal.git
+git clone https://git.astron.nl/RD/LINC.git
+git clone https://github.com/revoltek/losoto
+mkdir scripts
+cp LINC/scripts/* scripts
+cp VLBI_cwl/scripts/* scripts
 SCRIPTS_PATH=$PWD/scripts
 chmod 755 ${SCRIPTS_PATH}/*
 SING_BIND=${SING_BIND}",${SCRIPTS_PATH}:/opt/lofar/DynSpecMS"
@@ -68,37 +76,22 @@ export LINC_DATA_ROOT=$PWD/software/LINC
 
 ########################
 
-# Define the output JSON file
-JSON="input.json"
+singularity exec singularity/$SIMG \
+python software/flocs/runners/create_ms_list.py \
+VLBI \
+split-directions \
+--configfile=$CONFIG \
+--h5merger=$PWD/software/lofar_helpers \
+--selfcal=$PWD/software/lofar_facet_selfcal \
+--do_selfcal=false \
+--image_cat=$CAT \
+--linc=$PWD/software/LINC \
+--delay_solset=$SOLSET \
+--ms_suffix ".ms" \
+$SUBTRACTDATA
 
-# Start the JSON structure for 'msin'
-json="{\"msin\":["
-
-# Loop through each file in the MSDATA folder and append to the JSON structure
-for file in "$MSDATA"/*; do
-    json="$json{\"class\": \"Directory\", \"path\": \"$file\"},"
-done
-
-# Remove the trailing comma and close the JSON array and object
-json="${json%,}]}"  # Remove the last comma and add the closing brackets
-
-# Save the initial JSON structure to the file
-echo "$json" > "$JSON"
-
-# Add 'lofar_helpers' with 'class' and 'path'
-jq --arg path "$PWD/software/lofar_helpers" \
-   '. + {"lofar_helpers": {"class": "Directory", "path": $path}}' \
-   "$JSON" > temp.json && mv temp.json "$JSON"
-
-# Add 'h5parm' with 'class' and 'path'
-jq --arg path "$H5FACETS" \
-   '. + {"h5parm": {"class": "File", "path": $path}}' \
-   "$JSON" > temp.json && mv temp.json "$JSON"
-
-# Add 'model_image_folder' with 'class' and 'path'
-jq --arg path "$MODELS" \
-   '. + {"model_image_folder": {"class": "Directory", "path": $path}}' \
-   "$JSON" > temp.json && mv temp.json "$JSON"
+#SELECTION WAS ALREADY DONE
+jq '. + {"dd_selection": $DD_SELECTION}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
 
 ########################
 
@@ -140,7 +133,7 @@ toil-cwl-runner \
 --preserve-entire-environment \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
-$SCRIPTS/wide_field_imaging_only_predict.cwl $JSON
+software/VLBI_cwl/workflows/alternative_workflows/split-directions-toil.cwl mslist_VLBI_split_directions.json
 
 ########################
 

@@ -4,12 +4,13 @@ id: taql_update_data
 label: TaQL Update Data
 doc: This step uses TaQL to update the DATA column in a measurement set by adding MODEL_DATA to SUBTRACT_DATA.
 
-baseCommand: taql
+baseCommand: [taql, update]
 
 inputs:
   - id: msin
     type: Directory
     doc: The measurement set file to be updated.
+
 
 outputs:
   - id: msout
@@ -25,7 +26,7 @@ outputs:
 
 
 arguments:
-  - valueFrom: update $(inputs.msin.path) set DATA=SUBTRACT_DATA+MODEL_DATA
+  - valueFrom: $(inputs.msin.path) set DATA=SUBTRACT_DATA+MODEL_DATA
 
 requirements:
   - class: StepInputExpressionRequirement

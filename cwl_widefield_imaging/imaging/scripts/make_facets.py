@@ -1,8 +1,10 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
 Copy from lofar_facet_selfcal/ds9facetgenerator.py
 """
 
-#!/usr/bin/python3
 from scipy.spatial import Voronoi  # , voronoi_plot_2d
 from astropy.wcs import WCS
 from astropy import units as u

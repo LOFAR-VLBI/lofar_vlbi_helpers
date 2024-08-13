@@ -14,10 +14,16 @@ inputs:
   - id: h5parm
     type: File
     doc: The HDF5 file used for splitting the polygon facets.
+    inputBinding:
+      prefix: "--h5"
+      position: 1
 
   - id: facet_regions
     type: File
     doc: The DS9 region file that defines the facets.
+    inputBinding:
+      prefix: "--reg"
+      position: 2
 
 outputs:
   - id: polygon_regions
@@ -39,8 +45,6 @@ outputs:
 
 arguments:
   - valueFrom: $(inputs.lofar_helpers.path)/ds9_helpers/split_polygon_facets.py
-  - valueFrom: --h5 $(inputs.h5parm.path)
-  - valueFrom: --reg $(inputs.facet_regions.path)
 
 requirements:
   - class: StepInputExpressionRequirement

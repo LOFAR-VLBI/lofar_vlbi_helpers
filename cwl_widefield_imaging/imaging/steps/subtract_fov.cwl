@@ -10,18 +10,30 @@ inputs:
   - id: msin
     type: Directory
     doc: The measurement set file used for source subtraction.
+    inputBinding:
+      prefix: "--mslist"
+      position: 1
 
   - id: model_image_folder
     type: Directory
     doc: The folder containing the model images.
+    inputBinding:
+      prefix: "--model_image_folder"
+      position: 2
 
   - id: facet_regions
     type: File
     doc: The DS9 region file that defines the facets for prediction.
+    inputBinding:
+      prefix: "--facets_predict"
+      position: 3
 
   - id: h5parm
     type: File
     doc: The HDF5 file containing the solutions for prediction.
+    inputBinding:
+      prefix: "--h5parm_predict"
+      position: 4
 
   - id: lofar_helpers
     type: Directory
@@ -42,10 +54,6 @@ outputs:
 
 arguments:
   - valueFrom: $( inputs.lofar_helpers.path + '/subtract/subtract_with_wsclean.py' )
-  - valueFrom: --mslist $(inputs.msin.path)
-  - valueFrom: --model_image_folder $(inputs.model_image_folder.path)
-  - valueFrom: --facets_predict $(inputs.facet_regions.path)
-  - valueFrom: --h5parm_predict $(inputs.h5parm.path)
 
 requirements:
   - class: StepInputExpressionRequirement
