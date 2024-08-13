@@ -70,9 +70,12 @@ requirements:
   - class: InitialWorkDirRequirement
     listing:
       - entry: $(inputs.subtracted_ms)
+        writable: true
       - entry: $(inputs.model_image_folder)
+        writable: true
       - entry: $(inputs.polygon_regions)
       - entry: $(inputs.h5parm)
+        writable: true
       - entry: $(inputs.polygon_info)
 
 hints:
