@@ -58,6 +58,7 @@ requirements:
     listing:
       - entry: $(inputs.h5parm)
       - entry: $(inputs.msin)
+  - class: StepInputExpressionRequirement
 
 hints:
   - class: DockerRequirement
