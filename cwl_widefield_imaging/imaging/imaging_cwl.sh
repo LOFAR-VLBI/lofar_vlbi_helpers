@@ -115,14 +115,6 @@ source ${VENV}/bin/activate
 
 # RUN TOIL
 
-#GET ORIGINAL SCRIPT DIRECTORY
-if [ -n "${SLURM_JOB_ID:-}" ] ; then
-SCRIPT=$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/Command=/{print $2}')
-SCRIPT_DIR=$( echo ${SCRIPT%/*} )
-else
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-fi
-
 toil-cwl-runner \
 --no-read-only \
 --retryCount 2 \
@@ -141,7 +133,7 @@ toil-cwl-runner \
 --preserve-entire-environment \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
-${SCRIPT_DIR}/wide_field_imaging_only_predict.cwl $JSON
+/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/cwl_widefield_imaging/imaging/wide_field_imaging_only_predict.cwl $JSON
 
 ########################
 
