@@ -52,13 +52,14 @@ arguments:
   - valueFrom: --pixelscale $(inputs.pixelscale)
 
 requirements:
+  - class: StepInputExpressionRequirement
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: InitialWorkDirRequirement
     listing:
       - entry: $(inputs.h5parm)
       - entry: $(inputs.msin)
-  - class: StepInputExpressionRequirement
+
 
 hints:
   - class: DockerRequirement

@@ -70,7 +70,7 @@ hints:
   - class: DockerRequirement
     dockerPull: vlbi-cwl
   - class: ResourceRequirement
-    coresMin: 10
+    coresMin: 15
 
 stdout: subtract_fov.log
 stderr: subtract_fov_err.log
