@@ -2,6 +2,12 @@
 #SBATCH --output=predim_%j.out
 #SBATCH --error=predim_%j.err
 
+
+### INPUT ###
+export MSDATA=$(realpath $1)
+export H5FACETS=$(realpath $2)
+export MODELS=$(realpath $3)
+
 ######################
 #### UPDATE THESE ####
 ######################
@@ -9,11 +15,7 @@
 export TOIL_SLURM_ARGS="--export=ALL --job-name facetpredict -p normal --constraint=rome"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
-CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
-
-MSDATA=$1
-H5FACETS=$2
-MODELS=$3
+export CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
 VENV=/home/lofarvwf-jdejong/venv
 
@@ -59,21 +61,37 @@ export LINC_DATA_ROOT=$PWD/software/LINC
 
 ########################
 
-singularity exec singularity/$SIMG \
-python software/flocs/runners/create_ms_list.py \
-VLBI \
-split-directions \
---configfile=$CONFIG \
---h5merger=$PWD/software/lofar_helpers \
---selfcal=$PWD/software/lofar_facet_selfcal \
---delay_solset=$SOLSET \
---ms_suffix ".ms" \
-$MSDATA
+# Define the output JSON file
+JSON="input.json"
 
-#SELECTION WAS ALREADY DONE
-jq '. + {"lofar_helpers": $PWD/software/lofar_helpers}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
-jq '. + {"h5parm": $H5FACETS}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
-jq '. + {"model_image_folder": $MODELS}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
+# Start the JSON structure for 'msin'
+json="{\"msin\":["
+
+# Loop through each file in the MSDATA folder and append to the JSON structure
+for file in "$MSDATA"/*; do
+    json="$json{\"class\": \"Directory\", \"path\": \"$file\"},"
+done
+
+# Remove the trailing comma and close the JSON array and object
+json="${json%,}]}"  # Remove the last comma and add the closing brackets
+
+# Save the initial JSON structure to the file
+echo "$json" > "$JSON"
+
+# Add 'lofar_helpers' with 'class' and 'path'
+jq --arg path "$PWD/software/lofar_helpers" \
+   '. + {"lofar_helpers": {"class": "Directory", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
+
+# Add 'h5parm' with 'class' and 'path'
+jq --arg path "$H5FACETS" \
+   '. + {"h5parm": {"class": "File", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
+
+# Add 'model_image_folder' with 'class' and 'path'
+jq --arg path "$MODELS" \
+   '. + {"model_image_folder": {"class": "Directory", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
 
 ########################
 
@@ -123,7 +141,7 @@ toil-cwl-runner \
 --preserve-entire-environment \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
-${SCRIPT_DIR}/wide_field_imaging_only_predict.cwl mslist_VLBI_split_directions.json
+${SCRIPT_DIR}/wide_field_imaging_only_predict.cwl $JSON
 
 ########################
 
