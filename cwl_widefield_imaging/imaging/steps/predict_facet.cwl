@@ -24,7 +24,7 @@ inputs:
   - id: polygon_regions
     type: File
     doc: The DS9 region file that defines the facets for prediction.
-    intputBinding:
+    inputBinding:
       prefix: "--region"
       position: 3
 
