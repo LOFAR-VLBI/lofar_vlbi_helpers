@@ -108,6 +108,7 @@ TMPD=$PWD/tmpdir # TODO: Perhaps move to tmp/scratch?
 mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
+mkdir -p ${TMPD}_interm
 
 source ${VENV}/bin/activate
 
