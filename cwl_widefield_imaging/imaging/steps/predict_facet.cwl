@@ -48,7 +48,7 @@ outputs:
     type: File[]
     doc: Log files from subtraction fov.
     outputBinding:
-      glob: subtract_fov*.log
+      glob: predict_facet*.log
   - id: facet_ms
     type: Directory
     doc: MS subtracted data
@@ -84,5 +84,5 @@ hints:
   - class: ResourceRequirement
     coresMin: 15
 
-stdout: subtract_fov.log
-stderr: subtract_fov_err.log
+stdout: predict_facet.log
+stderr: predict_facet_err.log
