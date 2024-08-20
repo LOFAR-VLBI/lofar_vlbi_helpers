@@ -53,7 +53,7 @@ outputs:
     type: Directory
     doc: MS subtracted data
     outputBinding:
-      glob: sub1.2*.ms
+      glob: sub*.ms
 
 
 arguments:
