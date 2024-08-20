@@ -125,9 +125,9 @@ toil-cwl-runner \
 --logFile full_log.log \
 --writeLogs ${LOGDIR} \
 --outdir ${OUTPUT} \
---tmp-outdir-prefix /scratch/${USER}/toil_tmp/ \
+--tmp-outdir-prefix ${TMPDIR}/toil_tmp/ \
 --jobStore ${JOBSTORE} \
---workDir /scratch/${USER}/toil_work/ \
+--workDir ${TMPDIR}/toil_work/ \
 --tmpdir-prefix ${TMPD}_interm/ \
 --disableAutoDeployment True \
 --bypass-file-store \
