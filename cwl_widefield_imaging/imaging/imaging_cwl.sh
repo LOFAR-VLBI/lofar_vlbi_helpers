@@ -99,13 +99,13 @@ jq --arg path "$MODELS" \
 # MAKE TOIL RUNNING STRUCTURE
 
 # make folder for running toil
-#WORKDIR=$PWD/workdir
+WORKDIR=$PWD/workdir
 OUTPUT=$PWD/outdir
 JOBSTORE=$PWD/jobstore
 LOGDIR=$PWD/logs
 TMPD=$PWD/tmpdir # TODO: Perhaps move to tmp/scratch?
 
-#mkdir -p $WORKDIR
+mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
 mkdir -p ${TMPD}_interm
@@ -127,7 +127,7 @@ toil-cwl-runner \
 --outdir ${OUTPUT} \
 --tmp-outdir-prefix ${TMPDIR}/toil_tmp/ \
 --jobStore ${JOBSTORE} \
---workDir ${TMPDIR}/toil_work/ \
+--workDir ${WORKDIR} \
 --tmpdir-prefix ${TMPD}_interm/ \
 --disableAutoDeployment True \
 --bypass-file-store \
