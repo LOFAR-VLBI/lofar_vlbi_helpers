@@ -125,7 +125,7 @@ toil-cwl-runner \
 --logFile full_log.log \
 --writeLogs ${LOGDIR} \
 --outdir ${OUTPUT} \
---tmp-outdir-prefix ${TMPDIR}/toil_tmp/ \
+--tmp-outdir-prefix ${TMPD}/ \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
 --tmpdir-prefix ${TMPD}_interm/ \
