@@ -67,7 +67,6 @@ requirements:
         writable: true
       - entry: $(inputs.facet_regions)
       - entry: $(inputs.h5parm)
-        writable: true
 
 hints:
   - class: DockerRequirement

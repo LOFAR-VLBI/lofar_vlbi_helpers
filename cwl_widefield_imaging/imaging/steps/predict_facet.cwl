@@ -62,6 +62,7 @@ arguments:
   - valueFrom: --applycal
   - valueFrom: --forwidefield
   - valueFrom: --inverse
+  - valueFrom: --scratch
 
 requirements:
   - class: StepInputExpressionRequirement
@@ -75,7 +76,6 @@ requirements:
         writable: true
       - entry: $(inputs.polygon_regions)
       - entry: $(inputs.h5parm)
-        writable: true
       - entry: $(inputs.polygon_info)
 
 hints:

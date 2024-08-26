@@ -115,7 +115,6 @@ source ${VENV}/bin/activate
 ########################
 
 # RUN TOIL
-
 toil-cwl-runner \
 --no-read-only \
 --retryCount 0 \
@@ -133,8 +132,8 @@ toil-cwl-runner \
 --bypass-file-store \
 --preserve-entire-environment \
 --batchSystem slurm \
---cleanWorkDir onSuccess \
 --clean onSuccess \
+--no-compute-checksum \
 $SCRIPTS/wide_field_imaging_only_predict.cwl $JSON
 
 ########################
