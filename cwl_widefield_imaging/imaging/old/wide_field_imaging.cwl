@@ -77,10 +77,12 @@ steps:
       in:
          - id: subtracted_ms
            source: subtract_fov/subtracted_ms
-         - id: facet_h5parm
-           source: get_facet_layout/ds9_region_file
+         - id: polygon_region
+           source: split_polygons/polygon_regions
          - id: polygon_info
            source: split_polygons/polygon_info
+         - id: h5parm
+           source: h5parm
          - id: model_image_folder
            source: model_image_folder
          - id: lofar_helpers
@@ -88,7 +90,7 @@ steps:
       out:
          - facet_ms
       run: steps/predict_facet.cwl
-      scatter: [polygon_h5parms, subtracted_ms]
+      scatter: [polygon_region, subtracted_ms]
       scatterMethod: crossproduct
 
     - id: sidereal_visibility_averaging

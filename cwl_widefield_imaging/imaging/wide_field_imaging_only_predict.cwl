@@ -75,7 +75,7 @@ steps:
       in:
          - id: subtracted_ms
            source: subtract_fov/subtracted_ms
-         - id: polygon_regions
+         - id: polygon_region
            source: split_polygons/polygon_regions
          - id: h5parm
            source: h5parm
@@ -88,7 +88,7 @@ steps:
       out:
          - facet_ms
       run: steps/predict_facet.cwl
-      scatter: [polygon_regions, subtracted_ms]
+      scatter: [polygon_region, subtracted_ms]
       scatterMethod: flat_crossproduct
 
 

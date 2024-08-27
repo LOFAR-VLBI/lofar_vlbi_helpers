@@ -21,9 +21,9 @@ inputs:
       prefix: "--model_image_folder"
       position: 2
 
-  - id: polygon_regions
+  - id: polygon_region
     type: File
-    doc: The DS9 region file that defines the facets for prediction.
+    doc: The DS9 region file that defines the facet for prediction.
     inputBinding:
       prefix: "--region"
       position: 3
