@@ -74,7 +74,7 @@ requirements:
         writable: true
       - entry: $(inputs.model_image_folder)
         writable: true
-      - entry: $(inputs.polygon_regions)
+      - entry: $(inputs.polygon_region)
       - entry: $(inputs.h5parm)
       - entry: $(inputs.polygon_info)
 
