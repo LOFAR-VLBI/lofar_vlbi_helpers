@@ -95,5 +95,7 @@ steps:
 outputs:
     - id: sav_facet_ms
       type: Directory[]
-      outputSource:
-        - predict_facet/facet_ms
+      outputSource: predict_facet/facet_ms
+    - id: polygon_info
+      type: File
+      outputSource: split_polygons/polygon_info

@@ -98,7 +98,7 @@ singularity exec -B {os.getcwd()},$PWD {simg.split('/')[-1]} wsclean \\
 -gridder wgridder \\
 -no-update-model-required \\
 -minuv-l 80.0 \\
--size {imsize} {imsize} \\
+-size {imsize*1.1} {imsize*1.1} \\
 -weighting-rank-filter 3 \\
 -reorder \\
 -baseline-averaging {1.5e3*60000.*2.*3.1415 *1.5/(24.*60.*60*imsize)} \\
