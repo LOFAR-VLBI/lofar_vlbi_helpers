@@ -99,3 +99,6 @@ outputs:
     - id: polygon_info
       type: File
       outputSource: split_polygons/polygon_info
+    - id: polygon_regions
+      type: File[]
+      outputSource: split_polygons/polygon_regions
