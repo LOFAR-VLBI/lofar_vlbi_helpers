@@ -108,7 +108,7 @@ TMPD=$PWD/tmpdir # TODO: Perhaps move to tmp/scratch?
 mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
-mkdir -p ${TMPD}_interm
+#mkdir -p ${TMPD}_interm
 
 source ${VENV}/bin/activate
 
@@ -127,7 +127,6 @@ toil-cwl-runner \
 --tmp-outdir-prefix ${TMPD}/ \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
---tmpdir-prefix ${TMPD}_interm/ \
 --disableAutoDeployment True \
 --bypass-file-store \
 --preserve-entire-environment \
@@ -135,6 +134,7 @@ toil-cwl-runner \
 --clean onSuccess \
 --no-compute-checksum \
 $SCRIPTS/wide_field_imaging_only_predict.cwl $JSON
+#--tmpdir-prefix ${TMPD}_interm/ \
 
 ########################
 
