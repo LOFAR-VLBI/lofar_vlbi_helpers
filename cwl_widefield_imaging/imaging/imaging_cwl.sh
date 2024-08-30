@@ -12,7 +12,7 @@ export MODELS=$(realpath $3)
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL --job-name facetpredict -p normal --constraint=rome"
+export TOIL_SLURM_ARGS="--export=ALL -p normal --constraint=rome"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
 SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/cwl_widefield_imaging/imaging
@@ -103,12 +103,11 @@ WORKDIR=$PWD/workdir
 OUTPUT=$PWD/outdir
 JOBSTORE=$PWD/jobstore
 LOGDIR=$PWD/logs
-TMPD=$PWD/tmpdir # TODO: Perhaps move to tmp/scratch?
+TMPD=$PWD/tmpdir
 
 mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
-#mkdir -p ${TMPD}_interm
 
 source ${VENV}/bin/activate
 

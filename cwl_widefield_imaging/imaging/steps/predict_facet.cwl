@@ -44,9 +44,13 @@ inputs:
     doc: csv with polygon information.
 
   - id: scratch
-    type: boolean?
+    type: boolean
     default: true
     doc: Run job on scratch.
+    inputBinding:
+      prefix: "--scratch_toil"
+      position: 5
+      separate: false
 
 outputs:
   - id: logfile
@@ -67,7 +71,6 @@ arguments:
   - valueFrom: --applycal
   - valueFrom: --forwidefield
   - valueFrom: --inverse
-  - valueFrom: ${ return inputs.scratch ? "--scratch" : null; }
 
 requirements:
   - class: StepInputExpressionRequirement
