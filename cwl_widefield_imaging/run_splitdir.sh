@@ -104,7 +104,6 @@ JOBSTORE=$PWD/jobstore
 LOGDIR=$PWD/logs
 TMPD=$PWD/tmpdir
 
-mkdir -p ${TMPD}_interm
 mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
@@ -127,7 +126,6 @@ toil-cwl-runner \
 --tmp-outdir-prefix ${TMPD}/ \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
---tmpdir-prefix ${TMPD}_interm/ \
 --disableAutoDeployment True \
 --bypass-file-store \
 --preserve-entire-environment \
