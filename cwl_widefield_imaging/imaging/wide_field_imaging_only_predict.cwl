@@ -4,6 +4,7 @@ id: wide-field-imaging
 label: Wide Field Imaging
 doc: |
   This workflow employs wsclean by splitting all facets into separate measurement sets.
+  Note that it is highly recommended to run this with toil-cwl-runner and to use the scratch option (see documentation below).
 
 requirements:
   - class: SubworkflowFeatureRequirement
@@ -24,6 +25,15 @@ inputs:
     - id: lofar_helpers
       type: Directory
       doc: The lofar_helpers directory.
+    - id: scratch
+      type: boolean?
+      default: true
+      doc: |
+        Whether you are running the final predict on scratch. This is crucial for running sub-arcsecond imaging on clusters.
+        If 'scratch' is set to 'true' (the default and recommended setting), ensure that there is sufficient scratch storage
+        space on the running nodes (at least ~400 GB per 15 cores). Alternatively, if 'scratch' set to 'false', you must limit the number
+        of parallel predict jobs to prevent excessive use of intermediate storage disk space. However, this approach
+        may increase the overall wall-time.
 
 steps:
     - id: get_facet_layout
@@ -85,6 +95,8 @@ steps:
            source: model_image_folder
          - id: lofar_helpers
            source: lofar_helpers
+         - id: scratch
+           source: scratch
       out:
          - facet_ms
       run: steps/predict_facet.cwl

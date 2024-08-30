@@ -2,7 +2,7 @@ class: CommandLineTool
 cwlVersion: v1.2
 id: predict_facet
 label: Predict with WSClean
-doc: This step subtracts all sources using WSClean.
+doc: This step predicts sources within a facet and adds these to the data using WSClean.
 
 baseCommand: python
 
@@ -43,6 +43,11 @@ inputs:
     type: File
     doc: csv with polygon information.
 
+  - id: scratch
+    type: boolean?
+    default: true
+    doc: Run job on scratch.
+
 outputs:
   - id: logfile
     type: File[]
@@ -62,7 +67,7 @@ arguments:
   - valueFrom: --applycal
   - valueFrom: --forwidefield
   - valueFrom: --inverse
-  - valueFrom: --scratch
+  - valueFrom: ${ return inputs.scratch ? "--scratch" : null; }
 
 requirements:
   - class: StepInputExpressionRequirement

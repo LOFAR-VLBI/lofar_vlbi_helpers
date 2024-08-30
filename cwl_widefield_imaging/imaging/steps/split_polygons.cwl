@@ -42,7 +42,6 @@ outputs:
     outputBinding:
       glob: split_polygons*.log
 
-
 arguments:
   - valueFrom: $(inputs.lofar_helpers.path)/ds9_helpers/split_polygon_facets.py
 
