@@ -19,14 +19,13 @@ def make_selfcal_script(solint, ms, preapply):
     t = ct.table(ms, readonly=True, ack=False)
     time = np.unique(t.getcol('TIME'))
     t.close()
-    # total_obs_time = (time.max()-time.min())//60
+
     deltime = np.abs(time[1]-time[0])
 
-    # solint_scalarphase = np.rint(solint*60/deltime)
-    # solint_complexgain = np.rint(solint*60*10/deltime)
+    # solint in minutes
+    solint_scalarphase = max(deltime/60, solint)
+    solint_complexgain = max(20., 120*solint)
 
-    solint_scalarphase = min(max(deltime/60, round(solint/2, 3)), 30.) # solint in minutes
-    solint_complexgain = max(15., 15*solint)
     if preapply:
         solint_complexgain *= 5
         solint_scalarphase *= 5
@@ -34,21 +33,17 @@ def make_selfcal_script(solint, ms, preapply):
 
     if solint_complexgain/60 > 4:
         cg_cycle = 999
+        print("solint complexgain: Over 3 hours --> REMOVED")
     elif solint_complexgain/60 > 3:
         solint_complexgain = 240.
 
     if solint<1:
-        smoothness_complex = 5.0
-    else:
         smoothness_complex = 10.0
+    else:
+        smoothness_complex = 20.0
 
     print("solint scalarphase: "+str(solint_scalarphase)+" minutes")
     print("solint complexgain: "+str(solint_complexgain)+" minutes")
-    if cg_cycle == 999:
-        print("solint complexgain: Over 3 hours --> REMOVED")
-
-    else:
-        flagtimesmeared = ''
 
     if polarization:
         pol=" --makeimage-fullpol "
@@ -59,7 +54,6 @@ def make_selfcal_script(solint, ms, preapply):
         lr=" --makeimage-ILTlowres-HBA "
     else:
         lr=''
-
 
 
     script=f"""#!/bin/bash
@@ -97,6 +91,8 @@ python $lofar_facet_selfcal \\
 --targetcalILT='scalarphase' \\
 --stop=12 \\
 --flagtimesmeared \\
+--compute-phasediffstat \\
+--get-diagnostics \\
 --helperscriptspath=/project/lofarvwf/Software/lofar_facet_selfcal \\
 --helperscriptspathh5merge=/project/lofarvwf/Software/lofar_helpers {pol}{lr}\\
 *.ms
@@ -109,22 +105,23 @@ python $lofar_facet_selfcal \\
 
 if __name__ == "__main__":
 
-    script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
-    directions = set([f.split("_")[2].split('.')[0] for f in glob('*L??????_P?????.ms')])
+    mss = glob('*.ms')
 
-    phasediff_output = 'phasediff_output.csv'
+    phasediff_output = '/project/lofarvwf/Share/jdejong/output/ELAIS/final_dd_selection.csv'
     phasediff = pd.read_csv(phasediff_output)
-    phasediff['direction'] = phasediff.source.str.split('/').str[0]
 
-    for d in directions:
+    for ms in mss:
 
-        solint = phasediff[phasediff['source'].str.contains(d)].best_solint.min()
-        make_selfcal_script(solint, glob("*L??????_P?????.ms")[0], True)
+        print(ms)
 
-        print(d)
-        tasks = ['mkdir -p '+d,
-                 'mv *L??????_'+d+'.ms '+d,
-                 'mv selfcal_script.sh '+d]
-        # os.system(' && '.join(tasks))
+        sourceid = ms.split("_")[0]
+
+        solint = phasediff[phasediff['Source_id'].str.split('_').str[0] == sourceid].best_solint.min()
+        make_selfcal_script(solint, ms, False)
+
+        tasks = ['mkdir -p '+sourceid+'_selfcal_3',
+                 'mv '+ms+' '+sourceid+'_selfcal_3',
+                 'mv selfcal_script.sh '+sourceid+'_selfcal_3']
+        os.system(' && '.join(tasks))
     print("---RUN---\nfor P in P?????; do cd $P && sbatch selfcal_script.sh && cd ../; done")

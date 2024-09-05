@@ -15,7 +15,7 @@ CAT=${CSV}
 if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
 SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/all_dicalsolutions/merged_${LNUM}_linear.h5
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
-DD_SELECTION=false #or true?
+DD_SELECTION=true #or true?
 
 VENV=/home/lofarvwf-jdejong/venv
 
@@ -32,7 +32,7 @@ cd software
 git clone -b dd_selection https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
-git clone https://github.com/rvweeren/lofar_facet_selfcal.git
+git clone -b source_selection https://github.com/rvweeren/lofar_facet_selfcal.git
 git clone https://git.astron.nl/RD/LINC.git
 git clone https://github.com/revoltek/losoto
 mkdir scripts
