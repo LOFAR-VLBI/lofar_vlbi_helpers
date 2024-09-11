@@ -131,7 +131,7 @@ toil-cwl-runner \
 --preserve-entire-environment \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
-software/VLBI_cwl/workflows/alternative_workflows/split-directions-toil.cwl mslist_VLBI_split_directions.json
+software/VLBI_cwl/workflows/split-directions.cwl mslist_VLBI_split_directions.json
 
 ########################
 

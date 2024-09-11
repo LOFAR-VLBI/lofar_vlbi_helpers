@@ -4,9 +4,22 @@ import inspect
 import pandas as pd
 import casacore.tables as ct
 import numpy as np
+import re
+
+
+def parse_l_number(path):
+    # Use regular expression to find the L-number (L followed by 6 digits)
+    match = re.search(r'L\d{6}', path)
+
+    if match:
+        return match.group(0)
+    else:
+        return None
 
 polarization=False
 lowres=True
+
+LNUM=parse_l_number(os.getcwd())
 
 def make_selfcal_script(solint, ms, preapply):
     """
@@ -24,19 +37,14 @@ def make_selfcal_script(solint, ms, preapply):
 
     # solint in minutes
     solint_scalarphase_1 = min(max(deltime/60, np.sqrt(solint)), 3)
-    solint_scalarphase_2 = 1.5*solint_scalarphase_1
-    solint_scalarphase_3 = 2*solint_scalarphase_1
-    solint_scalarphase_4 = 4*solint_scalarphase_1
+    solint_scalarphase_2 = min(max(deltime/60, 1.25*np.sqrt(solint)), 5)
+    solint_scalarphase_3 = min(max(deltime/60, 2*np.sqrt(solint)), 10)
 
     solint_complexgain_1 = max(15.0, 15*solint)
-    solint_complexgain_2 = 1.5*solint_complexgain_1
-    solint_complexgain_3 = 2*solint_complexgain_1
-    solint_complexgain_4 = 4*solint_complexgain_1
+    solint_complexgain_2 = max(20.0, 20*solint)
+    solint_complexgain_3 = max(30.0, 30*solint)
 
-    # if preapply:
-    #     solint_complexgain *= 2
-    #     solint_scalarphase *= 2
-    cg_cycle_1, cg_cycle_2, cg_cycle_3, cg_cycle_4 = 4, 4, 4, 4
+    cg_cycle_1, cg_cycle_2, cg_cycle_3 = 4, 4, 5
 
     if solint_complexgain_1/60 > 4:
         cg_cycle_1 = 999
@@ -53,34 +61,19 @@ def make_selfcal_script(solint, ms, preapply):
     elif solint_complexgain_3/60 > 3.3:
         solint_complexgain_3 = 240.
 
-    if solint_complexgain_4/60 > 4:
-        cg_cycle_4 = 999
-    elif solint_complexgain_4/60 > 3.3:
-        solint_complexgain_4 = 240.
-
-
     if solint<3:
-        smoothness_phase_1 = 10.0
-        smoothness_phase_2 = 20.0
-        smoothness_phase_3 = 30.0
-        smoothness_complex_1 = 20.0
-        smoothness_complex_2 = 30.0
+        smoothness_phase = 15.0
+        smoothness_complex = 10.0
     else:
-        smoothness_phase_1 = 15.0
-        smoothness_phase_2 = 30.0
-        smoothness_phase_3 = 40.0
-        smoothness_complex_1 = 30.0
-        smoothness_complex_2 = 40.0
+        smoothness_phase = 20.0
+        smoothness_complex = 15.0
 
-    print("solint scalarphase 1: "+str(solint_scalarphase_1)+" minutes")
-    print("solint scalarphase 2: "+str(solint_scalarphase_2)+" minutes")
-    print("solint scalarphase 3: "+str(solint_scalarphase_3)+" minutes")
-    print("solint scalarphase 4: "+str(solint_scalarphase_4)+" minutes")
 
-    print("solint scalaramp 1: "+str(solint_complexgain_1)+" minutes")
-    print("solint scalaramp 2: "+str(solint_complexgain_2)+" minutes")
-    print("solint scalaramp 3: "+str(solint_complexgain_3)+" minutes")
-    print("solint scalaramp 4: "+str(solint_complexgain_4)+" minutes")
+    print("solint scalarphase non-close-german: "+str(solint_scalarphase_1)+" minutes")
+    print("solint scalarphase all international: "+str(solint_scalarphase_2)+" minutes")
+
+    print("solint scalarcomplexgain non-close-german: "+str(solint_complexgain_1)+" minutes")
+    print("solint scalarcomplexgain all international: "+str(solint_complexgain_2)+" minutes")
 
     if polarization:
         pol=" --makeimage-fullpol "
@@ -92,7 +85,7 @@ def make_selfcal_script(solint, ms, preapply):
     else:
         lr=''
 
-    H5='/project/lofarvwf/Share/jdejong/output/ELAIS/L686962/L686962/ddcal/merged_selfcalcyle009_L686962_6asec.ms.copy.avg.norm.h5'
+    H5=f'/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/6asec_sets/joinedsolutions/merged_selfcalcyle002_{LNUM}_6asec.ms.copy.avg.h5'
 
     script=f"""#!/bin/bash
 #SBATCH -c 15
@@ -123,16 +116,15 @@ python $lofar_facet_selfcal \\
 --forwidefield \\
 --autofrequencyaverage \\
 --update-multiscale \\
---soltypecycles-list="[0,{cg_cycle_1},0,{cg_cycle_2},0,{cg_cycle_3},0,{cg_cycle_4}]" \\
---soltype-list="['scalarphase','scalaramplitude','scalarphase','scalaramplitude','scalarphase','scalaramplitude','scalarphase','scalaramplitude']" \\
---smoothnessconstraint-list="[{smoothness_phase_1},{smoothness_complex_1},{smoothness_phase_1},{smoothness_complex_1},{smoothness_phase_2},{smoothness_complex_2},{smoothness_phase_3},{smoothness_complex_2}]" \\
---smoothnessreffrequency-list="[120.0,0.0,120.0,0.0,120.0,0.0,120.0,0.0]" \\
---smoothnessspectralexponent-list="[-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0]" \\
---solint-list="['{int(solint_scalarphase_1*60)}s','{int(solint_complexgain_1*60)}s','{int(solint_scalarphase_2*60)}s','{int(solint_complexgain_2*60)}s','{int(solint_scalarphase_3*60)}s','{int(solint_complexgain_3*60)}s','{int(solint_scalarphase_4*60)}s','{int(solint_complexgain_4*60)}s']" \\
+--soltypecycles-list="[0,{cg_cycle_1},0,{cg_cycle_2},{cg_cycle_3},{cg_cycle_3}]" \\
+--soltype-list="['scalarphase','scalaramplitude','scalarphase','scalaramplitude','scalarphase','scalaramplitude']" \\
+--smoothnessconstraint-list="[{smoothness_phase},{smoothness_complex},{smoothness_phase},{smoothness_complex},{smoothness_phase*1.5},{smoothness_complex*1.5}]" \\
+--smoothnessreffrequency-list="[120.0,0.0,120.0,0.0,120.0,0.0]" \\
+--smoothnessspectralexponent-list="[-1.0,-1.0,-1.0,-1.0,-1.0,-1.0]" \\
+--solint-list="['{int(solint_scalarphase_1*60)}s','{int(solint_complexgain_1*60)}s','{int(solint_scalarphase_2*60)}s','{int(solint_complexgain_2*60)}s','{int(solint_scalarphase_3*60)}s','{int(solint_complexgain_3*60)}s']" \\
 --uvmin=20000 \\
 --imsize=2048 \\
---antennaconstraint-list="[None,None,None,None,'remote','remote','alldutch','alldutch']" \\
---resetsols-list="['alldutchandclosegerman','alldutchandclosegerman','alldutch','alldutch','coreandallbutmostdistantremotes','coreandallbutmostdistantremotes',None,None]" \\
+--resetsols-list="['alldutchandclosegerman','alldutchandclosegerman','alldutch','alldutch','coreandallbutmostdistantremotes','coreandallbutmostdistantremotes']" \\
 --paralleldeconvolution=1024 \\
 --targetcalILT='scalarphase' \\
 --stop=12 \\
@@ -171,4 +163,3 @@ if __name__ == "__main__":
                  'mv selfcal_script.sh '+sourceid+'_selfcal']
         os.system(' && '.join(tasks))
     print("---RUN---\nfor P in P?????; do cd $P && sbatch selfcal_script.sh && cd ../; done")
-
