@@ -91,7 +91,7 @@ split-directions \
 $SUBTRACTDATA
 
 #SELECTION WAS ALREADY DONE
-jq '. + {"dd_selection": $DD_SELECTION}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
+jq --arg dd_selection "$DD_SELECTION" '. + {dd_selection: $dd_selection}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
 
 ########################
 
