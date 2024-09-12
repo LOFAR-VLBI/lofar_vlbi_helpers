@@ -37,14 +37,12 @@ def make_selfcal_script(solint, ms, preapply):
 
     # solint in minutes
     solint_scalarphase_1 = min(max(deltime/60, np.sqrt(solint)), 3)
-    solint_scalarphase_2 = min(max(deltime/60, 1.25*np.sqrt(solint)), 5)
-    solint_scalarphase_3 = min(max(deltime/60, 2*np.sqrt(solint)), 10)
+    solint_scalarphase_2 = min(max(deltime/60, 1.33*np.sqrt(solint)), 5)
 
-    solint_complexgain_1 = max(15.0, 15*solint)
-    solint_complexgain_2 = max(20.0, 20*solint)
-    solint_complexgain_3 = max(30.0, 30*solint)
+    solint_complexgain_1 = max(20.0, 20*solint)
+    solint_complexgain_2 = max(30.0, 30*solint)
 
-    cg_cycle_1, cg_cycle_2, cg_cycle_3 = 4, 4, 5
+    cg_cycle_1, cg_cycle_2 = 4, 4
 
     if solint_complexgain_1/60 > 4:
         cg_cycle_1 = 999
@@ -53,19 +51,16 @@ def make_selfcal_script(solint, ms, preapply):
 
     if solint_complexgain_2/60 > 4:
         cg_cycle_2 = 999
-    elif solint_complexgain_2/60 > 3.3:
+    elif solint_complexgain_2/60 > 3:
         solint_complexgain_2 = 240.
 
-    if solint_complexgain_3/60 > 4:
-        cg_cycle_3 = 999
-    elif solint_complexgain_3/60 > 3.3:
-        solint_complexgain_3 = 240.
+    smoothness_phase = 10.0
 
     if solint<3:
-        smoothness_phase = 15.0
+        smoothness_complex = 5.0
+    elif solint<8:
         smoothness_complex = 10.0
     else:
-        smoothness_phase = 20.0
         smoothness_complex = 15.0
 
 
@@ -116,15 +111,15 @@ python $lofar_facet_selfcal \\
 --forwidefield \\
 --autofrequencyaverage \\
 --update-multiscale \\
---soltypecycles-list="[0,{cg_cycle_1},0,{cg_cycle_2},{cg_cycle_3},{cg_cycle_3}]" \\
---soltype-list="['scalarphase','scalaramplitude','scalarphase','scalaramplitude','scalarphase','scalaramplitude']" \\
---smoothnessconstraint-list="[{smoothness_phase},{smoothness_complex},{smoothness_phase},{smoothness_complex},{smoothness_phase*1.5},{smoothness_complex*1.5}]" \\
---smoothnessreffrequency-list="[120.0,0.0,120.0,0.0,120.0,0.0]" \\
---smoothnessspectralexponent-list="[-1.0,-1.0,-1.0,-1.0,-1.0,-1.0]" \\
---solint-list="['{int(solint_scalarphase_1*60)}s','{int(solint_complexgain_1*60)}s','{int(solint_scalarphase_2*60)}s','{int(solint_complexgain_2*60)}s','{int(solint_scalarphase_3*60)}s','{int(solint_complexgain_3*60)}s']" \\
+--soltypecycles-list="[0,{cg_cycle_1},0,{cg_cycle_2}]" \\
+--soltype-list="['scalarphase','scalaramplitude','scalarphase','scalaramplitude']" \\
+--smoothnessconstraint-list="[{smoothness_phase},{smoothness_complex},{smoothness_phase},{smoothness_complex}]" \\
+--smoothnessreffrequency-list="[120.0,0.0,120.0,0.0]" \\
+--smoothnessspectralexponent-list="[-1.0,-1.0,-1.0,-1.0]" \\
+--solint-list="['{int(solint_scalarphase_1*60)}s','{int(solint_complexgain_1*60)}s','{int(solint_scalarphase_2*60)}s','{int(solint_complexgain_2*60)}s']" \\
 --uvmin=20000 \\
 --imsize=2048 \\
---resetsols-list="['alldutchandclosegerman','alldutchandclosegerman','alldutch','alldutch','coreandallbutmostdistantremotes','coreandallbutmostdistantremotes']" \\
+--resetsols-list="['alldutchandclosegerman','alldutchandclosegerman','alldutch','alldutch']" \\
 --paralleldeconvolution=1024 \\
 --targetcalILT='scalarphase' \\
 --stop=12 \\

@@ -15,7 +15,7 @@ CAT=${CSV}
 if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
 SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/all_dicalsolutions/merged_${LNUM}_linear.h5
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
-DD_SELECTION=true #or true?
+DD_SELECTION="true" #or true?
 
 VENV=/home/lofarvwf-jdejong/venv
 
@@ -91,8 +91,9 @@ split-directions \
 $SUBTRACTDATA
 
 #SELECTION WAS ALREADY DONE
-jq --arg dd_selection "$DD_SELECTION" '. + {dd_selection: $dd_selection}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
-
+if [ "$DD_SELECTION" = "true" ]; then
+  jq --arg dd_selection "$DD_SELECTION" '. + {dd_selection: true}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
+fi
 ########################
 
 # MAKE TOIL RUNNING STRUCTURE
