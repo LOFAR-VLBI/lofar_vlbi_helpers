@@ -6,7 +6,6 @@ import casacore.tables as ct
 import numpy as np
 import re
 
-
 def parse_l_number(path):
     # Use regular expression to find the L-number (L followed by 6 digits)
     match = re.search(r'L\d{6}', path)
@@ -37,22 +36,16 @@ def make_selfcal_script(solint, ms, preapply):
 
     # solint in minutes
     solint_scalarphase_1 = min(max(deltime/60, np.sqrt(solint)), 3)
-    solint_scalarphase_2 = min(max(deltime/60, 1.33*np.sqrt(solint)), 5)
+    solint_scalarphase_2 = min(max(deltime/60, np.sqrt(1.5*solint)), 5)
 
-    solint_complexgain_1 = max(20.0, 20*solint)
-    solint_complexgain_2 = max(30.0, 30*solint)
+    solint_complexgain_1 = max(16.0, 20*solint)
 
-    cg_cycle_1, cg_cycle_2 = 4, 4
+    cg_cycle_1 = 3
 
     if solint_complexgain_1/60 > 4:
         cg_cycle_1 = 999
-    elif solint_complexgain_1/60 > 3.3:
+    elif solint_complexgain_1/60 > 3:
         solint_complexgain_1 = 240.
-
-    if solint_complexgain_2/60 > 4:
-        cg_cycle_2 = 999
-    elif solint_complexgain_2/60 > 3:
-        solint_complexgain_2 = 240.
 
     smoothness_phase = 10.0
 
@@ -68,7 +61,6 @@ def make_selfcal_script(solint, ms, preapply):
     print("solint scalarphase all international: "+str(solint_scalarphase_2)+" minutes")
 
     print("solint scalarcomplexgain non-close-german: "+str(solint_complexgain_1)+" minutes")
-    print("solint scalarcomplexgain all international: "+str(solint_complexgain_2)+" minutes")
 
     if polarization:
         pol=" --makeimage-fullpol "
@@ -111,15 +103,15 @@ python $lofar_facet_selfcal \\
 --forwidefield \\
 --autofrequencyaverage \\
 --update-multiscale \\
---soltypecycles-list="[0,{cg_cycle_1},0,{cg_cycle_2}]" \\
---soltype-list="['scalarphase','scalaramplitude','scalarphase','scalaramplitude']" \\
---smoothnessconstraint-list="[{smoothness_phase},{smoothness_complex},{smoothness_phase},{smoothness_complex}]" \\
---smoothnessreffrequency-list="[120.0,0.0,120.0,0.0]" \\
---smoothnessspectralexponent-list="[-1.0,-1.0,-1.0,-1.0]" \\
---solint-list="['{int(solint_scalarphase_1*60)}s','{int(solint_complexgain_1*60)}s','{int(solint_scalarphase_2*60)}s','{int(solint_complexgain_2*60)}s']" \\
+--soltypecycles-list="[0,0,{cg_cycle_1}]" \\
+--soltype-list="['scalarphase','scalarphase','scalarcomplexgain']" \\
+--smoothnessconstraint-list="[{smoothness_phase},{smoothness_phase},{smoothness_complex}]" \\
+--smoothnessreffrequency-list="[120.0,120.0,0.0]" \\
+--smoothnessspectralexponent-list="[-1.0,-1.0,-1.0]" \\
+--solint-list="['{int(solint_scalarphase_1*60)}s','{int(solint_scalarphase_2*60)}s','{int(solint_complexgain_1*60)}s']" \\
 --uvmin=20000 \\
 --imsize=2048 \\
---resetsols-list="['alldutchandclosegerman','alldutchandclosegerman','alldutch','alldutch']" \\
+--resetsols-list="['alldutchandclosegerman','alldutch','alldutch']" \\
 --paralleldeconvolution=1024 \\
 --targetcalILT='scalarphase' \\
 --stop=12 \\
