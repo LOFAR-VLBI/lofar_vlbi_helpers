@@ -32,8 +32,8 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: InitialWorkDirRequirement
     listing:
-      - entry: $( input.ms )
-        entryname: $( input.ms.basename + '.config.txt' )
+      - entry: $( inputs.ms )
+        entryname: $( inputs.ms.basename + '.config.txt' )
         writable: true
 
 hints:

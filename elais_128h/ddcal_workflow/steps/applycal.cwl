@@ -1,7 +1,10 @@
 cwlVersion: v1.2
 class: CommandLineTool
 
-baseCommand: python
+baseCommand:
+  - python
+  - $( inputs.lofar_helpers.path + '/ms_helpers/applycal.py' )
+  - --msout $( 'applied_' + inputs.ms.basename )
 
 inputs:
   ms:
@@ -24,12 +27,12 @@ outputs:
     outputBinding:
       glob: "applied_*"
 
-arguments:
-  - $( inputs.lofar_helpers.path + '/ms_helpers/applycal.py' )
-  - --msout $( 'applied_' + inputs.ms.basename )
-
 requirements:
   - class: InlineJavascriptRequirement
+  - class: InitialWorkDirRequirement
+    listing:
+      - entry: $(inputs.ms)
+        writable: true
 
 hints:
   - class: DockerRequirement

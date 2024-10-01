@@ -1,7 +1,9 @@
 cwlVersion: v1.2
 class: CommandLineTool
 
-baseCommand: python
+baseCommand:
+  - python
+  - $( inputs.lofar_helpers.path + '/h5_helpers/find_closest_h5.py' )
 
 inputs:
   h5:
@@ -27,8 +29,6 @@ outputs:
     outputBinding:
       glob: output_h5s/source_0.h5
 
-arguments:
-  - $( inputs.lofar_helpers.path + '/h5_helpers/find_closest_h5.py' )
 
 requirements:
   - class: InlineJavascriptRequirement

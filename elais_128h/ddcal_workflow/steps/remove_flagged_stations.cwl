@@ -1,7 +1,10 @@
 cwlVersion: v1.2
 class: CommandLineTool
 
-baseCommand: python
+baseCommand:
+  - python3
+  - $( inputs.lofar_helpers.path + '/ms_helpers/remove_flagged_stations.py' )
+  - --overwrite
 
 inputs:
   ms:
@@ -17,12 +20,13 @@ outputs:
     outputBinding:
       glob: $(inputs.ms.basename)
 
-arguments:
-  - $( inputs.lofar_helpers.path + '/ms_helpers/remove_flagged_stations.py' )
-  - --overwrite
 
 requirements:
   - class: InlineJavascriptRequirement
+  - class: InitialWorkDirRequirement
+    listing:
+      - entry: $(inputs.ms)
+        writable: true
 
 hints:
   - class: DockerRequirement
