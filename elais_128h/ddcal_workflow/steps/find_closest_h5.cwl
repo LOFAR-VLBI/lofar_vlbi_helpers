@@ -3,21 +3,20 @@ class: CommandLineTool
 
 baseCommand:
   - python
-  - $( inputs.lofar_helpers.path + '/h5_helpers/find_closest_h5.py' )
 
 inputs:
   h5:
     type: File
     inputBinding:
       prefix: "--h5_in"
-      position: 1
+      position: 2
       itemSeparator: " "
       separate: true
   ms:
     type: Directory
     inputBinding:
       prefix: "--msin"
-      position: 2
+      position: 3
       itemSeparator: " "
       separate: true
   lofar_helpers:
@@ -29,6 +28,8 @@ outputs:
     outputBinding:
       glob: output_h5s/source_0.h5
 
+arguments:
+  - $( inputs.lofar_helpers.path + '/h5_helpers/find_closest_h5.py' )
 
 requirements:
   - class: InlineJavascriptRequirement

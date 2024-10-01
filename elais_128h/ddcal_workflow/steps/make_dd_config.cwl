@@ -9,7 +9,7 @@ inputs:
   ms:
     type: Directory
     inputBinding:
-      position: 1
+      position: 2
       prefix: "--ms"
       itemSeparator: " "
       separate: true
@@ -18,7 +18,7 @@ inputs:
     type: File
     inputBinding:
       prefix: "--phasediff_output"
-      position: 2
+      position: 3
       itemSeparator: " "
       separate: true
 

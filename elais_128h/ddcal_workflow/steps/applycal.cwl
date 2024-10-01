@@ -3,8 +3,6 @@ class: CommandLineTool
 
 baseCommand:
   - python
-  - $( inputs.lofar_helpers.path + '/ms_helpers/applycal.py' )
-  - --msout $( 'applied_' + inputs.ms.basename )
 
 inputs:
   ms:
@@ -33,6 +31,10 @@ requirements:
     listing:
       - entry: $(inputs.ms)
         writable: true
+
+arguments:
+  - $( inputs.lofar_helpers.path + '/ms_helpers/applycal.py' )
+  - --msout $( 'applied_' + inputs.ms.basename )
 
 hints:
   - class: DockerRequirement
