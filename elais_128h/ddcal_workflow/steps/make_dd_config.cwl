@@ -1,7 +1,9 @@
 cwlVersion: v1.2
 class: CommandLineTool
 
-baseCommand: make_config.py
+baseCommand:
+    - python3
+    - make_config.py
 
 inputs:
   ms:
@@ -11,6 +13,7 @@ inputs:
       prefix: "--ms"
       itemSeparator: " "
       separate: true
+
   phasediff_output:
     type: File
     inputBinding:
@@ -24,6 +27,13 @@ outputs:
     type: File
     outputBinding:
       glob: "*.config.txt"
+
+requirements:
+  - class: InitialWorkDirRequirement
+    listing:
+      - entry: $( input.ms )
+        entryname: $( input.ms.basename + '.config.txt' )
+        writable: true
 
 hints:
   - class: DockerRequirement
