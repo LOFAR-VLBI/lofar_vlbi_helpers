@@ -8,12 +8,12 @@ inputs:
   ms:
     type: Directory
     inputBinding:
-      position: 3
+      position: 5
   h5:
     type: File
     inputBinding:
       prefix: "--h5"
-      position: 2
+      position: 4
       itemSeparator: " "
       separate: true
   lofar_helpers:
@@ -34,7 +34,8 @@ requirements:
 
 arguments:
   - $( inputs.lofar_helpers.path + '/ms_helpers/applycal.py' )
-  - --msout $( 'applied_' + inputs.ms.basename )
+  - --msout
+  - $( 'applied_' + inputs.ms.basename )
 
 hints:
   - class: DockerRequirement

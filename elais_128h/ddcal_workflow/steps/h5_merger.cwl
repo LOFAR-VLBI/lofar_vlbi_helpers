@@ -30,7 +30,7 @@ outputs:
 
 arguments:
   - $( inputs.lofar_helpers.path + '/h5_merger.py' )
-  - --h5_out preapply.h5
+  - --h5_out=preapply.h5
   - --propagate_flags
 
 requirements:
