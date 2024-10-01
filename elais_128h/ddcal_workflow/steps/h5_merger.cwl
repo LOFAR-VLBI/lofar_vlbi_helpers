@@ -32,6 +32,9 @@ arguments:
   - -out preapply.h5
   - --propagate_flags
 
+requirements:
+  - class: InlineJavascriptRequirement
+
 hints:
   - class: DockerRequirement
     dockerPull: vlbi-cwl

@@ -30,6 +30,9 @@ outputs:
 arguments:
   - $( inputs.lofar_helpers.path + '/h5_helpers/find_closest_h5.py' )
 
+requirements:
+  - class: InlineJavascriptRequirement
+
 hints:
   - class: DockerRequirement
     dockerPull: vlbi-cwl

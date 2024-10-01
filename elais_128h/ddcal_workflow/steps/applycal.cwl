@@ -28,6 +28,9 @@ arguments:
   - $( inputs.lofar_helpers.path + '/ms_helpers/applycal.py' )
   - --msout $( 'applied_' + inputs.ms.basename )
 
+requirements:
+  - class: InlineJavascriptRequirement
+
 hints:
   - class: DockerRequirement
     dockerPull: vlbi-cwl
