@@ -2,7 +2,6 @@ cwlVersion: v1.2
 class: CommandLineTool
 
 baseCommand:
-    - python3
     - make_config.py
 
 inputs:
