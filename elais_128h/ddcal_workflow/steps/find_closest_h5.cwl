@@ -2,7 +2,7 @@ cwlVersion: v1.2
 class: CommandLineTool
 
 baseCommand:
-  - python
+  - python3
 
 inputs:
   h5:

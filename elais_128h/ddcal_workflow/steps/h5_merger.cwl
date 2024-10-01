@@ -2,7 +2,7 @@ cwlVersion: v1.2
 class: CommandLineTool
 
 baseCommand:
-  - python
+  - python3
 
 inputs:
   ms:
@@ -30,7 +30,7 @@ outputs:
 
 arguments:
   - $( inputs.lofar_helpers.path + '/h5_merger.py' )
-  - -out preapply.h5
+  - --h5_out preapply.h5
   - --propagate_flags
 
 requirements:

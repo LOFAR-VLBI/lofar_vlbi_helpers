@@ -33,7 +33,6 @@ requirements:
   - class: InitialWorkDirRequirement
     listing:
       - entry: $( inputs.ms )
-        entryname: $( inputs.ms.basename + '.config.txt' )
         writable: true
 
 hints:
