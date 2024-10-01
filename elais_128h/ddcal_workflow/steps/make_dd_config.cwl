@@ -29,6 +29,7 @@ outputs:
       glob: "*.config.txt"
 
 requirements:
+  - class: InlineJavascriptRequirement
   - class: InitialWorkDirRequirement
     listing:
       - entry: $( input.ms )
