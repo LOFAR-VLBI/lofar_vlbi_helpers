@@ -33,7 +33,7 @@ steps:
         - id: lofar_helpers
           source: lofar_helpers
         - id: selfcal
-          source: lofar_helpers
+          source: selfcal
       out:
         - h5parm
       scatter: msin
