@@ -1,22 +1,32 @@
 cwlVersion: v1.2
 class: CommandLineTool
+id: remove_flagged_stations
+label: Remove fully flagged stations
+doc: Remove stations in MeasurementSet that are fully flagged to help safe data volume and compute time.
 
 baseCommand:
   - python3
 
 inputs:
-  ms:
-    type: Directory
-    inputBinding:
-      position: 3
-  lofar_helpers:
-    type: Directory
+    - id: ms
+      type: Directory
+      inputBinding:
+        position: 3
+    - id: lofar_helpers
+      type: Directory
 
 outputs:
-  cleaned_ms:
-    type: Directory
-    outputBinding:
-      glob: $(inputs.ms.basename)
+    - id: cleaned_ms
+      type: Directory
+      doc: MeasurementSet where flagged stations are removed
+      outputBinding:
+        glob: $(inputs.ms.basename)
+    - id: logfile
+      type: File[]
+      doc: Log files corresponding to this step
+      outputBinding:
+        glob: remove_flagged_stations*.log
+
 
 requirements:
   - class: InlineJavascriptRequirement
@@ -34,3 +44,6 @@ hints:
     dockerPull: vlbi-cwl
   - class: ResourceRequirement
     coresMin: 2
+
+stdout: remove_flagged_stations.log
+stderr: remove_flagged_stations_err.log

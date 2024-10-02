@@ -15,7 +15,7 @@ CAT=${CSV}
 if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
 SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/all_dicalsolutions/merged_${LNUM}_linear.h5
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
-DD_SELECTION="true" #or true?
+DD_SELECTION="false" #or true?
 
 VENV=/home/lofarvwf-jdejong/venv
 

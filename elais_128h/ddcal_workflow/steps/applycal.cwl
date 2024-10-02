@@ -1,29 +1,41 @@
 cwlVersion: v1.2
 class: CommandLineTool
+id: applycal
+label: Apply calibration solutions
+doc: Apply calibration solutions from h5parm on MeasurementSet
 
 baseCommand:
   - python3
 
 inputs:
-  ms:
-    type: Directory
-    inputBinding:
-      position: 5
-  h5:
-    type: File
-    inputBinding:
-      prefix: "--h5"
-      position: 4
-      itemSeparator: " "
-      separate: true
-  lofar_helpers:
-    type: Directory
+    - id: ms
+      type: Directory
+      doc: Input MeasurementSet
+      inputBinding:
+        position: 5
+    - id: h5
+      type: File
+      doc: Input h5parm
+      inputBinding:
+        prefix: "--h5"
+        position: 4
+        itemSeparator: " "
+        separate: true
+    - id: lofar_helpers
+      type: Directory
+      doc: lofar helpers directory
 
 outputs:
-  ms_out:
-    type: Directory
-    outputBinding:
-      glob: "applied_*"
+    - id: ms_out
+      type: Directory
+      doc: Output MeasurementSet with applied solutions from h5parm
+      outputBinding:
+        glob: "applied_*"
+    - id: logfile
+      type: File[]
+      doc: Log files corresponding to this step
+      outputBinding:
+        glob: applycal*.log
 
 requirements:
   - class: InlineJavascriptRequirement
@@ -31,6 +43,7 @@ requirements:
     listing:
       - entry: $(inputs.ms)
         writable: true
+      - entry: $(inputs.h5)
 
 arguments:
   - $( inputs.lofar_helpers.path + '/ms_helpers/applycal.py' )
@@ -42,3 +55,6 @@ hints:
     dockerPull: vlbi-cwl
   - class: ResourceRequirement
     coresMin: 4
+
+stdout: applycal.log
+stderr: applycal_err.log

@@ -1,8 +1,8 @@
 cwlVersion: v1.2
 class: CommandLineTool
-id: find_closest_h5
-label: Find nearest direction from multi-dir h5parm
-doc: Return h5parm which correspond to the nearest direction from multi-dir h5parm
+id: addCS
+label: Add core stations to h5parm
+doc: Using h5_merger we add back the core stations to the h5parm, which had been replaced by ST001 (super station)
 
 baseCommand:
   - python3
@@ -12,38 +12,40 @@ inputs:
     type: Directory
     doc: Input MeasurementSet
     inputBinding:
-      prefix: "--msin"
-      position: 3
+      position: 2
+      prefix: "-ms"
       itemSeparator: " "
       separate: true
   - id: h5
     type: File
     doc: Input h5parm
     inputBinding:
-      prefix: "--h5_in"
-      position: 2
+      prefix: "-in"
+      position: 3
       itemSeparator: " "
       separate: true
   - id: lofar_helpers
     type: Directory
     doc: lofar helpers directory
 
-
 outputs:
-    - id: closest_h5
+    - id: preapply_h5
       type: File
-      doc: output h5parm
+      doc: h5parm with preapplied solutions and core stations
       outputBinding:
-        glob: output_h5s/source_0.h5
+        glob: preapply_addCS.h5
     - id: logfile
       type: File[]
       doc: Log files corresponding to this step
       outputBinding:
-        glob: applycal_dd*.log
+        glob: h5_merger_dd*.log
 
 
 arguments:
-  - $( inputs.lofar_helpers.path + '/h5_helpers/find_closest_h5.py' )
+  - $( inputs.lofar_helpers.path + '/h5_merger.py' )
+  - --h5_out=preapply_addCS.h5
+  - --propagate_flags
+  - --add_ms_stations
 
 requirements:
   - class: InlineJavascriptRequirement
@@ -52,5 +54,5 @@ hints:
   - class: DockerRequirement
     dockerPull: vlbi-cwl
 
-stdout: find_closest_h5.log
-stderr: find_closest_h5_err.log
+stdout: h5_merger_dd.log
+stderr: h5_merger_dd_err.log
