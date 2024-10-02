@@ -62,7 +62,7 @@ steps:
             run: steps/find_closest_h5.cwl
             in:
               h5: dutch_multidir_h5
-              ms: remove_flagged_stations/cleaned_ms
+              ms: msin
               lofar_helpers: lofar_helpers
             out:
               - closest_h5
