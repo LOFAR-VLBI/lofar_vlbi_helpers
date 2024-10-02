@@ -25,54 +25,71 @@ def make_config(solint, ms):
     deltime = np.abs(time[1]-time[0])
 
     # solint in minutes
-    solint_scalarphase_1 = min(max(deltime/60, np.sqrt(solint)), 5)
-    solint_scalarphase_2 = min(max(deltime/60, 2*np.sqrt(solint)), 8)
+    solint_scalarphase_1 = min(max(deltime/60, np.sqrt(solint)), 3)
+    solint_scalarphase_2 = min(max(deltime/60, 2*np.sqrt(solint)), 5)
     solint_scalarphase_3 = min(max(1, 4*np.sqrt(solint)), 10)
     solint_complexgain_1 = max(16.0, 20*solint)
 
     # start ampsolve
-    cg_cycle = 2
+    cg_cycle = 3
 
     if solint_complexgain_1/60 > 4:
         cg_cycle = 999
     elif solint_complexgain_1/60 > 3:
         solint_complexgain_1 = 240.
 
-    smoothness_phase = 10.0
+    smoothness_phase = 8.0
 
     if solint<3:
-        smoothness_complex = 10.0
+        smoothness_complex = 8.0
     else:
-        smoothness_complex = 15.0
+        smoothness_complex = 12.5
 
-    # antenna groups
+    soltypecycles_list = f'[0,0,0,{cg_cycle}]'
+    soltype_list = "['scalarphase','scalarphase','scalarphase','scalarcomplexgain']"
+    smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_phase*1.5},{smoothness_complex}]"
+    smoothnessreffrequency_list = "[120.0,120.0,120.0,0.0]"
+    smoothnessspectralexponent_list = "[-1.0,-1.0,-1.0,-1.0]"
+    solint_list = f"['{int(solint_scalarphase_1*60)}s','{int(solint_scalarphase_2*60)}s','{int(solint_scalarphase_3*60)}s','{int(solint_complexgain_1*60)}s']"
+
+    # adjusted settings based on solint/phasediff score
     if solint<0.3:
-        stationgroup='core'
-        uvmin=70000
+        uvmin=60000
+        resetsols_list = "['alldutchandclosegerman','alldutch','core','core']"
+
     elif solint<1:
-        stationgroup='coreandfirstremotes'
-        uvmin=55000
+        uvmin=45000
+        resetsols_list = "['alldutchandclosegerman','alldutch','coreandfirstremotes','coreandfirstremotes]"
+
     elif solint<3:
-        stationgroup='coreandallbutmostdistantremotes'
-        uvmin=40000
+        uvmin=30000
+        resetsols_list = "['alldutchandclosegerman','alldutch','coreandallbutmostdistantremotes','coreandallbutmostdistantremotes']"
+
     else:
-        stationgroup='alldutch'
-        uvmin=25000
+        uvmin=20000
+        soltypecycles_list = f'[0,0,{cg_cycle}]'
+        soltype_list = "['scalarphase','scalarphase','scalarcomplexgain']"
+        smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_complex}]"
+        smoothnessreffrequency_list = "[120.0,120.0,0.0]"
+        smoothnessspectralexponent_list = "[-1.0,-1.0,-1.0]"
+        solint_list = f"['{int(solint_scalarphase_1*60)}s','{int(solint_scalarphase_2*60)}s','{int(solint_complexgain_1*60)}s']"
+        resetsols_list = "['alldutchandclosegerman','alldutch','alldutch']"
+
 
     script=f"""imagename                       = dd_selfcal
 phaseupstations                 = 'core'
 forwidefield                    = True
 autofrequencyaverage            = True
 update_multiscale               = True
-soltypecycles_list              = [0,0,{cg_cycle}]
-soltype_list                    = ['scalarphase','scalarphase','scalarphase','scalarcomplexgain']
-smoothnessconstraint_list       = [{smoothness_phase},{smoothness_phase},{smoothness_phase*1.5},{smoothness_complex}]
-smoothnessreffrequency_list     = [120.0,120.0,120.0,0.0]
-smoothnessspectralexponent_list = [-1.0,-1.0,-1.0,-1.0]
-solint_list                     = ['{int(solint_scalarphase_1*60)}s','{int(solint_scalarphase_2*60)}s','{int(solint_scalarphase_3*60)}s','{int(solint_complexgain_1*60)}s']
+soltypecycles_list              = {soltypecycles_list}
+soltype_list                    = {soltype_list}
+smoothnessconstraint_list       = {smoothnessconstraint_list}
+smoothnessreffrequency_list     = {smoothnessreffrequency_list}
+smoothnessspectralexponent_list = {smoothnessspectralexponent_list}
+solint_list                     = {solint_list}
 uvmin                           = {uvmin}
 imsize                          = 2048
-resetsols_list                  = ['alldutchandclosegerman','alldutch','{stationgroup}','{stationgroup}']
+resetsols_list                  = {resetsols_list}
 paralleldeconvolution           = 1024
 targetcalILT                    ='scalarphase'
 stop                            = 7
@@ -85,6 +102,7 @@ parallelgridding                = 6
     if solint_scalarphase_1*60>64:
         script+='\navgtimestep                     = 64s'
 
+    # write to file
     with open(ms+".config.txt", "w") as f:
         f.write(script)
 
@@ -113,7 +131,7 @@ def parse_args():
     Returns: parsed arguments
     """
 
-    parser = ArgumentParser(description='Make config')
+    parser = ArgumentParser(description='Make config for facetselfcal international DD solves')
     parser.add_argument('--ms', type=str, help='MeasurementSet')
     parser.add_argument('--phasediff_output', type=str, help='Phasediff CSV output')
     return parser.parse_args()
