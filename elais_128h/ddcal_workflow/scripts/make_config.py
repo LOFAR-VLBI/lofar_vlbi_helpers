@@ -26,9 +26,10 @@ def make_config(solint, ms):
 
     # solint in minutes
     solint_scalarphase_1 = min(max(deltime/60, np.sqrt(solint)), 3)
-    solint_scalarphase_2 = min(max(deltime/60, 2*np.sqrt(solint)), 5)
-    solint_scalarphase_3 = min(max(1, 4*np.sqrt(solint)), 10)
-    solint_complexgain_1 = max(16.0, 20*solint)
+    solint_scalarphase_2 = min(max(deltime/60, np.sqrt(1.5*solint)), 5)
+    solint_scalarphase_3 = min(max(1, 2*np.sqrt(solint)), 10)
+
+    solint_complexgain_1 = max(18.0, 20*solint)
 
     # start ampsolve
     cg_cycle = 3
@@ -40,14 +41,8 @@ def make_config(solint, ms):
 
     smoothness_phase = 8.0
 
-    if solint<3:
-        smoothness_complex = 8.0
-    else:
-        smoothness_complex = 12.5
-
     soltypecycles_list = f'[0,0,0,{cg_cycle}]'
     soltype_list = "['scalarphase','scalarphase','scalarphase','scalarcomplexgain']"
-    smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_phase*1.5},{smoothness_complex}]"
     smoothnessreffrequency_list = "[120.0,120.0,120.0,0.0]"
     smoothnessspectralexponent_list = "[-1.0,-1.0,-1.0,-1.0]"
     solint_list = f"['{int(solint_scalarphase_1*60)}s','{int(solint_scalarphase_2*60)}s','{int(solint_scalarphase_3*60)}s','{int(solint_complexgain_1*60)}s']"
@@ -56,19 +51,29 @@ def make_config(solint, ms):
     if solint<0.3:
         uvmin=60000
         resetsols_list = "['alldutchandclosegerman','alldutch','core','core']"
+        smoothness_complex = 8.0
+        smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_phase * 1.5},{smoothness_complex}]"
+
 
     elif solint<1:
         uvmin=45000
         resetsols_list = "['alldutchandclosegerman','alldutch','coreandfirstremotes','coreandfirstremotes]"
+        smoothness_complex = 8.0
+        smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_phase * 1.5},{smoothness_complex}]"
+
 
     elif solint<3:
         uvmin=30000
         resetsols_list = "['alldutchandclosegerman','alldutch','coreandallbutmostdistantremotes','coreandallbutmostdistantremotes']"
+        smoothness_complex = 10.0
+        smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_phase * 1.5},{smoothness_complex}]"
+
 
     else:
         uvmin=20000
         soltypecycles_list = f'[0,0,{cg_cycle}]'
         soltype_list = "['scalarphase','scalarphase','scalarcomplexgain']"
+        smoothness_complex = 12.5
         smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_complex}]"
         smoothnessreffrequency_list = "[120.0,120.0,0.0]"
         smoothnessspectralexponent_list = "[-1.0,-1.0,-1.0]"
@@ -120,7 +125,12 @@ def get_solint(ms, phasediff_output):
 
     phasediff = pd.read_csv(phasediff_output)
     sourceid = ms.split("_")[0]
-    solint = phasediff[phasediff['Source_id'].str.split('_').str[0] == sourceid].best_solint.min()
+
+    try:
+        solint = phasediff[phasediff['Source_id'].str.split('_').str[0] == sourceid].best_solint.min()
+    except: # depends on version
+        solint = phasediff[phasediff['source'].str.split('_').str[0] == sourceid].best_solint.min()
+
     return solint
 
 

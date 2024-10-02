@@ -20,7 +20,7 @@ outputs:
       type: Directory
       doc: MeasurementSet where flagged stations are removed
       outputBinding:
-        glob: $(inputs.ms.basename)
+        glob: $( 'flagged_' + inputs.ms.basename )
     - id: logfile
       type: File[]
       doc: Log files corresponding to this step
@@ -37,7 +37,8 @@ requirements:
 
 arguments:
   - $( inputs.lofar_helpers.path + '/ms_helpers/remove_flagged_stations.py' )
-  - --overwrite
+  - --msout
+  - $( 'flagged_' + inputs.ms.basename )
 
 hints:
   - class: DockerRequirement
