@@ -8,7 +8,6 @@ doc: |
 
 baseCommand:
     - python3
-    - run_selfcal.py
 
 inputs:
     - id: msin
@@ -16,30 +15,54 @@ inputs:
       doc: |
         Input data phase-shifted to the
         delay calibrator in MeasurementSet format.
+        inputBinding:
+          position: 6
+          itemSeparator: " "
+          separate: true
 
     - id: skymodel
       type: File?
       doc: |
         The skymodel to be used in the first
         cycle in the self-calibration.
+        inputBinding:
+          prefix: "--skymodel"
+          position: 2
+          itemSeparator: " "
+          separate: true
 
     - id: configfile
       type: File
       doc: A plain-text file containing configuration options for self-calibration.
+      inputBinding:
+        prefix: "--configpath"
+        position: 3
+        itemSeparator: " "
+        separate: true
 
     - id: selfcal
       type: Directory
       doc: External self-calibration script.
+      inputBinding:
+        prefix: "--helperscriptspath"
+        position: 4
+        itemSeparator: " "
+        separate: true
 
     - id: h5merger
       type: Directory
       doc: External LOFAR helper scripts for merging HDF5 files.
+      inputBinding:
+        prefix: "--helperscriptspathh5merge"
+        position: 5
+        itemSeparator: " "
+        separate: true
 
 outputs:
     - id: h5parm
       type: File
       outputBinding:
-        glob: merged_addCS_selfcalcyle009_linear*.h5
+        glob: merged_addCS_selfcalcyle007_linear*.h5
       doc: |
         The calibration solution files generated
         by lofar_facet_selfcal in HDF5 format.
@@ -65,32 +88,14 @@ outputs:
         and stderr from the step.
 
 requirements:
-  - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: InitialWorkDirRequirement
     listing:
       - entry: $(inputs.msin)
-      - entryname: run_selfcal.py
-        entry: |
-          import subprocess
-          import json
+        writable: true
 
-          inputs = json.loads(r"""$(inputs)""")
-
-          msin = inputs['msin']['basename']
-          configfile = inputs['configfile']['path']
-          skymodel = inputs['skymodel']['path'] if inputs['skymodel'] else None
-          selfcal = inputs['selfcal']['path']
-          h5merge = inputs['h5merger']['path']
-
-          run_selfcal = (f"python3 {selfcal}/facetselfcal.py {msin}"
-                         f" --helperscriptspath {selfcal}"
-                         f" --configpath {configfile}"
-                         f" --helperscriptspathh5merge {h5merge}")
-          if skymodel:
-            run_selfcal += f" --skymodel {skymodel}"
-
-          subprocess.run(run_selfcal, shell = True)
+arguments:
+  - $( inputs.selfcal.path + '/facetselfcal.py' )
 
 hints:
   - class: DockerRequirement
