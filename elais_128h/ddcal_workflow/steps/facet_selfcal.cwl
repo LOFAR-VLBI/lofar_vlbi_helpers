@@ -16,7 +16,7 @@ inputs:
         Input data phase-shifted to the
         delay calibrator in MeasurementSet format.
         inputBinding:
-          position: 6
+          position: -1
 
     - id: skymodel
       type: File?
