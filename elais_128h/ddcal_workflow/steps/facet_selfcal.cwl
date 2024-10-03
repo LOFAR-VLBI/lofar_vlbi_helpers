@@ -17,8 +17,6 @@ inputs:
         delay calibrator in MeasurementSet format.
         inputBinding:
           position: 6
-          itemSeparator: " "
-          separate: true
 
     - id: skymodel
       type: File?
