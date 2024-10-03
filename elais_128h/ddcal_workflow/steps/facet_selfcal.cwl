@@ -15,19 +15,19 @@ inputs:
       doc: |
         Input data phase-shifted to the
         delay calibrator in MeasurementSet format.
-        inputBinding:
-          position: -1
+      inputBinding:
+        position: 6
 
     - id: skymodel
       type: File?
       doc: |
         The skymodel to be used in the first
         cycle in the self-calibration.
-        inputBinding:
-          prefix: "--skymodel"
-          position: 2
-          itemSeparator: " "
-          separate: true
+      inputBinding:
+        prefix: "--skymodel"
+        position: 2
+        itemSeparator: " "
+        separate: true
 
     - id: configfile
       type: File
