@@ -7,6 +7,23 @@ from argparse import ArgumentParser
 import numpy as np
 import pandas as pd
 import casacore.tables as ct
+import re
+
+
+def parse_source_id(inp_str: str = None):
+    """
+    Parse ILTJ... source_id string
+
+    Args:
+        inp_str: ILTJ source_id
+
+    Returns: parsed output
+
+    """
+
+    parsed_inp = re.findall(r'ILTJ\d+\..\d+\+\d+.\d+', inp_str)[0]
+
+    return parsed_inp
 
 
 def make_config(solint, ms):
@@ -81,8 +98,8 @@ def make_config(solint, ms):
         resetsols_list = "['alldutchandclosegerman','alldutch','alldutch']"
 
 
-    script=f"""imagename                       = dd_selfcal
-phaseupstations                 = 'core'
+    script=f"""imagename                       = "{parse_source_id(ms)}"
+phaseupstations                 = "core"
 forwidefield                    = True
 autofrequencyaverage            = True
 update_multiscale               = True
@@ -96,7 +113,7 @@ uvmin                           = {uvmin}
 imsize                          = 2048
 resetsols_list                  = {resetsols_list}
 paralleldeconvolution           = 1024
-targetcalILT                    ='scalarphase'
+targetcalILT                    = "scalarphase"
 stop                            = 7
 flagtimesmeared                 = True
 compute_phasediffstat           = True
