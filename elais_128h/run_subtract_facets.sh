@@ -27,7 +27,7 @@ mkdir -p software
 cd software
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal
-git clone -b facet_subtract https://git.astron.nl/RD/VLBI-cwl.git VLBI_CWL
+git clone -b facet_subtract https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 cd ../
 
 # set up singularity
