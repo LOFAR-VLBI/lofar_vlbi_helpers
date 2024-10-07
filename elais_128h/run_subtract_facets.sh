@@ -77,6 +77,11 @@ jq --arg path "$PWD/software/lofar_helpers" \
    '. + {"lofar_helpers": {"class": "Directory", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
+# Add 'lofar_helpers' with 'class' and 'path'
+jq --arg path "$PWD/software/lofar_facet_selfcal" \
+   '. + {"selfcal": {"class": "Directory", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
+
 # Add 'h5parm' with 'class' and 'path'
 jq --arg path "$H5FACETS" \
    '. + {"h5parm": {"class": "File", "path": $path}}' \
