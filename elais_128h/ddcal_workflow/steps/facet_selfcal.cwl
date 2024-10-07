@@ -60,7 +60,7 @@ outputs:
     - id: h5parm
       type: File
       outputBinding:
-        glob: merged_addCS_selfcalcyle007_linear*.h5
+        glob: merged_addCS_selfcalcyle006_linear*.h5
       doc: |
         The calibration solution files generated
         by lofar_facet_selfcal in HDF5 format.

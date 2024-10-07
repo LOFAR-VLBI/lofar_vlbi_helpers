@@ -12,10 +12,14 @@
 #### UPDATE THESE ####
 ######################
 
+LNUM=$1
+
 export TOIL_SLURM_ARGS="--export=ALL -p normal --constraint=rome"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
 SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/elais_128h/ddcal_workflow
+DUTCHh5parm=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/6asec_sets/joinedsolutions/merged_skyselfcalcyle000_${LNUM}_6asec.ms.copy.avg.h5
+DDELECT=/project/lofarvwf/Share/jdejong/output/ELAIS/final_dd_selection.csv
 
 VENV=/home/lofarvwf-jdejong/venv
 
@@ -30,6 +34,7 @@ cd software
 mkdir scripts
 cp $SCRIPTS/scripts/* scripts
 git clone https://github.com/jurjen93/lofar_helpers.git
+git clone https://github.com/rvweeren/lofar_facet_selfcal
 SCRIPTS_PATH=$PWD/scripts
 chmod 755 ${SCRIPTS_PATH}/*
 SING_BIND=${SING_BIND}",${SCRIPTS_PATH}:/opt/lofar/DynSpecMS"
@@ -57,38 +62,45 @@ export TOIL_CHECK_ENV=True
 export LINC_DATA_ROOT=$PWD/software/LINC
 
 ########################
-#
-## Define the output JSON file
-#JSON="input.json"
-#
-## Start the JSON structure for 'msin'
-#json="{\"msin\":["
-#
-## Loop through each file in the MSDATA folder and append to the JSON structure
-#for file in "$MSDATA"/*; do
-#    json="$json{\"class\": \"Directory\", \"path\": \"$file\"},"
-#done
-#
-## Remove the trailing comma and close the JSON array and object
-#json="${json%,}]}"  # Remove the last comma and add the closing brackets
-#
-## Save the initial JSON structure to the file
-#echo "$json" > "$JSON"
-#
-## Add 'lofar_helpers' with 'class' and 'path'
-#jq --arg path "$PWD/software/lofar_helpers" \
-#   '. + {"lofar_helpers": {"class": "Directory", "path": $path}}' \
-#   "$JSON" > temp.json && mv temp.json "$JSON"
-#
-## Add 'h5parm' with 'class' and 'path'
-#jq --arg path "$H5FACETS" \
-#   '. + {"h5parm": {"class": "File", "path": $path}}' \
-#   "$JSON" > temp.json && mv temp.json "$JSON"
-#
-## Add 'model_image_folder' with 'class' and 'path'
-#jq --arg path "$MODELS" \
-#   '. + {"model_image_folder": {"class": "Directory", "path": $path}}' \
-#   "$JSON" > temp.json && mv temp.json "$JSON"
+
+# Define the output JSON file
+JSON="input.json"
+
+# Start the JSON structure for 'msin'
+json="{\"msin\":["
+
+# Loop through each file in the MSDATA folder and append to the JSON structure
+for file in ${LNUM}/${LNUM}/ddcal/chunk_?/outdir/*.ms; do
+    json="$json{\"class\": \"Directory\", \"path\": \"$file\"},"
+done
+
+# Remove the trailing comma and close the JSON array and object
+json="${json%,}]}"  # Remove the last comma and add the closing brackets
+
+# Save the initial JSON structure to the file
+echo "$json" > "$JSON"
+
+# Add 'lofar_helpers' with 'class' and 'path'
+jq --arg path "$PWD/software/lofar_helpers" \
+   '. + {"lofar_helpers": {"class": "Directory", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
+
+# Add 'selfcal' with 'class' and 'path'
+jq --arg path "$PWD/software/lofar_facet_selfcal" \
+   '. + {"selfcal": {"class": "Directory", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
+
+# Add 'h5parm' with 'class' and 'path'
+jq --arg path "$DUTCHh5parm" \
+   '. + {"dutch_multidir_h5": {"class": "File", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
+
+
+# Add 'h5parm' with 'class' and 'path'
+jq --arg path "$DDELECT" \
+   '. + {"dd_selection_csv": {"class": "File", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
+
 
 JSON=/project/lofarvwf/Share/jdejong/output/ELAIS/L686962/L686962/ddcal/selfcals/testcwl/input.json
 
