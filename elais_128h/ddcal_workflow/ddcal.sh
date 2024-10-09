@@ -6,8 +6,8 @@
 #### INPUT ###
 LNUM=$1
 
-mkdir -p ${LNUM}/${LNUM}/ddcal/selfcals
-cd ${LNUM}/${LNUM}/ddcal/selfcals
+mkdir -p /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/ddcal/selfcals
+cd /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/ddcal/selfcals
 
 ######################
 #### UPDATE THESE ####
