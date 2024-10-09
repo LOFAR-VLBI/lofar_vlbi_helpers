@@ -69,7 +69,7 @@ JSON="input.json"
 json="{\"msin\":["
 
 # Loop through each file in the MSDATA folder and append to the JSON structure
-for file in ${LNUM}/${LNUM}/ddcal/chunk_?/outdir/*.ms; do
+for file in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/ddcal/chunk_?/outdir/*.ms; do
     json="$json{\"class\": \"Directory\", \"path\": \"$file\"},"
 done
 
