@@ -4,15 +4,11 @@
 
 
 #### INPUT ###
-#export MSDATA=$(realpath $1)
-#export H5FACETS=$(realpath $2)
-#export MODELS=$(realpath $3)
+LNUM=$1
 
 ######################
 #### UPDATE THESE ####
 ######################
-
-LNUM=$1
 
 export TOIL_SLURM_ARGS="--export=ALL -p normal --constraint=rome"
 

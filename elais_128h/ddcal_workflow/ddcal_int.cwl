@@ -102,11 +102,16 @@ steps:
               configfile: make_dd_config/dd_config
             out:
               - h5parm
+              - images
+              - fits_images
 
         outputs:
           h5parm:
             type: File
             outputSource: facetselfcal/h5parm
+          images:
+            type: File[]
+
         # end ddcal for each ms
 
     - id: multidir_merge
