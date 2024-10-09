@@ -6,11 +6,14 @@
 #### INPUT ###
 LNUM=$1
 
+mkdir -p ${LNUM}/${LNUM}/ddcal/selfcals
+cd ${LNUM}/${LNUM}/ddcal/selfcals
+
 ######################
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal --constraint=rome"
+export TOIL_SLURM_ARGS="--export=ALL --job-name ${LNUM} -p normal --constraint=rome"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
 SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/elais_128h/ddcal_workflow

@@ -36,6 +36,7 @@ steps:
           source: selfcal
       out:
         - h5parm
+        - images
       scatter: msin
       run:
         # start ddcal for each ms
@@ -111,6 +112,7 @@ steps:
             outputSource: facetselfcal/h5parm
           images:
             type: File[]
+            outputSource: facetselfcal/images
 
         # end ddcal for each ms
 
@@ -125,6 +127,17 @@ steps:
         - multidir_h5
       run: steps/multidir_h5_merger.cwl
 
+    - id: flatten_images
+      label: Flatten image array of arrays
+      in:
+        - id: nestedarray
+          source: ddcal/images
+      out:
+        - flattenedarray
+      run: steps/flatten.cwl
+
+
+
 requirements:
   - class: ScatterFeatureRequirement
   - class: SubworkflowFeatureRequirement
@@ -134,3 +147,7 @@ outputs:
     type: File
     outputSource: multidir_merge/multidir_h5
     doc: Final merged h5parm with multiple directions
+  - id: selfcal_images
+    type: File[]
+    outputSource: flatten_images/flattenedarray
+    doc: Selfcal images for inspection
