@@ -56,7 +56,7 @@ def make_config(solint, ms):
     elif solint_complexgain_1/60 > 3:
         solint_complexgain_1 = 240.
 
-    smoothness_phase = 8.0
+    smoothness_phase = 10.0
 
     soltypecycles_list = f'[0,0,0,{cg_cycle}]'
     soltype_list = "['scalarphase','scalarphase','scalarphase','scalarcomplexgain']"
@@ -66,23 +66,23 @@ def make_config(solint, ms):
 
     # adjusted settings based on solint/phasediff score
     if solint<0.3:
-        uvmin=60000
+        uvmin=40000
         resetsols_list = "['alldutchandclosegerman','alldutch','core','core']"
-        smoothness_complex = 8.0
+        smoothness_complex = 7.5
         smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_phase * 1.5},{smoothness_complex}]"
 
 
     elif solint<1:
-        uvmin=45000
+        uvmin=30000
         resetsols_list = "['alldutchandclosegerman','alldutch','coreandfirstremotes','coreandfirstremotes]"
-        smoothness_complex = 8.0
+        smoothness_complex = 10.0
         smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_phase * 1.5},{smoothness_complex}]"
 
 
     elif solint<3:
-        uvmin=30000
+        uvmin=25000
         resetsols_list = "['alldutchandclosegerman','alldutch','coreandallbutmostdistantremotes','coreandallbutmostdistantremotes']"
-        smoothness_complex = 10.0
+        smoothness_complex = 12.5
         smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_phase * 1.5},{smoothness_complex}]"
 
 
@@ -90,7 +90,7 @@ def make_config(solint, ms):
         uvmin=20000
         soltypecycles_list = f'[0,0,{cg_cycle}]'
         soltype_list = "['scalarphase','scalarphase','scalarcomplexgain']"
-        smoothness_complex = 12.5
+        smoothness_complex = 15.0
         smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_complex}]"
         smoothnessreffrequency_list = "[120.0,120.0,0.0]"
         smoothnessspectralexponent_list = "[-1.0,-1.0,-1.0]"
@@ -121,8 +121,8 @@ get_diagnostics                 = True
 parallelgridding                = 6
 """
 
-    if solint_scalarphase_1*60>64:
-        script+='\navgtimestep                     = 64s'
+    # if solint_scalarphase_1*60>64:
+    #     script+='\navgtimestep                     = 64s'
 
     # write to file
     with open(ms+".config.txt", "w") as f:

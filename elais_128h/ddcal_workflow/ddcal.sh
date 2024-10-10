@@ -100,9 +100,6 @@ jq --arg path "$DDELECT" \
    '. + {"dd_selection_csv": {"class": "File", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
-
-JSON=/project/lofarvwf/Share/jdejong/output/ELAIS/L686962/L686962/ddcal/selfcals/testcwl/input.json
-
 ########################
 
 # MAKE TOIL RUNNING STRUCTURE

@@ -136,8 +136,6 @@ steps:
         - flattenedarray
       run: steps/flatten.cwl
 
-
-
 requirements:
   - class: ScatterFeatureRequirement
   - class: SubworkflowFeatureRequirement
@@ -147,6 +145,10 @@ outputs:
     type: File
     outputSource: multidir_merge/multidir_h5
     doc: Final merged h5parm with multiple directions
+  - id: h5parm
+    type: File[]
+    outputSource: ddcal/h5parm
+    doc: Individual h5parm from each direction
   - id: selfcal_images
     type: File[]
     outputSource: flatten_images/flattenedarray
