@@ -22,6 +22,8 @@ VENV=/home/lofarvwf-jdejong/venv
 
 # SETUP ENVIRONMENT
 
+MAINFOLDER=$PWD
+
 # set up software
 mkdir -p software
 cd software
@@ -134,5 +136,8 @@ software/VLBI_cwl/workflows/facet_subtract.cwl $JSON
 #--tmpdir-prefix ${TMPD}_interm/ \
 
 ########################
+
+cd $MAINFOLDER
+rm -rf tmpdir*/*.ms
 
 deactivate
