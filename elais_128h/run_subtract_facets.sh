@@ -12,7 +12,7 @@ export MODELS=$(realpath $3)
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal --constraint='rome|naples'"
+export TOIL_SLURM_ARGS="--export=ALL -p normal --constraint=amd"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
 VENV=/home/lofarvwf-jdejong/venv
