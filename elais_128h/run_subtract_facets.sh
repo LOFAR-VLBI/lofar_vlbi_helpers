@@ -89,12 +89,14 @@ jq --arg path "$H5FACETS" \
    '. + {"h5parm": {"class": "File", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
-mkdir -p modelims
-cp $MODELS/*model.fits modelims
-cp $MODELS/*model-pb.fits modelims
+
+MODELPATH=$MAINFOLDER/modelims
+mkdir -p $MODELPATH
+cp $MODELS/*model.fits $MODELPATH
+cp $MODELS/*model-pb.fits $MODELPATH
 
 # Add 'model_image_folder' with 'class' and 'path'
-jq --arg path "$PWD/modelims" \
+jq --arg path "$MODELPATH" \
    '. + {"model_image_folder": {"class": "Directory", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
