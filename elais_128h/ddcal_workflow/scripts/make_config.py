@@ -62,40 +62,43 @@ def make_config(solint, ms):
     elif solint_complexgain_2/60 > 3:
         solint_complexgain_2 = 240.
 
-    smoothness_phase = 10.0
 
-    soltypecycles_list = f'[0,0,0,{cg_cycle},{cg_cycle}]'
-    soltype_list = "['scalarphase','scalarphase','scalarphase','scalarcomplexgain','scalarcomplexgain']"
-    smoothnessreffrequency_list = "[120.0,120.0,120.0,0.0,0.0]"
+    soltypecycles_list = f'[0,0,{cg_cycle},1,{cg_cycle+1}]'
+    soltype_list = "['scalarphase','scalarphase','scalaramplitude','scalarphase','scalarcomplexgain']"
+    smoothnessreffrequency_list = "[120.0,120.0,0.0,120.0,0.0]"
     smoothnessspectralexponent_list = "[-1.0,-1.0,-1.0,-1.0,-1.0]"
-    solint_list = f"['{int(solint_scalarphase_1*60)}s','{int(solint_scalarphase_2*60)}s','{int(solint_scalarphase_3*60)}s','{int(solint_complexgain_1*60)}s','{int(solint_complexgain_2*60)}s']"
+    solint_list = f"['{int(solint_scalarphase_1*60)}s','{int(solint_scalarphase_2*60)}s','{int(solint_complexgain_1*60)}s','{int(solint_scalarphase_3*60)}s','{int(solint_complexgain_2*60)}s']"
 
     # adjusted settings based on solint/phasediff score
     if solint<0.3:
         uvmin=40000
-        resetsols_list = "['alldutchandclosegerman','alldutch','core','alldutch','core']"
+        resetsols_list = "['alldutchandclosegerman','alldutch','alldutch','core','core']"
+        smoothness_phase = 5.0
         smoothness_complex = 10.0
-        smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_phase * 2},{smoothness_complex},{smoothness_complex*1.5}]"
+        smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_complex},{smoothness_phase * 2},{smoothness_complex+5.0}]"
 
 
     elif solint<1:
         uvmin=30000
-        resetsols_list = "['alldutchandclosegerman','alldutch','coreandfirstremotes','alldutch','coreandfirstremotes]"
+        resetsols_list = "['alldutchandclosegerman','alldutch','alldutch','coreandfirstremotes','coreandfirstremotes]"
+        smoothness_phase = 8.0
         smoothness_complex = 12.5
-        smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_phase * 2},{smoothness_complex},{smoothness_complex*1.5}]"
+        smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_complex},{smoothness_phase * 1.5},{smoothness_complex+5.0}]"
 
 
     elif solint<3:
         uvmin=25000
-        resetsols_list = "['alldutchandclosegerman','alldutch','coreandallbutmostdistantremotes','alldutch','coreandallbutmostdistantremotes']"
+        resetsols_list = "['alldutchandclosegerman','alldutch','alldutch','coreandallbutmostdistantremotes','coreandallbutmostdistantremotes']"
+        smoothness_phase = 10.0
         smoothness_complex = 15.0
-        smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_phase * 2},{smoothness_complex},{smoothness_complex*1.5}]"
+        smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_complex},{smoothness_phase * 1.5},{smoothness_complex+5.0}]"
 
 
     else:
         uvmin=20000
         soltypecycles_list = f'[0,0,{cg_cycle}]'
         soltype_list = "['scalarphase','scalarphase','scalarcomplexgain']"
+        smoothness_phase = 10.0
         smoothness_complex = 20.0
         smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_complex}]"
         smoothnessreffrequency_list = "[120.0,120.0,0.0]"

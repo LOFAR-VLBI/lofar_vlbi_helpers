@@ -12,7 +12,7 @@ export MODELS=$(realpath $3)
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal --constraint=rome"
+export TOIL_SLURM_ARGS="--export=ALL -p normal --constraint='rome,naples'"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
 VENV=/home/lofarvwf-jdejong/venv
@@ -89,8 +89,12 @@ jq --arg path "$H5FACETS" \
    '. + {"h5parm": {"class": "File", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
+mkdir -p modelims
+cp $MODELS/*model.fits modelims
+cp $MODELS/*model-pb.fits modelims
+
 # Add 'model_image_folder' with 'class' and 'path'
-jq --arg path "$MODELS" \
+jq --arg path "$PWD/modelims" \
    '. + {"model_image_folder": {"class": "Directory", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
@@ -116,7 +120,7 @@ source ${VENV}/bin/activate
 # RUN TOIL
 toil-cwl-runner \
 --no-read-only \
---retryCount 0 \
+--retryCount 2 \
 --singularity \
 --disableCaching \
 --writeLogsFromAllJobs True \
