@@ -80,7 +80,7 @@ def make_config(solint, ms):
 
     elif solint<1:
         uvmin=30000
-        resetsols_list = "['alldutchandclosegerman','alldutch','alldutch','coreandfirstremotes','coreandfirstremotes]"
+        resetsols_list = "['alldutchandclosegerman','alldutch','alldutch','coreandfirstremotes','coreandfirstremotes']"
         smoothness_phase = 8.0
         smoothness_complex = 12.5
         smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase},{smoothness_complex},{smoothness_phase * 1.5},{smoothness_complex+5.0}]"
