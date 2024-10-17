@@ -150,7 +150,7 @@ def get_solint(ms, phasediff_output):
     """
 
     phasediff = pd.read_csv(phasediff_output)
-    sourceid = ms.split("_")[0]
+    sourceid = ms.split("/")[-1].split("_")[0]
 
     try:
         solint = phasediff[phasediff['Source_id'].str.split('_').str[0] == sourceid].best_solint.min()
