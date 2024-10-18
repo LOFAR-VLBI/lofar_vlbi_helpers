@@ -96,7 +96,7 @@ jq --arg path "$MODELPATH" \
    '. + {"model_image_folder": {"class": "Directory", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
-singularity exect -B $SING_BIND /software/lofar_helpers/h5_merger.py \
+singularity exect -B $SING_BIND singularity/$SIMG /software/lofar_helpers/h5_merger.py \
 -in $H5FACETS \
 -out $PWD/merged.h5 \
 --propagate_flags \
