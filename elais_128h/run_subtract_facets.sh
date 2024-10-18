@@ -7,6 +7,7 @@
 export MSDATA=$(realpath $1)
 export H5FACETS=$(realpath $2)
 export MODELS=$(realpath $3)
+export SCRATCH='true'
 
 ######################
 #### UPDATE THESE ####
@@ -111,6 +112,12 @@ singularity exec singularity/$SIMG python software/lofar_helpers/h5_merger.py \
 jq --arg path "$PWD/merged.h5" \
    '. + {"h5parm": {"class": "File", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
+
+
+#SELECTION WAS ALREADY DONE
+if [ "$SCRATCH" = "true" ]; then
+  jq --arg scratch "$SCRATCH" '. + {scratch: true}' "$JSON" > temp.json && mv temp.json "$JSON"
+fi
 
 ########################
 
