@@ -99,7 +99,7 @@ jq --arg path "$MODELPATH" \
 chmod 755 -R singularity
 chmod 755 -R software
 
-singularity exec singularity/$SIMG software/lofar_helpers/h5_merger.py \
+singularity exec singularity/$SIMG python software/lofar_helpers/h5_merger.py \
 -in $H5FACETS \
 -out $PWD/merged.h5 \
 --propagate_flags \
