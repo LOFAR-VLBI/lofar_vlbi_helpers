@@ -85,11 +85,6 @@ jq --arg path "$PWD/software/lofar_facet_selfcal" \
    '. + {"selfcal": {"class": "Directory", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
-# Add 'h5parm' with 'class' and 'path'
-jq --arg path "$H5FACETS" \
-   '. + {"h5parm": {"class": "File", "path": $path}}' \
-   "$JSON" > temp.json && mv temp.json "$JSON"
-
 
 MODELPATH=$MAINFOLDER/modelims
 mkdir -p $MODELPATH
@@ -99,6 +94,19 @@ cp $MODELS/*model-pb.fits $MODELPATH
 # Add 'model_image_folder' with 'class' and 'path'
 jq --arg path "$MODELPATH" \
    '. + {"model_image_folder": {"class": "Directory", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
+
+singularity exect -B $SING_BIND /software/lofar_helpers/h5_merger.py \
+-in $H5FACETS \
+-out $PWD/merged.h5 \
+--propagate_flags \
+--add_ms_stations \
+-ms $(ls $MSDATA/* | head -n1) \
+--h5_time_freq 1
+
+# Add 'h5parm' with 'class' and 'path'
+jq --arg path "$PWD/merged.h5" \
+   '. + {"h5parm": {"class": "File", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
 ########################
