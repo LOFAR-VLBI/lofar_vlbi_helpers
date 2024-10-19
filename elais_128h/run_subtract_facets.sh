@@ -163,6 +163,6 @@ software/VLBI_cwl/workflows/facet_subtract.cwl $JSON
 ########################
 
 cd $MAINFOLDER
-rm -rf tmpdir*/*.ms
+#rm -rf tmpdir*/*.ms
 
 deactivate
