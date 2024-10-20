@@ -105,7 +105,7 @@ singularity exec singularity/$SIMG python software/lofar_helpers/h5_merger.py \
 -out $PWD/merged.h5 \
 --propagate_flags \
 --add_ms_stations \
--ms $(ls $MSDATA/* | head -n1) \
+-ms $(find "$MSDATA" -maxdepth 1 -name "*.ms" | head -n 1) \
 --h5_time_freq 1
 
 # Add 'h5parm' with 'class' and 'path'
