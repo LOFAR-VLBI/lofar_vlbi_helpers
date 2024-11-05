@@ -152,7 +152,10 @@ def get_solint(ms, phasediff_output):
     try:
         solint = phasediff[phasediff['Source_id'].str.split('_').str[0] == sourceid].best_solint.min()
     except: # depends on version
-        solint = phasediff[phasediff['source'].str.split('_').str[0] == sourceid].best_solint.min()
+        try:
+            solint = phasediff[phasediff['source'].str.split('_').str[0] == sourceid].best_solint.min()
+        except:
+            solint = phasediff[phasediff['source'].str.split('_').str[-3] == sourceid].best_solint.min()
 
     return solint
 
