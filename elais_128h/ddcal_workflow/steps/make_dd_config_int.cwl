@@ -5,7 +5,7 @@ label: Make DD config file
 doc: Return config file as input for facetselfcal DD solve
 
 baseCommand:
-    - make_config.py
+    - make_config_int.py
 
 inputs:
   - id: ms

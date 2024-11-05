@@ -107,7 +107,7 @@ def make_config(solint, ms):
         resetsols_list = "['alldutchandclosegerman','alldutch','alldutch']"
 
 
-    script=f"""imagename                       = "{parse_source_id(ms)}"
+    config=f"""imagename                       = "{parse_source_id(ms)}"
 phaseupstations                 = "core"
 forwidefield                    = True
 autofrequencyaverage            = True
@@ -130,12 +130,9 @@ get_diagnostics                 = True
 parallelgridding                = 6
 """
 
-    # if solint_scalarphase_1*60>64:
-    #     script+='\navgtimestep                     = 64s'
-
     # write to file
     with open(ms+".config.txt", "w") as f:
-        f.write(script)
+        f.write(config)
 
 
 def get_solint(ms, phasediff_output):

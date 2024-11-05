@@ -7,7 +7,7 @@ doc: Performing DD calibration for international stations only (follows after DD
 inputs:
   - id: msin
     type: Directory[]
-    doc: Input MeasurementSets
+    doc: Input MeasurementSets of directions
   - id: dutch_multidir_h5
     type: File
     doc: h5parm with Dutch DD solutions
@@ -87,7 +87,7 @@ steps:
               - ms_out
 
           - id: make_dd_config
-            run: steps/make_dd_config.cwl
+            run: steps/make_dd_config_int.cwl
             in:
               phasediff_output: dd_selection_csv
               ms: msin
