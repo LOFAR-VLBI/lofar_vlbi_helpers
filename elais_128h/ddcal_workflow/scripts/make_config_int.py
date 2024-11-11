@@ -42,11 +42,11 @@ def make_config(solint, ms):
     deltime = np.abs(time[1]-time[0])
 
     # solint in minutes
-    solint_scalarphase_1 = min(max(deltime/60, np.sqrt(solint)), 3)
-    solint_scalarphase_2 = min(max(deltime/60, np.sqrt(1.5*solint)), 5)
+    solint_scalarphase_1 = min(max(deltime/60, np.sqrt(1.5*solint)), 3)
+    solint_scalarphase_2 = min(max(deltime/60, np.sqrt(3*solint)), 5)
     solint_scalarphase_3 = min(max(1, 2*np.sqrt(solint)), 10)
 
-    solint_complexgain_1 = max(18.0, 20*solint)
+    solint_complexgain_1 = max(20.0, 25*solint)
     solint_complexgain_2 = 2 * solint_complexgain_1
 
     # start ampsolve

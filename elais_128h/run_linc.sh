@@ -22,11 +22,11 @@ fi
 
 echo "Run LINC calibrator from $SCRIPT_DIR on Data in $STARTDIR/calibrator"
 cd calibrator
-singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_calibrator.sh -d $STARTDIR/calibrator/data
+singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_calibrator_HBA.sh -d $STARTDIR/calibrator/data
 mv tmp.* linc_calibrator_output
 cd ../
 
 echo "Run LINC target from $SCRIPT_DIR on Data in $STARTDIR/target"
 cd target
-singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_target.sh -d $STARTDIR/target/data -c $STARTDIR/calibrator/*_LINC_calibrator/results_LINC_calibrator/cal_solutions.h5 -e "--make_structure_plot=False"
+singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_target_HBA.sh -d $STARTDIR/target/data -c $STARTDIR/calibrator/*_LINC_calibrator/results_LINC_calibrator/cal_solutions.h5 -e "--make_structure_plot=False"
 cd ../

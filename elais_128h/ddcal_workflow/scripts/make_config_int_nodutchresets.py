@@ -18,7 +18,6 @@ def parse_source_id(inp_str: str = None):
         inp_str: ILTJ source_id
 
     Returns: parsed output
-
     """
 
     parsed_inp = re.findall(r'ILTJ\d+\..\d+\+\d+.\d+', inp_str)[0]
@@ -46,7 +45,7 @@ def make_config(solint, ms):
     solint_scalarphase_2 = min(max(deltime/60, np.sqrt(2*solint)), 5)
     solint_scalarphase_3 = min(max(1, 3*np.sqrt(solint)), 10)
 
-    solint_complexgain_1 = max(20.0, 20*solint)
+    solint_complexgain_1 = max(20.0, 25*solint)
     solint_complexgain_2 = 2 * solint_complexgain_1
 
     # start ampsolve
