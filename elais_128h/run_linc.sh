@@ -22,11 +22,39 @@ fi
 
 echo "Run LINC calibrator from $SCRIPT_DIR on Data in $STARTDIR/calibrator"
 cd calibrator
-singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_calibrator_HBA.sh -d $STARTDIR/calibrator/data
+
+# Cleanup old run
+if ls L??????_LINC_target 1> /dev/null 2>&1; then
+    rm -rf L??????_LINC_calibrator
+    rm job_output_full.txt
+fi
+
+# Ensure < 168 MHz
+cd data
+singularity exec -B ${SING_BIND} ${SIMG} python ~/scripts/lofar_vlbi_helpers/elais_128h/download_scripts/removebands.py --freqcut 168
+cd ../
+
+# Run LINC calibrator
+singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_calibrator_HBA.sh -d $STARTDIR/calibrator/data -l /project/lofarvwf/Software/LINC
+
 mv tmp.* linc_calibrator_output
 cd ../
 
 echo "Run LINC target from $SCRIPT_DIR on Data in $STARTDIR/target"
 cd target
-singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_target_HBA.sh -d $STARTDIR/target/data -c $STARTDIR/calibrator/*_LINC_calibrator/results_LINC_calibrator/cal_solutions.h5 -e "--make_structure_plot=False"
+
+# Cleanup old run
+if ls L??????_LINC_target 1> /dev/null 2>&1; then
+    rm -rf L??????_LINC_target
+    rm job_output_full.txt
+fi
+
+# Ensure < 168 MHz
+cd data
+singularity exec -B ${SING_BIND} ${SIMG} python ~/scripts/lofar_vlbi_helpers/elais_128h/download_scripts/removebands.py --freqcut 168
+cd ../
+
+# Run LINC target
+singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_target_HBA.sh -d $STARTDIR/target/data -c $STARTDIR/calibrator/*_LINC_calibrator/results_LINC_calibrator/cal_solutions.h5 -e "--make_structure_plot=False" -l /project/lofarvwf/Software/LINC
+
 cd ../
