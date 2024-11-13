@@ -7,7 +7,7 @@
 #SBATCH --error=ddf_%j.err
 
 #LINC TARGET FOLDER
-TARGET_FOLDER=target/L??????_LINC_target/results_LINC_target/results
+START=$PWD
 OUTPUT=$PWD/ddf
 RUNDIR=$TMPDIR/ddf
 
@@ -21,7 +21,7 @@ cd $RUNDIR
 wget https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-grid-hpccloud/amd/${SIMG}
 wget https://raw.githubusercontent.com/LOFAR-VLBI/lofar_vlbi_helpers/refs/heads/main/elais_128h/ddf/pipeline.cfg
 
-cp -r $TARGET_FOLDER/*.ms .
+cp -r $START/target/L??????_LINC_target/results_LINC_target/results/*.ms .
 
 singularity exec -B $PWD,$OUTPUT $SIMG make_mslists.py
 singularity exec -B $PWD,$OUTPUT $SIMG pipeline.py pipeline.cfg
