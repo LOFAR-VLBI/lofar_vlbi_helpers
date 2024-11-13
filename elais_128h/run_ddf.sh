@@ -1,6 +1,7 @@
 #!/bin/bash
-#SBATCH -c 31
+#SBATCH -c 60
 #SBATCH -p normal
+#SBATCH --constraint=rome
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=jurjendejong@strw.leidenuniv.nl
 #SBATCH --output=ddf_%j.out
