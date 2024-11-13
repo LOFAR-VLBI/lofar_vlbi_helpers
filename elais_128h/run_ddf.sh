@@ -7,7 +7,7 @@
 #SBATCH --error=ddf_%j.err
 
 #LINC TARGET FOLDER
-TARGET_FOLDER=$(realpath $1)
+TARGET_FOLDER=target/L??????_LINC_target/results_LINC_target/results
 OUTPUT=$PWD/ddf
 RUNDIR=$TMPDIR/ddf
 
