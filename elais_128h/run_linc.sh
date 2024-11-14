@@ -23,8 +23,10 @@ fi
 echo "Run LINC calibrator from $SCRIPT_DIR on Data in $STARTDIR/calibrator"
 cd calibrator
 
+ulimit -S -n 8192
+
 # Cleanup old run
-if ls L??????_LINC_target 1> /dev/null 2>&1; then
+if ls L??????_LINC_calibrator 1> /dev/null 2>&1; then
     rm -rf L??????_LINC_calibrator
     rm job_output_full.txt
 fi
