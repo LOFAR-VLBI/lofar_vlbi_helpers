@@ -39,8 +39,8 @@ export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd 
 fi
 
 #SINGULARITY SETTINGS
-SIMG=$( python3 $SCRIPT_DIR/settings/parse_settings.py --SIMG )
-BIND=$( python3 $SCRIPT_DIR/settings/parse_settings.py --BIND )
+BIND=$( python3 $HOME/parse_settings.py --BIND )
+SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
 LNUM=$( grep -Po 'L\d+' $TARDAT | head -n 1 )
 mkdir -p $LNUM
