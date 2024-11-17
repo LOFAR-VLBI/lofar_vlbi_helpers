@@ -44,7 +44,7 @@ cd ../
 # set up singularity
 SIMG=vlbi-cwl.sif
 mkdir -p singularity
-wget https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/flocs_v5.1.0_znver2_znver2_test.sif -O singularity/$SIMG
+wget https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/flocs_v5.2.0_znver2_znver2.sif -O singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
@@ -128,7 +128,7 @@ mkdir -p $LOGDIR
 
 toil-cwl-runner \
 --no-read-only \
---retryCount 0 \
+--retryCount 2 \
 --singularity \
 --disableCaching \
 --writeLogsFromAllJobs True \
