@@ -12,7 +12,7 @@ echo "SINGULARITY IS $SIMG"
 DDF_OUTPUT=$(realpath "../ddf")
 RESULT=$PWD/concatted_ms
 
-for FILE in ${RESULT}/*concat
+for FILE in ${RESULT}/*.ms
 do
   echo "Subtract ${FILE}"
   SUBBAND=${FILE##*/}
@@ -27,6 +27,6 @@ do
   cp -r ${FILE} ${SUBBAND}_subrun
   cd ${SUBBAND}_subrun
   echo ${SUBBAND} > mslist.txt
-  sbatch /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/cwl_widefield_imaging/manual_subtract/subtraction.sh ${SUBBAND}
+  sbatch /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/elais_128h/manual_subtract/subtraction.sh ${SUBBAND}
   cd ../
 done

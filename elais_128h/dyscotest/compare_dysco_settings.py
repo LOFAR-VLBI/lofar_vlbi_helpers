@@ -55,14 +55,17 @@ volume_3 = [7.7, 9.5, 13, 17][::-1]
 ref_3 = [4.3043197e-05,4.3043197e-05,4.3043197e-05,4.3043197e-05,4.3043197e-05]
 refvol_3 = [22, 22, 22, 22]
 
+noise_4 = [7.310028e-05, 4.157863e-05, 3.6579328e-05, 3.5641857e-05, 3.5609573e-05][::-1]
+ref_4 = [3.551354e-05,3.551354e-05,3.551354e-05,3.551354e-05,3.551354e-05]
+
 vol_1 = np.array(volume_1)*100//np.array(refvol_1)
 
 # Calculate percentages
 noise_increase_1 = (np.array(noise_1) * 100) // np.array(ref_1) - 100
 noise_increase_2 = (np.array(noise_2) * 100) // np.array(ref_2) - 100
 noise_increase_3 = (np.array(noise_3) * 100) // np.array(ref_3) - 100
+noise_increase_4 = (np.array(noise_4) * 100) // np.array(ref_4) - 100
 
-# baseline = [0, 0, 0, 0, 0]
 
 # Enhanced plot with text annotations and legend entry for "Volume compression"
 fig, ax = plt.subplots(figsize=(8, 6))
@@ -71,13 +74,11 @@ fig, ax = plt.subplots(figsize=(8, 6))
 line1, = ax.plot(bits, noise_increase_1, marker='o', linestyle='-', linewidth=2, label='High S/N facet calibrator', color='darkblue')
 line2, = ax.plot(bits, noise_increase_2, marker='s', linestyle='--', linewidth=2, label='Low S/N facet calibrator', color='darkred')
 line3, = ax.plot(bits, noise_increase_3, marker='d', linestyle='-.', linewidth=2, label='1.2" high S/N facet calibrator', color='darkgreen')
+line4, = ax.plot(bits, noise_increase_4, marker='^', linestyle=':', linewidth=2, label='1.2" low S/N facet calibrator', color='black')
+
 
 for b in bits:
     plt.plot([b, b], [-10, 150], linestyle='dotted', color='gray')
-
-# Text annotations
-# for n in range(len(bits)):
-#     ax.text(bits[n], noise_increase_1[n] + 1.6, f'{vol_1[n]}%', ha='center', fontsize=14, color='darkgreen')
 
 # Customizations for primary x-axis
 ax.set_xticks(bits)
@@ -97,7 +98,7 @@ secax.set_xlabel('Compression size (%)', fontsize=16)
 secax.tick_params(axis='x', labelsize=14)
 
 # Legend
-ax.legend(handles=[line1, line2, line3], fontsize=16, loc='upper left', frameon=True, framealpha=0.9)
+ax.legend(handles=[line1, line2, line3, line4], fontsize=16, loc='upper left', frameon=True, framealpha=0.9)
 
 # Layout adjustment
 ax.grid(visible=False)
