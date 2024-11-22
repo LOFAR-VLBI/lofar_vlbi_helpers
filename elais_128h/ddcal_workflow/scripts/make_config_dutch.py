@@ -49,10 +49,10 @@ def crossmatch_tables(catalog1, catalog2, separation_asec):
     matched_sources_mask = separation < max_sep_threshold
 
     # Filter the matched sources in catalog1
-    matched_sources_catalog1 = catalog1.iloc[matched_sources_mask]
+    # matched_sources_catalog1 = catalog1.iloc[matched_sources_mask]
     matched_sources_catalog2 = catalog2.iloc[idx_catalog2[matched_sources_mask]]
 
-    return matched_sources_catalog1, matched_sources_catalog2
+    return matched_sources_catalog2
 
 def crossmatch_itself(catalog, min_sep=0.1):
     """
@@ -84,7 +84,7 @@ def make_directions(cat_6asec: str = None, phasediff_csv: str = None):
     cat_6asec_df = Table.read(cat_6asec)['Peak_flux', 'RA', 'DEC','Isl_rms'].to_pandas()
 
     # crossmatch catalogues
-    _, crossmatch_df = crossmatch_tables(phasediff_df, cat_6asec_df, 6)
+    crossmatch_df = crossmatch_tables(phasediff_df, cat_6asec_df, 6)
 
     # filter sources within 0.1 degrees
     crossmatch_df = crossmatch_itself(crossmatch_df)
@@ -124,11 +124,10 @@ channelsout                     = 6
 niter                           = 60000
 robust                          = -0.75
 paralleldeconvolution           = 1200
-stop                            = 4
+stop                            = 10
 multiscale                      = True
 parallelgridding                = 5
 multiscale-start                = 0
-facetdirection                  = directions.txt
 antennaconstraint-list          = [None,None,None]
 resetsols-list                  = ['core',None,None]
 fitspectralpol                  = 5

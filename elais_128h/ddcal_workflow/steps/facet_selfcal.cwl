@@ -38,12 +38,21 @@ inputs:
         itemSeparator: " "
         separate: true
 
+    - id: dde_directions
+      type: File?
+      doc: A text file with directions for DDE calibration with facetselfcal
+      inputBinding:
+        prefix: "--facetdirection"
+        position: 4
+        itemSeparator: " "
+        separate: true
+
     - id: selfcal
       type: Directory
       doc: External self-calibration script.
       inputBinding:
         prefix: "--helperscriptspath"
-        position: 4
+        position: 5
         itemSeparator: " "
         separate: true
 
@@ -52,7 +61,7 @@ inputs:
       doc: External LOFAR helper scripts for merging HDF5 files.
       inputBinding:
         prefix: "--helperscriptspathh5merge"
-        position: 5
+        position: 6
         itemSeparator: " "
         separate: true
 
@@ -91,6 +100,10 @@ requirements:
     listing:
       - entry: $(inputs.msin)
         writable: true
+      - entry: $(inputs.configile)
+        writable: false
+      - entry: $(inputs.dde_directions)
+        writable: false
 
 arguments:
   - $( inputs.selfcal.path + '/facetselfcal.py' )

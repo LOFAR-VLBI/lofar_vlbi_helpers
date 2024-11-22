@@ -12,7 +12,7 @@ inputs:
     type: File
     doc: h5parm with Dutch DD solutions
   - id: dd_selection_csv
-    type: File
+    type: File?
     doc: DD selection CSV (with phasediff scores)
   - id: lofar_helpers
     type: Directory
@@ -87,7 +87,7 @@ steps:
               - ms_out
 
           - id: make_dd_config
-            run: steps/make_dd_config_int.cwl
+            run: steps/make_dd_config_int_dutch_resets.cwl
             in:
               phasediff_output: dd_selection_csv
               ms: msin

@@ -5,21 +5,21 @@ label: DD calibration Dutch stations
 doc: Performing DD calibration for Dutch stations only
 
 inputs:
-  - id: msin
-    type: Directory[]
-    doc: Input MeasurementSets subbands
-  - id: dd_selection_csv
-    type: File
-    doc: DD selection CSV (with phasediff scores)
-  - id: lotss_catalogue
-    type: File
-    doc: LoTSS 6" catalogue
-  - id: lofar_helpers
-    type: Directory
-    doc: lofar_helpers directory
-  - id: selfcal
-    type: Directory
-    doc: facetselfcal directory
+    - id: msin
+      type: Directory[]
+      doc: Input MeasurementSets subbands
+    - id: dd_selection_csv
+      type: File
+      doc: DD selection CSV (with phasediff scores)
+    - id: lotss_catalogue
+      type: File
+      doc: LoTSS 6" catalogue
+    - id: lofar_helpers
+      type: Directory
+      doc: lofar_helpers directory
+    - id: selfcal
+      type: Directory
+      doc: facetselfcal directory
 
 steps:
     - id: average_6asec
@@ -28,15 +28,15 @@ steps:
           source: msin
       out:
         - ms_avg
-      run: #TODO: ADD: steps/dutch_avg.cwl
+      run: steps/dutch_avg.cwl
     - id: make_dd_config
       in:
-        - id: phasediff_output:
+        - id: phasediff_output
           source: dd_selection_csv
         - id: lotss_catalogue
           source: lotss_catalogue
       out:
-        - dd_config
+        - dd_config_dutch
         - directions
       run: steps/make_dd_config_dutch.cwl
     - id: facetselfcal
@@ -48,12 +48,14 @@ steps:
         - id: h5merger
           source: lofar_helpers
         - id: configfile
-          source: make_dd_config/dd_config
+          source: make_dd_config/dd_config_dutch
+        - id: dde_directions
+          source: make_dd_config/directions
       out:
         - h5parm
         - images
         - fits_images
-      run: #TODO: PROVIDE RIGHT H5PARM OUTPUT steps/facet_selfcal.cwl
+      run: steps/facet_selfcal.cwl
 
 
 outputs:
@@ -63,5 +65,5 @@ outputs:
     doc: Final merged h5parm with multiple directions
   - id: selfcal_images
     type: File[]
-    outputSource: facetselfcal/flattenedarray
+    outputSource: facetselfcal/images
     doc: Selfcal images for inspection

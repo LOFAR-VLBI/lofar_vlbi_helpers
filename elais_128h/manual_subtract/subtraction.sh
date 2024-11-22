@@ -32,10 +32,10 @@ singularity exec -B ${SING_BIND} ${SIMG} python \
 mkdir SOLSDIR/${MS}
 mv SOLSDIR/*${SB}*/* SOLSDIR/${MS}
 
-singularity exec -B $SING_BIND ${SIMG##*/} python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/cwl_widefield_imaging/manual_subtract/fix_symlink.py
+#singularity exec -B $SING_BIND ${SIMG##*/} python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/cwl_widefield_imaging/manual_subtract/fix_symlink.py
 
 echo "SUBTRACT"
-singularity exec -B $PWD ${SIMG##*/} sub-sources-outside-region.py \
+singularity exec -B $PWD,/project/lofarvwf/Share/jdejong/output/ELAIS ${SIMG##*/} sub-sources-outside-region.py \
 --boxfile boxfile.reg \
 --column DATA_DI_CORRECTED \
 --freqavg 1 \

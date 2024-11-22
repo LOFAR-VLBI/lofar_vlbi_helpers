@@ -2,10 +2,10 @@ cwlVersion: v1.2
 class: CommandLineTool
 id: make_dd_config
 label: Make DD config file
-doc: Return config file as input for facetselfcal DD solve for international and Dutch phase-up stations
+doc: Return config file as input for facetselfcal DD solve for international stations with pre-applied Dutch stations
 
 baseCommand:
-    - make_config_int.py
+    - make_config_int_dutch_resets.py
 
 inputs:
   - id: ms

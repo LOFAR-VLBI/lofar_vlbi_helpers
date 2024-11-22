@@ -8,23 +8,23 @@ baseCommand:
     - make_config_dutch.py
 
 inputs:
-  - id: lotss_catalogue
-    type: File
-    doc: LoTSS 6" catalogue
-    inputBinding:
-      position: 2
-      prefix: "--catalogue"
-      itemSeparator: " "
-      separate: true
+    - id: lotss_catalogue
+      type: File
+      doc: LoTSS 6" catalogue
+      inputBinding:
+        position: 2
+        prefix: "--catalogue"
+        itemSeparator: " "
+        separate: true
 
-  - id: phasediff_output
-    type: File
-    doc: Phasediff scoring output csv
-    inputBinding:
-      prefix: "--phasediff_output"
-      position: 3
-      itemSeparator: " "
-      separate: true
+    - id: phasediff_output
+      type: File
+      doc: Phasediff scoring output csv
+      inputBinding:
+        prefix: "--phasediff_output"
+        position: 3
+        itemSeparator: " "
+        separate: true
 
 outputs:
     - id: dd_config_dutch
