@@ -29,10 +29,10 @@ SUBTRACTDATA=$(realpath "../../subtract")
 # set up software
 mkdir -p software
 cd software
-git clone -b dd_selection https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
-git clone -b source_selection https://github.com/rvweeren/lofar_facet_selfcal.git
+git clone https://github.com/rvweeren/lofar_facet_selfcal.git
 git clone https://git.astron.nl/RD/LINC.git
 git clone https://github.com/revoltek/losoto
 mkdir scripts
