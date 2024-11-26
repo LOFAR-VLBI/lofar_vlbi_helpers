@@ -72,6 +72,37 @@ export LINC_DATA_ROOT=$PWD/software/LINC
 
 ########################
 
+########################
+
+# PREP SOLUTIONS
+
+# convert DDF solution files to h5parm
+C=0
+for KILLMSFILE in $DDFOLDER/SOLSDIR/*MHz_uv_pre-cal.ms/*DIS2*.sols.npz; do
+  echo ${KILLMSFILE}
+  singularity exec singularity/$SIMG \
+  python software/losoto/bin/killMS2H5parm.py \
+  --solset sol000 \
+  --verbose \
+  DDF${C}.h5 \
+  ${KILLMSFILE}
+
+  ((C++))  # increment the counter
+done
+
+# merge h5parm into 1 file
+singularity exec singularity/$SIMG \
+python software/lofar_helpers/h5_merger.py \
+--h5_tables DDF*.h5 \
+--h5_out DDF_merged.h5 \
+--propagate_flags \
+--add_ms_stations \
+--ms $( ls $TARGETDATA/*.MS -1d | head -n 1) \
+--merge_diff_freq \
+--h5_time_freq true
+
+########################
+
 # MAKE JSON CONFIG FILE
 singularity exec singularity/$SIMG \
 python software/flocs/runners/create_ms_list.py \
@@ -90,7 +121,7 @@ $TARGETDATA
 # update json
 jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq --arg nv "$DDFOLDER/SOLSDIR" '. + {"ddf_solsdir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq '. + {"subtract_lotss_model": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+jq '. + {"subtract_lotss_model": false}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"phasesol": "TGSSphase_final"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"reference_stationSB": 75}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
