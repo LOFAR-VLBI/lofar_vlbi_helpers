@@ -25,9 +25,9 @@ cd $RUNDIR
 echo "Applycal"
 singularity exec -B ${SING_BIND} ${SIMG} python \
 /project/lofarvwf/Software/lofar_helpers/ms_helpers/applycal.py \
---msin ${MS} \
 --colout DATA_DI_CORRECTED \
---h5 ${H5##*/}
+--h5 ${H5##*/} \
+${MS}
 
 mkdir SOLSDIR/${MS}
 mv SOLSDIR/*${SB}*/* SOLSDIR/${MS}
