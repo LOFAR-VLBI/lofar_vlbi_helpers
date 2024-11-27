@@ -100,7 +100,7 @@ requirements:
     listing:
       - entry: $(inputs.msin)
         writable: true
-      - entry: $(inputs.configile)
+      - entry: $(inputs.configfile)
         writable: false
       - entry: $(inputs.dde_directions)
         writable: false
