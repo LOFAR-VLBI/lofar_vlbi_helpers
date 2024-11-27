@@ -102,8 +102,6 @@ requirements:
         writable: true
       - entry: $(inputs.configfile)
         writable: false
-      - entry: $(inputs.dde_directions)
-        writable: false
 
 arguments:
   - $( inputs.selfcal.path + '/facetselfcal.py' )
