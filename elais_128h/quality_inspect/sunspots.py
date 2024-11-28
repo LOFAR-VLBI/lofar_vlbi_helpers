@@ -44,6 +44,6 @@ def get_sunspot_count(date: str) -> int:
 
 
 # Example usage
-date = "2024-11"  # replace with your desired date
+date = "2024-10"  # replace with your desired date
 sunspot_count = get_sunspot_count(date)
 print(f"Sunspot count on {date}: {sunspot_count}")
