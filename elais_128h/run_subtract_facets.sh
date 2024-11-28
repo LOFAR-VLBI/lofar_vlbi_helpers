@@ -15,7 +15,7 @@ export SCRATCH='true'
 
 export TOIL_SLURM_ARGS="--export=ALL -p normal --constraint=amd"
 
-SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
+SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 VENV=/home/lofarvwf-jdejong/venv
 SING_IMAGE=https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-grid-hpccloud/amd/flocs_v5.3.0_znver2_znver2.sif
 
