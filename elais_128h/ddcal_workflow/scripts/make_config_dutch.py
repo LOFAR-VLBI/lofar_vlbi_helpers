@@ -135,7 +135,7 @@ removeinternational             = True
 removemostlyflaggedstations     = True
 useaoflagger                    = True
 aoflagger-strategy              = default_StokesV.lua
-    """
+"""
 
     # write to file
     with open("dutch_config.txt", "w") as f:
