@@ -106,7 +106,7 @@ def make_config():
     Create facetselfcal config file for DDE calibration at 6"
     """
 
-    solints = "['16s','64sec','20min']"
+    solints = "['16s','64s','20min']"
 
     config=f"""imagename                       = dutch_6asec
 DDE                             = True
