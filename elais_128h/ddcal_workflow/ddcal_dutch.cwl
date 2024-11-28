@@ -55,7 +55,7 @@ steps:
         - h5parm
         - images
         - fits_images
-      run: steps/facet_selfcal.cwl
+      run: steps/facet_selfcal_6asec.cwl
 
 
 outputs:
