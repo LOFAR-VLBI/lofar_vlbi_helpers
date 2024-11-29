@@ -37,8 +37,6 @@ cp VLBI_cwl/scripts/* scripts
 # set up paths (hacky)
 SCRIPTS_PATH=$PWD/scripts
 SING_BIND=${SING_BIND}",${SCRIPTS_PATH}:/opt/lofar/DynSpecMS"
-#PYPATH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PYTHONPATH
-#PTH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PATH
 cd ../
 
 # set up singularity
@@ -55,32 +53,9 @@ export APPTAINER_CACHEDIR=$PWD/singularity
 export CWL_SINGULARITY_CACHE=$APPTAINER_CACHEDIR
 export APPTAINERENV_LINC_DATA_ROOT=$LINC_DATA_ROOT
 export APPTAINERENV_VLBI_DATA_ROOT=$VLBI_DATA_ROOT
-#export APPTAINERENV_RESULTSDIR=$RESULTSDIR
-#export APPTAINERENV_LOGSDIR=$LOGSDIR
-#export APPTAINERENV_TMPDIR=$TMPDIR
 export APPTAINERENV_PREPEND_PATH=$LINC_DATA_ROOT/scripts:$VLBI_DATA_ROOT/scripts
 export APPTAINERENV_PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH
 export APPTAINER_BIND=$SING_BIND
-
-#CONTAINERSTR=$(singularity --version)
-#if [[ "$CONTAINERSTR" == *"apptainer"* ]]; then
-#  export APPTAINER_CACHEDIR=$PWD/singularity
-#  export APPTAINER_TMPDIR=$APPTAINER_CACHEDIR/tmp
-#  export APPTAINER_PULLDIR=$APPTAINER_CACHEDIR/pull
-#  export APPTAINER_BIND=$SING_BIND
-#  export APPTAINERENV_PYTHONPATH=$PYPATH
-#  export APPTAINERENV_PATH=$PTH
-#else
-#  export SINGULARITY_CACHEDIR=$PWD/singularity
-#  export SINGULARITY_TMPDIR=$SINGULARITY_CACHEDIR/tmp
-#  export SINGULARITY_PULLDIR=$SINGULARITY_CACHEDIR/pull
-#  export SINGULARITY_BIND=$SING_BIND
-##  export SINGULARITYENV_PYTHONPATH=$PYPATH
-##  export SINGULARITYENV_PATH=$PTH
-#fi
-
-#export SING_USER_DEFINED_PATH=$PTH
-#export CWL_SINGULARITY_CACHE=$APPTAINER_CACHEDIR
 export TOIL_CHECK_ENV=True
 
 ########################
@@ -134,24 +109,22 @@ $TARGETDATA
 # update json
 jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq --arg nv "$DDFOLDER/SOLSDIR" '. + {"ddf_solsdir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq '. + {"subtract_lotss_model": false}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+jq '. + {"subtract_lotss_model": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq '. + {"phasesol": "TGSSphase_final"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq '. + {"reference_stationSB": 75}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-
-
+#jq '. + {"phasesol": "TGSSphase_final"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+#jq '. + {"reference_stationSB": 75}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 
 source ${VENV}/bin/activate
 
-#TGSSphase_final_lines=$(singularity exec singularity/$SIMG python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase_final" | wc -l)
-## Check if the line count is greater than 1
-#if [ "$TGSSphase_final_lines" -ge 1 ]; then
-#    echo "Use TGSSphase_final"
-#    jq '. + {"phasesol": "TGSSphase_final"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-#else
-#    echo "Use TGSSphase"
-#    jq '. + {"phasesol": "TGSSphase"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-#fi
+TGSSphase_final_lines=$(singularity exec singularity/$SIMG python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase_final" | wc -l)
+# Check if the line count is greater than 1
+if [ "$TGSSphase_final_lines" -ge 1 ]; then
+    echo "Use TGSSphase_final"
+    jq '. + {"phasesol": "TGSSphase_final"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+else
+    echo "Use TGSSphase"
+    jq '. + {"phasesol": "TGSSphase"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+fi
 
 ########################
 
