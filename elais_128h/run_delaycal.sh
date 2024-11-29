@@ -37,8 +37,8 @@ cp VLBI_cwl/scripts/* scripts
 # set up paths (hacky)
 SCRIPTS_PATH=$PWD/scripts
 SING_BIND=${SING_BIND}",${SCRIPTS_PATH}:/opt/lofar/DynSpecMS"
-PYPATH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PYTHONPATH
-PTH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PATH
+#PYPATH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PYTHONPATH
+#PTH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PATH
 cd ../
 
 # set up singularity
@@ -48,27 +48,38 @@ wget https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/flocs_v5.2.0_zn
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
-CONTAINERSTR=$(singularity --version)
-if [[ "$CONTAINERSTR" == *"apptainer"* ]]; then
-  export APPTAINER_CACHEDIR=$PWD/singularity
-  export APPTAINER_TMPDIR=$APPTAINER_CACHEDIR/tmp
-  export APPTAINER_PULLDIR=$APPTAINER_CACHEDIR/pull
-  export APPTAINER_BIND=$SING_BIND
+export LINC_DATA_ROOT=$PWD/software/LINC
+
+export APPTAINER_CACHEDIR=$PWD/singularity
+export CWL_SINGULARITY_CACHE=$APPTAINER_CACHEDIR
+export APPTAINERENV_LINC_DATA_ROOT=$LINC_DATA_ROOT
+export APPTAINERENV_VLBI_DATA_ROOT=$PWD/software/VLBI_cwl
+#export APPTAINERENV_RESULTSDIR=$RESULTSDIR
+#export APPTAINERENV_LOGSDIR=$LOGSDIR
+#export APPTAINERENV_TMPDIR=$TMPDIR
+export APPTAINERENV_PREPEND_PATH=$LINC_DATA_ROOT/scripts:$VLBI_DATA_ROOT/scripts
+export APPTAINERENV_PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH
+
+#CONTAINERSTR=$(singularity --version)
+#if [[ "$CONTAINERSTR" == *"apptainer"* ]]; then
+#  export APPTAINER_CACHEDIR=$PWD/singularity
+#  export APPTAINER_TMPDIR=$APPTAINER_CACHEDIR/tmp
+#  export APPTAINER_PULLDIR=$APPTAINER_CACHEDIR/pull
+#  export APPTAINER_BIND=$SING_BIND
 #  export APPTAINERENV_PYTHONPATH=$PYPATH
 #  export APPTAINERENV_PATH=$PTH
-else
-  export SINGULARITY_CACHEDIR=$PWD/singularity
-  export SINGULARITY_TMPDIR=$SINGULARITY_CACHEDIR/tmp
-  export SINGULARITY_PULLDIR=$SINGULARITY_CACHEDIR/pull
-  export SINGULARITY_BIND=$SING_BIND
-#  export SINGULARITYENV_PYTHONPATH=$PYPATH
-#  export SINGULARITYENV_PATH=$PTH
-fi
+#else
+#  export SINGULARITY_CACHEDIR=$PWD/singularity
+#  export SINGULARITY_TMPDIR=$SINGULARITY_CACHEDIR/tmp
+#  export SINGULARITY_PULLDIR=$SINGULARITY_CACHEDIR/pull
+#  export SINGULARITY_BIND=$SING_BIND
+##  export SINGULARITYENV_PYTHONPATH=$PYPATH
+##  export SINGULARITYENV_PATH=$PTH
+#fi
 
 #export SING_USER_DEFINED_PATH=$PTH
-export CWL_SINGULARITY_CACHE=$APPTAINER_CACHEDIR
+#export CWL_SINGULARITY_CACHE=$APPTAINER_CACHEDIR
 export TOIL_CHECK_ENV=True
-export LINC_DATA_ROOT=$PWD/software/LINC
 
 ########################
 
@@ -178,6 +189,8 @@ toil-cwl-runner \
 --preserve-entire-environment \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
+--setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
+--setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
 software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
 
 ########################
