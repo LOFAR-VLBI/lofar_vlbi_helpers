@@ -11,7 +11,6 @@ def get_indices_int_stations(calsol):
                         if 'CS' not in a.decode('utf8') and 'RS' not in a.decode('utf8')]
     return np.array(ants_indices)
 
-
 def get_polalign_station(calsol):
     stats = get_indices_int_stations(calsol)
     with tables.open_file(calsol) as H:
@@ -43,7 +42,7 @@ def get_polalign_station(calsol):
 
 
 def get_polalign_all(calsol):
-    stats = idx_int_stations(calsol)
+    stats = get_indices_int_stations(calsol)
     with tables.open_file(calsol) as H:
         polalign = H.root.calibrator.polalign.val[..., 1]
         freqs = H.root.calibrator.polalign.freq[:]

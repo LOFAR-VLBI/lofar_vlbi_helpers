@@ -135,6 +135,8 @@ removeinternational             = True
 removemostlyflaggedstations     = True
 useaoflagger                    = True
 aoflagger-strategy              = default_StokesV.lua
+channelsout                     = 12
+fitspectralpol                  = 5
 """
 
     # write to file

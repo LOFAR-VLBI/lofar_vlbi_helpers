@@ -19,7 +19,6 @@ for symlink in SOLSDIR/L*.ms/*.npz; do
             ln -s "$new_target" "$symlink"
             echo "Symlink updated: $symlink -> $new_target"
         fi
-    else
         echo "Skipping $symlink: Not a valid symlink"
     fi
 done

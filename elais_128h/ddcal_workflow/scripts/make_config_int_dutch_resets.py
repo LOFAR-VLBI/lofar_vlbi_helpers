@@ -128,6 +128,8 @@ flagtimesmeared                 = True
 compute_phasediffstat           = True
 get_diagnostics                 = True
 parallelgridding                = 6
+channelsout                     = 12
+fitspectralpol                  = 5
 """
 
     # write to file
