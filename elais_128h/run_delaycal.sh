@@ -42,7 +42,7 @@ cd ../
 # set up singularity
 SIMG=vlbi-cwl.sif
 mkdir -p singularity
-wget https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/flocs_v5.2.0_znver2_znver2.sif -O singularity/$SIMG
+cp /project/lofarvwf/Software/singularity/flocs_v5.1.0_znver2_znver2_test.sif -O singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
