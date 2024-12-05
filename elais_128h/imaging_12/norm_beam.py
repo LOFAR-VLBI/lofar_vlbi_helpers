@@ -53,11 +53,18 @@ def scale_amps(beam_file, h5):
         h5: h5parm
     """
 
+    with fits.open(beam_file) as bfits:
+        freqdelt = bfits[0].header['CDELT3']/2
+        freqcent = bfits[0].header['CRVAL3']
+        minfreq, maxfreq = freqcent - freqdelt, freqcent + freqdelt
+
     amp_scales = get_amp_scales(beam_file, h5)
     os.system(f'cp {h5} norm_{h5.split("/")[-1]}')
 
     with tables.open_file(f'norm_{h5.split("/")[-1]}', 'r+') as H:
-        H.root.sol000.amplitude000.val[:]/=amp_scales[np.newaxis, np.newaxis, np.newaxis, :, np.newaxis]
+        freqs = H.root.sol000.amplitude000.freq[:]
+        freqs_indices = np.argwhere((freqs>minfreq) & (freqs<maxfreq)).squeeze()
+        H.root.sol000.amplitude000.val[:, list(freqs_indices), ...]/=amp_scales[np.newaxis, np.newaxis, np.newaxis, :, np.newaxis]
 
 
 def parse_input():

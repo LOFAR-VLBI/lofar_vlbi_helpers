@@ -71,7 +71,7 @@ def make_config(solint, ms):
 
     # adjusted settings based on solint/phasediff score
     if solint<0.3:
-        uvmin=50000
+        uvmin=40000
         resetsols_list = "['alldutchandclosegerman','alldutch','core','alldutch','core']"
         smoothness_phase = 8.0
         smoothness_complex = 10.0
@@ -79,7 +79,7 @@ def make_config(solint, ms):
 
 
     elif solint<1:
-        uvmin=40000
+        uvmin=30000
         resetsols_list = "['alldutchandclosegerman','alldutch','coreandfirstremotes','alldutch','coreandfirstremotes']"
         smoothness_phase = 10.0
         smoothness_complex = 10.0
@@ -87,7 +87,7 @@ def make_config(solint, ms):
 
 
     elif solint<3:
-        uvmin=30000
+        uvmin=25000
         resetsols_list = "['alldutchandclosegerman','alldutch','coreandallbutmostdistantremotes','alldutch','coreandallbutmostdistantremotes']"
         smoothness_phase = 10.0
         smoothness_complex = 15.0
@@ -95,7 +95,7 @@ def make_config(solint, ms):
 
 
     else:
-        uvmin=25000
+        uvmin=20000
         soltypecycles_list = f'[0,0,{cg_cycle}]'
         soltype_list = "['scalarphase','scalarphase','scalarcomplexgain']"
         smoothness_phase = 10.0
@@ -128,6 +128,8 @@ flagtimesmeared                 = True
 compute_phasediffstat           = True
 get_diagnostics                 = True
 parallelgridding                = 6
+channelsout                     = 12
+fitspectralpol                  = 5
 """
 
     # write to file
