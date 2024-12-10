@@ -1,0 +1,229 @@
+##########################################################
+## Please update these parameters. 			##
+##########################################################
+# This column should be the same as the delaycal_col in the lofar-vlbi pipeline.
+! datadi_col = DATA_DI_CORRECTED
+
+# software paths
+! long_baseline_pipeline_dir            = PREFACTOR_SCRATCH_DIR/pipelines/lofar-vlbi
+! scripts			 	= /project/lofarvwf/Software/prefactor/bin
+! widefield_dir = /home/lofarvwf-jdejong/scripts/lofar-highres-widefield
+! ddf_pipeline_dir = /project/lofarvwf/Software/ddf-pipeline
+! helper_scripts = /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
+# Directory with results from the ddf-pipeline
+! ddf_dir		  = DDF_OUTPUT
+! prefactor_dir                         = PREFACTOR_SCRATCH_DIR/pipelines/prefactor
+! prefactor_scripts			= {{ prefactor_dir }}/scripts
+! losoto_directory                     = /opt/lofar/pyenv-py2
+! aoflagger				= /opt/lofar/aoflagger/bin/aoflagger ## path to your aoflagger executable
+! lofar_directory 			= $LOFARROOT
+
+# ## target data information
+! target_input_path             = PREFACTOR_SCRATCH_DIR/Input
+! target_input_pattern          = L*.msdpppconcat
+
+## Stations to flag
+! flag_baselines                = [ ] ## for HBA data before October 2015, should set to: [ CS013HBA* ]
+
+##########################################################
+## These parameters may need to be updated.		##
+##########################################################
+
+## Output directories
+! job_directory                 = input.output.job_directory ## directory of the prefactor outputs
+! results_directory             = $RUNDIR/Output/results ## @NO_OVERWRITE@
+! inspection_directory          = {{ results_directory }}/inspection/
+! cal_values_directory          = {{ results_directory }}/results/cal_values
+
+## Runtime setup -- will depend on your computing cluster
+! num_proc_per_node             = input.output.max_per_node    ## number of processes to use per step per node
+! num_proc_per_node_limit       = 4     ## number of processes to use per step per node for tasks with high i/o (dppp or cp) or memory (eg calibration)
+! max_dppp_threads              = 9     ## number of threads per process for NDPPP
+! error_tolerance               = False ## False = stop if any subband fails, True = keep going
+
+##########################################################
+## Changing these will probably break something.	##
+##########################################################
+
+## global information
+! working_directory                        = input.output.working_directory/input.output.job_name
+
+! rfistrategy			= HBAdefault
+! max_length = 60 ## amount of subbands to concatenate for full-bandwidth flagging (for calibrator you can take all SBs, for target stick to about 148)
+
+##
+## END CONFIGURATION
+
+
+##########################################################
+## Steps to run.					##
+##########################################################
+#pipeline.steps = [setup, subtract_lotss, finalize]
+pipeline.steps = [setup, subtract_lotss]
+
+
+#pipeline.steps.setup = [mk_results_dir, mk_inspect_dir, mk_cal_values_dir, createmap_target, createmap_preptarg, createmap_target_list, cp_data]
+#pipeline.steps.subtract_lotss = [make_box, make_mslist, createmap_lotss_sols, cp_lotss_products, subtract_6asec]
+#pipeline.steps.finalize = [createmap_subtracted, make_results_mapfile, move_results]
+
+pipeline.steps.setup = [mk_results_dir, mk_inspect_dir, mk_cal_values_dir, createmap_target, createmap_preptarg, createmap_target_list, cp_data]
+pipeline.steps.subtract_lotss = [make_box, make_mslist, createmap_lotss_sols, cp_lotss_products]
+
+###########################################################################
+
+
+##################################################################################################################
+##														##
+##			BEGIN PIPELINE: DO NOT UPDATE BELOW THIS LINE!						##
+##														##
+##################################################################################################################
+
+# create the results directory if needed
+mk_results_dir.control.kind               = plugin
+mk_results_dir.control.type               = makeDirectory
+mk_results_dir.control.directory          = {{ results_directory }}
+
+# create the inspection_directory if needed
+mk_inspect_dir.control.kind               = plugin
+mk_inspect_dir.control.type               = makeDirectory
+mk_inspect_dir.control.directory          = {{ inspection_directory }}
+
+# create the cal_values_directory if needed
+mk_cal_values_dir.control.kind               =  plugin
+mk_cal_values_dir.control.type               =  makeDirectory
+mk_cal_values_dir.control.directory          =  {{ cal_values_directory }}
+
+# generate a mapfile of all the target data
+createmap_target.control.kind             = plugin
+createmap_target.control.type             = createMapfile
+createmap_target.control.method           = mapfile_from_folder
+createmap_target.control.mapfile_dir      = input.output.mapfile_dir
+createmap_target.control.filename         = createmap_target.mapfile
+createmap_target.control.folder           = {{ target_input_path }}
+createmap_target.control.pattern          = {{ target_input_pattern }}
+
+createmap_preptarg.control.kind                                =   plugin
+createmap_preptarg.control.type                                =   makeResultsMapfile
+createmap_preptarg.control.mapfile_dir                         =   input.output.mapfile_dir
+createmap_preptarg.control.filename                            =   createmap_preptarg.mapfile
+createmap_preptarg.control.mapfile_in                          =   createmap_target.output.mapfile
+createmap_preptarg.control.target_dir                          =   {{ working_directory }}
+createmap_preptarg.control.make_target_dir                     =   False
+createmap_preptarg.control.new_suffix                          =   .pre-cal.ms
+
+# convert to a mapfile with all subbands in one list
+createmap_target_list.control.kind            =   plugin
+createmap_target_list.control.type            =   createMapfile
+createmap_target_list.control.method          =   mapfile_all_to_one
+createmap_target_list.control.mapfile_dir     =   input.output.mapfile_dir
+createmap_target_list.control.filename        =   combine_data_tar_map.mapfile
+createmap_target_list.control.mapfile_in      =   createmap_target.output.mapfile
+
+cp_data.control.kind            = recipe
+cp_data.control.type            = executable_args
+cp_data.control.executable      = /bin/cp
+cp_data.control.max_per_node    = 1
+cp_data.control.mapfiles_in     = [createmap_target.output.mapfile, createmap_preptarg.output.mapfile]
+cp_data.control.inputkeys       = [infile,outfile]
+cp_data.argument.flags          = [-r,infile,outfile]
+
+# convert to a mapfile with all subbands in one list
+createmap_cptarget_list.control.kind            =   plugin
+createmap_cptarget_list.control.type            =   createMapfile
+createmap_cptarget_list.control.method          =   mapfile_all_to_one
+createmap_cptarget_list.control.mapfile_dir     =   input.output.mapfile_dir
+createmap_cptarget_list.control.filename        =   combine_data_tar_map.mapfile
+createmap_cptarget_list.control.mapfile_in      =   cp_data.output.mapfile
+
+#
+# Subtract LoTSS 6'' model
+#
+make_box.control.type           = pythonplugin
+make_box.control.executable     = {{ widefield_dir }}/utils/make_box.py
+make_box.control.max_per_node   = {{ num_proc_per_node }}
+make_box.control.mapfile_in     = createmap_target_list.output.mapfile
+make_box.control.inputkey       = msin
+make_box.argument.msfile        = msin
+make_box.argument.box_size      = 2.5
+
+make_mslist.control.kind            = recipe
+make_mslist.control.type            = executable_args
+make_mslist.control.executable      = {{ ddf_pipeline_dir }}/scripts/make_mslists.py
+make_mslist.control.max_per_node    = 1
+make_mslist.control.skip_infile     = True
+# This mapfile is not actually used. It just needs to run once.
+#make_mslist.control.mapfile_in      = createmap_target_list.output.mapfile
+make_mslist.control.mapfile_in      = cp_data.output.mapfile
+make_mslist.argument.flags          = [force]
+
+# generate a mapfile of all the target data
+createmap_lotss_sols.control.kind             = plugin
+createmap_lotss_sols.control.type             = createMapfile
+createmap_lotss_sols.control.method           = mapfile_from_folder
+createmap_lotss_sols.control.mapfile_dir      = input.output.mapfile_dir
+createmap_lotss_sols.control.filename         = createmap_lotss_sols.mapfile
+createmap_lotss_sols.control.folder           = {{ ddf_dir }}
+createmap_lotss_sols.control.pattern          = DDS3*.npz
+
+# Copy over the products that are required for the subtract.
+cp_lotss_products.control.kind            = recipe
+cp_lotss_products.control.type            = executable_args
+cp_lotss_products.control.executable      = /bin/cp
+cp_lotss_products.control.max_per_node    = 1
+cp_lotss_products.control.mapfile_in      = createmap_lotss_sols.output.mapfile
+cp_lotss_products.control.inputkey        = sols
+cp_lotss_products.argument.flags          = [-r,sols,{{ ddf_dir }}/image_dirin_SSD_m.npy.ClusterCat.npy,{{ ddf_dir }}/image_full_ampphase_di_m.NS.DicoModel,{{ ddf_dir }}/image_full_ampphase_di_m.NS.mask01.fits,{{ ddf_dir }}/SOLSDIR,{{ working_directory }}]
+
+#rename lotss products
+#rename_lotss_products.control.kind            = recipe
+#rename_lotss_products.control.type            = executable_args
+#rename_lotss_products.control.executable      = {{ helper_scripts }}/subtract_lotss/change_folder_name_mv.py
+#rename_lotss_products.control.max_per_node    = 1
+#rename_lotss_products.control.mapfile_in      = createmap_target_list.output.mapfile
+#rename_lotss_products.control.inputkey        = sols
+#rename_lotss_products.argument.flags          = [--path,PREFACTOR_SCRATCH_DIR/subtract_lotss/SOLSDIR]
+
+# This bit needs quite a bit of memory. A whole node or at least 256 GB should be allocated to it.
+subtract_6asec.control.kind                     = recipe
+subtract_6asec.control.type                     = executable_args
+subtract_6asec.control.executable               = {{ widefield_dir }}/utils/sub-sources-outside-region.py
+subtract_6asec.control.max_per_node             = 1
+subtract_6asec.control.error_tolerance          = {{ error_tolerance }}
+# Again, this mapfile is not used. DDF.py looks at mslist.txt
+subtract_6asec.control.mapfile_in               = createmap_target_list.output.mapfile
+subtract_6asec.control.skip_infile              = True
+subtract_6asec.argument.flags                   = [--boxfile,boxfile.reg,--column,{{ datadi_col }},--freqavg,1,--timeavg,1,--ncpu,24,--prefixname,sub6asec,--noconcat,--keeplongbaselines,--nophaseshift,--chunkhours,1]
+
+#
+# Apply infield calibrator solutions
+#
+# Generate a mapfile of all the LoTSS subtracted data.
+createmap_subtracted.control.kind             = plugin
+createmap_subtracted.control.type             = createMapfile
+createmap_subtracted.control.method           = mapfile_from_folder
+createmap_subtracted.control.mapfile_dir      = input.output.mapfile_dir
+createmap_subtracted.control.filename         = createmap_subtracted.mapfile
+createmap_subtracted.control.folder           = {{ working_directory }}
+createmap_subtracted.control.pattern          = sub6asec*.ms
+#createmap_subtracted.control.new_suffix       = .sub.shift.avg.ms
+#createmap_subtracted.control.new_suffix       = .sub.shift.avg.ifcorr.ms
+
+# Move the corrected datasets to the results folder.
+make_results_mapfile.control.kind                        =   plugin
+make_results_mapfile.control.type                        =   makeResultsMapfile
+make_results_mapfile.control.mapfile_dir                 =   input.output.mapfile_dir
+make_results_mapfile.control.filename                    =   make_results_mapfile.mapfile
+make_results_mapfile.control.mapfile_in                  =   createmap_subtracted.output.mapfile
+make_results_mapfile.control.target_dir                  =   {{ results_directory }}
+make_results_mapfile.control.make_target_dir             =   True
+make_results_mapfile.control.new_suffix                  =   .ms
+
+# move the results to where we want them
+move_results.control.kind                                =   recipe
+move_results.control.type                                =   executable_args
+move_results.control.executable                          =   /bin/mv
+move_results.control.max_per_node                        =   {{ num_proc_per_node_limit }}
+#move_results.control.mapfiles_in                         =   [apply_infield.output.mapfile,make_results_mapfile.output.mapfile]
+move_results.control.mapfiles_in                         =   [createmap_subtracted.output.mapfile,make_results_mapfile.output.mapfile]
+move_results.control.inputkeys                           =   [source,destination]
+move_results.control.arguments                           =   [source,destination]
