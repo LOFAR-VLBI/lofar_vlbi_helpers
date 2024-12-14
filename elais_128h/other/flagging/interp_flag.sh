@@ -30,7 +30,6 @@ cp ${SIMG} ${RUN_DIR}
 cd ${RUN_DIR}
 
 singularity exec -B $PWD ${SIMG##*/} python interpolate_flags.py \
---backup_flags \
 --skip_flagging \
 --interpolate_from_ms ${LNUM}_6asec.ms \
 ${SB##*/}
