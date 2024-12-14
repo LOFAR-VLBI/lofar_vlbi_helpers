@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 20 --job-name=interp_flag
+#SBATCH -c 6 --job-name=interp_flag
 #SBATCH --array=0-25
 
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
@@ -32,7 +32,7 @@ cd ${RUN_DIR}
 singularity exec -B $PWD ${SIMG##*/} python interpolate_flags.py \
 --backup_flags \
 --skip_flagging \
---msin ${LNUM}_6asec.ms \
+--interpolate_from_ms ${LNUM}_6asec.ms \
 ${SB##*/}
 
 # Check if the previous command was successful
