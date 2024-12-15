@@ -119,7 +119,7 @@ $TARGETDATA
 
 # update json
 jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq '. + {"reference_stationSB": 78}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+jq '. + {"reference_stationSB": 77}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 
 source ${VENV}/bin/activate
 
