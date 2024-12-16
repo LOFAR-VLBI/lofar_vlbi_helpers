@@ -1,20 +1,11 @@
 #!/bin/bash
 #SBATCH -c 12 --job-name=interp_flag
-#SBATCH --array=0-25
 
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
-LNUM=$1
-
-FOLDER=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/subtract
-
-cd $FOLDER
-
-# Get list of files
-FILES=($FOLDER/*sub6asec*.ms)
-
 # Get the file corresponding to this task
-SB=${FILES[$SLURM_ARRAY_TASK_ID]}
+SB=$1
+SB=$(realpath "$SB")
 
 echo $SB
 
