@@ -12,7 +12,7 @@ SING_BIND="/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
-VENV=/home/lofarvwf-jdejong/venv
+VENV=/project/lofarvwf/Software/venv
 
 ######################
 

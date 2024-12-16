@@ -12,7 +12,7 @@ SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
-VENV=/home/lofarvwf-jdejong/venv
+VENV=/project/lofarvwf/Software/venv
 
 DDFOLDER=$(realpath "../ddf")
 TARGETDATA=$(realpath "../target/data")

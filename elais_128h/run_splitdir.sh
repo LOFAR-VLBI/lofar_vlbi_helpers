@@ -17,7 +17,7 @@ SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/all_dicalsolutions/
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 DD_SELECTION="false" #or true?
 
-VENV=/home/lofarvwf-jdejong/venv
+VENV=/project/lofarvwf/Software/venv
 
 SUBTRACTDATA=$(realpath "../../subtract")
 
