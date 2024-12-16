@@ -6,7 +6,7 @@
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal"
+export TOIL_SLURM_ARGS="--export=ALL -p normal -t 48:00:00"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
@@ -161,7 +161,6 @@ toil-cwl-runner \
 --coordinationDir ${OUTPUT} \
 --disableAutoDeployment True \
 --bypass-file-store \
---preserve-entire-environment \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \

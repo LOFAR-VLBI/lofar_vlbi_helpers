@@ -13,7 +13,7 @@ export SCRATCH='true'
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal --constraint=amd"
+export TOIL_SLURM_ARGS="--export=ALL -p normal --constraint=amd -t 50:00:00"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 VENV=/home/lofarvwf-jdejong/venv
@@ -41,20 +41,16 @@ wget $SING_IMAGE -O singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
-CONTAINERSTR=$(singularity --version)
-if [[ "$CONTAINERSTR" == *"apptainer"* ]]; then
-  export APPTAINER_CACHEDIR=$PWD/singularity
-  export APPTAINER_TMPDIR=$APPTAINER_CACHEDIR/tmp
-  export APPTAINER_PULLDIR=$APPTAINER_CACHEDIR/pull
-  export APPTAINER_BIND=$SING_BIND
-else
-  export SINGULARITY_CACHEDIR=$PWD/singularity
-  export SINGULARITY_TMPDIR=$SINGULARITY_CACHEDIR/tmp
-  export SINGULARITY_PULLDIR=$SINGULARITY_CACHEDIR/pull
-  export SINGULARITY_BIND=$SING_BIND
-fi
+export LINC_DATA_ROOT=$PWD/software/LINC
+export VLBI_DATA_ROOT=$PWD/software/VLBI_cwl
 
+export APPTAINER_CACHEDIR=$PWD/singularity
 export CWL_SINGULARITY_CACHE=$APPTAINER_CACHEDIR
+export APPTAINERENV_LINC_DATA_ROOT=$LINC_DATA_ROOT
+export APPTAINERENV_VLBI_DATA_ROOT=$VLBI_DATA_ROOT
+export APPTAINERENV_PREPEND_PATH=$LINC_DATA_ROOT/scripts:$VLBI_DATA_ROOT/scripts
+export APPTAINERENV_PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH
+export APPTAINER_BIND=$SING_BIND
 export TOIL_CHECK_ENV=True
 
 ########################
@@ -153,10 +149,10 @@ toil-cwl-runner \
 --workDir ${WORKDIR} \
 --disableAutoDeployment True \
 --bypass-file-store \
---preserve-entire-environment \
 --batchSystem slurm \
 --clean onSuccess \
---no-compute-checksum \
+--setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
+--setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
 software/VLBI_cwl/workflows/facet_subtract.cwl $JSON
 #--tmpdir-prefix ${TMPD}_interm/ \
 
