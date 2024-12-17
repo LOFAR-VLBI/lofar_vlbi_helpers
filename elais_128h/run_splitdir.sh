@@ -17,7 +17,7 @@ SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/all_dicalsolutions/
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 DD_SELECTION="false" #or true?
 
-VENV=/project/lofarvwf/Software/venv
+#VENV=/project/lofarvwf/Software/venv
 
 SUBTRACTDATA=$(realpath "../../subtract")
 
@@ -99,7 +99,7 @@ mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
 
-source ${VENV}/bin/activate
+#source ${VENV}/bin/activate
 
 ########################
 
@@ -127,4 +127,4 @@ software/VLBI_cwl/workflows/split-directions.cwl mslist_VLBI_split_directions.js
 
 ########################
 
-deactivate
+#deactivate

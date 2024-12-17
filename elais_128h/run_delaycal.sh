@@ -12,7 +12,7 @@ SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
-VENV=/project/lofarvwf/Software/venv
+#VENV=/project/lofarvwf/Software/venv
 
 export DDFOLDER=$(realpath "../ddf")
 export TARGETDATA=$(realpath "../target/data")
@@ -114,7 +114,7 @@ jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && 
 #jq '. + {"phasesol": "TGSSphase_final"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 #jq '. + {"reference_stationSB": 75}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 
-source ${VENV}/bin/activate
+#source ${VENV}/bin/activate
 
 TGSSphase_final_lines=$(singularity exec -B /project/lofarvwf singularity/$SIMG python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase" | wc -l)
 # Check if the line count is greater than 1
@@ -169,4 +169,4 @@ software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.
 
 ########################
 
-deactivate
+#deactivate
