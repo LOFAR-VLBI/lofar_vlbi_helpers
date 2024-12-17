@@ -6,21 +6,21 @@
 
 #### UPDATE THESE ####
 
-export TOIL_SLURM_ARGS="--export=ALL --job-name delaycal -p normal"
+export TOIL_SLURM_ARGS="--export=ALL --job-name delaycal -p normal -t 24:00:00"
 
-SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
+SING_BIND="/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
-VENV=/home/lofarvwf-jdejong/venv
+VENV=/project/lofarvwf/Software/venv
 
 ######################
 
 # SETUP ENVIRONMENT
 
-DDFOLDER=$(realpath "../ddf")
-TARGETDATA=$(realpath "../target/data")
-SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
+export DDFOLDER=$(realpath "../ddf")
+export TARGETDATA=$(realpath "../target/data")
+export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
 
 # set up software
 mkdir -p software
@@ -41,33 +41,23 @@ PTH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PATH
 cd ../
 
 # set up singularity
-SIMG=vlbi-cwl.sif
+export SIMG=vlbi-cwl.sif
 mkdir -p singularity
 wget https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-grid-hpccloud/amd/flocs_v5.0.0_znver2_znver2_aocl_cuda.sif -O singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
-CONTAINERSTR=$(singularity --version)
-if [[ "$CONTAINERSTR" == *"apptainer"* ]]; then
-  export APPTAINER_CACHEDIR=$PWD/singularity
-  export APPTAINER_TMPDIR=$APPTAINER_CACHEDIR/tmp
-  export APPTAINER_PULLDIR=$APPTAINER_CACHEDIR/pull
-  export APPTAINER_BIND=$SING_BIND
-  export APPTAINERENV_PYTHONPATH=$PYPATH
-  export APPTAINERENV_PATH=$PTH
-else
-  export SINGULARITY_CACHEDIR=$PWD/singularity
-  export SINGULARITY_TMPDIR=$SINGULARITY_CACHEDIR/tmp
-  export SINGULARITY_PULLDIR=$SINGULARITY_CACHEDIR/pull
-  export SINGULARITY_BIND=$SING_BIND
-  export SINGULARITYENV_PYTHONPATH=$PYPATH
-  export SINGULARITYENV_PYTHONPATH=$PTH
-fi
-
-export SING_USER_DEFINED_PATH=$PTH
-export CWL_SINGULARITY_CACHE=$APPTAINER_CACHEDIR
-export TOIL_CHECK_ENV=True
 export LINC_DATA_ROOT=$PWD/software/LINC
+export VLBI_DATA_ROOT=$PWD/software/VLBI_cwl
+
+export APPTAINER_CACHEDIR=$PWD/singularity
+export CWL_SINGULARITY_CACHE=$APPTAINER_CACHEDIR
+export APPTAINERENV_LINC_DATA_ROOT=$LINC_DATA_ROOT
+export APPTAINERENV_VLBI_DATA_ROOT=$VLBI_DATA_ROOT
+export APPTAINERENV_PREPEND_PATH=$LINC_DATA_ROOT/scripts:$VLBI_DATA_ROOT/scripts
+export APPTAINERENV_PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH
+export APPTAINER_BIND=$SING_BIND
+export TOIL_CHECK_ENV=True
 
 ########################
 
@@ -124,7 +114,7 @@ jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && 
 
 source ${VENV}/bin/activate
 
-TGSSphase_final_lines=$(python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase_final" | wc -l)
+TGSSphase_final_lines=$(singularity exec -B /project/lofarvwf singularity/$SIMG python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase" | wc -l)
 # Check if the line count is greater than 1
 if [ "$TGSSphase_final_lines" -ge 1 ]; then
     echo "Use TGSSphase_final"
@@ -170,8 +160,9 @@ toil-cwl-runner \
 --tmpdir-prefix ${TMPD}_interm/ \
 --disableAutoDeployment True \
 --bypass-file-store \
---preserve-entire-environment \
 --batchSystem slurm \
+--setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
+--setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
 /project/lofarvwf/Software/VLBI-cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
 #--cleanWorkDir never \ --> for testing
 

@@ -6,17 +6,17 @@
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal"
+export TOIL_SLURM_ARGS="--export=ALL -p normal -t 48:00:00"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
-VENV=/home/lofarvwf-jdejong/venv
+VENV=/project/lofarvwf/Software/venv
 
-DDFOLDER=$(realpath "../ddf")
-TARGETDATA=$(realpath "../target/data")
-SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
+export DDFOLDER=$(realpath "../ddf")
+export TARGETDATA=$(realpath "../target/data")
+export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
 
 #####################
 ######################
@@ -40,7 +40,7 @@ SING_BIND=${SING_BIND}",${SCRIPTS_PATH}:/opt/lofar/DynSpecMS"
 cd ../
 
 # set up singularity
-SIMG=vlbi-cwl.sif
+export SIMG=vlbi-cwl.sif
 mkdir -p singularity
 cp /project/lofarvwf/Software/singularity/flocs_v5.1.0_znver2_znver2_test.sif singularity/$SIMG
 mkdir -p singularity/pull
@@ -116,7 +116,7 @@ jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && 
 
 source ${VENV}/bin/activate
 
-TGSSphase_final_lines=$(singularity exec singularity/$SIMG python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase_final" | wc -l)
+TGSSphase_final_lines=$(singularity exec -B /project/lofarvwf singularity/$SIMG python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase" | wc -l)
 # Check if the line count is greater than 1
 if [ "$TGSSphase_final_lines" -ge 1 ]; then
     echo "Use TGSSphase_final"
@@ -161,7 +161,6 @@ toil-cwl-runner \
 --coordinationDir ${OUTPUT} \
 --disableAutoDeployment True \
 --bypass-file-store \
---preserve-entire-environment \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
