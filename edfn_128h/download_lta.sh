@@ -38,6 +38,9 @@ else
 export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 fi
 
+#Temporary override 
+export SCRIPT_DIR=/home/wfedfn-jpetley/scripts/lofar_vlbi_helpers/edfn_128h
+
 #SINGULARITY SETTINGS
 BIND=$( python3 $HOME/parse_settings.py --BIND )
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
@@ -66,7 +69,7 @@ mkdir -p $TYPE/data
 cd $TYPE/data
 
 # download data
-wget -ci $TARS
+wget --no-check-certificate -ci $TARS
 
 # untar data
 for TAR in *SB*.tar*; do

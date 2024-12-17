@@ -19,6 +19,9 @@ else
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 fi
 
+# Temporary override
+SCRIPT_DIR=/home/wfedfn-jpetley/scripts/lofar_vlbi_helpers/edfn_128h
+
 echo "Run LINC calibrator from $SCRIPT_DIR on Data in $STARTDIR/calibrator"
 cd calibrator
 
