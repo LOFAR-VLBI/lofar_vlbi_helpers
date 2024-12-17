@@ -27,6 +27,8 @@ SING_IMAGE=https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-g
 MAINFOLDER=$PWD
 
 # set up software
+pip install --user toil[cwl]
+
 mkdir -p software
 cd software
 git clone https://github.com/jurjen93/lofar_helpers.git

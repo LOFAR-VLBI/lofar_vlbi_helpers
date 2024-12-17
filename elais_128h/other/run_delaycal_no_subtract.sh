@@ -23,6 +23,8 @@ export TARGETDATA=$(realpath "../target/data")
 export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
 
 # set up software
+pip install --user toil[cwl]
+
 mkdir -p software
 cd software
 git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
