@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --output=splitdir_%j.out
 #SBATCH --error=splitdir_%j.err
+#SBATCH -t 72:00:00
 
 CSV=$1
 

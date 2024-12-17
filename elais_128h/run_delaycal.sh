@@ -1,12 +1,13 @@
 #!/bin/bash
 #SBATCH --output=delay_%j.out
 #SBATCH --error=delay_%j.err
+#SBATCH -t 50:00:00
 
 ######################
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal -t 48:00:00"
+export TOIL_SLURM_ARGS="--export=ALL -p normal -t 24:00:00"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv

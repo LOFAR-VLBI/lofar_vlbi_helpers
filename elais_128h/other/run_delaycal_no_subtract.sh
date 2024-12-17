@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --output=delay_%j.out
 #SBATCH --error=delay_%j.err
+#SBATCH -t 50:00:00
 
 #NOTE: works only with TOIL>6.0.0
 
