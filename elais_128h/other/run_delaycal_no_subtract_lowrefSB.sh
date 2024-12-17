@@ -18,9 +18,9 @@ VENV=/project/lofarvwf/Software/venv
 
 # SETUP ENVIRONMENT
 
-DDFOLDER=$(realpath "../ddf")
-TARGETDATA=$(realpath "../target/data")
-SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
+export DDFOLDER=$(realpath "../ddf")
+export TARGETDATA=$(realpath "../target/data")
+export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
 
 # set up software
 mkdir -p software
@@ -41,7 +41,7 @@ PTH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PATH
 cd ../
 
 # set up singularity
-SIMG=vlbi-cwl.sif
+export SIMG=vlbi-cwl.sif
 mkdir -p singularity
 wget https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-grid-hpccloud/amd/flocs_v5.0.0_znver2_znver2_aocl_cuda.sif -O singularity/$SIMG
 mkdir -p singularity/pull
@@ -113,7 +113,7 @@ jq '. + {"reference_stationSB": 77}' mslist_VLBI_delay_calibration.json > temp.j
 
 source ${VENV}/bin/activate
 
-TGSSphase_final_lines=$(python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase_final" | wc -l)
+TGSSphase_final_lines=$(singularity exec -B /project/lofarvwf singularity/$SIMG python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase" | wc -l)
 # Check if the line count is greater than 1
 if [ "$TGSSphase_final_lines" -ge 1 ]; then
     echo "Use TGSSphase_final"
