@@ -13,7 +13,7 @@ export TOIL_SLURM_ARGS="--export=ALL --job-name splitdir -p normal --constraint=
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 CAT=${CSV}
 if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
-SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/all_dicalsolutions/merged_${LNUM}_linear.h5
+SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/dical/merged_skyselfcalcyle000_linearfulljones_${LNUM}_DI.concat.ms.avg.h5
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 DD_SELECTION="false" #or true?
 
