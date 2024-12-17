@@ -4,7 +4,8 @@
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 
 # Get the file corresponding to this task
-SB=$1
+LNUM=$1
+SB=$2
 SB=$(realpath "$SB")
 
 echo $SB
