@@ -13,7 +13,6 @@ SING_BIND="/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
-#VENV=/project/lofarvwf/Software/venv
 
 ######################
 
@@ -24,7 +23,9 @@ export TARGETDATA=$(realpath "../target/data")
 export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
 
 # set up software
-pip install --user toil[cwl]
+python3 -m venv /tmp/myvenv
+source /tmp/myvenv/bin/activate
+pip install toil[cwl]
 
 mkdir -p software
 cd software
@@ -137,7 +138,6 @@ JOBSTORE=$PWD/jobstore
 LOGDIR=$PWD/logs
 TMPD=$PWD/tmpdir
 
-mkdir -p ${TMPD}_interm
 mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
@@ -147,7 +147,6 @@ mkdir -p $LOGDIR
 # RUN TOIL
 
 toil-cwl-runner \
---no-read-only \
 --retryCount 2 \
 --singularity \
 --disableCaching \
@@ -159,7 +158,6 @@ toil-cwl-runner \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
 --coordinationDir ${OUTPUT} \
---tmpdir-prefix ${TMPD}_interm/ \
 --disableAutoDeployment True \
 --bypass-file-store \
 --batchSystem slurm \
@@ -170,4 +168,4 @@ toil-cwl-runner \
 
 ########################
 
-#deactivate
+deactivate
