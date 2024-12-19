@@ -161,6 +161,7 @@ toil-cwl-runner \
 --disableAutoDeployment True \
 --batchSystem slurm \
 --noStdOutErr \
+--maxJobs 10 \
 --logCritical \
 --jobStoreTimeout 120 \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
