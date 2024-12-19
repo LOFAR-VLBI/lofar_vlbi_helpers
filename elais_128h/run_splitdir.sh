@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --output=splitdir_%j.out
 #SBATCH --error=splitdir_%j.err
+#SBATCH -t 72:00:00
 
 CSV=$1
 
@@ -13,11 +14,11 @@ export TOIL_SLURM_ARGS="--export=ALL --job-name splitdir -p normal --constraint=
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 CAT=${CSV}
 if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
-SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/all_dicalsolutions/merged_${LNUM}_linear.h5
+SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/dical/merged_skyselfcalcyle000_linearfulljones_${LNUM}_DI.concat.ms.avg.h5
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 DD_SELECTION="false" #or true?
 
-VENV=/project/lofarvwf/Software/venv
+#VENV=/project/lofarvwf/Software/venv
 
 SUBTRACTDATA=$(realpath "../../subtract")
 
@@ -27,6 +28,8 @@ SUBTRACTDATA=$(realpath "../../subtract")
 # SETUP ENVIRONMENT
 
 # set up software
+pip install --user toil[cwl]
+
 mkdir -p software
 cd software
 git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
@@ -99,7 +102,7 @@ mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
 
-source ${VENV}/bin/activate
+#source ${VENV}/bin/activate
 
 ########################
 
@@ -127,4 +130,4 @@ software/VLBI_cwl/workflows/split-directions.cwl mslist_VLBI_split_directions.js
 
 ########################
 
-deactivate
+#deactivate

@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --output=delay_%j.out
 #SBATCH --error=delay_%j.err
+#SBATCH -t 50:00:00
 
 #NOTE: works only with TOIL>6.0.0
 
@@ -12,7 +13,6 @@ SING_BIND="/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
-VENV=/project/lofarvwf/Software/venv
 
 ######################
 
@@ -23,6 +23,10 @@ export TARGETDATA=$(realpath "../target/data")
 export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
 
 # set up software
+python3 -m venv /tmp/myvenv
+source /tmp/myvenv/bin/activate
+pip install toil[cwl]
+
 mkdir -p software
 cd software
 git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
@@ -111,7 +115,7 @@ $TARGETDATA
 jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"reference_stationSB": 77}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 
-source ${VENV}/bin/activate
+#source ${VENV}/bin/activate
 
 TGSSphase_final_lines=$(singularity exec -B /project/lofarvwf singularity/$SIMG python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase" | wc -l)
 # Check if the line count is greater than 1
@@ -134,7 +138,6 @@ JOBSTORE=$PWD/jobstore
 LOGDIR=$PWD/logs
 TMPD=$PWD/tmpdir
 
-mkdir -p ${TMPD}_interm
 mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
@@ -144,7 +147,6 @@ mkdir -p $LOGDIR
 # RUN TOIL
 
 toil-cwl-runner \
---no-read-only \
 --retryCount 2 \
 --singularity \
 --disableCaching \
@@ -156,7 +158,6 @@ toil-cwl-runner \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
 --coordinationDir ${OUTPUT} \
---tmpdir-prefix ${TMPD}_interm/ \
 --disableAutoDeployment True \
 --bypass-file-store \
 --batchSystem slurm \
