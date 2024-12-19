@@ -149,7 +149,6 @@ toil-cwl-runner \
 --retryCount 0 \
 --singularity \
 --disableCaching \
---writeLogsFromAllJobs True \
 --logFile full_log.log \
 --writeLogs ${LOGDIR} \
 --outdir ${OUTPUT} \
@@ -160,7 +159,7 @@ toil-cwl-runner \
 --disableAutoDeployment True \
 --batchSystem slurm \
 --noStdOutErr \
---maxJobs 15 \
+--maxJobs 25 \
 --logCritical \
 --jobStoreTimeout 120 \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
