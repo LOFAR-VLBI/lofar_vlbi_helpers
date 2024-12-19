@@ -1,13 +1,12 @@
 #!/bin/bash
 #SBATCH --output=delay_%j.out
 #SBATCH --error=delay_%j.err
-#SBATCH -t 50:00:00
 
 #NOTE: works only with TOIL>6.0.0
 
 #### UPDATE THESE ####
 
-export TOIL_SLURM_ARGS="--export=ALL --job-name delaycal -p normal -t 24:00:00"
+export TOIL_SLURM_ARGS="--export=ALL --job-name delaycal -p normal -t 12:00:00"
 
 SING_BIND="/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
@@ -161,7 +160,7 @@ toil-cwl-runner \
 --disableAutoDeployment True \
 --batchSystem slurm \
 --noStdOutErr \
---maxJobs 10 \
+--maxJobs 15 \
 --logCritical \
 --jobStoreTimeout 120 \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
