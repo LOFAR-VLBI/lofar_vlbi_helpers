@@ -160,8 +160,7 @@ toil-cwl-runner \
 --batchSystem slurm \
 --noStdOutErr \
 --maxJobs 25 \
---logCritical \
---jobStoreTimeout 120 \
+--logLevel Critical \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
 /project/lofarvwf/Software/VLBI-cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json

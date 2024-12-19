@@ -154,7 +154,6 @@ toil-cwl-runner \
 --retryCount 2 \
 --singularity \
 --disableCaching \
---writeLogsFromAllJobs True \
 --logFile full_log.log \
 --writeLogs ${LOGDIR} \
 --outdir ${OUTPUT} \
