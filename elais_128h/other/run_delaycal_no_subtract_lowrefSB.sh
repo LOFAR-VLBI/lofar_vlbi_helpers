@@ -23,8 +23,8 @@ export TARGETDATA=$(realpath "../target/data")
 export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
 
 # set up software
-python3 -m venv /tmp/myvenv
-source /tmp/myvenv/bin/activate
+#python3 -m venv /tmp/myvenv
+#source /tmp/myvenv/bin/activate
 pip install toil[cwl]
 
 mkdir -p software
@@ -159,13 +159,34 @@ toil-cwl-runner \
 --workDir ${WORKDIR} \
 --coordinationDir ${OUTPUT} \
 --disableAutoDeployment True \
---bypass-file-store \
 --batchSystem slurm \
+--noStdOutErr \
+--logCritical \
+--jobStoreTimeout 120 \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
 /project/lofarvwf/Software/VLBI-cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
+
+#toil-cwl-runner \
+#--retryCount 2 \
+#--singularity \
+#--disableCaching \
+#--writeLogsFromAllJobs True \
+#--logFile full_log.log \
+#--writeLogs ${LOGDIR} \
+#--outdir ${OUTPUT} \
+#--tmp-outdir-prefix ${TMPD}/ \
+#--jobStore ${JOBSTORE} \
+#--workDir ${WORKDIR} \
+#--coordinationDir ${OUTPUT} \
+#--disableAutoDeployment True \
+#--bypass-file-store \
+#--batchSystem slurm \
+#--setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
+#--setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
+#/project/lofarvwf/Software/VLBI-cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
 #--cleanWorkDir never \ --> for testing
 
 ########################
 
-deactivate
+#deactivate
