@@ -12,6 +12,7 @@ SING_BIND="/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
+VENV=/project/lofarvwf/Software/venv
 
 ######################
 
@@ -22,9 +23,8 @@ export TARGETDATA=$(realpath "../target/data")
 export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
 
 # set up software
-#python3 -m venv /tmp/myvenv
-#source /tmp/myvenv/bin/activate
-pip install toil[cwl]
+source ${VENV}/bin/activate
+#pip install toil[cwl]
 
 mkdir -p software
 cd software
@@ -155,10 +155,9 @@ toil-cwl-runner \
 --tmp-outdir-prefix ${TMPD}/ \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
---coordinationDir ${OUTPUT} \
 --disableAutoDeployment True \
 --batchSystem slurm \
---maxJobs 25 \
+--maxJobs 30 \
 --logLevel Critical \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
@@ -186,4 +185,4 @@ toil-cwl-runner \
 
 ########################
 
-#deactivate
+deactivate

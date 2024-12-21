@@ -160,7 +160,6 @@ toil-cwl-runner \
 --tmp-outdir-prefix ${TMPD}/ \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
---coordinationDir ${OUTPUT} \
 --disableAutoDeployment True \
 --bypass-file-store \
 --batchSystem slurm \
