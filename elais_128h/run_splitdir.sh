@@ -18,7 +18,7 @@ SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/dical/merged
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 DD_SELECTION="false" #or true?
 
-#VENV=/project/lofarvwf/Software/venv
+VENV=/project/lofarvwf/Software/venv
 
 SUBTRACTDATA=$(realpath "../../subtract")
 
@@ -28,7 +28,8 @@ SUBTRACTDATA=$(realpath "../../subtract")
 # SETUP ENVIRONMENT
 
 # set up software
-pip install --user toil[cwl]
+source ${VENV}/bin/activate
+#pip install --user toil[cwl]
 
 mkdir -p software
 cd software
@@ -129,4 +130,4 @@ software/VLBI_cwl/workflows/split-directions.cwl mslist_VLBI_split_directions.js
 
 ########################
 
-#deactivate
+deactivate
