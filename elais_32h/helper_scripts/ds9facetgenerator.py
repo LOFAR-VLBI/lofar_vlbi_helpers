@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from scipy.spatial import Voronoi, voronoi_plot_2d
+from scipy.spatial import Voronoi
 from astropy.wcs import WCS
 from astropy import units as u
 from astropy.coordinates import SkyCoord
@@ -146,7 +146,7 @@ def tessellate(x_pix, y_pix, w, dist_pix, bbox, plot_tesselation=True):
         verts_xy = poly.exterior.xy
         verts_deg = []
         for x, y in zip(verts_xy[0], verts_xy[1]):
-            x_y = np.array([[y, x, 0.0, 0.0]])
+            # x_y = np.array([[y, x, 0.0, 0.0]])
             ra_deg, dec_deg = w.wcs_pix2world(x, y, 1)
             verts_deg.append((ra_deg, dec_deg))
         verts.append(verts_deg)
@@ -283,13 +283,13 @@ def main(args):
     # Voronoi centroids. Note that the outer points
     # are stripped. So the number of interior points
     # effectively is (npoints_x - 2) * (npoints_y - 2)
-    npoints_x = 10
-    npoints_y = npoints_x
+    # npoints_x = 10
+    # npoints_y = npoints_x
 
     # Distortion fraction, double-sided. i.e. if distort = 0.5,
     # the maximum displacement of an interior point is 1 "cell size"
-    distort_x = 0.35
-    distort_y = 0.35
+    # distort_x = 0.35
+    # distort_y = 0.35
 
     # load in the directions from the H5
     sourcedir = read_dir_fromh5(args.h5)

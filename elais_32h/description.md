@@ -29,4 +29,3 @@ Step 16) run imaging/split_facets/make_image.py to image with correct resolution
 --> https://github.com/tikk3r/lofar-highres-widefield.git
 --> https://github.com/jurjen93/lofar_helpers \
 --> https://github.com/rvweeren/lofar_facet_selfcal \
-
