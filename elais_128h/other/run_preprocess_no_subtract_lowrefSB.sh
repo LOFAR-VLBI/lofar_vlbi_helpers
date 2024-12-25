@@ -157,8 +157,7 @@ toil-cwl-runner \
 --workDir ${WORKDIR} \
 --disableAutoDeployment True \
 --batchSystem slurm \
---maxJobs 30 \
---logLevel Critical \
+--cleanWorkDir onSuccess \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
 /project/lofarvwf/Software/VLBI-cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
