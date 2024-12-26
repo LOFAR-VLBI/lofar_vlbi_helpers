@@ -150,8 +150,7 @@ mkdir -p $LOGDIR
 # RUN TOIL
 
 toil-cwl-runner \
---no-read-only \
---retryCount 2 \
+--retryCount 1 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \
@@ -161,9 +160,10 @@ toil-cwl-runner \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
 --disableAutoDeployment True \
---bypass-file-store \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
+--bypass-file-store \
+--writeLogsFromAllJobs True \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
 software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json

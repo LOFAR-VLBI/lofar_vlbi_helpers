@@ -162,27 +162,7 @@ toil-cwl-runner \
 --writeLogsFromAllJobs True \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
-/project/lofarvwf/Software/VLBI-cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
-
-#toil-cwl-runner \
-#--retryCount 2 \
-#--singularity \
-#--disableCaching \
-#--writeLogsFromAllJobs True \
-#--logFile full_log.log \
-#--writeLogs ${LOGDIR} \
-#--outdir ${OUTPUT} \
-#--tmp-outdir-prefix ${TMPD}/ \
-#--jobStore ${JOBSTORE} \
-#--workDir ${WORKDIR} \
-#--coordinationDir ${OUTPUT} \
-#--disableAutoDeployment True \
-#--bypass-file-store \
-#--batchSystem slurm \
-#--setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
-#--setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
-#/project/lofarvwf/Software/VLBI-cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
-#--cleanWorkDir never \ --> for testing
+software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
 
 ########################
 
