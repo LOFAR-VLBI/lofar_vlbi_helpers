@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --output=splitdir_%j.out
-#SBATCH --error=splitdir_%j.err
-#SBATCH -t 72:00:00
+#SBATCH --output=delaycal_%j.out
+#SBATCH --error=delaycal_%j.err
+#SBATCH -t 24:00:00
 
 CSV=$1
 
@@ -9,7 +9,7 @@ CSV=$1
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL --job-name splitdir -p normal --constraint=rome -t 12:00:00"
+export TOIL_SLURM_ARGS="--export=ALL --job-name delaycal -p normal --constraint=rome -t 4:00:00"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 CAT=${CSV}

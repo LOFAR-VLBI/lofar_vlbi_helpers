@@ -16,7 +16,7 @@ export SCRATCH='true'
 export TOIL_SLURM_ARGS="--export=ALL -p normal --constraint=amd -t 50:00:00"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
-#VENV=/project/lofarvwf/Software/venv
+VENV=/project/lofarvwf/Software/venv
 SING_IMAGE=https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-grid-hpccloud/amd/flocs_v5.3.0_znver2_znver2.sif
 
 ######################
@@ -27,7 +27,8 @@ SING_IMAGE=https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-g
 MAINFOLDER=$PWD
 
 # set up software
-pip install --user toil[cwl]
+source ${VENV}/bin/activate
+#pip install --user toil[cwl]
 
 mkdir -p software
 cd software
@@ -162,4 +163,4 @@ software/VLBI_cwl/workflows/facet_subtract.cwl $JSON
 cd $MAINFOLDER
 #rm -rf tmpdir*/*.ms
 
-#deactivate
+deactivate

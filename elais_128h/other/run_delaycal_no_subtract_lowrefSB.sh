@@ -6,12 +6,13 @@
 
 #### UPDATE THESE ####
 
-export TOIL_SLURM_ARGS="--export=ALL --job-name delaycal -p normal -t 12:00:00"
+export TOIL_SLURM_ARGS="--export=ALL --job-name preprocess -p normal -t 12:00:00"
 
 SING_BIND="/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
+VENV=/project/lofarvwf/Software/venv
 
 ######################
 
@@ -22,9 +23,8 @@ export TARGETDATA=$(realpath "../target/data")
 export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
 
 # set up software
-#python3 -m venv /tmp/myvenv
-#source /tmp/myvenv/bin/activate
-pip install toil[cwl]
+source ${VENV}/bin/activate
+#pip install toil[cwl]
 
 mkdir -p software
 cd software
@@ -146,7 +146,7 @@ mkdir -p $LOGDIR
 # RUN TOIL
 
 toil-cwl-runner \
---retryCount 0 \
+--retryCount 1 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \
@@ -155,35 +155,15 @@ toil-cwl-runner \
 --tmp-outdir-prefix ${TMPD}/ \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
---coordinationDir ${OUTPUT} \
 --disableAutoDeployment True \
 --batchSystem slurm \
---maxJobs 25 \
---logLevel Critical \
+--cleanWorkDir onSuccess \
+--bypass-file-store \
+--writeLogsFromAllJobs True \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
-/project/lofarvwf/Software/VLBI-cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
-
-#toil-cwl-runner \
-#--retryCount 2 \
-#--singularity \
-#--disableCaching \
-#--writeLogsFromAllJobs True \
-#--logFile full_log.log \
-#--writeLogs ${LOGDIR} \
-#--outdir ${OUTPUT} \
-#--tmp-outdir-prefix ${TMPD}/ \
-#--jobStore ${JOBSTORE} \
-#--workDir ${WORKDIR} \
-#--coordinationDir ${OUTPUT} \
-#--disableAutoDeployment True \
-#--bypass-file-store \
-#--batchSystem slurm \
-#--setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
-#--setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
-#/project/lofarvwf/Software/VLBI-cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
-#--cleanWorkDir never \ --> for testing
+software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
 
 ########################
 
-#deactivate
+deactivate

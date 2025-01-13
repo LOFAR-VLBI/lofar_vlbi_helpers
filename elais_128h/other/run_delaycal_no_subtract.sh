@@ -1,19 +1,18 @@
 #!/bin/bash
 #SBATCH --output=delay_%j.out
 #SBATCH --error=delay_%j.err
-#SBATCH -t 50:00:00
 
 #NOTE: works only with TOIL>6.0.0
 
 #### UPDATE THESE ####
 
-export TOIL_SLURM_ARGS="--export=ALL --job-name delaycal -p normal -t 24:00:00"
+export TOIL_SLURM_ARGS="--export=ALL --job-name preprocess -p normal -t 12:00:00"
 
 SING_BIND="/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
-#VENV=/project/lofarvwf/Software/venv
+VENV=/project/lofarvwf/Software/venv
 
 ######################
 
@@ -24,7 +23,8 @@ export TARGETDATA=$(realpath "../target/data")
 export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
 
 # set up software
-pip install --user toil[cwl]
+source ${VENV}/bin/activate
+#pip install toil[cwl]
 
 mkdir -p software
 cd software
@@ -111,8 +111,6 @@ $TARGETDATA
 
 
 # update json
-#jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": $nv}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-#jq '. + {"subtract_lotss_model": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 
 #source ${VENV}/bin/activate
@@ -138,7 +136,6 @@ JOBSTORE=$PWD/jobstore
 LOGDIR=$PWD/logs
 TMPD=$PWD/tmpdir
 
-mkdir -p ${TMPD}_interm
 mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
@@ -148,8 +145,7 @@ mkdir -p $LOGDIR
 # RUN TOIL
 
 toil-cwl-runner \
---no-read-only \
---retryCount 2 \
+--retryCount 1 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \
@@ -158,16 +154,15 @@ toil-cwl-runner \
 --tmp-outdir-prefix ${TMPD}/ \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
---coordinationDir ${OUTPUT} \
---tmpdir-prefix ${TMPD}_interm/ \
 --disableAutoDeployment True \
---bypass-file-store \
 --batchSystem slurm \
+--cleanWorkDir onSuccess \
+--bypass-file-store \
+--writeLogsFromAllJobs True \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
-/project/lofarvwf/Software/VLBI-cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
-#--cleanWorkDir never \ --> for testing
+software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
 
 ########################
 
-#deactivate
+deactivate
