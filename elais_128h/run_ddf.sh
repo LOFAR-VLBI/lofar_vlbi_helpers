@@ -15,7 +15,7 @@ RUNDIR=$TMPDIR/ddf
 mkdir -p $RUNDIR
 mkdir -p $OUTPUT
 
-SIMG=flocs_v4.5.0_znver2_znver2_aocl4_cuda.sif
+SIMG=flocs_v5.4.0_znver2_znver2.sif
 
 cd $RUNDIR
 
