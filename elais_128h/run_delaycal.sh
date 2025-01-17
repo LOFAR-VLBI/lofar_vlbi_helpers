@@ -10,10 +10,10 @@
 export TOIL_SLURM_ARGS="--export=ALL -p normal -t 24:00:00"
 
 SING_BIND="/project,/project/wfedfn/Software,/project/wfedfn/Share,/project/wfedfn/Public"
-DELAYCAL=/project/wfedfn/Share/jdejong/output/ELAIS/delaycalibrator.csv
-CONFIG=/project/wfedfn/Share/jdejong/output/ELAIS/delaysolve_config.txt
+DELAYCAL=/project/wfedfn/Share/petley/output/EDFN/delaycalibrator.csv
+CONFIG=/project/wfedfn/Share/petley/output/EDFN/delaysolve_config.txt
 
-#VENV=/project/lofarvwf/Software/venv
+VENV=/project/wfedfn/Software/venv
 
 export DDFOLDER=$(realpath "../ddf")
 export TARGETDATA=$(realpath "../target/data")
@@ -45,7 +45,7 @@ cd ../
 # set up singularity
 export SIMG=vlbi-cwl.sif
 mkdir -p singularity
-cp /project/lofarvwf/Software/singularity/flocs_v5.4.0_znver2_znver2_test.sif singularity/$SIMG
+cp /project/wfedfn/Software/singularity/flocs_v5.4.1_znver2_znver2.sif singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
@@ -112,12 +112,12 @@ $TARGETDATA
 # update json
 jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq --arg nv "$DDFOLDER/SOLSDIR" '. + {"ddf_solsdir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq '. + {"subtract_lotss_model": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+jq '. + {"do_subtraction": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 #jq '. + {"phasesol": "TGSSphase_final"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 #jq '. + {"reference_stationSB": 75}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 
-#source ${VENV}/bin/activate
+source ${VENV}/bin/activate
 
 TGSSphase_final_lines=$(singularity exec -B /project/wfedfn singularity/$SIMG python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase" | wc -l)
 # Check if the line count is greater than 1
@@ -170,4 +170,4 @@ software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.
 
 ########################
 
-#deactivate
+deactivate

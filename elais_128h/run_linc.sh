@@ -9,7 +9,7 @@ STARTDIR=$PWD
 
 #SINGULARITY SETTINGS
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
-SIMG=/project/wfedfn/Software/singularity/flocs_v5.4.0_znver2_znver2.sif
+SIMG=/project/wfedfn/Software/singularity/flocs_v5.4.1_znver2_znver2.sif
 
 #GET ORIGINAL SCRIPT DIRECTORY
 if [ -n "${SLURM_JOB_ID:-}" ] ; then
