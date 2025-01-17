@@ -90,16 +90,17 @@ def make_directions(cat_6asec: str = None, phasediff_csv: str = None):
     crossmatch_df = crossmatch_itself(crossmatch_df)
 
     with open('directions.txt', 'a+') as d:
+        d.write(f'#RA DEC start solints soltypelist_includedir')
         for dir in crossmatch_df.iterrows():
 
-            if dir[1]["Peak_flux"] < 0.085:
+            if dir[1]["Peak_flux"] < 0.08:
                 continue
 
             if dir[1]['Peak_flux'] > 0.3:
                 solint="['16s','64s','20min']"
             else:
                 solint="['32s','64s','40min']"
-            d.write(f"{dir[1]['RA']} {dir[1]['DEC']} {solint} [True,True,True]\n")
+            d.write(f"{dir[1]['RA']} {dir[1]['DEC']} 0 {solint} [True,True,True]\n")
 
 def make_config():
     """
@@ -108,18 +109,18 @@ def make_config():
 
     solints = "['16s','64s','20min']"
 
-    config=f"""imagename                       = dutch_6asec
+    config=f"""imagename                       = "dutch_6asec"
 DDE                             = True
 uvminim                         = 10
 imsize                          = 9216
 noarchive                       = True
 forwidefield                    = True
-soltype-list                    = ['scalarphase','scalarphase','scalarcomplexgain']
-solint-list                     = {solints}
-nchan-list                      = [1,1,1]
-soltypecycles-list              = [0,0,1]
-smoothnessconstraint-list       = [20.,40.,10.]
-pixelsize                       = 1.0
+soltype_list                    = ['scalarphase','scalarphase','scalarcomplexgain']
+solint_list                     = {solints}
+nchan_list                      = [1,1,1]
+soltypecycles_list              = [0,0,1]
+smoothnessconstraint_list       = [20.,40.,10.]
+pixelscale                      = 1.0
 channelsout                     = 6
 niter                           = 60000
 robust                          = -0.75
@@ -127,14 +128,14 @@ paralleldeconvolution           = 1200
 stop                            = 10
 multiscale                      = True
 parallelgridding                = 5
-multiscale-start                = 0
-antennaconstraint-list          = [None,None,None]
-resetsols-list                  = ['core',None,None]
+multiscale_start                = 0
+antennaconstraint_list          = [None,None,None]
+resetsols_list                  = ['core',None,None]
 fitspectralpol                  = 5
 removeinternational             = True
 removemostlyflaggedstations     = True
 useaoflagger                    = True
-aoflagger-strategy              = default_StokesV.lua
+aoflagger_strategy              = "default_StokesV.lua"
 channelsout                     = 12
 fitspectralpol                  = 5
 """

@@ -99,7 +99,6 @@ steps:
             in:
               msin: applycal/ms_out
               selfcal: selfcal
-              h5merger: lofar_helpers
               configfile: make_dd_config/dd_config
             out:
               - h5parm

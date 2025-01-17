@@ -14,9 +14,6 @@ inputs:
     - id: lotss_catalogue
       type: File
       doc: LoTSS 6" catalogue
-    - id: lofar_helpers
-      type: Directory
-      doc: lofar_helpers directory
     - id: selfcal
       type: Directory
       doc: facetselfcal directory
@@ -45,8 +42,6 @@ steps:
           source: average_6asec/ms_avg
         - id: selfcal
           source: selfcal
-        - id: h5merger
-          source: lofar_helpers
         - id: configfile
           source: make_dd_config/dd_config_dutch
         - id: dde_directions
