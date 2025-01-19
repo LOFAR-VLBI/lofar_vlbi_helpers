@@ -7,7 +7,7 @@ doc: Performing DD calibration for Dutch stations only
 inputs:
     - id: msin
       type: Directory[]
-      doc: Input MeasurementSets subbands
+      doc: Input unaveraged MeasurementSets
     - id: dd_selection_csv
       type: File
       doc: DD selection CSV (with phasediff scores)
