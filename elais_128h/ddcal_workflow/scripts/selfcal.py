@@ -115,30 +115,29 @@ def make_config(solint, ms):
         solint_complexgain_1 = 240.
 
     cg_cycle_2 = 4
-    if solint_complexgain_2/60 > 8:
+    if solint_complexgain_2/60 > 5:
         cg_cycle_1 = 999
-    elif solint_complexgain_2/60 > 5:
-        solint_complexgain_2 = 480.
     elif solint_complexgain_2/60 > 3:
         solint_complexgain_2 = 240.
-
 
     soltypecycles_list = f'[0,0,2,{cg_cycle_1},{cg_cycle_2}]'
     smoothnessreffrequency_list = "[120.0,120.0,120.0,0.0,0.0]"
     smoothnessspectralexponent_list = "[-1.0,-1.0,-1.0,-1.0,-1.0]"
     antennaconstraint_list = "[None,None,'alldutch',None,None]"
     soltype_list = "['scalarphase','scalarphase','scalarphase','scalarcomplexgain','scalarcomplexgain']"
-    solint_list = f"['{int(solint_scalarphase_1*60)}s','{int(solint_scalarphase_2*60)}s','{int(solint_scalarphase_3*60)}s','{int(solint_complexgain_1*60)}s','{int(solint_complexgain_2*60)}s']"
+    solint_list = f"['{int(solint_scalarphase_1 * 60)}s','{int(solint_scalarphase_2 * 60)}s','{int(solint_scalarphase_3 * 60)}s','{int(solint_complexgain_1*60)}s','{int(solint_complexgain_2*60)}s']"
     stop = 10
 
-    if 'ILTJ161212.29+552303.8' in ms: #TODO: SPECIAL CASE!
-        # soltypecycles_list = f'[0,0,{cg_cycle_1},{cg_cycle_2}]'
-        # soltype_list = "['scalarphase','scalarphase','scalarcomplexgain','scalarcomplexgain']"
-        # smoothnessreffrequency_list = "[120.0,120.0,0.0,0.0]"
-        # smoothnessspectralexponent_list = "[-1.0,-1.0,-1.0,-1.0]"
-        solint_list = f"['{int(solint_scalarphase_1 * 60)}s','{int(solint_scalarphase_2 * 60)}s','{int(solint_scalarphase_3 * 60)}s','900s','{int(solint_complexgain_2 * 60)}s']"
+    if solint_scalarphase_1 * 60 >= 64:
+        imsize = 1024
+        avgstep = 2
+    else:
+        imsize=2048
+        avgstep = 1
 
-        uvmin=60000
+    if 'ILTJ161212.29+552303.8' in ms: #TODO: SPECIAL CASE!
+        solint_list = f"['{int(solint_scalarphase_1 * 60)}s','{int(solint_scalarphase_2 * 60)}s','{int(solint_scalarphase_3 * 60)}s','900s','{int(solint_complexgain_2 * 60)}s']"
+        uvmin=50000
         smoothness_phase = 10.0
         smoothness_complex = 10.0
         smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase*1.5},{smoothness_phase*1.5},{smoothness_complex},{smoothness_complex+5.0}]"
@@ -216,7 +215,7 @@ smoothnessreffrequency_list     = {smoothnessreffrequency_list}
 smoothnessspectralexponent_list = {smoothnessspectralexponent_list}
 solint_list                     = {solint_list}
 uvmin                           = {uvmin}
-imsize                          = 2048
+imsize                          = {imsize}
 resetsols_list                  = {resetsols_list}
 antennaconstraint_list          = {antennaconstraint_list}
 paralleldeconvolution           = 1024
@@ -227,6 +226,9 @@ get_diagnostics                 = True
 parallelgridding                = 6
 channelsout                     = 24
 fitspectralpol                  = 9
+"""
+    if avgstep>1:
+        config+=f"""avgtimestep                     = {avgstep}
 """
 
     # write to file

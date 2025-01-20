@@ -50,20 +50,7 @@ inputs:
     - id: selfcal
       type: Directory
       doc: External self-calibration script.
-      inputBinding:
-        prefix: "--helperscriptspath"
-        position: 5
-        itemSeparator: " "
-        separate: true
 
-    - id: h5merger
-      type: Directory
-      doc: External LOFAR helper scripts for merging HDF5 files.
-      inputBinding:
-        prefix: "--helperscriptspathh5merge"
-        position: 6
-        itemSeparator: " "
-        separate: true
 
 outputs:
     - id: h5parm
