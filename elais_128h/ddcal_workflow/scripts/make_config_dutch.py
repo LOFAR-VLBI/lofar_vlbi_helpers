@@ -90,7 +90,7 @@ def make_directions(cat_6asec: str = None, phasediff_csv: str = None):
     crossmatch_df = crossmatch_itself(crossmatch_df)
 
     with open('directions.txt', 'a+') as d:
-        d.write(f'#RA DEC start solints soltypelist_includedir')
+        d.write(f'#RA DEC start solints soltypelist_includedir\n')
         for dir in crossmatch_df.iterrows():
 
             if dir[1]["Peak_flux"] < 0.075:
