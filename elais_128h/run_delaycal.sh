@@ -138,7 +138,7 @@ WORKDIR=$PWD/workdir
 OUTPUT=$PWD/outdir
 JOBSTORE=$PWD/jobstore
 LOGDIR=$PWD/logs
-TMPD=$PWD/tmpdir
+TMPD=$PWD/tmpdir/tmp_
 
 mkdir -p $WORKDIR
 mkdir -p $OUTPUT
@@ -150,7 +150,7 @@ mkdir -p $LOGDIR
 # RUN TOIL
 
 toil-cwl-runner \
---retryCount 1 \
+--retryCount 3 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \
