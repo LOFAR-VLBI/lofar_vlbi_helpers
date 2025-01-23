@@ -27,7 +27,7 @@ pip install --user toil[cwl]
 
 mkdir -p software
 cd software
-git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+git clone -b js-subtract https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
@@ -45,7 +45,7 @@ cd ../
 # set up singularity
 export SIMG=vlbi-cwl.sif
 mkdir -p singularity
-cp /project/lofarvwf/Software/singularity/flocs_v5.1.0_znver2_znver2_test.sif singularity/$SIMG
+cp /project/lofarvwf/Software/singularity/flocs_v5.4.1_znver2_znver2.sif singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
@@ -112,7 +112,7 @@ $TARGETDATA
 # update json
 jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq --arg nv "$DDFOLDER/SOLSDIR" '. + {"ddf_solsdir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq '. + {"subtract_lotss_model": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+jq '. + {"do_subtraction": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 #jq '. + {"phasesol": "TGSSphase_final"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 #jq '. + {"reference_stationSB": 75}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
