@@ -13,7 +13,7 @@ SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
-#VENV=/project/lofarvwf/Software/venv
+VENV=/project/lofarvwf/Software/venv
 
 export DDFOLDER=$(realpath "../ddf")
 export TARGETDATA=$(realpath "../target/data")
@@ -23,7 +23,7 @@ export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_
 ######################
 
 # set up software
-pip install --user toil[cwl]
+source ${VENV}/bin/activate
 
 mkdir -p software
 cd software
@@ -170,4 +170,4 @@ software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.
 
 ########################
 
-#deactivate
+deactivate

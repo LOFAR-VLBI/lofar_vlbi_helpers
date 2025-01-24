@@ -24,7 +24,6 @@ export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_
 
 # set up software
 source ${VENV}/bin/activate
-#pip install toil[cwl]
 
 mkdir -p software
 cd software
