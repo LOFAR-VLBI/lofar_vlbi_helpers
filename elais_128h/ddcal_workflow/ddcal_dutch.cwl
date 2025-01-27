@@ -28,10 +28,10 @@ steps:
       run: steps/dutch_avg.cwl
     - id: make_dd_config
       in:
-        - id: phasediff_output
-          source: dd_selection_csv
         - id: lotss_catalogue
           source: lotss_catalogue
+        - id: ms
+          source: average_6asec/ms_avg
       out:
         - dd_config_dutch
         - directions
