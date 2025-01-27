@@ -116,7 +116,7 @@ def make_config(solint, ms):
 
     cg_cycle_2 = 4
     if solint_complexgain_2/60 > 5:
-        cg_cycle_1 = 999
+        cg_cycle_2 = 999
     elif solint_complexgain_2/60 > 3:
         solint_complexgain_2 = 240.
 

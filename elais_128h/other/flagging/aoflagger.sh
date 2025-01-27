@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 45 --job-name=aoflagger --array=0-23 --constraint=amd -t 10:00:00
+#SBATCH -c 15 --job-name=aoflagger --array=0-23 --constraint=amd -t 10:00:00
 
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
