@@ -4,12 +4,13 @@
 __author__ = "Jurjen de Jong"
 
 from argparse import ArgumentParser
-import pandas as pd
 import re
 from astropy.table import Table
 from astropy.coordinates import SkyCoord
 from astropy.coordinates import match_coordinates_sky
 from astropy import units as u
+from casacore.tables import table
+import numpy as np
 
 
 def parse_source_id(inp_str: str = None):
@@ -71,29 +72,28 @@ def crossmatch_itself(catalog, min_sep=0.1):
 
     return catalog[~nearest_neighbour]
 
-def make_directions(cat_6asec: str = None, phasediff_csv: str = None):
+def make_directions(cat_6asec: str = None, radec: list = None):
     """
     Make directions.txt file as input for the facetselfcal config file
 
     Args:
         cat_6asec: Catalogue of 6" arcsecond
-        phasediff_csv: Phasediff-scores
+        radec: RA, DEC in list
     """
 
-    phasediff_df = pd.read_csv(phasediff_csv)
-    cat_6asec_df = Table.read(cat_6asec)['Peak_flux', 'RA', 'DEC','Isl_rms'].to_pandas()
+    ra, dec = radec
+    T = Table.read(cat_6asec)['Peak_flux', 'RA', 'DEC','Isl_rms'].to_pandas()
+    T.RA %= 360
+    T.DEC %= 360
 
-    # crossmatch catalogues
-    crossmatch_df = crossmatch_tables(phasediff_df, cat_6asec_df, 6)
-
-    # filter sources within 0.1 degrees
-    crossmatch_df = crossmatch_itself(crossmatch_df)
+    # Assuming 2.5 degrees box
+    T = T[((T.RA < ra + 1.25) | (T.RA > ra - 1.25)) & ((T.DEC < dec + 1.25) | (T.DEC > dec - 1.25))]
 
     with open('directions.txt', 'a+') as d:
         d.write(f'#RA DEC start solints soltypelist_includedir\n')
-        for dir in crossmatch_df.iterrows():
+        for dir in T.iterrows():
 
-            if dir[1]["Peak_flux"] < 0.075:
+            if dir[1]["Peak_flux"] < 0.085:
                 continue
 
             if dir[1]['Peak_flux'] > 0.3:
@@ -124,7 +124,7 @@ pixelscale                      = 1.0
 niter                           = 60000
 robust                          = -0.75
 paralleldeconvolution           = 1200
-stop                            = 10
+stop                            = 6
 multiscale                      = True
 parallelgridding                = 5
 multiscale_start                = 0
@@ -142,6 +142,20 @@ fitspectralpol                  = 5
     with open("dutch_config.txt", "w") as f:
         f.write(config)
 
+def get_ra_dec(ms):
+    """
+    Get RA/DEC from MS centre
+
+    Args:
+        ms: MeasurementSet
+
+    Returns: RA, DEC
+
+    """
+    with table(ms+"::FIELD", ack=False) as t:
+        ra, dec = np.degrees(t.getcol("PHASE_DIR")).squeeze() % 360
+        return ra, dec
+
 def parse_args():
     """
     Command line argument parser
@@ -151,7 +165,7 @@ def parse_args():
 
     parser = ArgumentParser(description='Make config for facetselfcal international DD solves')
     parser.add_argument('--catalogue', type=str, help='Catalogue with 6arcsec information')
-    parser.add_argument('--phasediff_output', type=str, help='Phasediff CSV output')
+    parser.add_argument('--ms', type=str, help='MeasurementSet')
     return parser.parse_args()
 
 def main():
@@ -161,7 +175,8 @@ def main():
 
     args = parse_args()
 
-    make_directions(args.catalogue, args.phasediff_output)
+    ra, dec = get_ra_dec(args.ms)
+    make_directions(args.catalogue, [ra, dec])
     make_config()
 
 if __name__ == "__main__":

@@ -56,7 +56,7 @@ hints:
       - entry: $(inputs.msin)
         writable: false
   - class: ResourceRequirement
-    coresMin: 6
+    coresMin: 12
 
 stdout: dp3_dutch_avg.log
 stderr: dp3_dutch_avg_err.log

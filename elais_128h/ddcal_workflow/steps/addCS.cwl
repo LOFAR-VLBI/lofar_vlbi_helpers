@@ -16,7 +16,7 @@ inputs:
       prefix: "-ms"
       itemSeparator: " "
       separate: true
-  - id: h5
+  - id: h5parm
     type: File
     doc: Input h5parm
     inputBinding:
@@ -24,9 +24,9 @@ inputs:
       position: 3
       itemSeparator: " "
       separate: true
-  - id: lofar_helpers
+  - id: selfcal
     type: Directory
-    doc: lofar helpers directory
+    doc: facetselfcal directory
 
 outputs:
     - id: preapply_h5
@@ -42,9 +42,8 @@ outputs:
 
 
 arguments:
-  - $( inputs.lofar_helpers.path + '/h5_merger.py' )
+  - $( inputs.selfcal.path + '/submods/h5_merger.py' )
   - --h5_out=preapply_addCS.h5
-  - --propagate_flags
   - --add_ms_stations
 
 requirements:

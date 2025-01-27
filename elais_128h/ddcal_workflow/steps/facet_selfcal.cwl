@@ -53,7 +53,7 @@ inputs:
 
 
 outputs:
-    - id: h5parm
+    - id: h5_facetselfcal
       type: File
       outputBinding:
         glob: merged_addCS*006*.h5
@@ -97,7 +97,7 @@ hints:
   - class: DockerRequirement
     dockerPull: vlbi-cwl
   - class: ResourceRequirement
-    coresMin: 15
+    coresMin: 24
 
 stdout: facet_selfcal.log
 stderr: facet_selfcal_err.log

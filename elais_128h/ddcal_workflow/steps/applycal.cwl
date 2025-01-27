@@ -13,7 +13,7 @@ inputs:
       doc: Input MeasurementSet
       inputBinding:
         position: 5
-    - id: h5
+    - id: h5parm
       type: File
       doc: Input h5parm
       inputBinding:
