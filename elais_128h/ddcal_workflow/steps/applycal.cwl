@@ -43,7 +43,7 @@ requirements:
     listing:
       - entry: $(inputs.ms)
         writable: true
-      - entry: $(inputs.h5)
+      - entry: $(inputs.h5parm)
 
 arguments:
   - $( inputs.lofar_helpers.path + '/ms_helpers/applycal.py' )
