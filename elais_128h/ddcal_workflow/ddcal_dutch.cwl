@@ -8,9 +8,6 @@ inputs:
     - id: msin
       type: Directory[]
       doc: Input unaveraged MeasurementSets
-    - id: dd_selection_csv
-      type: File
-      doc: DD selection CSV (with phasediff scores)
     - id: lotss_catalogue
       type: File
       doc: LoTSS 6" catalogue
