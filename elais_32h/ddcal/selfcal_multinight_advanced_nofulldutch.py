@@ -1,6 +1,5 @@
 from glob import glob
 import os
-import inspect
 import pandas as pd
 import casacore.tables as ct
 import numpy as np
