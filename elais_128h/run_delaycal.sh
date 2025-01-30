@@ -28,6 +28,9 @@ pip install --user toil[cwl]
 mkdir -p software
 cd software
 git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+cd VLBI_cwl
+git checkout js-subtract 
+cd ..
 git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
@@ -45,7 +48,7 @@ cd ../
 # set up singularity
 export SIMG=vlbi-cwl.sif
 mkdir -p singularity
-cp /project/wfedfn/Software/singularity/flocs_v5.4.1_znver2_znver2.sif singularity/$SIMG
+cp /project/wfedfn/Software/singularity/flocs_v5.1.0_znver2_znver2_test.sif singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
@@ -143,6 +146,7 @@ TMPD=$PWD/tmpdir/tmp_
 mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
+mkdir -p $PWD/tmpdir
 
 
 ########################

@@ -44,7 +44,7 @@ for symlink in SOLSDIR/L*.ms/*.npz; do
     if [ -L "$symlink" ]; then
         target=$(readlink "$symlink")
         if [[ "$target" == $old_base* ]]; then
-            new_base="/project/wfedfn/Share/jpetley/output/EDFN/${LNUM}/${LNUM}/ddf/"
+            new_base="/project/wfedfn/Data/${LNUM}/ddf/"
             new_target="${target/$old_base/$new_base}"
             echo "Updating symlink: $symlink"
             rm "$symlink"
