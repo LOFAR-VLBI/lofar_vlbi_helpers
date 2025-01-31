@@ -109,7 +109,7 @@ steps:
             run: steps/merge_in_one_dir.cwl
             label: Merge preapplied h5parm and output h5parm in one h5parm
             in:
-              first_h5: find_closest_h5/closest_h5
+              first_h5: addCS/preapply_h5
               second_h5: facetselfcal/h5_facetselfcal
               selfcal: selfcal
             out:

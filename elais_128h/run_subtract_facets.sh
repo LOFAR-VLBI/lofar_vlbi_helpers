@@ -7,7 +7,7 @@
 export MSDATA=$(realpath $1)
 export H5FACETS=$(realpath $2)
 export MODELS=$(realpath $3)
-export SCRATCH='true'
+export SCRATCH='false'
 
 ######################
 #### UPDATE THESE ####
@@ -115,7 +115,7 @@ jq --arg path "$PWD/merged.h5" \
 
 #SELECTION WAS ALREADY DONE
 if [ "$SCRATCH" = "true" ]; then
-  jq --arg scratch "$SCRATCH" '. + {scratch: true}' "$JSON" > temp.json && mv temp.json "$JSON"
+  jq --arg scratch "$SCRATCH" '. + {copy_to_local_scratch: true}' "$JSON" > temp.json && mv temp.json "$JSON"
 fi
 
 ########################
