@@ -82,7 +82,7 @@ jq --arg path "$PWD/software/lofar_helpers" \
 
 # Add 'lofar_helpers' with 'class' and 'path'
 jq --arg path "$PWD/software/lofar_facet_selfcal" \
-   '. + {"selfcal": {"class": "Directory", "path": $path}}' \
+   '. + {"facetselfcal": {"class": "Directory", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
 
@@ -90,6 +90,7 @@ MODELPATH=$MAINFOLDER/modelims
 mkdir -p $MODELPATH
 cp $MODELS/*model.fits $MODELPATH
 cp $MODELS/*model-pb.fits $MODELPATH
+cp $MODELS/*model-fpb.fits $MODELPATH
 
 # Add 'model_image_folder' with 'class' and 'path'
 jq --arg path "$MODELPATH" \
@@ -102,7 +103,6 @@ chmod 755 -R software
 singularity exec singularity/$SIMG python software/lofar_helpers/h5_merger.py \
 -in $H5FACETS \
 -out $PWD/merged.h5 \
---propagate_flags \
 --add_ms_stations \
 -ms $(find "$MSDATA" -maxdepth 1 -name "*.ms" | head -n 1) \
 --h5_time_freq 1
