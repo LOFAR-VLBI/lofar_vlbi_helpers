@@ -16,7 +16,7 @@ if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
 
 export MSDATA=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/applycal
 export MODELS=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/ddcal/selfcals/imaging
-export H5FACETS=${MODELS}/merged_h5
+export H5FACETS=${MODELS}/merged.h5
 
 export SCRATCH='true'
 
