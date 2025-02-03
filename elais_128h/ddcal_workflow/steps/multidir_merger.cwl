@@ -41,7 +41,6 @@ requirements:
   - class: InitialWorkDirRequirement
     listing:
       - entry: $( inputs.h5parms )
-        writable: true
 
 hints:
   - class: DockerRequirement

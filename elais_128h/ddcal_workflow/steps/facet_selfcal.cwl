@@ -2,9 +2,7 @@ cwlVersion: v1.2
 class: CommandLineTool
 id: facet_selfcal
 label: Facet Selfcal
-doc: |
-    Performs direction independent calibration
-    of the international antenna array.
+doc: Performs direction independent calibration of the international antenna array.
 
 baseCommand:
     - python3

@@ -44,7 +44,6 @@ requirements:
   - class: InitialWorkDirRequirement
     listing:
       - entry: $( inputs.ms )
-        writable: false
 
 hints:
   - class: DockerRequirement

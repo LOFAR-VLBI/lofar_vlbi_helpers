@@ -2,7 +2,7 @@ cwlVersion: v1.2
 class: CommandLineTool
 id: addCS
 label: Add core stations to h5parm
-doc: Using h5_merger we add back the core stations to the h5parm, which had been replaced by ST001 (super station)
+doc: Use h5_merger to add back the core stations to the h5parm, which had been replaced by ST001 (super station)
 
 baseCommand:
   - python3

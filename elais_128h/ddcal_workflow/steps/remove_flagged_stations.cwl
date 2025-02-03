@@ -33,7 +33,6 @@ requirements:
   - class: InitialWorkDirRequirement
     listing:
       - entry: $(inputs.ms)
-        writable: true
 
 arguments:
   - $( inputs.lofar_helpers.path + '/ms_helpers/remove_flagged_stations.py' )

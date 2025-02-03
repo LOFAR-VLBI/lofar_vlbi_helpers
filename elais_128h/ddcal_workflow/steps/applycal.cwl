@@ -42,7 +42,6 @@ requirements:
   - class: InitialWorkDirRequirement
     listing:
       - entry: $(inputs.ms)
-        writable: true
       - entry: $(inputs.h5parm)
 
 arguments:
