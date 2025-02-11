@@ -118,6 +118,8 @@ if [ "$SCRATCH" = "true" ]; then
   jq --arg copy_to_local_scratch "$SCRATCH" '. + {copy_to_local_scratch: true}' "$JSON" > temp.json && mv temp.json "$JSON"
 fi
 
+jq '. + {"ncpu": 20}' "$JSON" > temp.json && mv temp.json "$JSON"
+
 ########################
 
 # MAKE TOIL RUNNING STRUCTURE
