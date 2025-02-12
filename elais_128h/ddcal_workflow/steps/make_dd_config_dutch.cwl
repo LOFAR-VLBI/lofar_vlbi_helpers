@@ -12,17 +12,16 @@ inputs:
       type: File
       doc: LoTSS 6" catalogue
       inputBinding:
-        position: 2
+        position: 1
         prefix: "--catalogue"
         itemSeparator: " "
         separate: true
-
-    - id: phasediff_output
-      type: File
-      doc: Phasediff scoring output csv
+    - id: ms
+      type: Directory
+      doc: MeasurementSet
       inputBinding:
-        prefix: "--phasediff_output"
-        position: 3
+        prefix: "--ms"
+        position: 2
         itemSeparator: " "
         separate: true
 

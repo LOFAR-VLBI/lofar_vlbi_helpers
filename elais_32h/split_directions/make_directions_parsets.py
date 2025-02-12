@@ -100,8 +100,6 @@ def find_candidates(cat, ms, fluxcut=25e-3, extra_candidates=[]):
         name, ra, dec = candidate
         candidates.add_row((name, ra, dec))
 
-
-
     return candidates
 
 

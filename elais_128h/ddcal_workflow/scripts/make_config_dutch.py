@@ -4,12 +4,13 @@
 __author__ = "Jurjen de Jong"
 
 from argparse import ArgumentParser
-import pandas as pd
 import re
 from astropy.table import Table
 from astropy.coordinates import SkyCoord
 from astropy.coordinates import match_coordinates_sky
 from astropy import units as u
+from casacore.tables import table
+import numpy as np
 
 
 def parse_source_id(inp_str: str = None):
@@ -26,6 +27,36 @@ def parse_source_id(inp_str: str = None):
     parsed_inp = re.findall(r'ILTJ\d+\..\d+\+\d+.\d+', inp_str)[0]
 
     return parsed_inp
+
+
+def filter_sources_by_distance(df, ra_col='RA', dec_col='DEC', flux_col='Peak_flux', max_distance=0.15):
+    """Select only sources <max_distance from each other"""
+
+    # Sort by Peak_flux in descending order
+    df = df.sort_values(by=flux_col, ascending=False).reset_index(drop=True)
+
+    # Make a boolean array to track which sources are excluded
+    excluded = np.zeros(len(df), dtype=bool)
+
+    coords = SkyCoord(ra=df[ra_col].values * u.deg, dec=df[dec_col].values * u.deg)
+
+    # Iterate through the sources
+    for i, coord in enumerate(coords):
+        if excluded[i]:
+            continue  # Skip if the source is already excluded
+
+        # Calculate distances to all other sources
+        distances = coord.separation(coords).deg
+
+        # Exclude all sources within the max_distance (excluding itself)
+        close_sources = (distances < max_distance) & (distances > 0)  # Exclude itself by filtering out 0 distance
+
+        # Mark close sources as excluded
+        excluded[close_sources] = True
+
+    # Return the filtered DataFrame
+    return df[~excluded].reset_index(drop=True)
+
 
 def crossmatch_tables(catalog1, catalog2, separation_asec):
     """
@@ -54,6 +85,7 @@ def crossmatch_tables(catalog1, catalog2, separation_asec):
 
     return matched_sources_catalog2
 
+
 def crossmatch_itself(catalog, min_sep=0.1):
     """
     Crossmatch a table with itself to filter on too close neighbours
@@ -71,36 +103,37 @@ def crossmatch_itself(catalog, min_sep=0.1):
 
     return catalog[~nearest_neighbour]
 
-def make_directions(cat_6asec: str = None, phasediff_csv: str = None):
+
+def make_directions(cat_6asec: str = None, radec: list = None):
     """
     Make directions.txt file as input for the facetselfcal config file
 
     Args:
         cat_6asec: Catalogue of 6" arcsecond
-        phasediff_csv: Phasediff-scores
+        radec: RA, DEC in list
     """
 
-    phasediff_df = pd.read_csv(phasediff_csv)
-    cat_6asec_df = Table.read(cat_6asec)['Peak_flux', 'RA', 'DEC','Isl_rms'].to_pandas()
+    ra, dec = radec
+    T = Table.read(cat_6asec)['Peak_flux', 'RA', 'DEC','Isl_rms'].to_pandas()
+    T.RA %= 360
+    T.DEC %= 360
 
-    # crossmatch catalogues
-    crossmatch_df = crossmatch_tables(phasediff_df, cat_6asec_df, 6)
-
-    # filter sources within 0.1 degrees
-    crossmatch_df = crossmatch_itself(crossmatch_df)
+    # Assuming 2.5 degrees box
+    T = filter_sources_by_distance(T[(T.RA < ra + 1.25) & (T.RA > ra - 1.25) & (T.DEC < dec + 1.25) & (T.DEC > dec - 1.25)])
 
     with open('directions.txt', 'a+') as d:
-        d.write(f'#RA DEC start solints soltypelist_includedir')
-        for dir in crossmatch_df.iterrows():
+        d.write(f'#RA DEC start solints soltypelist_includedir\n')
+        for dir in T.iterrows():
 
-            if dir[1]["Peak_flux"] < 0.075:
+            if dir[1]["Peak_flux"] < 0.06:
                 continue
 
-            if dir[1]['Peak_flux'] > 0.3:
+            if dir[1]['Peak_flux'] > 0.15:
                 solint="['16s','64s','20min']"
             else:
                 solint="['32s','64s','40min']"
             d.write(f"{dir[1]['RA']} {dir[1]['DEC']} 0 {solint} [True,True,True]\n")
+
 
 def make_config():
     """
@@ -124,7 +157,7 @@ pixelscale                      = 1.0
 niter                           = 60000
 robust                          = -0.75
 paralleldeconvolution           = 1200
-stop                            = 10
+stop                            = 4
 multiscale                      = True
 parallelgridding                = 5
 multiscale_start                = 0
@@ -142,6 +175,22 @@ fitspectralpol                  = 5
     with open("dutch_config.txt", "w") as f:
         f.write(config)
 
+
+def get_ra_dec(ms):
+    """
+    Get RA/DEC from MS centre
+
+    Args:
+        ms: MeasurementSet
+
+    Returns: RA, DEC
+
+    """
+    with table(ms+"::FIELD", ack=False) as t:
+        ra, dec = np.degrees(t.getcol("PHASE_DIR")).squeeze() % 360
+        return ra, dec
+
+
 def parse_args():
     """
     Command line argument parser
@@ -151,8 +200,9 @@ def parse_args():
 
     parser = ArgumentParser(description='Make config for facetselfcal international DD solves')
     parser.add_argument('--catalogue', type=str, help='Catalogue with 6arcsec information')
-    parser.add_argument('--phasediff_output', type=str, help='Phasediff CSV output')
+    parser.add_argument('--ms', type=str, help='MeasurementSet')
     return parser.parse_args()
+
 
 def main():
     """
@@ -161,7 +211,8 @@ def main():
 
     args = parse_args()
 
-    make_directions(args.catalogue, args.phasediff_output)
+    ra, dec = get_ra_dec(args.ms)
+    make_directions(args.catalogue, [ra, dec])
     make_config()
 
 if __name__ == "__main__":

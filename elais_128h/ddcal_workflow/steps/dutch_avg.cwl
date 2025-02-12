@@ -2,8 +2,7 @@ class: CommandLineTool
 cwlVersion: v1.2
 id: dp3_avg_dutch
 label: DP3 averaging for Dutch resolution calibration
-doc: |
-    Average MeasurementSet in time and frequency for direction-dependent calibration for Dutch stations in DDE-mode
+doc: Average MeasurementSet in time and frequency for direction-dependent calibration with Dutch stations in DDE-mode
 
 baseCommand:
   - DP3
@@ -56,7 +55,7 @@ hints:
       - entry: $(inputs.msin)
         writable: false
   - class: ResourceRequirement
-    coresMin: 6
+    coresMin: 12
 
 stdout: dp3_dutch_avg.log
 stderr: dp3_dutch_avg_err.log

@@ -13,7 +13,9 @@ SING_BIND="/project,/project/wfedfn/Software,/project/wfedfn/Share,/project/wfed
 DELAYCAL=/project/wfedfn/Share/petley/output/EDFN/delaycalibrator.csv
 CONFIG=/project/wfedfn/Share/petley/output/EDFN/delaysolve_config.txt
 
+
 VENV=/project/wfedfn/Software/venv
+
 
 export DDFOLDER=$(realpath "../ddf")
 export TARGETDATA=$(realpath "../target/data")
@@ -23,14 +25,13 @@ export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_
 ######################
 
 # set up software
-pip install --user toil[cwl]
+source ${VENV}/bin/activate
 
 mkdir -p software
 cd software
-git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
-cd VLBI_cwl
-git checkout js-subtract 
-cd ..
+
+git clone -b js-subtract https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+
 git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
@@ -48,7 +49,9 @@ cd ../
 # set up singularity
 export SIMG=vlbi-cwl.sif
 mkdir -p singularity
+
 cp /project/wfedfn/Software/singularity/flocs_v5.1.0_znver2_znver2_test.sif singularity/$SIMG
+
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 

@@ -8,9 +8,6 @@ inputs:
     - id: msin
       type: Directory[]
       doc: Input unaveraged MeasurementSets
-    - id: dd_selection_csv
-      type: File
-      doc: DD selection CSV (with phasediff scores)
     - id: lotss_catalogue
       type: File
       doc: LoTSS 6" catalogue
@@ -28,10 +25,10 @@ steps:
       run: steps/dutch_avg.cwl
     - id: make_dd_config
       in:
-        - id: phasediff_output
-          source: dd_selection_csv
         - id: lotss_catalogue
           source: lotss_catalogue
+        - id: ms
+          source: average_6asec/ms_avg
       out:
         - dd_config_dutch
         - directions

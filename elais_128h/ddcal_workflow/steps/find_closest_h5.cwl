@@ -16,7 +16,7 @@ inputs:
       position: 3
       itemSeparator: " "
       separate: true
-  - id: h5
+  - id: h5parm
     type: File
     doc: Input h5parm
     inputBinding:

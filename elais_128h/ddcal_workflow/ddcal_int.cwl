@@ -35,7 +35,7 @@ steps:
         - id: selfcal
           source: selfcal
       out:
-        - h5parm
+        - merged_h5
         - images
       scatter: msin
       run:
@@ -62,7 +62,7 @@ steps:
           - id: find_closest_h5
             run: steps/find_closest_h5.cwl
             in:
-              h5: dutch_multidir_h5
+              h5parm: dutch_multidir_h5
               ms: msin
               lofar_helpers: lofar_helpers
             out:
@@ -72,8 +72,8 @@ steps:
             run: steps/addCS.cwl
             in:
               ms: remove_flagged_stations/cleaned_ms
-              h5: find_closest_h5/closest_h5
-              lofar_helpers: lofar_helpers
+              h5parm: find_closest_h5/closest_h5
+              selfcal: selfcal
             out:
               - preapply_h5
 
@@ -81,7 +81,7 @@ steps:
             run: steps/applycal.cwl
             in:
               ms: remove_flagged_stations/cleaned_ms
-              h5: addCS/preapply_h5
+              h5parm: addCS/preapply_h5
               lofar_helpers: lofar_helpers
             out:
               - ms_out
@@ -101,14 +101,24 @@ steps:
               selfcal: selfcal
               configfile: make_dd_config/dd_config
             out:
-              - h5parm
+              - h5_facetselfcal
               - images
               - fits_images
 
+          - id: merge_all_in_one
+            run: steps/merge_in_one_dir.cwl
+            label: Merge preapplied h5parm and output h5parm in one h5parm
+            in:
+              first_h5: addCS/preapply_h5
+              second_h5: facetselfcal/h5_facetselfcal
+              selfcal: selfcal
+            out:
+              - merged_h5
+
         outputs:
-          h5parm:
+          merged_h5:
             type: File
-            outputSource: facetselfcal/h5parm
+            outputSource: merge_all_in_one/merged_h5
           images:
             type: File[]
             outputSource: facetselfcal/images
@@ -116,15 +126,15 @@ steps:
         # end ddcal for each ms
 
     - id: multidir_merge
-      label: Merge multiple directions into one h5parm
+      label: Merge multiple directions into one h5
       in:
         - id: h5parms
-          source: ddcal/h5parm
-        - id: lofar_helpers
-          source: lofar_helpers
+          source: ddcal/merged_h5
+        - id: selfcal
+          source: selfcal
       out:
         - multidir_h5
-      run: steps/multidir_h5_merger.cwl
+      run: steps/multidir_merger.cwl
 
     - id: flatten_images
       label: Flatten image array of arrays
@@ -140,14 +150,10 @@ requirements:
   - class: SubworkflowFeatureRequirement
 
 outputs:
-  - id: merged_h5
+  - id: final_merged_h5
     type: File
     outputSource: multidir_merge/multidir_h5
     doc: Final merged h5parm with multiple directions
-  - id: h5parm
-    type: File[]
-    outputSource: ddcal/h5parm
-    doc: Individual h5parm from each direction
   - id: selfcal_images
     type: File[]
     outputSource: flatten_images/flattenedarray

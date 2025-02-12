@@ -14,3 +14,5 @@ Important supporting repositories: \
 https://github.com/tikk3r/flocs \
 https://git.astron.nl/RD/VLBI-cwl \
 https://github.com/jurjen93/lofar_helpers
+
+IMPORTANT: all the scripts in this folder have hardcoded paths, since these are not general runners.

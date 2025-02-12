@@ -3,7 +3,6 @@
 
 echo "Job landed on $(hostname)"
 
-#re_subband="([^.]+)"
 
 DDF_OUTPUT=$(realpath "../ddf")
 RESULT=$PWD/concatted_ms
