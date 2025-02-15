@@ -7,7 +7,7 @@ echo "SINGULARITY IS $SIMG"
 
 MS_IN=$1
 
-singularity exec -B $SING_BIND $SIMG DP3 msin=${MS_IN} msout=${MS_IN##*/}_avg steps=[av,file] msout.storagemanager=dysco steps=[av] av.type=averager av.freqstep=16 av.timestep=16 \
+singularity exec -B $SING_BIND $SIMG DP3 msin=${MS_IN} msout=${MS_IN##*/}_avg msout.storagemanager=dysco steps=[av, filt] av.type=averager av.freqstep=16 av.timestep=16 \
 filt.type=filter filt.baseline='[CR]S*&&'
 
 singularity exec -B $SING_BIND $SIMG wsclean \
