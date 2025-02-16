@@ -74,7 +74,7 @@ steps:
          - id: polygon_info
            source: split_polygons/polygon_info
          - id: model_image_folder
-           source: get_model_images/filtered_model_image_folder
+           source: model_image_folder
          - id: lofar_helpers
            source: lofar_helpers
          - id: copy_to_local_scratch
