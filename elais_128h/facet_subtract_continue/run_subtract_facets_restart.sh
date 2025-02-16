@@ -13,10 +13,10 @@ SING_IMAGE=https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/container
 
 if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
 
-export TOIL_SLURM_ARGS="--export=ALL -t 48:00:00 --job-name ${LNUM}_subtract"
-export MSDATA=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/applycal
-export MODELS=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/ddcal/selfcals/imaging
-export H5FACETS=${MODELS}/merged.h5
+export TOIL_SLURM_ARGS="--export=ALL -p normal -t 48:00:00 --constraint=rome --job-name ${LNUM}_subtract"
+export MSDATA=$1
+export MODELPATH=$2
+export H5FACETS=$3
 
 export SCRATCH='true'
 
@@ -86,12 +86,6 @@ jq --arg path "$PWD/software/lofar_facet_selfcal" \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
 
-MODELPATH=$MAINFOLDER/modelims
-mkdir -p $MODELPATH
-#cp $MODELS/*model.fits $MODELPATH
-#cp $MODELS/*model-pb.fits $MODELPATH
-cp $MODELS/*model-fpb.fits $MODELPATH
-
 # Add 'model_image_folder' with 'class' and 'path'
 jq --arg path "$MODELPATH" \
    '. + {"model_image_folder": {"class": "Directory", "path": $path}}' \
@@ -100,15 +94,8 @@ jq --arg path "$MODELPATH" \
 chmod 755 -R singularity
 chmod 755 -R software
 
-singularity exec singularity/$SIMG python software/lofar_helpers/h5_merger.py \
--in $H5FACETS \
--out $PWD/merged.h5 \
---add_ms_stations \
--ms $(find "$MSDATA" -maxdepth 1 -name "*.ms" | head -n 1) \
---h5_time_freq 1
-
 # Add 'h5parm' with 'class' and 'path'
-jq --arg path "$PWD/merged.h5" \
+jq --arg path "$H5FACETS" \
    '. + {"h5parm": {"class": "File", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
@@ -118,7 +105,7 @@ if [ "$SCRATCH" = "true" ]; then
   jq --arg copy_to_local_scratch "$SCRATCH" '. + {copy_to_local_scratch: true}' "$JSON" > temp.json && mv temp.json "$JSON"
 fi
 
-jq '. + {"ncpu": 12}' "$JSON" > temp.json && mv temp.json "$JSON"
+jq '. + {"ncpu": 18}' "$JSON" > temp.json && mv temp.json "$JSON"
 
 ########################
 
@@ -155,7 +142,7 @@ toil-cwl-runner \
 --clean onSuccess \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
-software/VLBI_cwl/workflows/facet_subtract.cwl $JSON
+~/scripts/lofar_vlbi_helpers/elais_128h/facet_subtract_continue/facet_subtract.cwl $JSON
 
 ########################
 

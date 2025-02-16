@@ -13,7 +13,7 @@ SING_IMAGE=https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/container
 
 if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal --constraint=amd -t 48:00:00 --job-name ${LNUM}_subtract"
+export TOIL_SLURM_ARGS="--export=ALL -p normal -t 48:00:00 --job-name ${LNUM}_subtract"
 export MSDATA=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/applycal
 export MODELS=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/ddcal/selfcals/imaging
 export H5FACETS=${MODELS}/merged.h5

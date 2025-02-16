@@ -7,7 +7,7 @@
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal -t 24:00:00"
+export TOIL_SLURM_ARGS="--export=ALL -t 12:00:00"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv

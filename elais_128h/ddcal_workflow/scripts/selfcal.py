@@ -138,7 +138,7 @@ def make_config(solint, ms):
         smoothness_phase = 10.0
         smoothness_complex = 10.0
         smoothnessconstraint_list = f"[{smoothness_phase},{smoothness_phase*1.5},{smoothness_phase*1.5},{smoothness_complex},{smoothness_complex+5.0}]"
-        resetsols_list = "['alldutchandclosegerman','alldutch','coreandallbutmostdistantremotes','alldutch','coreandallbutmostdistantremotes']"
+        resetsols_list = "['alldutchandclosegerman','alldutch','coreandfirstremotes','alldutch','coreandfirstremotes']"
         antennaconstraint_list = "[None,None,None,None,None]"
         stop = 20
 
@@ -225,7 +225,6 @@ paralleldeconvolution           = 1024
 targetcalILT                    = "scalarphase"
 stop                            = {stop}
 compute_phasediffstat           = True
-get_diagnostics                 = True
 parallelgridding                = 6
 channelsout                     = 12
 fitspectralpol                  = 5
