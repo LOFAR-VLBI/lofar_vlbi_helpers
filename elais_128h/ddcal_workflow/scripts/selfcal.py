@@ -103,7 +103,7 @@ def make_config(solint, ms):
     solint_scalarphase_2 = min(max(deltime/60, np.sqrt(1.25*solint)), 5)
     solint_scalarphase_3 = min(max(deltime/60, np.sqrt(2*solint)), 5)
 
-    solint_complexgain_1 = max(25.0, 40*solint)
+    solint_complexgain_1 = max(20.0, 25*solint)
     solint_complexgain_2 = 1.5 * solint_complexgain_1
 
     cg_cycle_1 = 3
