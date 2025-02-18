@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 18 -t 36:00:00
+#SBATCH -c 18 -t 12:00:00
 
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )

@@ -50,7 +50,7 @@ cd ../
 export SIMG=vlbi-cwl.sif
 mkdir -p singularity
 
-cp /project/wfedfn/Software/singularity/flocs_v5.1.0_znver2_znver2_test.sif singularity/$SIMG
+cp /project/wfedfn/Software/singularity/flocs_v5.5.0_znver2_znver2_test.sif singularity/$SIMG
 
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
@@ -73,30 +73,30 @@ export TOIL_CHECK_ENV=True
 
 # PREP SOLUTIONS
 
-# convert DDF solution files to h5parm
-C=0
-for KILLMSFILE in $DDFOLDER/SOLSDIR/*MHz_uv_pre-cal.ms/*DIS2*.sols.npz; do
-  echo ${KILLMSFILE}
-  singularity exec singularity/$SIMG \
-  python software/losoto/bin/killMS2H5parm.py \
-  --solset sol000 \
-  --verbose \
-  DDF${C}.h5 \
-  ${KILLMSFILE}
+# # convert DDF solution files to h5parm
+# C=0
+# for KILLMSFILE in $DDFOLDER/SOLSDIR/*MHz_uv_pre-cal.ms/*DIS2*.sols.npz; do
+#   echo ${KILLMSFILE}
+#   singularity exec singularity/$SIMG \
+#   python software/losoto/bin/killMS2H5parm.py \
+#   --solset sol000 \
+#   --verbose \
+#   DDF${C}.h5 \
+#   ${KILLMSFILE}
 
-  ((C++))  # increment the counter
-done
+#   ((C++))  # increment the counter
+# done
 
-# merge h5parm into 1 file
-singularity exec singularity/$SIMG \
-python software/lofar_helpers/h5_merger.py \
---h5_tables DDF*.h5 \
---h5_out DDF_merged.h5 \
---propagate_flags \
---add_ms_stations \
---ms $( ls $TARGETDATA/*.MS -1d | head -n 1) \
---merge_diff_freq \
---h5_time_freq true
+# # merge h5parm into 1 file
+# singularity exec singularity/$SIMG \
+# python software/lofar_helpers/h5_merger.py \
+# --h5_tables DDF*.h5 \
+# --h5_out DDF_merged.h5 \
+# --propagate_flags \
+# --add_ms_stations \
+# --ms $( ls $TARGETDATA/*.MS -1d | head -n 1) \
+# --merge_diff_freq \
+# --h5_time_freq true
 
 ########################
 
