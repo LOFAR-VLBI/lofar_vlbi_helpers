@@ -7,7 +7,7 @@
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal -t 24:00:00"
+export TOIL_SLURM_ARGS="--export=ALL -t 12:00:00"
 
 SING_BIND="/project,/project/wfedfn/Software,/project/wfedfn/Share,/project/wfedfn/Public"
 DELAYCAL=/project/wfedfn/Share/petley/output/EDFN/delaycalibrator.csv
