@@ -9,7 +9,7 @@ CSV=$1
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL --job-name splitdir -p normal --constraint=rome -t 12:00:00"
+export TOIL_SLURM_ARGS="--export=ALL -t 12:00:00"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 CAT=${CSV}

@@ -35,7 +35,7 @@ fi
 singularity exec -B ${SING_BIND} ${SIMG} python ~/scripts/lofar_vlbi_helpers/elais_128h/download_scripts/removebands.py --freqcut 168 --datafolder data
 
 # Run LINC calibrator
-singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_calibrator_HBA.sh -d $STARTDIR/calibrator/data
+singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_calibrator_HBA.sh -d $STARTDIR/calibrator/data -l /project/lofarvwf/Software/LINC
 
 mv tmp.* linc_calibrator_output
 cd ../

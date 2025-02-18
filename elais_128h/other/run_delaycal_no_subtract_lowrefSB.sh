@@ -6,7 +6,7 @@
 
 #### UPDATE THESE ####
 
-export TOIL_SLURM_ARGS="--export=ALL --job-name preprocess -p normal -t 12:00:00"
+export TOIL_SLURM_ARGS="--export=ALL -t 12:00:00"
 
 SING_BIND="/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
@@ -145,7 +145,7 @@ mkdir -p $LOGDIR
 # RUN TOIL
 
 toil-cwl-runner \
---retryCount 1 \
+--retryCount 2 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \
