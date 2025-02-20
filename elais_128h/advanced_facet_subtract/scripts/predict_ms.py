@@ -8,10 +8,9 @@ import re
 from argparse import ArgumentParser
 import numpy as np
 import tables
-from glob import glob
 
 from astropy.io import fits
-from casacore.tables import table
+from casacore.tables import table, taql
 from numba import njit, prange
 
 
@@ -171,10 +170,6 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
 
     os.system(' '.join(command))
 
-    if save_model_data:
-        with table(ms, ack=False) as t:
-            np.save(model_column+'.npy', t.getcol(model_column))
-
 
 def parse_args():
     """
@@ -205,21 +200,20 @@ def main():
         h5 = split_facet_h5(args.h5, f"Dir{polynumber:02d}")
         predict(args.msin, args.model_images, h5, poly)
 
-    model_data = glob('*.npy')
-    for n, model in enumerate(model_data):
-        print(f"Make facet mask for {model.replace('.npy', '')}")
-        other_files = model_data[:n] + model_data[n+1:]
+    for n, poly in enumerate(args.polygons):
+        print(f"Make facet mask for polygon {poly}")
+        other_polygons = [p.split('/')[-1].replace(".reg","").upper() for p in args.polygons[:n] + args.polygons[n+1:]]
+        polynumber = int(float(poly.split("/")[-1].replace("poly_", "").replace(".reg", "")))
+        columname = poly.split('/')[-1].replace(".reg", "").upper()
 
-        # Load the first array to determine the shape and dtype.
-        first_array = np.load(other_files[0])
-        output = np.zeros(first_array.shape, dtype=first_array.dtype)
+        with table(args.msin, ack=False, readonly=False) as t:
+            desc = t.getcoldesc(columname)
+            desc['name'] = f"FACET_{polynumber}"
+            t.addcols(desc)
 
-        # Loop over the remaining files, load each array, and add it in place.
-        for filename in other_files:
-            arr = np.load(filename)
-            add_in_place(output, arr)
+        query = f"UPDATE {args.msin} SET FACET_{polynumber} = {' + '.join(other_polygons)}"
+        taql(query)
 
-    os.system('rm *.npy')
 
 
 if __name__ == '__main__':

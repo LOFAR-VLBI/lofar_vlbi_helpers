@@ -548,7 +548,7 @@ def main():
     # Interpolate flags
     print(f'Interpolate from {args.from_ms} to {args.to_ms}')
     facet_number = f"{args.polygon.split("/")[-1].replace('.reg', '').replace('poly_', ''):02d}"
-    interpolate(args.from_ms, args.to_ms, f"POLY_{facet_number}", True, './', True)
+    interpolate(args.from_ms, args.to_ms, f"FACET_{facet_number}", True, './', True)
     phasecentre, freqavg, timeres, dirname = get_facet_info(args.polygon_info, args.to_ms, args.polygon)
     run_DP3(args.to_ms, phasecentre, freqavg, timeres, args.h5parm, dirname)
 
