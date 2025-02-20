@@ -44,7 +44,7 @@ outputs:
 
 arguments:
   - $(inputs.lofar_helpers.path)/ds9_helpers/split_polygon_facets.py
-  - --extra_boundary=0.01
+  - --extra_boundary=0.0
 
 requirements:
   - class: InlineJavascriptRequirement

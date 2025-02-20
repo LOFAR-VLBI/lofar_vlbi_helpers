@@ -61,7 +61,7 @@ hints:
     - class: DockerRequirement
       dockerPull: vlbi-cwl
     - class: ResourceRequirement
-      coresMin: 8
+      coresMin: 12
 
 requirements:
     - class: InitialWorkDirRequirement

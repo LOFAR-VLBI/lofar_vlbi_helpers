@@ -1,11 +1,11 @@
 class: CommandLineTool
 cwlVersion: v1.2
-id: get_model_image
-label: Select model images matching with MS
-doc: Select the model images that match with the input MeasurementSet
+id: predict_facet_masks
+label: Predict facets
+doc: Predict facet masks for subtractions
 
 baseCommand:
-  - get_model_image.py
+  - predict_ms.py
 
 inputs:
     - id: msin

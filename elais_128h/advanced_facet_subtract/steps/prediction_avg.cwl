@@ -34,8 +34,8 @@ outputs:
 arguments:
   - steps=[avg]
   - avg.type=averager
-  - avg.timeresolution=6
-  - avg.freqresolution='73.26kHz'
+  - avg.timeresolution=8
+  - avg.freqresolution='97.68kHz'
   - msout.storagemanager='dysco'
   - msout=$( inputs.msin.basename + '.avg.ms')
 
@@ -51,7 +51,7 @@ hints:
       - entry: $(inputs.msin)
         writable: false
   - class: ResourceRequirement
-    coresMin: 4
+    coresMin: 8
 
 stdout: 1asec_avg.log
 stderr: 1asec_err.log
