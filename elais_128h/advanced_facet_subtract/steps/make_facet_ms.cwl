@@ -73,7 +73,7 @@ requirements:
           writable: true
         - entry: $(inputs.avg_ms)
         - entry: $(inputs.h5parm)
-        - entry: $(inputs.polygon)
+        - entry: $(inputs.polygons)
         - entry: $(inputs.polygon_info)
 
 
