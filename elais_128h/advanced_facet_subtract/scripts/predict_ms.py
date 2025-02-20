@@ -13,7 +13,6 @@ from glob import glob
 from astropy.io import fits
 from casacore.tables import table
 from numba import njit, prange
-from numba.typed import List
 
 
 @njit(parallel=True)
@@ -126,7 +125,7 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
                f'-name {prefix_name}',
                '-parallel-gridding 6']
     # '-model-storage-manager stokes-i',
-    
+
     for n, argument in enumerate(comparse):
         if argument in ['-gridder', '-padding',
                         '-idg-mode', '-beam-aterm-update', '-pol', '-scale']:
@@ -202,7 +201,7 @@ def main():
 
     args = parse_args()
     for poly in args.polygons:
-        polynumber = int(float(poly.replace("poly_", "").replace(".reg", "")))
+        polynumber = int(float(poly.split("/")[-1].replace("poly_", "").replace(".reg", "")))
         h5 = split_facet_h5(args.h5, f"Dir{polynumber:02d}")
         predict(args.msin, args.model_images, h5, poly)
 

@@ -530,12 +530,13 @@ def parse_args():
     Parse input arguments
     """
 
-    parser = ArgumentParser(description='Interpolate DATA or MODEL_DATA from a specific time/freq resolution to another.')
+    parser = ArgumentParser(description='Interpolate DATA or MODEL_DATA from a specific time/freq resolution to another resolution and apply DP3 to make data smaller.')
     parser.add_argument('--from_ms', help='MS input from where to interpolate', required=True)
     parser.add_argument('--to_ms', help='MS to interpolate to (your output set)', required=True)
     parser.add_argument('--polygon', help='Polygon region', required=True)
     parser.add_argument('--h5parm', help='Multi-dir h5 solutions', required=True)
     parser.add_argument('--polygon_info', help='Polygon information')
+    parser.add_argument('--delete_input_ms', action='store_true', help='rm -rf on input MS to save storage')
     return parser.parse_args()
 
 
@@ -548,12 +549,16 @@ def main():
 
     args = parse_args()
 
-    # interpolate flags
+    # Interpolate flags
     print(f'Interpolate from {args.from_ms} to {args.to_ms}')
-    facet_number = f"{args.polygon.replace('.reg', '').replace('poly', ''):02d}"
+    facet_number = f"{args.polygon.split("/")[-1].replace('.reg', '').replace('poly_', ''):02d}"
     interpolate(args.from_ms, args.to_ms, f"POLY_{facet_number}", True, './', True)
     phasecentre, freqavg, timeres, dirname = get_facet_info(args.polygon_info, args.to_ms, args.polygon)
     run_DP3(args.to_ms, phasecentre, freqavg, timeres, args.h5parm, dirname)
+
+    # We can do this, since we have made a full copy
+    if args.delete_input_ms:
+        os.system(f"rm -rf {args.to_ms}")
 
 if __name__ == '__main__':
     main()

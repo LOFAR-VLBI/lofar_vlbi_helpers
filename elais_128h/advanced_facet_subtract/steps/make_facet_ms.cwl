@@ -57,6 +57,9 @@ outputs:
       outputBinding:
         glob: facet_ms*.log
 
+arguments:
+  - --delete_input_ms
+
 hints:
     - class: DockerRequirement
       dockerPull: vlbi-cwl

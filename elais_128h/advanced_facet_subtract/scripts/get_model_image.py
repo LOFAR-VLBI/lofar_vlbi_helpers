@@ -15,7 +15,7 @@ from astropy.io import fits
 
 def add_trailing_zeros(s, digitsize=4):
     """
-     Repeat the zero character and add it to front
+     Add trailing zero
 
      :param s: string
      :param digitsize: number of digits (default 4)
@@ -69,13 +69,11 @@ def parse_args():
     """
     Command line argument parser
 
-    Returns
-    -------
-    Parsed arguments
+    Returns: Parsed arguments
     """
 
-    parser = ArgumentParser()
-    parser.add_argument('--ms', help='Input MS', default=None)
+    parser = ArgumentParser(description="Get model images that match with MeasurementSet.")
+    parser.add_argument('--ms', help='Input MeasurementSet', default=None)
     parser.add_argument('--model_images', help='Model images in directory', default=None)
     return parser.parse_args()
 

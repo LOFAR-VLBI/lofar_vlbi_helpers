@@ -60,6 +60,9 @@ requirements:
       listing:
         - entry: $(inputs.msin)
           writable: true
+        - entry: $(inputs.model_images)
+        - entry: $(inputs.h5parm)
+        - entry: $(inputs.polygons)
 
 
 stdout: predict_facet.log
