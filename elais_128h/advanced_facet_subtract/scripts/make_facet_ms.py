@@ -466,14 +466,14 @@ def get_time_preavg_factor(ms: str = None):
         return None
 
 
-def get_facet_info(polygon_info_file, ms, polygon):
+def get_facet_info(polygon_info_file, ms, polygon_region):
     """
     Get facet information from polygon splitting.
 
     Args:
         polygon_info_file: CSV with polygon averaging and names
         ms: MeasurementSet from output
-        polygon: Polygon name
+        polygon_region: Polygon region name
 
     Returns: phase centre, averaging, and direction name
     """
@@ -489,7 +489,7 @@ def get_facet_info(polygon_info_file, ms, polygon):
         time = np.unique(t.getcol("TIME"))
         dtime = abs(time[1] - time[0])
 
-    polygon = polygon_info.loc[polygon_info.polygon_file == polygon.split('/')[-1]]
+    polygon = polygon_info.loc[polygon_info.polygon_file == polygon_region.split('/')[-1]]
     try:
         phasecenter = polygon['poly_center'].values[0]
     except AttributeError:

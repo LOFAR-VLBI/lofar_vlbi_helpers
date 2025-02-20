@@ -117,8 +117,8 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
 
     f = fits.open(model_images[0])
     comparse = str(f[0].header['HISTORY']).replace('\n', '').split()
-    prefix_name = re.sub(r"(-\d{4})?-model(-pb|-fpb)?\.fits$", "", model_images[0])
-    model_column = facet_region.replace(".reg","").upper()
+    prefix_name = re.sub(r"(-\d{4})?-model(-pb|-fpb)?\.fits$", "", model_images[0].split("/")[-1])
+    model_column = facet_region.split('/')[-1].replace(".reg","").upper()
     command = ['wsclean',
                '-predict',
                f'-model-column {model_column}',
