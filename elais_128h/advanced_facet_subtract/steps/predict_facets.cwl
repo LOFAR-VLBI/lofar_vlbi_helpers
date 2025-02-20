@@ -21,6 +21,7 @@ inputs:
       inputBinding:
         prefix: "--model_images"
         position: 2
+        separate: true
     - id: h5parm
       type: File
       doc: Multi-dir h5parm

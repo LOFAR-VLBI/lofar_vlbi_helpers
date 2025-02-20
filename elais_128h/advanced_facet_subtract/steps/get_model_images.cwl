@@ -27,7 +27,7 @@ outputs:
       type: File[]
       doc: Matching model images
       outputBinding:
-        glob: "*_best.ms"
+        glob: "*model*.fits"
     - id: logfile
       type: File[]
       doc: Log files from model selection

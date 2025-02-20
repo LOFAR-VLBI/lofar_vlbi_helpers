@@ -18,7 +18,7 @@ import re
 
 def print_progress_bar(index, total, bar_length=50):
     """
-    Prints a progress bar to the console.
+    Prints a progress bar.
 
     :param:
         - index: the current index (0-based) in the iteration.
@@ -132,10 +132,7 @@ def interpolate_data_single_baseline(time_in, freqs_in, data_in, time_out, freqs
 @njit(parallel=True)
 def interpolate_data_single_baseline_stokes_i(time_in, freqs_in, data_in, time_out, freqs_out):
     """
-    Nearest-neighbor interpolation that computes Stokes I from the input data.
-    Stokes I is computed as:
-
-         Stokes I = (data_in[..., 0] + data_in[..., 3]) / 2
+    Nearest-neighbor interpolation in Stokes I
 
     Parameters:
       time_in, freqs_in : input time and frequency
@@ -240,7 +237,6 @@ def process_baseline(baseline, from_ms, out_times, out_ant1, out_ant2,
 @njit(parallel=True)
 def subtract_arrays(a, b):
     result = np.empty_like(a)
-    # Use parallel range for possible speedup on large arrays.
     for i in prange(a.size):
         result.flat[i] = a.flat[i] - b.flat[i]
     return result

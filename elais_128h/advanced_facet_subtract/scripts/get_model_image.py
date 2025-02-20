@@ -53,7 +53,7 @@ def get_model_image(msin, model_images):
         fts = fits.open(modim)[0]
         fdelt, fcent = fts.header['CDELT3'] / 2, fts.header['CRVAL3']
         fmin, fmax = fcent - fdelt, fcent + fdelt
-        if fmin > fmax_ms or fmax < fmin_ms:
+        if not (fmin > fmax_ms or fmax < fmin_ms):
             print(f"Take {modim}")
             os.system(f"cp {modim} .")
 
@@ -74,7 +74,7 @@ def parse_args():
 
     parser = ArgumentParser(description="Get model images that match with MeasurementSet.")
     parser.add_argument('--ms', help='Input MeasurementSet', default=None)
-    parser.add_argument('--model_images', help='Model images in directory', default=None)
+    parser.add_argument('--model_images', help='Model image directory', default=None)
     return parser.parse_args()
 
 
