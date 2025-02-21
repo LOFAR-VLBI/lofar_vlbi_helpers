@@ -51,7 +51,7 @@ hints:
       - entry: $(inputs.msin)
         writable: false
   - class: ResourceRequirement
-    coresMin: 8
+    coresMin: 4
 
 stdout: 1asec_avg.log
 stderr: 1asec_err.log

@@ -193,13 +193,12 @@ def create_memmap(facetnumber, shape):
     return memmap_obj
 
 
-def update_memmap(dat, polynumber, t):
+def update_memmap(dat, polynumber, poly_data):
     # Extract facet number from the filename
     facet_id = dat.filename.split('/')[-1].replace("FACET_", "").replace(".dat", "")
     if facet_id != polynumber:
         print(f"COMPUTE {dat.filename} + POLY_{polynumber}")
         # Get the column, convert to complex64, and add it in place
-        poly_data = t.getcol(f"POLY_{polynumber}")[..., 0].astype(np.complex64)
         add_in_place(dat, poly_data)
 
 
@@ -263,8 +262,9 @@ def main():
         predict(args.msin, args.model_images, h5, poly)
         # Adding polygon to memmap facet masks
         with (table(args.msin, ack=False) as t):
+            poly_data = t.getcol(f"POLY_{polynumber}")[..., 0].astype(np.complex64)
             Parallel(n_jobs=min(4, os.cpu_count()), backend="threading"
-                     )(delayed(update_memmap)(dat, polynumber, t) for dat in memmaps)
+                     )(delayed(update_memmap)(dat, polynumber, poly_data) for dat in memmaps)
 
     # Add final POLY_* to measurement set
     for dat in memmaps:
