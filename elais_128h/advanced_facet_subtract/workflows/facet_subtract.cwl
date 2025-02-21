@@ -78,7 +78,7 @@ steps:
            source: split_polygons/polygon_info
       out:
          - subtracted_facet_ms
-      run: subworkflow/subband_facet_subtract.cwl
+      run: subworkflow/facet_subtract.cwl
       scatter: msin
 
     - id: flatten_subtracte_ms

@@ -44,7 +44,7 @@ steps:
       run: ../../steps/get_model_images.cwl
 
     - id: predict_facets
-      label: Predict all facets
+      label: Predict facet masks for subtraction
       in:
          - id: msin
            source: average_subband/ms_avg
@@ -56,10 +56,10 @@ steps:
            source: get_model_images/output_model_images
       out:
          - predicted_ms
-      run: ../../steps/predict_facets.cwl
+      run: ../../steps/predict_facet_masks.cwl
 
     - id: make_facet_ms
-      label: Interpolate from low to high resolution
+      label: Interpolate facet masks from low to high resolution and subtract
       in:
          - id: avg_ms
            source: predict_facets/predicted_ms

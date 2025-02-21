@@ -5,7 +5,7 @@ label: Predict facets
 doc: Predict facet masks for subtractions
 
 baseCommand:
-  - predict_ms.py
+  - predict_facet_mask.py
 
 inputs:
     - id: msin

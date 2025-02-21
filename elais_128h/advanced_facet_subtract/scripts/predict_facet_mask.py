@@ -229,7 +229,7 @@ def parse_args():
     Parsed arguments
     """
 
-    parser = ArgumentParser()
+    parser = ArgumentParser("Predict facet masks for subtraction in MeasurementSet")
     parser.add_argument('--msin', help='Input MS', default=None)
     parser.add_argument('--model_images', nargs="+", help='Model images', default=None)
     parser.add_argument('--polygons', nargs="+", help='Polygon region files', default=None)
