@@ -10,8 +10,9 @@ import numpy as np
 import tables
 
 from astropy.io import fits
-from casacore.tables import table, taql
+from casacore.tables import table
 from numba import njit, prange
+from joblib import Parallel, delayed
 
 
 @njit(parallel=True)
@@ -112,7 +113,16 @@ def repack(h5):
     os.system(f'mv {h5} {h5}.tmp && h5repack {h5}.tmp {h5} && rm {h5}.tmp')
 
 
-def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet_region: str = None, save_model_data: bool = True):
+def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet_region: str = None, multi_h5parm: str = None):
+    """
+    Prediction of facet and add to facet masks
+
+    Args:
+        ms: MeasurementSet
+        model_images: Model images
+        h5parm: h5 solutions
+        facet_region: Polygon region corresponding to facet
+    """
 
     f = fits.open(model_images[0])
     comparse = str(f[0].header['HISTORY']).replace('\n', '').split()
@@ -146,11 +156,9 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
 
     freqboundary = []
     for modim in sorted(model_images)[:-1]:
-        fts = fits.open(modim)[0]
-        fdelt, fcent = fts.header['CDELT3'] / 2, fts.header['CRVAL3']
-
-        freqboundary.append(str(int(fcent + fdelt)))
-        # fts.close()
+        with fits.open(modim)[0] as fts:
+            fdelt, fcent = fts.header['CDELT3'] / 2, fts.header['CRVAL3']
+            freqboundary.append(str(int(fcent + fdelt)))
 
     if len(freqboundary) > 0:
         command += ['-channel-division-frequencies ' + ','.join(freqboundary)]
@@ -162,13 +170,54 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
 
     command += [ms]
 
-    # run
+    # Run predict
     print('\n'.join(command))
     predict_cmd = open("predict.cmd", "w")
     predict_cmd.write('\n'.join(command))
     predict_cmd.close()
 
     os.system(' '.join(command))
+
+
+def get_shape(ms):
+    with table(ms, ack=False) as t:
+        freq, pol = t.getdesc()["DATA"]['shape']
+        return (t.nrows(), freq, pol)
+
+
+def create_memmap(facetnumber, shape):
+    filename = f"FACET_{facetnumber}.dat"
+    print(f"Creating {filename}")
+    memmap_obj = np.memmap(filename, dtype=np.complex64, mode='w+', shape=(shape[0], shape[1]))
+    memmap_obj[:] = 0  # Initialize the file with zeros
+    return memmap_obj
+
+
+def update_memmap(dat, polynumber, t):
+    # Extract facet number from the filename
+    facet_id = dat.filename.split('/')[-1].replace("FACET_", "").replace(".dat", "")
+    if facet_id != polynumber:
+        print(f"COMPUTE {dat.filename} + POLY_{polynumber}")
+        # Get the column, convert to complex64, and add it in place
+        poly_data = t.getcol(f"POLY_{polynumber}")[..., 0].astype(np.complex64)
+        add_in_place(dat, poly_data)
+
+
+def add_axis(arr, ax_size):
+    """
+    Add ax dimension with a specific size
+
+    :param:
+        - arr: numpy array
+        - ax_size: axis size
+
+    :return:
+        - output with new axis dimension with a particular size
+    """
+
+    or_shape = arr.shape
+    new_shape = list(or_shape) + [ax_size]
+    return np.repeat(arr, ax_size).reshape(new_shape)
 
 
 def parse_args():
@@ -195,25 +244,39 @@ def main():
     """
 
     args = parse_args()
+
+    # Read the HDF5 file to get the number of facets
+    with tables.open_file(args.h5) as T:
+        dir_num = len(T.root.sol000.source[:]['dir'])
+
+    # Get the shape for the memmap from msin (this function should be defined)
+    shape = get_shape(args.msin)
+
+    # Parallelize memmap creation
+    memmaps = (Parallel(n_jobs=min(12, os.cpu_count()))
+               (delayed(create_memmap)(facet, shape) for facet in range(dir_num)))
+
+    # Predict
     for poly in args.polygons:
-        polynumber = int(float(poly.split("/")[-1].replace("poly_", "").replace(".reg", "")))
-        h5 = split_facet_h5(args.h5, f"Dir{polynumber:02d}")
+        polynumber = poly.split("/")[-1].replace("poly_", "").replace(".reg", "")
+        h5 = split_facet_h5(args.h5, f"Dir{int(float(polynumber)):02d}")
         predict(args.msin, args.model_images, h5, poly)
+        # Adding polygon to memmap facet masks
+        with (table(args.msin, ack=False) as t):
+            Parallel(n_jobs=min(4, os.cpu_count()), backend="threading"
+                     )(delayed(update_memmap)(dat, polynumber, t) for dat in memmaps)
 
-    for n, poly in enumerate(args.polygons):
-        print(f"Make facet mask for polygon {poly}")
-        other_polygons = [p.split('/')[-1].replace(".reg","").upper() for p in args.polygons[:n] + args.polygons[n+1:]]
-        polynumber = int(float(poly.split("/")[-1].replace("poly_", "").replace(".reg", "")))
-        columname = poly.split('/')[-1].replace(".reg", "").upper()
-
+    # Add final POLY_* to measurement set
+    for dat in memmaps:
+        datnum = dat.filename.split('/')[-1].replace("FACET_","").replace(".dat","")
         with table(args.msin, ack=False, readonly=False) as t:
-            desc = t.getcoldesc(columname)
-            desc['name'] = f"FACET_{polynumber}"
-            t.addcols(desc)
+            print(f"Update POLY_{datnum} with FACET_{datnum}.dat")
+            inp = add_axis(np.array(dat), 4)
+            inp[..., 1] = 0
+            inp[..., 2] = 0
+            t.putcol(f"POLY_{datnum}", inp)
 
-        query = f"UPDATE {args.msin} SET FACET_{polynumber} = {' + '.join(other_polygons)}"
-        taql(query)
-
+    os.system('rm *.dat')
 
 
 if __name__ == '__main__':

@@ -44,6 +44,7 @@ arguments:
   - $( inputs.lofar_helpers.path + '/ms_helpers/concat_with_dummies.py' )
   - --make_only_parset
   - --remove_flagged_station
+  - --apply_beam
 
 requirements:
   - class: InlineJavascriptRequirement

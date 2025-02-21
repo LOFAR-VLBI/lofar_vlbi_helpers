@@ -19,7 +19,7 @@ inputs:
       type: Directory
       doc: Full MS without averaging
       inputBinding:
-        prefix: "--model_images"
+        prefix: "--to_ms"
         position: 2
     - id: h5parm
       type: File
@@ -32,7 +32,7 @@ inputs:
       type: File
       doc: Facet polygon
       inputBinding:
-        prefix: "--polygons"
+        prefix: "--polygon"
         position: 4
         separate: true
     - id: polygon_info

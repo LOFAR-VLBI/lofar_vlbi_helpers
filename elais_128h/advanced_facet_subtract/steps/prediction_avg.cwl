@@ -34,8 +34,8 @@ outputs:
 arguments:
   - steps=[avg]
   - avg.type=averager
-  - avg.timeresolution=8
-  - avg.freqresolution='97.68kHz'
+  - avg.timeresolution=6
+  - avg.freqresolution='61.05kHz'
   - msout.storagemanager='dysco'
   - msout=$( inputs.msin.basename + '.avg.ms')
 
