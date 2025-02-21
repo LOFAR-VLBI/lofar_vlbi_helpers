@@ -156,8 +156,8 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
 
     freqboundary = []
     for modim in sorted(model_images)[:-1]:
-        with fits.open(modim)[0] as fts:
-            fdelt, fcent = fts.header['CDELT3'] / 2, fts.header['CRVAL3']
+        with fits.open(modim) as fts:
+            fdelt, fcent = fts[0].header['CDELT3'] / 2, fts[0].header['CRVAL3']
             freqboundary.append(str(int(fcent + fdelt)))
 
     if len(freqboundary) > 0:
