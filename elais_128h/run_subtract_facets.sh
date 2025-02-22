@@ -146,6 +146,7 @@ toil-cwl-runner \
 --disableAutoDeployment True \
 --batchSystem slurm \
 --clean onSuccess \
+--cleanWorkDir onSuccess \
 --setEnv PATH=$APPTAINERENV_PREPEND_PATH:\$PATH \
 --setEnv PYTHONPATH=$APPTAINERENV_PYTHONPATH \
 software/lofar_vlbi_helpers/elais_128h/advanced_facet_subtract/workflows/facet_subtract.cwl $JSON

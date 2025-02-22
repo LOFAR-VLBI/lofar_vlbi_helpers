@@ -492,6 +492,7 @@ def main():
     # Delete a copy to save storage
     if args.delete_input_ms:
         os.system(f"rm -rf {args.to_ms}")
+        os.system(f'rm *.dat')
 
 
 if __name__ == '__main__':
