@@ -144,7 +144,6 @@ toil-cwl-runner \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
 --disableAutoDeployment True \
---bypass-file-store \
 --batchSystem slurm \
 --clean onSuccess \
 --setEnv PATH=$APPTAINERENV_PREPEND_PATH:\$PATH \
