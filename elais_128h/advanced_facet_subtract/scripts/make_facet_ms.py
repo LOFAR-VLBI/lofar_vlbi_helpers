@@ -295,8 +295,8 @@ def run_DP3(ms: str = None, phaseshift: str = None, freqavg: str = None,
                'msin.datacolumn=DATA',
                f'msout={msout}',
                'msout.storagemanager=dysco',
-               'msout.storagemanager.databitrate=8',
-               'msout.storagemanager.weightbitrate=10']
+               'msout.storagemanager.databitrate=6',
+               'msout.storagemanager.weightbitrate=12']
 
     # 1) PHASESHIFT
     phasecenter = phaseshift.replace('[', '').replace(']', '').split(',')
@@ -445,9 +445,9 @@ def get_facet_info(polygon_info_file, ms, polygon_region):
         timeres = int(avg * dtime)
 
     # in case of widefield imaging and stacking multiple nights, you might want to have only even time resolutions
-    if timeres % 2 != 0:
-        timeres -= 1
-        print(f"Time resolution from {timeres + 1} to {timeres}")
+    # if timeres % 2 != 0:
+    #     timeres -= 1
+    #     print(f"Time resolution from {timeres + 1} to {timeres}")
 
     dirname = polygon['dir_name'].values[0]
 
@@ -492,7 +492,6 @@ def main():
     # Delete a copy to save storage
     if args.delete_input_ms:
         os.system(f"rm -rf {args.to_ms}")
-        os.system("rm *.dat")
 
 
 if __name__ == '__main__':
