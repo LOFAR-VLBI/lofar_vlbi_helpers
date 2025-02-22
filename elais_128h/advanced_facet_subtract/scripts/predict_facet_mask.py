@@ -263,7 +263,7 @@ def main():
         # Adding polygon to memmap facet masks
         with (table(args.msin, ack=False) as t):
             poly_data = t.getcol(f"POLY_{polynumber}")[..., 0].astype(np.complex64)
-            Parallel(n_jobs=min(4, os.cpu_count()), backend="threading"
+            Parallel(n_jobs=min(12, os.cpu_count()), backend="threading"
                      )(delayed(update_memmap)(dat, polynumber, poly_data) for dat in memmaps)
 
     # Add final POLY_* to measurement set
