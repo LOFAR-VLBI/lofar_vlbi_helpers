@@ -258,7 +258,7 @@ def main():
     shape = get_shape(args.msin)
 
     # Parallelize memmap creation
-    memmaps = (Parallel(n_jobs=min(6, ncpus))
+    memmaps = (Parallel(n_jobs=min(4, ncpus))
                (delayed(create_memmap)(facet, shape) for facet in range(dir_num)))
 
     # Predict

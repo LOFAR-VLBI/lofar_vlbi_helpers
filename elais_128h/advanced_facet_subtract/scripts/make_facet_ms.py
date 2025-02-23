@@ -18,7 +18,7 @@ import tables
 
 
 # Job requirements
-ncpus = min(6, os.cpu_count()) # Perhaps make the 6 an optional argument?
+ncpus = min(4, os.cpu_count()) # Perhaps make the 4 an optional argument?
 set_num_threads(ncpus)
 dtype = np.complex64
 
