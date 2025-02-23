@@ -16,7 +16,9 @@ import numpy as np
 import pandas as pd
 import tables
 
-ncpus = max(os.cpu_count() - 1, 1)
+
+# Job requirements
+ncpus = min(6, os.cpu_count()) # Perhaps make the 6 an optional argument?
 set_num_threads(ncpus)
 dtype = np.complex64
 

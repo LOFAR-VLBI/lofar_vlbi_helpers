@@ -11,8 +11,14 @@ import tables
 
 from astropy.io import fits
 from casacore.tables import table
-from numba import njit, prange
+from numba import njit, prange, set_num_threads
 from joblib import Parallel, delayed
+
+
+# Job requirements
+ncpus = min(4, os.cpu_count()) # Perhaps make the 4 an optional argument?
+set_num_threads(ncpus)
+dtype = np.complex64
 
 
 @njit(parallel=True)
@@ -188,7 +194,7 @@ def get_shape(ms):
 def create_memmap(facetnumber, shape):
     filename = f"FACET_{facetnumber}.dat"
     print(f"Creating {filename}")
-    memmap_obj = np.memmap(filename, dtype=np.complex64, mode='w+', shape=(shape[0], shape[1]))
+    memmap_obj = np.memmap(filename, dtype=dtype, mode='w+', shape=(shape[0], shape[1]))
     memmap_obj[:] = 0  # Initialize the file with zeros
     return memmap_obj
 
@@ -252,7 +258,7 @@ def main():
     shape = get_shape(args.msin)
 
     # Parallelize memmap creation
-    memmaps = (Parallel(n_jobs=min(6, os.cpu_count()))
+    memmaps = (Parallel(n_jobs=min(6, ncpus))
                (delayed(create_memmap)(facet, shape) for facet in range(dir_num)))
 
     # Predict
@@ -262,8 +268,8 @@ def main():
         predict(args.msin, args.model_images, h5, poly)
         # Adding polygon to memmap facet masks
         with (table(args.msin, ack=False) as t):
-            poly_data = t.getcol(f"POLY_{polynumber}")[..., 0].astype(np.complex64)
-            Parallel(n_jobs=min(4, os.cpu_count()), backend="threading"
+            poly_data = t.getcol(f"POLY_{polynumber}")[..., 0].astype(dtype)
+            Parallel(n_jobs=min(4, ncpus), backend="threading"
                      )(delayed(update_memmap)(dat, polynumber, poly_data) for dat in memmaps)
 
     # Add final POLY_* to measurement set
