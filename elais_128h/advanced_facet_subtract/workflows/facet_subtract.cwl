@@ -28,6 +28,10 @@ inputs:
       type: int?
       doc: Number of cores to use during predict and subtract.
       default: 24
+    - id: copy_to_local_scratch
+      type: boolean?
+      doc: Whether you want the subtract step to copy data to local scratch space from your running node.
+      default: false
 
 steps:
     - id: get_facet_layout

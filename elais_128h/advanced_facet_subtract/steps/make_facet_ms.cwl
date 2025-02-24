@@ -46,6 +46,14 @@ inputs:
       type: int?
       doc: Number of cores to use during predict and subtract.
       default: 24
+    - id: copy_to_local_scratch
+      type: boolean?
+      default: false
+      inputBinding:
+        prefix: "--copy_to_local_scratch"
+        position: 5
+        separate: false
+      doc: Whether you want this step to copy data to local scratch space when running on a cluster without shared scratch.
 
 
 outputs:

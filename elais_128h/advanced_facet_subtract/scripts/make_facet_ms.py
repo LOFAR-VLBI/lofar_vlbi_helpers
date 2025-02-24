@@ -466,7 +466,7 @@ def parse_args():
     parser.add_argument('--polygon_info', help='Polygon information')
     parser.add_argument('--cleanup', action='store_true', help='rm -rf on input MS and *.dat to save storage')
     parser.add_argument('--ncpu', help='Number of CPUs for job', default=12, type=int)
-    parser.add_argument('--run_on_local_scratch', action='store_true',
+    parser.add_argument('--copy_to_local_scratch', action='store_true',
                         help='Run this job on local scratch for speed improvements when the node has no '
                              'shared scratch across the cluster')
 
@@ -485,7 +485,7 @@ def main():
     ncpu = min(args.ncpu, slurm_ncpu)
     set_num_threads(ncpu)
 
-    if args.run_on_local_scratch:
+    if args.copy_to_local_scratch:
         rundir = '/tmp'
         copy_data(args.to_ms.split('/')[-1], rundir) # MS
         os.system(f"rm -rf {args.to_ms}") # Delete local MS to free up space
@@ -508,7 +508,7 @@ def main():
     run_DP3(args.to_ms, phasecentre, freqavg, timeres, args.h5parm, dirname, outdir)
 
     # Copy data back to output directory
-    if args.run_on_local_scratch:
+    if args.copy_to_local_scratch:
         copy_data('facet_*.ms', outdir)
 
     # Delete a copy to save storage

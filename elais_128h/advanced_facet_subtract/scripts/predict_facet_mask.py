@@ -239,7 +239,7 @@ def parse_args():
     parser.add_argument('--polygons', nargs="+", help='Polygon region files', default=None)
     parser.add_argument('--h5', help='Multidir-h5parm solutions', default=None)
     parser.add_argument('--ncpu', help='Number of CPUs for job', default=8, type=int)
-    parser.add_argument('--run_on_local_scratch', action='store_true',
+    parser.add_argument('--copy_to_local_scratch', action='store_true',
                         help='Run this job on local scratch for speed improvements when the node has no '
                              'shared scratch across the cluster')
 
@@ -253,7 +253,7 @@ def main():
 
     args = parse_args()
 
-    if args.run_on_local_scratch:
+    if args.copy_to_local_scratch:
         rundir = '/tmp'
         copy_data(args.msin.split('/')[-1], rundir) # MS
         copy_data("*model*.fits", rundir) # model images
@@ -300,7 +300,7 @@ def main():
             inp[..., 2] = 0
             t.putcol(f"POLY_{datnum}", inp)
 
-    if args.run_on_local_scratch:
+    if args.copy_to_local_scratch:
         # Copy output data back
         copy_data(args.msin.split('/')[-1], outdir)
 

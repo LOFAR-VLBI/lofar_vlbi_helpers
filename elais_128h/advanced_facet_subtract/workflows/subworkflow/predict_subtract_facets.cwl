@@ -24,6 +24,11 @@ inputs:
       type: int?
       doc: Number of cores to use during predict and subtract.
       default: 24
+    - id: copy_to_local_scratch
+      type: boolean?
+      doc: Whether you want the subtract step to copy data to local scratch space from your running node.
+      default: false
+
 
 steps:
 
@@ -60,6 +65,8 @@ steps:
            source: get_model_images/output_model_images
          - id: ncpu
            source: ncpu
+         - id: copy_to_local_scratch
+           source: copy_to_local_scratch
       out:
          - predicted_ms
       run: ../../steps/predict_facet_masks.cwl
@@ -79,6 +86,8 @@ steps:
            source: polygon_info
          - id: ncpu
            source: ncpu
+         - id: copy_to_local_scratch
+           source: copy_to_local_scratch
       out:
          - facet_ms
       run: ../../steps/make_facet_ms.cwl
