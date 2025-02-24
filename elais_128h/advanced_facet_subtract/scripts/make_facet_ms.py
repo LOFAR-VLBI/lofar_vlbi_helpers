@@ -231,7 +231,7 @@ def interpolate(from_ms, to_ms, column: str = "MODEL_DATA", tmpdir: str = './', 
 
         # Process each baseline in parallel.
         print("Interpolate data for all baselines ...")
-        Parallel(n_jobs=ncpu, verbose=10, backend='threading')(
+        Parallel(n_jobs=ncpu, verbose=10)(
             delayed(process_baseline)(
                 baseline, from_ms, out_times, out_ant1, out_ant2, freqs_in, freqs_out, column, global_data
             ) for baseline in baselines
