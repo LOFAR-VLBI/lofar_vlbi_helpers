@@ -24,6 +24,10 @@ inputs:
       type: int?
       doc: Number of bits per float used for columns containing visibilities.
       default: 8
+    - id: ncpu
+      type: int?
+      doc: Number of cores to use during predict and subtract.
+      default: 24
 
 steps:
     - id: get_facet_layout
@@ -76,9 +80,11 @@ steps:
            source: split_polygons/polygon_regions
          - id: polygon_info
            source: split_polygons/polygon_info
+         - id: ncpu
+           source: ncpu
       out:
          - subtracted_facet_ms
-      run: subworkflow/facet_subtract.cwl
+      run: subworkflow/predict_subtract_facets.cwl
       scatter: msin
 
     - id: flatten_subtracte_ms

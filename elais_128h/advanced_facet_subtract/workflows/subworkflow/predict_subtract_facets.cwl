@@ -20,6 +20,10 @@ inputs:
     - id: polygon_info
       type: File
       doc: Polygon CSV file.
+    - id: ncpu
+      type: int?
+      doc: Number of cores to use during predict and subtract.
+      default: 24
 
 steps:
 
@@ -54,6 +58,8 @@ steps:
            source: polygons
          - id: model_images
            source: get_model_images/output_model_images
+         - id: ncpu
+           source: ncpu
       out:
          - predicted_ms
       run: ../../steps/predict_facet_masks.cwl
@@ -71,6 +77,8 @@ steps:
            source: polygons
          - id: polygon_info
            source: polygon_info
+         - id: ncpu
+           source: ncpu
       out:
          - facet_ms
       run: ../../steps/make_facet_ms.cwl

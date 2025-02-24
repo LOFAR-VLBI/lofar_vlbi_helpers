@@ -8,17 +8,12 @@ import re
 from argparse import ArgumentParser
 import numpy as np
 import tables
+from glob import glob
 
 from astropy.io import fits
 from casacore.tables import table
 from numba import njit, prange, set_num_threads
 from joblib import Parallel, delayed
-
-
-# Job requirements
-ncpus = min(8, os.cpu_count()) # Perhaps make the ncpus an optional argument?
-set_num_threads(ncpus)
-dtype = np.complex64
 
 
 @njit(parallel=True)
@@ -59,7 +54,7 @@ def split_facet_h5(h5parm: str = None, dirname: str = None):
     :param dirname: direction name
     """
 
-    outputh5 = f'{h5parm}.{dirname}.h5'
+    outputh5 = f'{h5parm.split("/")[-1]}.{dirname}.h5'
     os.system(f'cp {h5parm} {outputh5}')
 
     with tables.open_file(outputh5, 'r+') as outh5:
@@ -119,7 +114,7 @@ def repack(h5):
     os.system(f'mv {h5} {h5}.tmp && h5repack {h5}.tmp {h5} && rm {h5}.tmp')
 
 
-def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet_region: str = None, multi_h5parm: str = None):
+def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet_region: str = None):
     """
     Prediction of facet and add to facet masks
 
@@ -191,7 +186,7 @@ def get_shape(ms):
         return (t.nrows(), freq, pol)
 
 
-def create_memmap(facetnumber, shape):
+def create_memmap(facetnumber, shape, dtype):
     filename = f"FACET_{facetnumber}.dat"
     print(f"Creating {filename}")
     memmap_obj = np.memmap(filename, dtype=dtype, mode='w+', shape=(shape[0], shape[1]))
@@ -225,6 +220,10 @@ def add_axis(arr, ax_size):
     return np.repeat(arr, ax_size).reshape(new_shape)
 
 
+def copy_data(dat, to):
+    os.system(f"rsync -avH --no-implied-dirs --copy-links {dat} {to}")
+
+
 def parse_args():
     """
     Command line argument parser
@@ -239,6 +238,10 @@ def parse_args():
     parser.add_argument('--model_images', nargs="+", help='Model images', default=None)
     parser.add_argument('--polygons', nargs="+", help='Polygon region files', default=None)
     parser.add_argument('--h5', help='Multidir-h5parm solutions', default=None)
+    parser.add_argument('--ncpu', help='Number of CPUs for job', default=8, type=int)
+    parser.add_argument('--run_on_local_scratch', action='store_true',
+                        help='Run this job on local scratch for speed improvements when the node has no '
+                             'shared scratch across the cluster')
 
     return parser.parse_args()
 
@@ -250,6 +253,22 @@ def main():
 
     args = parse_args()
 
+    if args.run_on_local_scratch:
+        rundir = '/tmp'
+        copy_data(args.msin.split('/')[-1], rundir) # MS
+        copy_data("*model*.fits", rundir) # model images
+
+        os.system(f"rm -rf *.ms") # Delete local MS to free up space
+
+        outdir = os.getcwd()
+        os.chdir(rundir)
+
+    # Job requirements
+    slurm_ncpu = int(os.getenv("SLURM_CPUS_PER_TASK", os.cpu_count() -1 ))
+    ncpu = min(args.ncpu, slurm_ncpu)
+    set_num_threads(ncpu) # For numba
+    dtype = np.complex64
+
     # Read the HDF5 file to get the number of facets
     with tables.open_file(args.h5) as T:
         dir_num = len(T.root.sol000.source[:]['dir'])
@@ -258,8 +277,7 @@ def main():
     shape = get_shape(args.msin)
 
     # Parallelize memmap creation
-    memmaps = (Parallel(n_jobs=min(4, ncpus))
-               (delayed(create_memmap)(facet, shape) for facet in range(dir_num)))
+    memmaps = (Parallel(n_jobs=ncpu, backend='loky')(delayed(create_memmap)(facet, shape, dtype) for facet in range(dir_num)))
 
     # Predict
     for poly in args.polygons:
@@ -269,8 +287,8 @@ def main():
         # Adding polygon to memmap facet masks
         with (table(args.msin, ack=False) as t):
             poly_data = t.getcol(f"POLY_{polynumber}")[..., 0].astype(dtype)
-            Parallel(n_jobs=min(4, ncpus), backend="threading"
-                     )(delayed(update_memmap)(dat, polynumber, poly_data) for dat in memmaps)
+            Parallel(n_jobs=ncpu, backend='loky')(delayed(update_memmap)(dat, polynumber, poly_data) for dat in memmaps)
+        os.remove(h5)
 
     # Add final POLY_* to measurement set
     for dat in memmaps:
@@ -282,7 +300,13 @@ def main():
             inp[..., 2] = 0
             t.putcol(f"POLY_{datnum}", inp)
 
-    os.system('rm *.dat')
+    if args.run_on_local_scratch:
+        # Copy output data back
+        copy_data(args.msin.split('/')[-1], outdir)
+
+    # Cleanup
+    for dat in memmaps:
+        os.remove(dat.filename)
 
 
 if __name__ == '__main__':

@@ -16,10 +16,6 @@ import numpy as np
 import pandas as pd
 import tables
 
-
-# Job requirements
-ncpus = min(12, os.cpu_count()) # Perhaps make the ncpus an optional argument?
-set_num_threads(ncpus)
 dtype = np.complex64
 
 
@@ -194,7 +190,7 @@ def subtract_arrays(a, b):
     return result
 
 
-def interpolate(from_ms, to_ms, column: str = "MODEL_DATA", tmpdir: str = './'):
+def interpolate(from_ms, to_ms, column: str = "MODEL_DATA", tmpdir: str = './', ncpu: int = 1):
     """
     Interpolate the given column from an input measurement set to an output measurement set.
 
@@ -235,7 +231,7 @@ def interpolate(from_ms, to_ms, column: str = "MODEL_DATA", tmpdir: str = './'):
 
         # Process each baseline in parallel.
         print("Interpolate data for all baselines ...")
-        Parallel(n_jobs=ncpus, verbose=10)(
+        Parallel(n_jobs=ncpu, verbose=10, backend='threading')(
             delayed(process_baseline)(
                 baseline, from_ms, out_times, out_ant1, out_ant2, freqs_in, freqs_out, column, global_data
             ) for baseline in baselines
@@ -276,7 +272,7 @@ def interpolate(from_ms, to_ms, column: str = "MODEL_DATA", tmpdir: str = './'):
 
 
 def run_DP3(ms: str = None, phaseshift: str = None, freqavg: str = None,
-            timeres: str = None, applycal_h5: str = None, dirname: str = None):
+            timeres: str = None, applycal_h5: str = None, dirname: str = None, outdir: str = "."):
     """
     Run DP3 command, assuming scalar solutions!
 
@@ -286,6 +282,7 @@ def run_DP3(ms: str = None, phaseshift: str = None, freqavg: str = None,
     :param timeres: time resolution in seconds
     :param applycal_h5: applycal solution file
     :param dirname: direction name from h5parm
+    :param outdir: to write log files to
     """
 
     steps = []
@@ -334,7 +331,7 @@ def run_DP3(ms: str = None, phaseshift: str = None, freqavg: str = None,
 
     command += ['steps=' + str(steps).replace(" ", "").replace("\'", "")]
 
-    os.system(' '.join(command) + ' > predict.log')
+    os.system(' '.join(command) + f' > {outdir}/DP3.log')
 
     # BEAM IS APPLIED IN CENTRE IN CONCAT STEP (to reduce compute cost)
 
@@ -446,14 +443,13 @@ def get_facet_info(polygon_info_file, ms, polygon_region):
     except:
         timeres = int(avg * dtime)
 
-    # in case of widefield imaging and stacking multiple nights, you might want to have only even time resolutions
-    # if timeres % 2 != 0:
-    #     timeres -= 1
-    #     print(f"Time resolution from {timeres + 1} to {timeres}")
-
     dirname = polygon['dir_name'].values[0]
 
     return phasecenter, freqavg, timeres, dirname
+
+
+def copy_data(dat, to):
+    os.system(f"rsync -avH --no-implied-dirs --copy-links {dat} {to}")
 
 
 def parse_args():
@@ -461,13 +457,19 @@ def parse_args():
     Parse input arguments
     """
 
-    parser = ArgumentParser(description='Interpolate DATA or MODEL_DATA from a specific time/freq resolution to another resolution, subtract, and apply DP3 to make data smaller.')
+    parser = ArgumentParser(description='Interpolate DATA or MODEL_DATA from a specific time/freq resolution to another '
+                                        'resolution, subtract, and apply DP3 to make data smaller.')
     parser.add_argument('--from_ms', help='MS input from where to interpolate', required=True)
     parser.add_argument('--to_ms', help='MS to interpolate to (your output set)', required=True)
     parser.add_argument('--polygon', help='Polygon region', required=True)
     parser.add_argument('--h5parm', help='Multi-dir h5 solutions', required=True)
     parser.add_argument('--polygon_info', help='Polygon information')
-    parser.add_argument('--delete_input_ms', action='store_true', help='rm -rf on input MS to save storage')
+    parser.add_argument('--cleanup', action='store_true', help='rm -rf on input MS and *.dat to save storage')
+    parser.add_argument('--ncpu', help='Number of CPUs for job', default=12, type=int)
+    parser.add_argument('--run_on_local_scratch', action='store_true',
+                        help='Run this job on local scratch for speed improvements when the node has no '
+                             'shared scratch across the cluster')
+
     return parser.parse_args()
 
 
@@ -478,21 +480,40 @@ def main():
 
     args = parse_args()
 
+    # Job requirements
+    slurm_ncpu = int(os.getenv("SLURM_CPUS_PER_TASK", os.cpu_count() - 1))
+    ncpu = min(args.ncpu, slurm_ncpu)
+    set_num_threads(ncpu)
+
+    if args.run_on_local_scratch:
+        rundir = '/tmp'
+        copy_data(args.to_ms.split('/')[-1], rundir) # MS
+        os.system(f"rm -rf {args.to_ms}") # Delete local MS to free up space
+        outdir = os.getcwd()
+        os.chdir(rundir)
+    else:
+        outdir = '.'
+
     # Interpolate flags
     print(f'Interpolate from {args.from_ms} to {args.to_ms}')
     facet_number = args.polygon.split('/')[-1].replace('.reg', '').replace('poly_', '')
     facet_column = f"POLY_{facet_number}"
-    interpolate(args.from_ms, args.to_ms, facet_column, "./")
+    interpolate(args.from_ms, args.to_ms, facet_column, "./", ncpu)
     phasecentre, freqavg, timeres, dirname = get_facet_info(args.polygon_info, args.to_ms, args.polygon)
 
     print(f"SUBTRACT ==> DATA = DATA - {facet_column}")
     taql(f"UPDATE {args.to_ms} SET DATA = DATA - {facet_column}")
 
     print("Run DP3")
-    run_DP3(args.to_ms, phasecentre, freqavg, timeres, args.h5parm, dirname)
+    run_DP3(args.to_ms, phasecentre, freqavg, timeres, args.h5parm, dirname, outdir)
+
+    # Copy data back to output directory
+    if args.run_on_local_scratch:
+        copy_data('facet_*.ms', outdir)
 
     # Delete a copy to save storage
-    if args.delete_input_ms:
+    if args.cleanup:
+        print("Cleanup...")
         os.system(f"rm -rf {args.to_ms}")
         os.system(f'rm *.dat')
 

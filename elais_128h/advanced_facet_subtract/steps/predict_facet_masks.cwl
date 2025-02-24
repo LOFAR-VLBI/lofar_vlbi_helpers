@@ -36,6 +36,10 @@ inputs:
         prefix: "--polygons"
         position: 4
         separate: true
+    - id: ncpu
+      type: int?
+      doc: Number of cores to use during predict and subtract.
+      default: 16
 
 outputs:
     - id: predicted_ms
@@ -50,11 +54,14 @@ outputs:
       outputBinding:
         glob: predict_facet*.log
 
+arguments:
+    - --ncpu=$(inputs.ncpu)
+
 hints:
     - class: DockerRequirement
       dockerPull: vlbi-cwl
     - class: ResourceRequirement
-      coresMin: 8
+      coresMin: $(inputs.ncpu)
 
 requirements:
     - class: InitialWorkDirRequirement
@@ -64,7 +71,6 @@ requirements:
         - entry: $(inputs.model_images)
         - entry: $(inputs.h5parm)
         - entry: $(inputs.polygons)
-
 
 stdout: predict_facet.log
 stderr: predict_facet_err.log
