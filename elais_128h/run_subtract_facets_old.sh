@@ -13,7 +13,7 @@ SING_IMAGE=https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/container
 
 if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal -t 12:00:00 --job-name ${LNUM}_subtract"
+export TOIL_SLURM_ARGS="--export=ALL -p normal -t 48:00:00 --job-name ${LNUM}_subtract"
 export MSDATA=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/applycal
 export MODELS=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/ddcal/selfcals/imaging
 export H5FACETS=${MODELS}/merged.h5
@@ -35,7 +35,6 @@ cd software
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal
 git clone -b facet_subtract https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
-git clone https://github.com/LOFAR-VLBI/lofar_vlbi_helpers
 cd ../
 
 # set up singularity
@@ -52,8 +51,8 @@ export APPTAINER_CACHEDIR=$PWD/singularity
 export CWL_SINGULARITY_CACHE=$APPTAINER_CACHEDIR
 export APPTAINERENV_LINC_DATA_ROOT=$LINC_DATA_ROOT
 export APPTAINERENV_VLBI_DATA_ROOT=$VLBI_DATA_ROOT
-export APPTAINERENV_PREPEND_PATH=$LINC_DATA_ROOT/scripts:$VLBI_DATA_ROOT/scripts:$PWD/software/lofar_vlbi_helpers/elais_128h/advanced_facet_subtract/scripts
-export APPTAINERENV_PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:$PWD/software/lofar_vlbi_helpers/elais_128h/advanced_facet_subtract/scripts:\$PYTHONPATH
+export APPTAINERENV_PREPEND_PATH=$LINC_DATA_ROOT/scripts:$VLBI_DATA_ROOT/scripts
+export APPTAINERENV_PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH
 export APPTAINER_BIND=$SING_BIND
 export TOIL_CHECK_ENV=True
 
@@ -113,10 +112,13 @@ jq --arg path "$PWD/merged.h5" \
    '. + {"h5parm": {"class": "File", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
+
 #SELECTION WAS ALREADY DONE
 if [ "$SCRATCH" = "true" ]; then
   jq --arg copy_to_local_scratch "$SCRATCH" '. + {copy_to_local_scratch: true}' "$JSON" > temp.json && mv temp.json "$JSON"
 fi
+
+jq '. + {"ncpu": 24}' "$JSON" > temp.json && mv temp.json "$JSON"
 
 ########################
 
@@ -148,13 +150,12 @@ toil-cwl-runner \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
 --disableAutoDeployment True \
---batchSystem slurm \
 --bypass-file-store \
+--batchSystem slurm \
 --clean onSuccess \
---cleanWorkDir onSuccess \
---setEnv PATH=$APPTAINERENV_PREPEND_PATH:\$PATH \
---setEnv PYTHONPATH=$APPTAINERENV_PYTHONPATH \
-software/lofar_vlbi_helpers/elais_128h/advanced_facet_subtract/workflows/facet_subtract.cwl $JSON
+--setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
+--setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
+software/VLBI_cwl/workflows/facet_subtract.cwl $JSON
 
 ########################
 

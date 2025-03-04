@@ -1,8 +1,8 @@
 class: CommandLineTool
 cwlVersion: v1.2
-id: dp3_avg_dutch
-label: DP3 averaging for Dutch resolution calibration
-doc: Average MeasurementSet in time and frequency for direction-dependent calibration with Dutch stations in DDE-mode.
+id: dp3_avg_for_prediction
+label: DP3 averaging for prediction
+doc: Average MeasurementSet in time and frequency for fast prediction.
 
 baseCommand:
   - DP3
@@ -18,7 +18,7 @@ inputs:
 
 outputs:
   - id: ms_avg
-    doc: Concatenated averaged MeasurementSet for 6" DDE calibration.
+    doc: MeasurementSet at 1.2" time/freq resolution
     type: Directory
     outputBinding:
       glob: "*ms.avg.ms"
@@ -26,7 +26,7 @@ outputs:
   - id: logfile
     type: File[]
     outputBinding:
-      glob: dp3_dutch_avg*.log
+      glob: 1asec_avg*.log
     doc: |
         The files containing the stdout
         and stderr from the step.
@@ -34,8 +34,8 @@ outputs:
 arguments:
   - steps=[avg]
   - avg.type=averager
-  - avg.timeresolution=16
-  - avg.freqresolution='195.312kHz'
+  - avg.timeresolution=6
+  - avg.freqresolution='61.05kHz'
   - msout.storagemanager='dysco'
   - msout=$( inputs.msin.basename + '.avg.ms')
 
@@ -53,5 +53,6 @@ hints:
   - class: ResourceRequirement
     coresMin: 4
 
-stdout: dp3_dutch_avg.log
-stderr: dp3_dutch_avg_err.log
+stdout: 1asec_avg.log
+stderr: 1asec_err.log
+

@@ -4,29 +4,12 @@
 __author__ = "Jurjen de Jong"
 
 from argparse import ArgumentParser
-import re
-from astropy.table import Table
-from astropy.coordinates import SkyCoord
-from astropy.coordinates import match_coordinates_sky
-from astropy import units as u
-from casacore.tables import table
+
 import numpy as np
-
-
-def parse_source_id(inp_str: str = None):
-    """
-    Parse ILTJ... source_id string
-
-    Args:
-        inp_str: ILTJ source_id
-
-    Returns: parsed output
-
-    """
-
-    parsed_inp = re.findall(r'ILTJ\d+\..\d+\+\d+.\d+', inp_str)[0]
-
-    return parsed_inp
+from astropy import units as u
+from astropy.coordinates import SkyCoord, match_coordinates_sky
+from astropy.table import Table
+from casacore.tables import table
 
 
 def filter_sources_by_distance(df, ra_col='RA', dec_col='DEC', flux_col='Peak_flux', max_distance=0.15):
@@ -56,34 +39,6 @@ def filter_sources_by_distance(df, ra_col='RA', dec_col='DEC', flux_col='Peak_fl
 
     # Return the filtered DataFrame
     return df[~excluded].reset_index(drop=True)
-
-
-def crossmatch_tables(catalog1, catalog2, separation_asec):
-    """
-    Crossmatching between two tables
-
-    Args:
-        catalog1: first catalogue
-        catalog2: second catalogue
-        separation_asec: separation in arcseconds
-
-    Returns: inner crossmatched 1, inner crossmatched 2
-    """
-
-    # Define the celestial coordinates for each catalog
-    coords1 = SkyCoord(ra=catalog1['RA'], dec=catalog1['DEC'], unit=(u.deg, u.deg))
-    coords2 = SkyCoord(ra=catalog2['RA'], dec=catalog2['DEC'], unit=(u.deg, u.deg))
-    idx_catalog2, separation, _ = match_coordinates_sky(coords1, coords2)
-
-    # Maximum separation threshold
-    max_sep_threshold = separation_asec * u.arcsec
-    matched_sources_mask = separation < max_sep_threshold
-
-    # Filter the matched sources in catalog1
-    # matched_sources_catalog1 = catalog1.iloc[matched_sources_mask]
-    matched_sources_catalog2 = catalog2.iloc[idx_catalog2[matched_sources_mask]]
-
-    return matched_sources_catalog2
 
 
 def crossmatch_itself(catalog, min_sep=0.1):
