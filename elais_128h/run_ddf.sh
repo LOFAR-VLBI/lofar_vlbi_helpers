@@ -6,6 +6,7 @@
 #SBATCH --mail-user=petley@strw.leidenuniv.nl
 #SBATCH --output=ddf_%j.out
 #SBATCH --error=ddf_%j.err
+#SBATCH --time=5-00:00:00
 
 #LINC TARGET FOLDER
 START=$PWD
@@ -15,12 +16,13 @@ RUNDIR=$TMPDIR/ddf
 mkdir -p $RUNDIR
 mkdir -p $OUTPUT
 
-SIMG=flocs_v5.4.1_znver2_znver2.sif
+SIMG=flocs_v5.1.0_znver2_znver2_test.sif
 
 cd $RUNDIR
 
-wget https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-grid-hpccloud/amd/${SIMG}
+#wget https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-grid-hpccloud/amd/${SIMG}
 wget https://raw.githubusercontent.com/jwpetley/lofar_vlbi_helpers/refs/heads/main/elais_128h/ddf/pipeline.cfg
+wget https://public.spider.surfsara.nl/project/lofarvwf/jdejong/singularities/flocs_v5.1.0_znver2_znver2_test.sif
 
 cp -r $START/target/L??????_LINC_target/results_LINC_target/results/*.ms .
 

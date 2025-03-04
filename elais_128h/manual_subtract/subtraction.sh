@@ -6,7 +6,7 @@ echo "Job landed on $(hostname)"
 re="[0-9]{3}MHz"
 if [[ $MS =~ $re ]]; then SB=${BASH_REMATCH}; fi
 
-SIMG=/project/wfedfn/Software/singularity/flocs_v5.1.0_znver2_znver2_test.sif
+SIMG=/project/wfedfn/Software/singularity/flocs_v5.5.0_znver2_znver2_test.sif
 #SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 
 MS=$1
