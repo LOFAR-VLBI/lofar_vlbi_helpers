@@ -140,7 +140,7 @@ mkdir -p $LOGDIR
 # RUN TOIL
 toil-cwl-runner \
 --no-read-only \
---retryCount 2 \
+--retryCount 4 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \
