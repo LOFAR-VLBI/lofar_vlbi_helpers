@@ -34,7 +34,7 @@ mkdir -p software
 cd software
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal
-git clone -b facet_subtract https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+git https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/LOFAR-VLBI/lofar_vlbi_helpers
 cd ../
 
@@ -138,7 +138,7 @@ mkdir -p $LOGDIR
 # RUN TOIL
 toil-cwl-runner \
 --no-read-only \
---retryCount 2 \
+--retryCount 4 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \

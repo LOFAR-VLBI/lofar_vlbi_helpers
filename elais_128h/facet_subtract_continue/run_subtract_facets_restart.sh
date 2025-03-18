@@ -34,7 +34,7 @@ mkdir -p software
 cd software
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal
-git clone -b facet_subtract https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+git clone https://git.astron.nl/RD/VLBI-cwl.git
 cd ../
 
 # set up singularity
@@ -105,7 +105,7 @@ if [ "$SCRATCH" = "true" ]; then
   jq --arg copy_to_local_scratch "$SCRATCH" '. + {copy_to_local_scratch: true}' "$JSON" > temp.json && mv temp.json "$JSON"
 fi
 
-jq '. + {"ncpu": 18}' "$JSON" > temp.json && mv temp.json "$JSON"
+jq '. + {"ncpu": 16}' "$JSON" > temp.json && mv temp.json "$JSON"
 
 ########################
 
@@ -127,7 +127,7 @@ mkdir -p $LOGDIR
 # RUN TOIL
 toil-cwl-runner \
 --no-read-only \
---retryCount 2 \
+--retryCount 4 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \
