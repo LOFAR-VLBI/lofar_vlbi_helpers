@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Define the old and new base paths
+if [[ $PWD =~ $re ]]; then LNUM=${BASH_REMATCH}; fi
 old_base="/tmp/ddf"
 re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 re_subband="([^.]+)"
@@ -12,8 +13,9 @@ for symlink in SOLSDIR/L*.ms/*.npz; do
         target=$(readlink "$symlink")
         if [[ "$target" == $old_base* ]]; then
             LNUM=$OBSERVATION
-            new_base="/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/ddf/"
+            new_base="/project/wfedfn/Data/${LNUM}/ddf/"
             new_target="${target/$old_base/$new_base}"
+            match="ddf" 
             echo "Updating symlink: $symlink"
             rm "$symlink"
             ln -s "$new_target" "$symlink"
