@@ -2,7 +2,7 @@
 #SBATCH -c 60
 #SBATCH --output=linc_%j.out
 #SBATCH --error=linc_%j.err
-#SBATCH -t 80:00:00
+#SBATCH -t 50:00:00
 
 FLOCSRUNNERS=/project/wfedfn/Software/flocs/runners
 
@@ -55,7 +55,7 @@ singularity exec -B ${SING_BIND} ${SIMG} python ~/scripts/lofar_vlbi_helpers/ela
 
 # Run LINC target
 
-singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_target_HBA.sh -l /project/wfedfn/Software/LINC -d $STARTDIR/target/data -c $STARTDIR/calibrator/*_LINC_calibrator/results_LINC_calibrator/cal_solutions.h5 -e "--make_structure_plot=False --selfcal=True --num_SBs_per_group=-1 --min_unflagged_fraction=0.01 --demix=True --clipAteam=False" 
+singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_target_HBA.sh -l /project/wfedfn/Software/LINC -d $STARTDIR/target/data -c $STARTDIR/calibrator/*_LINC_calibrator/results_LINC_calibrator/cal_solutions.h5 -e "--make_structure_plot=False" 
 
 
 cd ../

@@ -50,7 +50,7 @@ cd ../
 export SIMG=vlbi-cwl.sif
 mkdir -p singularity
 
-cp /project/wfedfn/Software/singularity/flocs_v5.5.0_znver2_znver2_test.sif singularity/$SIMG
+cp /project/wfedfn/Software/singularity/flocs_v5.1.0_znver2_znver2_test.sif singularity/$SIMG
 
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG

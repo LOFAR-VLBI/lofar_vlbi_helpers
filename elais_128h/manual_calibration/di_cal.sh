@@ -37,7 +37,7 @@ singularity exec -B $PWD ${SIMG##*/} python lofar_facet_selfcal/facetselfcal.py 
 --uvmin=20000 \
 --robust=-1.5 \
 --uvminim=1500 \
---skymodel=${SKYMODEL##*/} \
+--list=${SKYMODEL##*/} \
 --soltype-list="['scalarphasediff','scalarphase','scalarphase','scalarphase','scalarcomplexgain','fulljones']" \
 --soltypecycles-list="[0,0,0,0,0,0]" \
 --solint-list="['8min','32s','32s','2min','20min','20min']" \

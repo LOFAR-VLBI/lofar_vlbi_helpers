@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 18 -t 12:00:00
+#SBATCH -c 32 -t 30:00:00
 
 SIMG=$( python3 $HOME/parse_settings.py --SIMG )
 SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
@@ -11,5 +11,5 @@ singularity exec -B $SING_BIND $SIMG python /project/wfedfn/Software/lofar_helpe
 --msin sub6asec_L720380*.ms \
 --time_res 8 \
 --freq_res '97656.25Hz' \
---phase_center '[17h53m31.44,66d27m25.20]' \
---msout J175331+662725_DI.concat.ms
+--phase_center '[17h56m14.75,65d40m40.80]' \
+--msout J175614+654040_DI.concat.ms

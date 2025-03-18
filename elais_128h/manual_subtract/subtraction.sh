@@ -6,8 +6,8 @@ echo "Job landed on $(hostname)"
 re="[0-9]{3}MHz"
 if [[ $MS =~ $re ]]; then SB=${BASH_REMATCH}; fi
 
-SIMG=/project/wfedfn/Software/singularity/flocs_v5.5.0_znver2_znver2_test.sif
-#SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
+SIMG=/project/wfedfn/Software/singularity/flocs_v5.1.0_znver2_znver2_test.sif
+SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
 
 MS=$1
 
@@ -23,7 +23,7 @@ cp $H5 $RUNDIR
 cd $RUNDIR
 
 echo "Applycal"
-singularity exec -B $PWD,/project/wfedfn/Data/L720380 ${SIMG} python \
+singularity exec -B $PWD,/project/wfedfn/ ${SIMG} python \
 /project/wfedfn/Software/lofar_helpers/ms_helpers/applycal.py \
 --colout DATA_DI_CORRECTED \
 --h5 ${H5##*/} \
@@ -32,10 +32,10 @@ ${MS}
 mkdir SOLSDIR/${MS}
 mv SOLSDIR/*${SB}*/* SOLSDIR/${MS}
 
-#singularity exec -B $SING_BIND ${SIMG##*/} python /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/cwl_widefield_imaging/manual_subtract/fix_symlink.py
+singularity exec -B $SING_BIND ${SIMG##*/} python /home/wfedfn-jpetley/scripts/lofar_vlbi_helpers/elais_128h/ddf/fix_symlink.py
 
 echo "SUBTRACT"
-singularity exec -B $PWD,/project/wfedfn/Data/L720380 ${SIMG##*/} sub-sources-outside-region.py \
+singularity exec -B $PWD,/project/wfedfn/ ${SIMG##*/} sub-sources-outside-region.py \
 --boxfile boxfile.reg \
 --column DATA_DI_CORRECTED \
 --freqavg 1 \
