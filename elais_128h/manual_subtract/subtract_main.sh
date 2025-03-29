@@ -3,12 +3,6 @@
 
 echo "Job landed on $(hostname)"
 
-re_subband="([^.]+)"
-
-SIMG=$( python3 $HOME/parse_settings.py --SIMG )
-SING_BIND=$( python3 $HOME/parse_settings.py --BIND )
-echo "SINGULARITY IS $SIMG"
-
 DDF_OUTPUT=$(realpath "../ddf")
 RESULT=$PWD/concatted_ms
 

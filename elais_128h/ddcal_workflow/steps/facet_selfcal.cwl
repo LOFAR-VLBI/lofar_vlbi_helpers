@@ -2,9 +2,7 @@ cwlVersion: v1.2
 class: CommandLineTool
 id: facet_selfcal
 label: Facet Selfcal
-doc: |
-    Performs direction independent calibration
-    of the international antenna array.
+doc: Performs direction independent calibration of the international antenna array.
 
 baseCommand:
     - python3
@@ -50,23 +48,10 @@ inputs:
     - id: selfcal
       type: Directory
       doc: External self-calibration script.
-      inputBinding:
-        prefix: "--helperscriptspath"
-        position: 5
-        itemSeparator: " "
-        separate: true
 
-    - id: h5merger
-      type: Directory
-      doc: External LOFAR helper scripts for merging HDF5 files.
-      inputBinding:
-        prefix: "--helperscriptspathh5merge"
-        position: 6
-        itemSeparator: " "
-        separate: true
 
 outputs:
-    - id: h5parm
+    - id: h5_facetselfcal
       type: File
       outputBinding:
         glob: merged_addCS*006*.h5
@@ -110,7 +95,7 @@ hints:
   - class: DockerRequirement
     dockerPull: vlbi-cwl
   - class: ResourceRequirement
-    coresMin: 15
+    coresMin: 24
 
 stdout: facet_selfcal.log
 stderr: facet_selfcal_err.log

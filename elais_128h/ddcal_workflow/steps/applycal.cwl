@@ -13,7 +13,7 @@ inputs:
       doc: Input MeasurementSet
       inputBinding:
         position: 5
-    - id: h5
+    - id: h5parm
       type: File
       doc: Input h5parm
       inputBinding:
@@ -42,8 +42,7 @@ requirements:
   - class: InitialWorkDirRequirement
     listing:
       - entry: $(inputs.ms)
-        writable: true
-      - entry: $(inputs.h5)
+      - entry: $(inputs.h5parm)
 
 arguments:
   - $( inputs.lofar_helpers.path + '/ms_helpers/applycal.py' )

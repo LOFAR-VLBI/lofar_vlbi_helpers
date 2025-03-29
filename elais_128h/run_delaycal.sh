@@ -7,13 +7,13 @@
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal -t 24:00:00"
+export TOIL_SLURM_ARGS="--export=ALL -t 12:00:00"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
 CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
 
-#VENV=/project/lofarvwf/Software/venv
+VENV=/project/lofarvwf/Software/venv
 
 export DDFOLDER=$(realpath "../ddf")
 export TARGETDATA=$(realpath "../target/data")
@@ -23,11 +23,11 @@ export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_
 ######################
 
 # set up software
-pip install --user toil[cwl]
+source ${VENV}/bin/activate
 
 mkdir -p software
 cd software
-git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+git clone -b js-subtract https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
@@ -45,7 +45,7 @@ cd ../
 # set up singularity
 export SIMG=vlbi-cwl.sif
 mkdir -p singularity
-cp /project/lofarvwf/Software/singularity/flocs_v5.1.0_znver2_znver2_test.sif singularity/$SIMG
+cp /project/lofarvwf/Software/singularity/flocs_v5.4.1_znver2_znver2.sif singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
@@ -112,7 +112,7 @@ $TARGETDATA
 # update json
 jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq --arg nv "$DDFOLDER/SOLSDIR" '. + {"ddf_solsdir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-jq '. + {"subtract_lotss_model": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
+jq '. + {"do_subtraction": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 #jq '. + {"phasesol": "TGSSphase_final"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 #jq '. + {"reference_stationSB": 75}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
@@ -150,8 +150,7 @@ mkdir -p $LOGDIR
 # RUN TOIL
 
 toil-cwl-runner \
---no-read-only \
---retryCount 2 \
+--retryCount 1 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \
@@ -161,13 +160,14 @@ toil-cwl-runner \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
 --disableAutoDeployment True \
---bypass-file-store \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
+--bypass-file-store \
+--writeLogsFromAllJobs True \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
 software/VLBI_cwl/workflows/delay-calibration.cwl mslist_VLBI_delay_calibration.json
 
 ########################
 
-#deactivate
+deactivate
