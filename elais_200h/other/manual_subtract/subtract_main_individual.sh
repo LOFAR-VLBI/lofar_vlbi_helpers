@@ -27,5 +27,5 @@ cp -r ${DDF_OUTPUT}/SOLSDIR ${SUBBAND}_subrun
 cp -r ${FILE} ${SUBBAND}_subrun
 cd ${SUBBAND}_subrun
 echo ${SUBBAND} > mslist.txt
-sbatch /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/cwl_widefield_imaging/manual_subtract/subtraction.sh ${SUBBAND}
+sbatch /home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/cwl_widefield_imaging/other/manual_subtract/subtraction.sh ${SUBBAND}
 cd ../

@@ -8,7 +8,7 @@ re="L[0-9][0-9][0-9][0-9][0-9][0-9]"
 if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
 singularity exec -B $SING_BIND $SIMG python /project/lofarvwf/Software/lofar_helpers/ms_helpers/concat_with_dummies.py \
---msin flag*.ms \
+--msin *sub6asec*.ms \
 --time_res 8 \
 --freq_res '97656.25Hz' \
 --phase_center '[16h06m07.61855,55d21m35.4166]' \

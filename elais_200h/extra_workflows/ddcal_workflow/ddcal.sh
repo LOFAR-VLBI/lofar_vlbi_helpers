@@ -16,7 +16,7 @@ cd /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/ddcal/selfcals
 export TOIL_SLURM_ARGS="--export=ALL --job-name ${LNUM} -p normal --constraint=rome"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
-SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/elais_128h/ddcal_workflow
+SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/elais_128h/extra_workflows/ddcal_workflow
 DUTCHh5parm=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/6asec_sets/joinedsolutions/merged_skyselfcalcyle000_${LNUM}_6asec.ms.copy.avg.h5
 DDELECT=/project/lofarvwf/Share/jdejong/output/ELAIS/final_dd_selection.csv
 

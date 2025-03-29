@@ -142,7 +142,7 @@ toil-cwl-runner \
 --clean onSuccess \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
-~/scripts/lofar_vlbi_helpers/elais_128h/facet_subtract_continue/facet_subtract.cwl $JSON
+~/scripts/lofar_vlbi_helpers/elais_128h/extra_workflows/facet_subtract_continue/facet_subtract.cwl $JSON
 
 ########################
 
