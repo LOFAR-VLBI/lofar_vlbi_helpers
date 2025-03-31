@@ -56,7 +56,7 @@ singularity exec -B ${SING_BIND} ${SIMG} python ~/scripts/lofar_vlbi_helpers/ela
 
 # Run LINC target
 
-singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_target_HBA.sh -l /project/wfedfn/Software/LINC -d $STARTDIR/target/data -c $STARTDIR/calibrator/*_LINC_calibrator/results_LINC_calibrator/cal_solutions.h5 -e "--make_structure_plot=False" 
+singularity exec -B ${SING_BIND} ${SIMG} $FLOCSRUNNERS/run_LINC_target_HBA.sh -l /project/wfedfn/Software/LINC -d $STARTDIR/target/data -c $STARTDIR/calibrator/*_LINC_calibrator/results_LINC_calibrator/cal_solutions.h5 -e "--make_structure_plot=False --selfcal=True" 
 
 
 cd ../
