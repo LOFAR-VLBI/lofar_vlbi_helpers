@@ -26,6 +26,9 @@ wget https://public.spider.surfsara.nl/project/lofarvwf/jdejong/singularities/fl
 
 cp -r $START/target/L??????_LINC_target/results_LINC_target/results/*.ms .
 
+mv L720380_126MHz_uv_pre-cal.ms L720380_127MHz_uv_pre-cal.ms
+mv L720380_128MHz_uv_pre-cal.ms L720380_129MHz_uv_pre-cal.ms
+
 singularity exec -B $PWD,$OUTPUT $SIMG make_mslists.py
 singularity exec -B $PWD,$OUTPUT $SIMG pipeline.py pipeline.cfg
 
