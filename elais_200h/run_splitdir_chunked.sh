@@ -12,7 +12,7 @@ CSV=$1
 #  export SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 #fi
 
-SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/elais_128h
+SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/elais_200h
 
 source ${SCRIPT_DIR}/other/chunk_csv.sh $CSV
 

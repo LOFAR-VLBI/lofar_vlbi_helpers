@@ -13,7 +13,7 @@ SING_IMAGE=https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/container
 
 if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal -t 48:00:00 --constraint=rome --job-name ${LNUM}_subtract"
+export TOIL_SLURM_ARGS="--export=ALL -p normal -t 48:00:00 --job-name ${LNUM}_subtract"
 export MSDATA=$1
 export MODELPATH=$2
 export H5FACETS=$3
@@ -142,7 +142,7 @@ toil-cwl-runner \
 --clean onSuccess \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
-~/scripts/lofar_vlbi_helpers/elais_128h/extra_workflows/facet_subtract_continue/facet_subtract.cwl $JSON
+~/scripts/lofar_vlbi_helpers/elais_200h/extra_workflows/facet_subtract_continue/facet_subtract.cwl $JSON
 
 ########################
 

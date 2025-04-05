@@ -20,7 +20,7 @@ SIMG=flocs_v4.5.0_znver2_znver2_aocl4_cuda.sif
 cd $RUNDIR
 
 wget https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-grid-hpccloud/amd/${SIMG}
-wget https://raw.githubusercontent.com/LOFAR-VLBI/lofar_vlbi_helpers/refs/heads/main/elais_128h/ddf/pipeline.cfg
+wget https://raw.githubusercontent.com/LOFAR-VLBI/lofar_vlbi_helpers/refs/heads/main/elais_200h/ddf/pipeline.cfg
 
 cp -r $START/target/L??????_LINC_target/results_LINC_target/results/*.ms .
 

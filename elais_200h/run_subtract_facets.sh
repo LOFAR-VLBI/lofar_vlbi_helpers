@@ -52,8 +52,8 @@ export APPTAINER_CACHEDIR=$PWD/singularity
 export CWL_SINGULARITY_CACHE=$APPTAINER_CACHEDIR
 export APPTAINERENV_LINC_DATA_ROOT=$LINC_DATA_ROOT
 export APPTAINERENV_VLBI_DATA_ROOT=$VLBI_DATA_ROOT
-export APPTAINERENV_PREPEND_PATH=$LINC_DATA_ROOT/scripts:$VLBI_DATA_ROOT/scripts:$PWD/software/lofar_vlbi_helpers/elais_128h/advanced_facet_subtract/scripts
-export APPTAINERENV_PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:$PWD/software/lofar_vlbi_helpers/elais_128h/advanced_facet_subtract/scripts:\$PYTHONPATH
+export APPTAINERENV_PREPEND_PATH=$LINC_DATA_ROOT/scripts:$VLBI_DATA_ROOT/scripts:$PWD/software/lofar_vlbi_helpers/elais_200h/advanced_facet_subtract/scripts
+export APPTAINERENV_PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:$PWD/software/lofar_vlbi_helpers/elais_200h/advanced_facet_subtract/scripts:\$PYTHONPATH
 export APPTAINER_BIND=$SING_BIND
 export TOIL_CHECK_ENV=True
 
@@ -154,7 +154,7 @@ toil-cwl-runner \
 --cleanWorkDir onSuccess \
 --setEnv PATH=$APPTAINERENV_PREPEND_PATH:\$PATH \
 --setEnv PYTHONPATH=$APPTAINERENV_PYTHONPATH \
-software/lofar_vlbi_helpers/elais_128h/advanced_facet_subtract/workflows/facet_subtract.cwl $JSON
+software/lofar_vlbi_helpers/elais_200h/advanced_facet_subtract/workflows/facet_subtract.cwl $JSON
 
 ########################
 
