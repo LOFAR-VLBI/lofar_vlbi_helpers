@@ -8,9 +8,9 @@
 ######################
 
 # Catalogue
-CAT=$1
+CAT=$(realpath $1)
 # Directory with MS subbands with in-field solutions applied
-MSDATA=$2
+MSDATA=$(realpath $2)
 
 export TOIL_SLURM_ARGS="--export=ALL -t 36:00:00"
 
