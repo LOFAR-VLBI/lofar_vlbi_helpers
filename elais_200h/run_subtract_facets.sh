@@ -89,8 +89,6 @@ jq --arg path "$PWD/software/lofar_facet_selfcal" \
 
 MODELPATH=$MAINFOLDER/modelims
 mkdir -p $MODELPATH
-#cp $MODELS/*model.fits $MODELPATH
-#cp $MODELS/*model-pb.fits $MODELPATH
 cp $MODELS/*model-fpb.fits $MODELPATH
 
 # Add 'model_image_folder' with 'class' and 'path'
