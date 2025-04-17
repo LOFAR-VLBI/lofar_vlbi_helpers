@@ -9,7 +9,7 @@
 
 # Catalogue
 POLY=$(realpath $1)
-# Directory with MS subbands with in-field solutions applied
+# Directory with facet-subtracted MS
 MSDATA=$(realpath $2)
 
 export TOIL_SLURM_ARGS="--export=ALL -t 36:00:00 -p infinite"
@@ -28,11 +28,10 @@ source ${VENV}/bin/activate
 mkdir -p software
 cd software
 git clone -b finalcal https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
-git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
 git clone https://git.astron.nl/RD/LINC.git
-git clone https://github.com/revoltek/losoto
+
 mkdir scripts
 cp LINC/scripts/* scripts
 cp VLBI_cwl/scripts/* scripts
@@ -64,7 +63,7 @@ export TOIL_CHECK_ENV=True
 
 ########################
 
-# Define the output JSON file
+# Make JSON file
 JSON="input.json"
 
 # Add MS
@@ -92,7 +91,9 @@ jq --arg path "$POLY" \
      }
    }' "$JSON" > temp.json && mv temp.json "$JSON"
 
-# make folder for running toil
+########################
+
+# Make folders for running toil
 WORKDIR=$PWD/workdir
 OUTPUT=$PWD/outdir
 JOBSTORE=$PWD/jobstore
@@ -102,8 +103,6 @@ TMPD=$PWD/tmpdir
 mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
-
-#source ${VENV}/bin/activate
 
 ########################
 

@@ -58,29 +58,22 @@ export TOIL_CHECK_ENV=True
 
 ########################
 
-# Define the output JSON file
+# Make JSON file
 JSON="input.json"
 
 # Start the JSON structure for 'msin'
 json="{\"msin\":["
 
-# Loop through each file in the MSDATA folder and append to the JSON structure
 for file in "$MSDATA"/*.ms; do
     json="$json{\"class\": \"Directory\", \"path\": \"$file\"},"
 done
-
-# Remove the trailing comma and close the JSON array and object
-json="${json%,}]}"  # Remove the last comma and add the closing brackets
-
-# Save the initial JSON structure to the file
+json="${json%,}]}"
 echo "$json" > "$JSON"
 
-# Add 'lofar_helpers' with 'class' and 'path'
 jq --arg path "$PWD/software/lofar_helpers" \
    '. + {"lofar_helpers": {"class": "Directory", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
-# Add 'lofar_helpers' with 'class' and 'path'
 jq --arg path "$PWD/software/lofar_facet_selfcal" \
    '. + {"facetselfcal": {"class": "Directory", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
@@ -88,11 +81,8 @@ jq --arg path "$PWD/software/lofar_facet_selfcal" \
 
 MODELPATH=$MAINFOLDER/modelims
 mkdir -p $MODELPATH
-#cp $MODELS/*model.fits $MODELPATH
-#cp $MODELS/*model-pb.fits $MODELPATH
 cp $MODELS/*model-fpb.fits $MODELPATH
 
-# Add 'model_image_folder' with 'class' and 'path'
 jq --arg path "$MODELPATH" \
    '. + {"model_image_folder": {"class": "Directory", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
@@ -100,20 +90,17 @@ jq --arg path "$MODELPATH" \
 chmod 755 -R singularity
 chmod 755 -R software
 
-singularity exec singularity/$SIMG python software/lofar_helpers/h5_merger.py \
+singularity exec singularity/$SIMG python software/lofar_facet_selfcal/submods/h5_merger.py \
 -in $H5FACETS \
 -out $PWD/merged.h5 \
 --add_ms_stations \
 -ms $(find "$MSDATA" -maxdepth 1 -name "*.ms" | head -n 1) \
 --h5_time_freq 1 --no_antenna_crash
 
-# Add 'h5parm' with 'class' and 'path'
 jq --arg path "$PWD/merged.h5" \
    '. + {"h5parm": {"class": "File", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
-
-#SELECTION WAS ALREADY DONE
 if [ "$SCRATCH" = "true" ]; then
   jq --arg copy_to_local_scratch "$SCRATCH" '. + {copy_to_local_scratch: true}' "$JSON" > temp.json && mv temp.json "$JSON"
 fi

@@ -63,8 +63,6 @@ export TOIL_CHECK_ENV=True
 
 ########################
 
-########################
-
 # PREP SOLUTIONS
 
 # convert DDF solution files to h5parm
@@ -83,7 +81,7 @@ done
 
 # merge h5parm into 1 file
 singularity exec singularity/$SIMG \
-python software/lofar_helpers/h5_merger.py \
+python software/lofar_facet_selfcal/submods/h5_merger.py \
 --h5_tables DDF*.h5 \
 --h5_out DDF_merged.h5 \
 --propagate_flags \
