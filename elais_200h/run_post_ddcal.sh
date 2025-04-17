@@ -8,11 +8,11 @@
 ######################
 
 # Catalogue
-CAT=$(realpath $1)
+POLY=$(realpath $1)
 # Directory with MS subbands with in-field solutions applied
 MSDATA=$(realpath $2)
 
-export TOIL_SLURM_ARGS="--export=ALL -t 36:00:00"
+export TOIL_SLURM_ARGS="--export=ALL -t 36:00:00 -p infinite"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 VENV=/project/lofarvwf/Software/venv
@@ -27,7 +27,7 @@ source ${VENV}/bin/activate
 
 mkdir -p software
 cd software
-git clone -b ddcal_widefield https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+git clone -b finalcal https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/tikk3r/flocs.git
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
@@ -84,9 +84,9 @@ jq --arg path "$PWD/software/lofar_facet_selfcal" \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
 # Add source_catalogue file
-jq --arg path "$CAT" \
+jq --arg path "$POLY" \
    '. + {
-     "source_catalogue": {
+     "polygon_info_csv": {
        "class": "File",
        "path": $path
      }
@@ -126,7 +126,7 @@ toil-cwl-runner \
 --cleanWorkDir onSuccess \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
-software/VLBI_cwl/workflows/dd-calibration.cwl input.json
+software/VLBI_cwl/workflows/post-dd-calibration.cwl input.json
 
 ########################
 
