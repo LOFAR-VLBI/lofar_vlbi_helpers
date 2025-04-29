@@ -92,7 +92,7 @@ jq --arg path "$CAT" \
      }
    }' "$JSON" > temp.json && mv temp.json "$JSON"
 
-jq '. + {"peak_flux_cut": $FLUXCUT}' "$JSON" > temp.json && mv temp.json "$JSON"
+jq --argjson FLUXCUT "$FLUXCUT" '. + {"peak_flux_cut": $FLUXCUT}' "$JSON" > temp.json && mv temp.json "$JSON"
 
 ########################
 
