@@ -14,6 +14,7 @@ MSDATA=$(realpath $2)
 
 export TOIL_SLURM_ARGS="--export=ALL -t 36:00:00"
 
+FLUXCUT=0.25 #250 mJy (too large)
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 VENV=/project/lofarvwf/Software/venv
 
@@ -90,6 +91,8 @@ jq --arg path "$CAT" \
        "path": $path
      }
    }' "$JSON" > temp.json && mv temp.json "$JSON"
+
+jq '. + {"peak_flux_cut": $FLUXCUT}' "$JSON" > temp.json && mv temp.json "$JSON"
 
 ########################
 
