@@ -30,7 +30,7 @@ mkdir -p software
 cd software
 git clone -b ddcal_widefield https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/jurjen93/lofar_helpers.git
-git clone -b phasediff-fixes https://github.com/rvweeren/lofar_facet_selfcal.git
+git clone https://github.com/rvweeren/lofar_facet_selfcal.git
 git clone https://git.astron.nl/RD/LINC.git
 
 mkdir scripts
