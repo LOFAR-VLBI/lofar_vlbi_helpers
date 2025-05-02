@@ -14,7 +14,7 @@ MSDATA=$(realpath $2)
 
 export TOIL_SLURM_ARGS="--export=ALL -t 36:00:00"
 
-FLUXCUT=0.25 #250 mJy (too large)
+FLUXCUT=0.025 #25 mJy (too large)
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 VENV=/project/lofarvwf/Software/venv
 
@@ -126,6 +126,7 @@ toil-cwl-runner \
 --bypass-file-store \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
+--eval-timeout 4000 \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
 software/VLBI_cwl/workflows/dd-calibration.cwl input.json
