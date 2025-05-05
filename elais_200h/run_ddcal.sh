@@ -14,7 +14,7 @@ MSDATA=$(realpath $2)
 
 export TOIL_SLURM_ARGS="--export=ALL -t 36:00:00"
 
-FLUXCUT=0.025 #25 mJy (too large)
+FLUXCUT=0.025 #25 mJy
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 VENV=/project/lofarvwf/Software/venv
 
@@ -30,7 +30,7 @@ mkdir -p software
 cd software
 git clone -b ddcal_widefield https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/jurjen93/lofar_helpers.git
-git clone https://github.com/rvweeren/lofar_facet_selfcal.git
+git clone -b phasediff-update https://github.com/rvweeren/lofar_facet_selfcal.git
 git clone https://git.astron.nl/RD/LINC.git
 
 mkdir scripts
