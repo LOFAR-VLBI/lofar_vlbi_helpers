@@ -69,8 +69,6 @@ export TOIL_CHECK_ENV=True
 
 ########################
 
-########################
-
 # PREP SOLUTIONS
 
 # # convert DDF solution files to h5parm
@@ -87,16 +85,16 @@ export TOIL_CHECK_ENV=True
 #   ((C++))  # increment the counter
 # done
 
-# # merge h5parm into 1 file
-# singularity exec singularity/$SIMG \
-# python software/lofar_helpers/h5_merger.py \
-# --h5_tables DDF*.h5 \
-# --h5_out DDF_merged.h5 \
-# --propagate_flags \
-# --add_ms_stations \
-# --ms $( ls $TARGETDATA/*.MS -1d | head -n 1) \
-# --merge_diff_freq \
-# --h5_time_freq true
+# merge h5parm into 1 file
+singularity exec singularity/$SIMG \
+python software/lofar_facet_selfcal/submods/h5_merger.py \
+--h5_tables DDF*.h5 \
+--h5_out DDF_merged.h5 \
+--propagate_flags \
+--add_ms_stations \
+--ms $( ls $TARGETDATA/*.MS -1d | head -n 1) \
+--merge_diff_freq \
+--h5_time_freq true
 
 ########################
 

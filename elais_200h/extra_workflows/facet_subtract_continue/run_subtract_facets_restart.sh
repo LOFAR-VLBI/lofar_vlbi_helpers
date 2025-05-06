@@ -1,64 +1,60 @@
 #!/bin/bash
 #SBATCH --output=predim_%j.out
 #SBATCH --error=predim_%j.err
-
-
-#### INPUT ###
-LNUM=$1
-
-mkdir -p /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/ddcal/selfcals
-cd /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/ddcal/selfcals
+#SBATCH -p infinite
 
 ######################
 #### UPDATE THESE ####
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL --job-name ${LNUM} -p normal --constraint=rome"
+SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
+VENV=/project/lofarvwf/Software/venv
+SING_IMAGE=https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/containers/flocs_v5.4.1_znver2_znver2.sif
 
-SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public,/home/lofarvwf-jdejong"
-SCRIPTS=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/elais_128h/ddcal_workflow
-DUTCHh5parm=/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_128h/6asec_sets/joinedsolutions/merged_skyselfcalcyle000_${LNUM}_6asec.ms.copy.avg.h5
-DDELECT=/project/lofarvwf/Share/jdejong/output/ELAIS/final_dd_selection.csv
+if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
 
-VENV=/home/lofarvwf-jdejong/venv
+export TOIL_SLURM_ARGS="--export=ALL -p normal -t 48:00:00 --job-name ${LNUM}_subtract"
+export MSDATA=$1
+export MODELPATH=$2
+export H5FACETS=$3
+
+export SCRATCH='true'
 
 ######################
 ######################
 
 # SETUP ENVIRONMENT
 
+MAINFOLDER=$PWD
+
 # set up software
+source ${VENV}/bin/activate
+
 mkdir -p software
 cd software
-mkdir scripts
-cp $SCRIPTS/scripts/* scripts
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal
-SCRIPTS_PATH=$PWD/scripts
-chmod 755 ${SCRIPTS_PATH}/*
-SING_BIND=${SING_BIND}",${SCRIPTS_PATH}:/opt/lofar/DynSpecMS"
+git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 cd ../
 
 # set up singularity
 SIMG=vlbi-cwl.sif
 mkdir -p singularity
-wget https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-grid-hpccloud/amd/flocs_v5.0.0_znver2_znver2_aocl_cuda.sif -O singularity/$SIMG
+wget $SING_IMAGE -O singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
-CONTAINERSTR=$(singularity --version)
+export LINC_DATA_ROOT=$PWD/software/LINC
+export VLBI_DATA_ROOT=$PWD/software/VLBI_cwl
 
 export APPTAINER_CACHEDIR=$PWD/singularity
-export APPTAINER_TMPDIR=$APPTAINER_CACHEDIR/tmp
-export APPTAINER_PULLDIR=$APPTAINER_CACHEDIR/pull
-export APPTAINER_BIND=$SING_BIND
-export APPTAINERENV_PYTHONPATH=\$PYTHONPATH
-export APPTAINERENV_PATH=\$PATH
-
-export SING_USER_DEFINED_PATH=$PTH
 export CWL_SINGULARITY_CACHE=$APPTAINER_CACHEDIR
+export APPTAINERENV_LINC_DATA_ROOT=$LINC_DATA_ROOT
+export APPTAINERENV_VLBI_DATA_ROOT=$VLBI_DATA_ROOT
+export APPTAINERENV_PREPEND_PATH=$LINC_DATA_ROOT/scripts:$VLBI_DATA_ROOT/scripts
+export APPTAINERENV_PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH
+export APPTAINER_BIND=$SING_BIND
 export TOIL_CHECK_ENV=True
-export LINC_DATA_ROOT=$PWD/software/LINC
 
 ########################
 
@@ -69,7 +65,7 @@ JSON="input.json"
 json="{\"msin\":["
 
 # Loop through each file in the MSDATA folder and append to the JSON structure
-for file in /project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/ddcal/chunk_?/outdir/*.ms; do
+for file in "$MSDATA"/*.ms; do
     json="$json{\"class\": \"Directory\", \"path\": \"$file\"},"
 done
 
@@ -84,21 +80,32 @@ jq --arg path "$PWD/software/lofar_helpers" \
    '. + {"lofar_helpers": {"class": "Directory", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
-# Add 'selfcal' with 'class' and 'path'
+# Add 'lofar_helpers' with 'class' and 'path'
 jq --arg path "$PWD/software/lofar_facet_selfcal" \
-   '. + {"selfcal": {"class": "Directory", "path": $path}}' \
+   '. + {"facetselfcal": {"class": "Directory", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
+
+
+# Add 'model_image_folder' with 'class' and 'path'
+jq --arg path "$MODELPATH" \
+   '. + {"model_image_folder": {"class": "Directory", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
+
+chmod 755 -R singularity
+chmod 755 -R software
 
 # Add 'h5parm' with 'class' and 'path'
-jq --arg path "$DUTCHh5parm" \
-   '. + {"dutch_multidir_h5": {"class": "File", "path": $path}}' \
+jq --arg path "$H5FACETS" \
+   '. + {"h5parm": {"class": "File", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
 
-# Add 'h5parm' with 'class' and 'path'
-jq --arg path "$DDELECT" \
-   '. + {"dd_selection_csv": {"class": "File", "path": $path}}' \
-   "$JSON" > temp.json && mv temp.json "$JSON"
+#SELECTION WAS ALREADY DONE
+if [ "$SCRATCH" = "true" ]; then
+  jq --arg copy_to_local_scratch "$SCRATCH" '. + {copy_to_local_scratch: true}' "$JSON" > temp.json && mv temp.json "$JSON"
+fi
+
+jq '. + {"ncpu": 20}' "$JSON" > temp.json && mv temp.json "$JSON"
 
 ########################
 
@@ -115,17 +122,14 @@ mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
 
-source ${VENV}/bin/activate
-
 ########################
 
 # RUN TOIL
 toil-cwl-runner \
 --no-read-only \
---retryCount 0 \
+--retryCount 4 \
 --singularity \
 --disableCaching \
---writeLogsFromAllJobs True \
 --logFile full_log.log \
 --writeLogs ${LOGDIR} \
 --outdir ${OUTPUT} \
@@ -134,13 +138,14 @@ toil-cwl-runner \
 --workDir ${WORKDIR} \
 --disableAutoDeployment True \
 --bypass-file-store \
---preserve-entire-environment \
 --batchSystem slurm \
 --clean onSuccess \
---no-compute-checksum \
-$SCRIPTS/ddcal_int.cwl $JSON
-#--tmpdir-prefix ${TMPD}_interm/ \
+--setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
+--setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
+~/scripts/lofar_vlbi_helpers/elais_200h/extra_workflows/facet_subtract_continue/facet_subtract.cwl $JSON
 
 ########################
+
+cd $MAINFOLDER
 
 deactivate

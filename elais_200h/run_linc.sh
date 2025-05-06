@@ -27,6 +27,8 @@ ulimit -S -n 30000
 # cd calibrator
 
 
+# Ensure < 168 MHz
+singularity exec -B ${SING_BIND} ${SIMG} python ~/scripts/lofar_vlbi_helpers/elais_200h/download_scripts/removebands.py --freqcut 168 --datafolder data
 
 # # Cleanup old run
 # if ls L??????_LINC_calibrator 1> /dev/null 2>&1; then
@@ -54,7 +56,7 @@ if ls L??????_LINC_target 1> /dev/null 2>&1; then
 fi
 
 # Ensure < 168 MHz
-singularity exec -B ${SING_BIND} ${SIMG} python ~/scripts/lofar_vlbi_helpers/elais_128h/download_scripts/removebands.py --freqcut 168 --datafolder data
+singularity exec -B ${SING_BIND} ${SIMG} python ~/scripts/lofar_vlbi_helpers/elais_200h/download_scripts/removebands.py --freqcut 168 --datafolder data
 
 # Run LINC target
 

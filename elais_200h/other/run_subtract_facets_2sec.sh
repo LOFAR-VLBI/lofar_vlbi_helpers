@@ -13,7 +13,7 @@ SING_IMAGE=https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/container
 
 if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
 
-export TOIL_SLURM_ARGS="--export=ALL -p normal -t 48:00:00 --job-name ${LNUM}_subtract"
+export TOIL_SLURM_ARGS="--export=ALL -t 48:00:00 --job-name ${LNUM}_subtract"
 export MSDATA=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/applycal
 export MODELS=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/ddcal/selfcals/imaging
 export H5FACETS=${MODELS}/merged.h5
@@ -105,7 +105,7 @@ singularity exec singularity/$SIMG python software/lofar_helpers/h5_merger.py \
 -out $PWD/merged.h5 \
 --add_ms_stations \
 -ms $(find "$MSDATA" -maxdepth 1 -name "*.ms" | head -n 1) \
---h5_time_freq 1
+--h5_time_freq 1 --no_antenna_crash
 
 # Add 'h5parm' with 'class' and 'path'
 jq --arg path "$PWD/merged.h5" \
@@ -118,7 +118,7 @@ if [ "$SCRATCH" = "true" ]; then
   jq --arg copy_to_local_scratch "$SCRATCH" '. + {copy_to_local_scratch: true}' "$JSON" > temp.json && mv temp.json "$JSON"
 fi
 
-jq '. + {"ncpu": 24}' "$JSON" > temp.json && mv temp.json "$JSON"
+jq '. + {"ncpu": 16}' "$JSON" > temp.json && mv temp.json "$JSON"
 
 ########################
 
@@ -140,7 +140,7 @@ mkdir -p $LOGDIR
 # RUN TOIL
 toil-cwl-runner \
 --no-read-only \
---retryCount 4 \
+--retryCount 2 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \

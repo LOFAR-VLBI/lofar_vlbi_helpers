@@ -1,26 +1,21 @@
 #!/bin/bash
-#SBATCH --output=splitdir_%j.out
-#SBATCH --error=splitdir_%j.err
-#SBATCH -t 72:00:00
-
-CSV=$1
+#SBATCH --output=ddcal_%j.out
+#SBATCH --error=ddcal_%j.err
+#SBATCH -p infinite
 
 ######################
-#### UPDATE THESE ####
+######## INPUT #######
 ######################
 
-export TOIL_SLURM_ARGS="--export=ALL -t 12:00:00"
+# Catalogue
+POLY=$(realpath $1)
+# Directory with facet-subtracted MS
+MSDATA=$(realpath $2)
+
+export TOIL_SLURM_ARGS="--export=ALL -t 36:00:00"
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
-CAT=${CSV}
-if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
-SOLSET=/project/lofarvwf/Share/jdejong/output/ELAIS/${LNUM}/${LNUM}/dical/merged_skyselfcalcyle000_linearfulljones_${LNUM}_DI.concat.ms.avg.h5
-CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
-DD_SELECTION="false" #or true?
-
 VENV=/project/lofarvwf/Software/venv
-
-SUBTRACTDATA=$(realpath "../../subtract")
 
 ######################
 ######################
@@ -29,16 +24,14 @@ SUBTRACTDATA=$(realpath "../../subtract")
 
 # set up software
 source ${VENV}/bin/activate
-#pip install --user toil[cwl]
 
 mkdir -p software
 cd software
-git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
-git clone https://github.com/tikk3r/flocs.git
+git clone -b finalcal https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/jurjen93/lofar_helpers.git
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
 git clone https://git.astron.nl/RD/LINC.git
-git clone https://github.com/revoltek/losoto
+
 mkdir scripts
 cp LINC/scripts/* scripts
 cp VLBI_cwl/scripts/* scripts
@@ -52,7 +45,7 @@ cd ../
 # set up singularity
 SIMG=vlbi-cwl.sif
 mkdir -p singularity
-wget https://lofar-webdav.grid.sara.nl/software/shub_mirror/tikk3r/lofar-grid-hpccloud/amd/flocs_v5.0.0_znver2_znver2_aocl_cuda.sif -O singularity/$SIMG
+wget https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/containers/flocs_v5.5.1_znver2_znver2.sif -O singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
@@ -70,29 +63,37 @@ export TOIL_CHECK_ENV=True
 
 ########################
 
-singularity exec singularity/$SIMG \
-python software/flocs/runners/create_ms_list.py \
-VLBI \
-split-directions \
---configfile=$CONFIG \
---h5merger=$PWD/software/lofar_helpers \
---selfcal=$PWD/software/lofar_facet_selfcal \
---do_selfcal=false \
---image_cat=$CAT \
---linc=$PWD/software/LINC \
---delay_solset=$SOLSET \
---ms_suffix ".ms" \
-$SUBTRACTDATA
+# Make JSON file
+JSON="input.json"
 
-#SELECTION WAS ALREADY DONE
-if [ "$DD_SELECTION" = "true" ]; then
-  jq --arg dd_selection "$DD_SELECTION" '. + {dd_selection: true}' mslist_VLBI_split_directions.json > temp.json && mv temp.json mslist_VLBI_split_directions.json
-fi
+# Add MS
+json="{\"msin\":["
+for file in "$MSDATA"/*.ms; do
+    json="$json{\"class\": \"Directory\", \"path\": \"$file\"},"
+done
+json="${json%,}]}"
+echo "$json" > "$JSON"
+
+jq --arg path "$PWD/software/lofar_helpers" \
+   '. + {"lofar_helpers": {"class": "Directory", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
+
+jq --arg path "$PWD/software/lofar_facet_selfcal" \
+   '. + {"facetselfcal": {"class": "Directory", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
+
+# Add source_catalogue file
+jq --arg path "$POLY" \
+   '. + {
+     "polygon_info_csv": {
+       "class": "File",
+       "path": $path
+     }
+   }' "$JSON" > temp.json && mv temp.json "$JSON"
+
 ########################
 
-# MAKE TOIL RUNNING STRUCTURE
-
-# make folder for running toil
+# Make folders for running toil
 WORKDIR=$PWD/workdir
 OUTPUT=$PWD/outdir
 JOBSTORE=$PWD/jobstore
@@ -103,15 +104,13 @@ mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
 
-#source ${VENV}/bin/activate
-
 ########################
 
 # RUN TOIL
 
 toil-cwl-runner \
 --no-read-only \
---retryCount 2 \
+--retryCount 3 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \
@@ -126,7 +125,7 @@ toil-cwl-runner \
 --cleanWorkDir onSuccess \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:\$PYTHONPATH \
-software/VLBI_cwl/workflows/split-directions.cwl mslist_VLBI_split_directions.json
+software/VLBI_cwl/workflows/post-dd-calibration.cwl input.json
 
 ########################
 
