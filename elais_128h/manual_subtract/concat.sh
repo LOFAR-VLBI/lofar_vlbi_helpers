@@ -9,7 +9,9 @@ if [[ $PWD =~ $re ]]; then OBSERVATION=${BASH_REMATCH}; fi
 
 singularity exec -B $SING_BIND $SIMG python /project/wfedfn/Software/lofar_helpers/ms_helpers/concat_with_dummies.py \
 --msin sub6asec_L720380*.ms \
---time_res 8 \
---freq_res '97656.25Hz' \
---phase_center '[17h56m14.75,65d40m40.80]' \
---msout J175614+654040_DI.concat.ms
+--time_res 32 \
+--msout rm_calibrator.MS \
+--phase_center '[17h58m24.53,65d35m34.72]'
+
+#--time_res 8/
+#--freq_res '97656.25Hz' \
