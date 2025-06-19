@@ -5,7 +5,7 @@ label: Make concat parsets
 doc: Generate parsets for MeasurementSet concatenation.
 
 baseCommand:
-  - python3
+  - concat_with_dummies
 
 inputs:
   - id: msin
@@ -23,9 +23,6 @@ inputs:
         prefix: "--bitrate"
         position: 2
         separate: true
-  - id: lofar_helpers
-    type: Directory
-    doc: Path to lofar_helpers directory.
 
 outputs:
   - id: concat_parsets
@@ -41,7 +38,6 @@ outputs:
       glob: python_concat*.log
 
 arguments:
-  - $( inputs.lofar_helpers.path + '/ms_helpers/concat_with_dummies.py' )
   - --make_only_parset
   - --remove_flagged_station
   - --apply_beam

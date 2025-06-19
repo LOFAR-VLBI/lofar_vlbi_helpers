@@ -4,7 +4,7 @@ id: split_polygons
 label: Split Polygon Facets
 doc: This step splits a multi-facet region file into individual facet region files.
 
-baseCommand: python3
+baseCommand: split_polygon_facets
 
 inputs:
   - id: h5parm
@@ -20,10 +20,6 @@ inputs:
     inputBinding:
       prefix: "--reg"
       position: 2
-
-  - id: lofar_helpers
-    type: Directory
-    doc: The lofar_helpers directory.
 
 outputs:
   - id: polygon_regions
@@ -43,7 +39,6 @@ outputs:
       glob: split_polygons*.log
 
 arguments:
-  - $(inputs.lofar_helpers.path)/ds9_helpers/split_polygon_facets.py
   - --extra_boundary=0.0
 
 requirements:

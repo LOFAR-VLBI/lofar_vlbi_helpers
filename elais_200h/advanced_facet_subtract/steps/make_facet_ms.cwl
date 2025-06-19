@@ -1,8 +1,7 @@
 class: CommandLineTool
 cwlVersion: v1.2
 id: make_facet_ms
-label: Make averaged subtracted facet MS
-doc: Make a MeasurementSet that has subtracted everything outside its facet
+doc: Split out facets after interpolating model data to data
 
 baseCommand:
   - make_facet_ms.py
@@ -45,15 +44,14 @@ inputs:
     - id: ncpu
       type: int?
       doc: Number of cores to use during predict and subtract.
-      default: 24
-    - id: copy_to_local_scratch
-      type: boolean?
-      default: false
+      default: 12
+    - id: tmpdir
+      type: string?
+      doc: Temporary directory to run I/O heavy jobs
       inputBinding:
-        prefix: "--copy_to_local_scratch"
+        prefix: "--tmp"
         position: 5
-        separate: false
-      doc: Whether you want this step to copy data to local scratch space when running on a cluster without shared scratch.
+        separate: true
 
 
 outputs:
@@ -71,7 +69,6 @@ outputs:
 
 arguments:
     - --cleanup
-    - --ncpu=$(inputs.ncpu)
 
 hints:
     - class: DockerRequirement

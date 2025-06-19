@@ -8,7 +8,6 @@ import re
 from argparse import ArgumentParser
 import numpy as np
 import tables
-from glob import glob
 
 from astropy.io import fits
 from casacore.tables import table
@@ -129,7 +128,7 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
     comparse = str(f[0].header['HISTORY']).replace('\n', '').split()
     prefix_name = re.sub(r"(-\d{4})?-model(-pb|-fpb)?\.fits$", "", model_images[0].split("/")[-1])
     model_column = facet_region.split('/')[-1].replace(".reg","").upper()
-    command = ['wsclean',
+    command = ['wsclean -no-reorder',
                '-predict',
                f'-model-column {model_column}',
                f'-name {prefix_name}',
@@ -239,9 +238,7 @@ def parse_args():
     parser.add_argument('--polygons', nargs="+", help='Polygon region files', default=None)
     parser.add_argument('--h5', help='Multidir-h5parm solutions', default=None)
     parser.add_argument('--ncpu', help='Number of CPUs for job', default=8, type=int)
-    parser.add_argument('--copy_to_local_scratch', action='store_true',
-                        help='Run this job on local scratch for speed improvements when the node has no '
-                             'shared scratch across the cluster')
+    parser.add_argument('--tmp', typ=str, help='Temporary directory to run I/O heavy jobs', default='.')
 
     return parser.parse_args()
 
@@ -253,8 +250,8 @@ def main():
 
     args = parse_args()
 
-    if args.copy_to_local_scratch:
-        rundir = '/tmp'
+    if args.tmp != '.':
+        rundir = args.tmp
         copy_data(args.msin.split('/')[-1], rundir) # MS
         copy_data("*model*.fits", rundir) # model images
 
@@ -300,7 +297,7 @@ def main():
             inp[..., 2] = 0
             t.putcol(f"POLY_{datnum}", inp)
 
-    if args.copy_to_local_scratch:
+    if args.tmp != '.':
         # Copy output data back
         copy_data(args.msin.split('/')[-1], outdir)
 

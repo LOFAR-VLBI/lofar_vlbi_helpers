@@ -1,11 +1,10 @@
 class: CommandLineTool
 cwlVersion: v1.2
-id: predict_facet_masks
-label: Predict facets
-doc: Predict facet masks for subtractions
+id: predict_facets
+doc: Predict facets for subtractions
 
 baseCommand:
-  - predict_facet_mask.py
+  - predict_facets.py
 
 inputs:
     - id: msin
@@ -39,16 +38,18 @@ inputs:
     - id: ncpu
       type: int?
       doc: Number of cores to use during predict and subtract.
-      default: 16
-    - id: copy_to_local_scratch
-      type: boolean?
-      default: false
+      default: 12
       inputBinding:
-        prefix: "--copy_to_local_scratch"
+        prefix: "--ncpu"
+        position: 6
+        separate: true
+    - id: tmpdir
+      type: string?
+      doc: Temporary directory to run I/O heavy jobs
+      inputBinding:
+        prefix: "--tmp"
         position: 5
-        separate: false
-      doc: Whether you want this step to copy data to local scratch space when running on a cluster without shared scratch.
-
+        separate: true
 
 outputs:
     - id: predicted_ms
@@ -62,9 +63,6 @@ outputs:
       doc: Log files from model selection
       outputBinding:
         glob: predict_facet*.log
-
-arguments:
-    - --ncpu=$(inputs.ncpu)
 
 hints:
     - class: DockerRequirement
