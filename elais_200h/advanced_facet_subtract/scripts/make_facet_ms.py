@@ -15,7 +15,7 @@ import tables
 
 dtype = np.complex64
 
-def interpolate(from_ms, to_ms, column: str = "MODEL_DATA", outdir: str = "."):
+def interpolate_transfer(from_ms, to_ms, column: str = "MODEL_DATA", outdir: str = "."):
     """
     Interpolate the given column from an input MeasurementSet to an output MeasurementSet.
 
@@ -24,7 +24,6 @@ def interpolate(from_ms, to_ms, column: str = "MODEL_DATA", outdir: str = "."):
         to_ms (str): Path (or identifier) of the output MeasurementSet.
         column (str): The name of the column to interpolate.
         outdir (str): Path to write log files to
-
     """
 
     with table(to_ms, readonly=False, ack=False) as ts:
@@ -284,7 +283,7 @@ def main():
     print(f'Interpolate from {args.from_ms} to {args.to_ms}')
     facet_number = args.polygon.split('/')[-1].replace('.reg', '').replace('poly_', '')
     facet_column = f"POLY_{facet_number}"
-    interpolate(args.from_ms, args.to_ms, facet_column, outdir)
+    interpolate_transfer(args.from_ms, args.to_ms, facet_column, outdir)
 
     phasecentre, freqavg, timeres, dirname = get_facet_info(args.polygon_info, args.to_ms, args.polygon)
 

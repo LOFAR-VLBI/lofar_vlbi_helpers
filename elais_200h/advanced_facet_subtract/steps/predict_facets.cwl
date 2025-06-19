@@ -35,6 +35,13 @@ inputs:
         prefix: "--polygons"
         position: 4
         separate: true
+    - id: tmpdir
+      type: string?
+      doc: Temporary directory to run I/O heavy jobs
+      inputBinding:
+        prefix: "--tmp"
+        position: 5
+        separate: true
     - id: ncpu
       type: int?
       doc: Number of cores to use during predict and subtract.
@@ -42,13 +49,6 @@ inputs:
       inputBinding:
         prefix: "--ncpu"
         position: 6
-        separate: true
-    - id: tmpdir
-      type: string?
-      doc: Temporary directory to run I/O heavy jobs
-      inputBinding:
-        prefix: "--tmp"
-        position: 5
         separate: true
 
 outputs:

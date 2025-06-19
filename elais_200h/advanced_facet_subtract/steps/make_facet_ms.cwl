@@ -1,7 +1,7 @@
 class: CommandLineTool
 cwlVersion: v1.2
 id: make_facet_ms
-doc: Split out facets after interpolating model data to data
+doc: Split out facet MeasurementSet after interpolating model data to data
 
 baseCommand:
   - make_facet_ms.py
@@ -9,20 +9,20 @@ baseCommand:
 inputs:
     - id: avg_ms
       type: Directory
-      doc: Averaged MS to lower resolution
+      doc: Averaged MeasurementSet at lower time/freq resolution
       inputBinding:
         prefix: "--from_ms"
         position: 1
         separate: true
     - id: full_ms
       type: Directory
-      doc: Full MS without averaging
+      doc: Full MeasurementSet without averaging
       inputBinding:
         prefix: "--to_ms"
         position: 2
     - id: h5parm
       type: File
-      doc: Multi-dir h5parm
+      doc: Multi-directional h5parm
       inputBinding:
         prefix: "--h5"
         position: 3
@@ -41,10 +41,6 @@ inputs:
         prefix: "--polygon_info"
         position: 5
         separate: true
-    - id: ncpu
-      type: int?
-      doc: Number of cores to use during predict and subtract.
-      default: 12
     - id: tmpdir
       type: string?
       doc: Temporary directory to run I/O heavy jobs
@@ -52,6 +48,10 @@ inputs:
         prefix: "--tmp"
         position: 5
         separate: true
+    - id: ncpu
+      type: int?
+      doc: Number of cores to use during predict and subtract.
+      default: 12
 
 
 outputs:

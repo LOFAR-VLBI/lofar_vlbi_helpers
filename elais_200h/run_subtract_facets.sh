@@ -100,7 +100,7 @@ jq --arg path "$PWD/merged.h5" \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
 if [ "$SCRATCH" = "true" ]; then
-  jq --arg copy_to_local_scratch "$SCRATCH" '. + {copy_to_local_scratch: true}' "$JSON" > temp.json && mv temp.json "$JSON"
+  jq --arg tmpdir "$SCRATCH" '. + {tmpdir: /tmp}' "$JSON" > temp.json && mv temp.json "$JSON"
 fi
 
 ########################

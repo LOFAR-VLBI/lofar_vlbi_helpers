@@ -10,7 +10,7 @@ baseCommand:
 inputs:
   - id: msin
     type: Directory
-    doc: Input MeasurementSet frequency bands.
+    doc: Input MeasurementSet
     inputBinding:
       position: 0
       prefix: msin=
