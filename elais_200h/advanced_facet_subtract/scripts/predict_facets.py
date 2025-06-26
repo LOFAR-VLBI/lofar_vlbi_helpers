@@ -128,7 +128,7 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
     comparse = str(f[0].header['HISTORY']).replace('\n', '').split()
     prefix_name = re.sub(r"(-\d{4})?-model(-pb|-fpb)?\.fits$", "", model_images[0].split("/")[-1])
     model_column = facet_region.split('/')[-1].replace(".reg","").upper()
-    command = ['wsclean -no-reorder',
+    command = ['wsclean',
                '-predict',
                f'-model-column {model_column}',
                f'-name {prefix_name}',
@@ -238,7 +238,7 @@ def parse_args():
     parser.add_argument('--polygons', nargs="+", help='Polygon region files', default=None)
     parser.add_argument('--h5', help='Multidir-h5parm solutions', default=None)
     parser.add_argument('--ncpu', help='Number of CPUs for job', default=8, type=int)
-    parser.add_argument('--tmp', typ=str, help='Temporary directory to run I/O heavy jobs', default='.')
+    parser.add_argument('--tmp', type=str, help='Temporary directory to run I/O heavy jobs', default='.')
 
     return parser.parse_args()
 

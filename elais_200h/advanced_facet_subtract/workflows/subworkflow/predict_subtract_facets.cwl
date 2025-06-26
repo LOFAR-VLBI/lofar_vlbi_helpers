@@ -22,7 +22,7 @@ inputs:
     - id: ncpu
       type: int?
       doc: Number of cores to use during predict and subtract
-      default: 12
+      default: 8
     - id: tmpdir
       type: string?
       doc: Temporary directory to run I/O heavy jobs
@@ -57,8 +57,6 @@ steps:
            source: polygons
          - id: model_images
            source: get_model_images_for_sb/output_model_images
-         - id: ncpu
-           source: ncpu
          - id: tmpdir
            source: tmpdir
       out:

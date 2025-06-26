@@ -9,7 +9,7 @@
 
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 VENV=/project/lofarvwf/Software/venv
-SING_IMAGE=https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/containers/flocs_v5.4.1_znver2_znver2.sif
+SING_IMAGE=/project/lofarvwf/Software/singularity/test_interpoldp3_new.sif
 
 if [[ $PWD =~ L[0-9]{6} ]]; then LNUM=${BASH_REMATCH[0]}; fi
 
@@ -41,7 +41,8 @@ cd ../
 # set up singularity
 SIMG=vlbi-cwl.sif
 mkdir -p singularity
-wget $SING_IMAGE -O singularity/$SIMG
+#wget $SING_IMAGE -O singularity/$SIMG
+cp $SING_IMAGE singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 

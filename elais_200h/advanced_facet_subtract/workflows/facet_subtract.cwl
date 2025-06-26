@@ -23,7 +23,7 @@ inputs:
     - id: ncpu
       type: int?
       doc: Number of cores to use during predict and subtract
-      default: 12
+      default: 8
     - id: tmpdir
       type: string?
       doc: Temporary directory to run I/O heavy jobs

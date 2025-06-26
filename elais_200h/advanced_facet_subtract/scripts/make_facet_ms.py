@@ -26,33 +26,33 @@ def interpolate_transfer(from_ms, to_ms, column: str = "MODEL_DATA", outdir: str
         outdir (str): Path to write log files to
     """
 
-    with table(to_ms, readonly=False, ack=False) as ts:
-        colnames = ts.colnames()
 
-        if column not in colnames:
-            # get column description from DATA
-            desc = ts.getcoldesc('DATA')
-            # create output column
-            print('Create ' + column)
-            desc['name'] = column
-            # create template for output column
-            ts.addcols(desc)
-
-        else:
-            print(column, ' already exists')
+    # with table(to_ms, readonly=False, ack=False) as ts:
+    #     colnames = ts.colnames()
+    #
+    #     if column not in colnames:
+    #         # get column description from DATA
+    #         desc = ts.getcoldesc('DATA')
+    #         # create output column
+    #         print('Create ' + column)
+    #         desc['name'] = column
+    #         # create template for output column
+    #         ts.addcols(desc)
+    #
+    #     else:
+    #         print(column, ' already exists')
 
     command = ['DP3',
                f'msin={to_ms}',
-               f'msout.datacolumn={column}',
                f'msout=.',
                'msout.storagemanager=dysco',
                'msout.storagemanager.databitrate=6',
-               'msout.storagemanager.weightbitrate=12',
+               f'steps=[transfer]',
                'transfer.type=transfer',
                'transfer.data=True',
                f'transfer.source_ms={from_ms}',
                f'transfer.datacolumn={column}',
-               f'steps=[transfer]']
+               f'msout.datacolumn={column}']
 
     os.system(' '.join(command) + f' > {outdir}/transfer.log')
 
@@ -137,7 +137,7 @@ def get_largest_divider(inp, integer):
     for r in range(integer+1)[::-1]:
         if inp % r == 0:
             return r
-    sys.exit("ERROR: code should not arrive here.")
+    sys.exit(f"ERROR: did not find a largest divider between {inp} and {integer}.")
 
 
 def parse_history(ms, hist_item):
