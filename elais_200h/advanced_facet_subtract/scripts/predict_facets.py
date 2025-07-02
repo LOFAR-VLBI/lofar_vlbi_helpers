@@ -54,7 +54,7 @@ def split_facet_h5(h5parm: str = None, dirname: str = None):
     :param dirname: direction name
     """
 
-    outputh5 = f'{h5parm.split("/")[-1]}.{dirname}.h5'
+    outputh5 = f'{basename(h5parm)}.{dirname}.h5'
     os.system(f'cp {h5parm} {outputh5}')
 
     with tables.open_file(outputh5, 'r+') as outh5:
@@ -127,7 +127,7 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
 
     f = fits.open(model_images[0])
     comparse = str(f[0].header['HISTORY']).replace('\n', '').split()
-    prefix_name = re.sub(r"(-\d{4})?-model(-pb|-fpb)?\.fits$", "", model_images[0].split("/")[-1])
+    prefix_name = re.sub(r"(-\d{4})?-model(-pb|-fpb)?\.fits$", "", basename(model_images[0]))
     model_column = basename(facet_region).replace(".reg","").upper()
     command = ['wsclean',
                '-predict',
@@ -286,7 +286,7 @@ def main():
 
     # Predict
     for poly in args.polygons:
-        polynumber = poly.split("/")[-1].replace("poly_", "").replace(".reg", "")
+        polynumber = basename(poly).replace("poly_", "").replace(".reg", "")
         h5 = split_facet_h5(args.h5, f"Dir{int(float(polynumber)):02d}")
         predict(msin, model_images, h5, poly)
         # Adding polygon to memmap facet masks
@@ -297,7 +297,7 @@ def main():
 
     # Add final POLY_* to measurement set
     for dat in memmaps:
-        datnum = dat.filename.split('/')[-1].replace("FACET_","").replace(".dat","")
+        datnum = basename(dat).replace("FACET_","").replace(".dat","")
         with table(msin, ack=False, readonly=False) as t:
             print(f"Update POLY_{datnum} with FACET_{datnum}.dat")
             inp = add_axis(np.array(dat), 4)

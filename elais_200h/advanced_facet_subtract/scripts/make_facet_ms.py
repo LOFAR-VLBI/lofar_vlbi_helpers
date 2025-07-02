@@ -5,6 +5,7 @@ __author__ = "Jurjen de Jong"
 
 from argparse import ArgumentParser
 import os
+from os.path import basename
 import re
 import sys
 
@@ -73,7 +74,7 @@ def make_facet_data(ms: str = None, phaseshift: str = None, freqavg: str = None,
 
     steps = []
 
-    msout = f"facet_{dirname.replace("Dir","")}_{ms.split("/")[-1]}"
+    msout = f"facet_{dirname.replace("Dir","")}_{basename(ms)}"
 
     command = ['DP3',
                f'msin={ms}',
@@ -213,7 +214,7 @@ def get_facet_info(polygon_info_file, ms, polygon_region):
         time_delta = abs(times[1] - times[0]) if len(times) > 1 else 1.0
 
     # Extract polygon row matching the given region file name
-    region_file = polygon_region.split('/')[-1]
+    region_file = basename(polygon_region)
     polygon = polygon_info.loc[polygon_info.polygon_file == region_file]
 
     if polygon.empty:
@@ -272,28 +273,31 @@ def main():
 
     if args.tmp != '.':
         rundir = args.tmp
-        copy_data(args.to_ms.split('/')[-1], rundir) # MS
-        os.system(f"rm -rf {args.to_ms}") # Delete local MS to free up space
+        to_ms = basename(args.to_ms)
+
+        copy_data(to_ms, rundir) # MS
+        os.system(f"rm -rf {to_ms}") # Delete local MS to free up space
         outdir = os.getcwd()
         os.chdir(rundir)
     else:
         outdir = '.'
+        to_ms = args.to_ms
 
     # Interpolate flags
-    print(f'Interpolate from {args.from_ms} to {args.to_ms}')
-    facet_number = args.polygon.split('/')[-1].replace('.reg', '').replace('poly_', '')
+    print(f'Interpolate from {args.from_ms} to {to_ms}')
+    facet_number = basename(args.polygon).replace('.reg', '').replace('poly_', '')
     facet_column = f"POLY_{facet_number}"
-    interpolate_transfer(args.from_ms, args.to_ms, facet_column, outdir)
+    interpolate_transfer(args.from_ms, to_ms, facet_column, outdir)
 
-    phasecentre, freqavg, timeres, dirname = get_facet_info(args.polygon_info, args.to_ms, args.polygon)
+    phasecentre, freqavg, timeres, dirname = get_facet_info(args.polygon_info, to_ms, args.polygon)
 
     # Subtraction
     print(f"SUBTRACT ==> DATA = DATA - {facet_column}")
-    taql(f"UPDATE {args.to_ms} SET DATA = DATA - {facet_column}")
+    taql(f"UPDATE {to_ms} SET DATA = DATA - {facet_column}")
 
     # Make facet data
     print("Run DP3")
-    make_facet_data(args.to_ms, phasecentre, freqavg, timeres, args.h5parm, dirname, outdir)
+    make_facet_data(to_ms, phasecentre, freqavg, timeres, args.h5parm, dirname, outdir)
 
     # Copy data back to output directory
     if args.tmp != '.':
@@ -302,7 +306,7 @@ def main():
     # Delete a copy to save storage
     if args.cleanup:
         print("Cleanup...")
-        os.system(f"rm -rf {args.to_ms}")
+        os.system(f"rm -rf {to_ms}")
         os.system(f'rm *.dat')
 
 
