@@ -258,7 +258,7 @@ def parse_args():
     parser.add_argument('--h5parm', help='Multi-dir h5 solutions', required=True)
     parser.add_argument('--polygon_info', help='Polygon information')
     parser.add_argument('--cleanup', action='store_true', help='rm -rf on input MS and *.dat to save storage')
-    parser.add_argument('--tmp', typ=str, help='Temporary directory to run I/O heavy jobs', default='.')
+    parser.add_argument('--tmp', type=str, help='Temporary directory to run I/O heavy jobs', default='.')
 
     return parser.parse_args()
 

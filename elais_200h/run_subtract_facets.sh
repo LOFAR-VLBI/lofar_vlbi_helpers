@@ -101,7 +101,7 @@ jq --arg path "$PWD/merged.h5" \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
 if [ "$SCRATCH" = "true" ]; then
-  jq --arg tmpdir "$SCRATCH" '. + {tmpdir: /tmp}' "$JSON" > temp.json && mv temp.json "$JSON"
+  jq '. + {tmpdir: "/tmp"}' "$JSON" > temp.json && mv temp.json "$JSON"
 fi
 
 ########################
