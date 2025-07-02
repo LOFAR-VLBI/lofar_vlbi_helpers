@@ -4,6 +4,7 @@
 __author__ = "Jurjen de Jong"
 
 import os
+from os.path import basename
 import re
 from argparse import ArgumentParser
 import numpy as np
@@ -127,7 +128,7 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
     f = fits.open(model_images[0])
     comparse = str(f[0].header['HISTORY']).replace('\n', '').split()
     prefix_name = re.sub(r"(-\d{4})?-model(-pb|-fpb)?\.fits$", "", model_images[0].split("/")[-1])
-    model_column = facet_region.split('/')[-1].replace(".reg","").upper()
+    model_column = basename(facet_region).replace(".reg","").upper()
     command = ['wsclean',
                '-predict',
                f'-model-column {model_column}',
@@ -195,7 +196,7 @@ def create_memmap(facetnumber, shape, dtype):
 
 def update_memmap(dat, polynumber, poly_data):
     # Extract facet number from the filename
-    facet_id = dat.filename.split('/')[-1].replace("FACET_", "").replace(".dat", "")
+    facet_id = basename(dat.filename).replace("FACET_", "").replace(".dat", "")
     if facet_id != polynumber:
         print(f"COMPUTE {dat.filename} + POLY_{polynumber}")
         # Get the column, convert to complex64, and add it in place
@@ -250,28 +251,35 @@ def main():
 
     args = parse_args()
 
-    if args.tmp != '.':
-        rundir = args.tmp
-        copy_data(args.msin.split('/')[-1], rundir) # MS
-        copy_data("*model*.fits", rundir) # model images
-
-        os.system(f"rm -rf *.ms") # Delete local MS to free up space
-
-        outdir = os.getcwd()
-        os.chdir(rundir)
-
     # Job requirements
     slurm_ncpu = int(os.getenv("SLURM_CPUS_PER_TASK", os.cpu_count() -1 ))
     ncpu = min(args.ncpu, slurm_ncpu)
     set_num_threads(ncpu) # For numba
     dtype = np.complex64
 
+    if args.tmp != '.':
+        rundir = args.tmp
+        msin = basename(args.msin)
+        model_images = [basename(m) for m in args.model_images]
+
+        copy_data(args.msin, rundir)
+        for model in args.model_images:
+            copy_data(model, rundir)
+
+        os.system(f"rm -rf {msin}") # Delete local MS to free up space
+
+        outdir = os.getcwd()
+        os.chdir(rundir)
+    else:
+        msin = args.msin
+        model_images = args.msin
+
     # Read the HDF5 file to get the number of facets
     with tables.open_file(args.h5) as T:
         dir_num = len(T.root.sol000.source[:]['dir'])
 
     # Get the shape for the memmap from msin (this function should be defined)
-    shape = get_shape(args.msin)
+    shape = get_shape(msin)
 
     # Parallelize memmap creation
     memmaps = (Parallel(n_jobs=ncpu, backend='loky')(delayed(create_memmap)(facet, shape, dtype) for facet in range(dir_num)))
@@ -280,9 +288,9 @@ def main():
     for poly in args.polygons:
         polynumber = poly.split("/")[-1].replace("poly_", "").replace(".reg", "")
         h5 = split_facet_h5(args.h5, f"Dir{int(float(polynumber)):02d}")
-        predict(args.msin, args.model_images, h5, poly)
+        predict(msin, model_images, h5, poly)
         # Adding polygon to memmap facet masks
-        with (table(args.msin, ack=False) as t):
+        with (table(msin, ack=False) as t):
             poly_data = t.getcol(f"POLY_{polynumber}")[..., 0].astype(dtype)
             Parallel(n_jobs=ncpu, backend='loky')(delayed(update_memmap)(dat, polynumber, poly_data) for dat in memmaps)
         os.remove(h5)
@@ -290,7 +298,7 @@ def main():
     # Add final POLY_* to measurement set
     for dat in memmaps:
         datnum = dat.filename.split('/')[-1].replace("FACET_","").replace(".dat","")
-        with table(args.msin, ack=False, readonly=False) as t:
+        with table(msin, ack=False, readonly=False) as t:
             print(f"Update POLY_{datnum} with FACET_{datnum}.dat")
             inp = add_axis(np.array(dat), 4)
             inp[..., 1] = 0
@@ -299,7 +307,7 @@ def main():
 
     if args.tmp != '.':
         # Copy output data back
-        copy_data(args.msin.split('/')[-1], outdir)
+        copy_data(msin, outdir)
 
     # Cleanup
     for dat in memmaps:
