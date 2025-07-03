@@ -297,7 +297,7 @@ def main():
 
     # Add final POLY_* to measurement set
     for dat in memmaps:
-        datnum = basename(dat).replace("FACET_","").replace(".dat","")
+        datnum = basename(dat.filename).replace("FACET_","").replace(".dat","")
         with table(msin, ack=False, readonly=False) as t:
             print(f"Update POLY_{datnum} with FACET_{datnum}.dat")
             inp = add_axis(np.array(dat), 4)
