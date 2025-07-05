@@ -297,19 +297,31 @@ def main():
         predict(msin, model_images, h5, poly)
         # Adding polygon to memmap facet masks
         with (table(msin, ack=False) as t):
-            poly_data = t.getcol(f"POLY_{polynumber}")[..., 0].astype(dtype)
+            # poly_data = t.getcol(f"POLY_{polynumber}")[..., 0].astype(dtype)
+            poly_data = t.getcol(f"MODEL_DATA")[..., 0].astype(dtype)
             Parallel(n_jobs=ncpu, backend='loky')(delayed(update_memmap)(dat, polynumber, poly_data) for dat in memmaps)
         os.remove(h5)
 
     # Add final POLY_* to measurement set
     for dat in memmaps:
         datnum = basename(dat.filename).replace("FACET_","").replace(".dat","")
+        column = f"POLY_{datnum}"
+
         with table(msin, ack=False, readonly=False) as t:
             print(f"Update POLY_{datnum} with FACET_{datnum}.dat")
             inp = add_axis(np.array(dat), 4)
             inp[..., 1] = 0
             inp[..., 2] = 0
-            t.putcol(f"POLY_{datnum}", inp)
+
+            colnames = t.colnames()
+
+            if column not in colnames:
+                desc = t.getcoldesc('DATA')
+                print('Create ' + column)
+                desc['name'] = column
+                t.addcols(desc)
+
+            t.putcol(column, inp)
 
     if args.tmp != '.':
         # Copy output data back
