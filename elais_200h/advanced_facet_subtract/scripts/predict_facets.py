@@ -9,6 +9,7 @@ import re
 from argparse import ArgumentParser
 import numpy as np
 import tables
+from glob import glob
 
 from astropy.io import fits
 from casacore.tables import table
@@ -129,12 +130,12 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
     comparse = str(f[0].header['HISTORY']).replace('\n', '').split()
     prefix_name = re.sub(r"(-\d{4})?-model(-pb|-fpb)?\.fits$", "", basename(model_images[0]))
     model_column = basename(facet_region).replace(".reg","").upper()
-    command = ['wsclean',
+    command = ['wsclean -save-reordered',
                '-predict',
                f'-model-column {model_column}',
                f'-name {prefix_name}',
-               '-parallel-gridding 6']
-    # '-model-storage-manager stokes-i',
+               '-parallel-gridding 6',
+               '-model-storage-manager stokes-i']
 
     for n, argument in enumerate(comparse):
         if argument in ['-gridder', '-padding',
@@ -168,6 +169,11 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
         command += [f'-apply-facet-solutions {h5parm} amplitude000,phase000',
                     f'-facet-regions {facet_region}', '-apply-facet-beam',
                     f'-facet-beam-update {comparse[comparse.index("-facet-beam-update") + 1]}']
+
+    if len(glob(ms+"*.tmp"))>0:
+        command += ['-reuse-reordered']
+    else:
+        command += ['-parallel-reordering 4']
 
     command += [ms]
 
@@ -272,7 +278,7 @@ def main():
         os.chdir(rundir)
     else:
         msin = args.msin
-        model_images = args.msin
+        model_images = args.model_images
 
     # Read the HDF5 file to get the number of facets
     with tables.open_file(args.h5) as T:
@@ -312,6 +318,10 @@ def main():
     # Cleanup
     for dat in memmaps:
         os.remove(dat.filename)
+
+    # Reorder files
+    for tmpfile in glob(f"{msin}*.tmp"):
+        os.remove(tmpfile)
 
 
 if __name__ == '__main__':
