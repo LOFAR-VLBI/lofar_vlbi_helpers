@@ -15,6 +15,7 @@ MSDATA=$(realpath $2)
 export TOIL_SLURM_ARGS="--export=ALL -t 36:00:00"
 
 FLUXCUT=0.025 #25 mJy
+NN_MODEL=$PWD/cortexchange
 SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 VENV=/project/lofarvwf/Software/venv
 
@@ -28,9 +29,9 @@ source ${VENV}/bin/activate
 
 mkdir -p software
 cd software
-git clone -b ddcal_widefield https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+git clone -b ddcal_validation https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
 git clone https://github.com/jurjen93/lofar_helpers.git
-git clone -b https://github.com/rvweeren/lofar_facet_selfcal.git
+git clone https://github.com/rvweeren/lofar_facet_selfcal.git
 git clone https://git.astron.nl/RD/LINC.git
 
 mkdir scripts
@@ -46,7 +47,8 @@ cd ../
 # set up singularity
 SIMG=vlbi-cwl.sif
 mkdir -p singularity
-wget https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/containers/flocs_v5.5.1_znver2_znver2.sif -O singularity/$SIMG
+#wget https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/containers/flocs_v5.7.0_znver2_znver2.sif -O singularity/$SIMG
+wget https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/containers/flocs_v6.0.0.alpha_cascadelake_cascadelake.sif -O singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
@@ -92,7 +94,11 @@ jq --arg path "$CAT" \
      }
    }' "$JSON" > temp.json && mv temp.json "$JSON"
 
+singularity exec singularity/$SIMG \
+python /project/lofarvwf/Software/lofar_facet_selfcal/submods/source_selection/download_neural_network.py --cache_directory cortexchange
+
 jq --argjson FLUXCUT "$FLUXCUT" '. + {"peak_flux_cut": $FLUXCUT}' "$JSON" > temp.json && mv temp.json "$JSON"
+jq --arg NN_MODEL "$NN_MODEL" '. + {model_cache: $NN_MODEL}' "$JSON" > temp.json && mv temp.json "$JSON"
 
 ########################
 

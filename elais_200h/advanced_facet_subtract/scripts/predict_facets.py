@@ -134,8 +134,8 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
                '-predict',
                f'-model-column {model_column}',
                f'-name {prefix_name}',
-               '-parallel-gridding 6',
-               '-model-storage-manager stokes-i']
+               '-parallel-gridding 6']
+               # '-model-storage-manager stokes-i']
 
     for n, argument in enumerate(comparse):
         if argument in ['-gridder', '-padding',

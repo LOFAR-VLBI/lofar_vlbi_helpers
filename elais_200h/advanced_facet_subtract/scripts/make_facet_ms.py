@@ -9,61 +9,22 @@ from os.path import basename
 import re
 import sys
 
-from casacore.tables import table, taql
+from casacore.tables import table
 import numpy as np
 import pandas as pd
 import tables
 
 dtype = np.complex64
 
-def interpolate_transfer(from_ms, to_ms, column: str = "MODEL_DATA", outdir: str = "."):
-    """
-    Interpolate the given column from an input MeasurementSet to an output MeasurementSet.
 
-    Parameters:
-        from_ms (str): Path (or identifier) of the input MeasurementSet.
-        to_ms (str): Path (or identifier) of the output MeasurementSet.
-        column (str): The name of the column to interpolate.
-        outdir (str): Path to write log files to
-    """
-
-
-    # with table(to_ms, readonly=False, ack=False) as ts:
-    #     colnames = ts.colnames()
-    #
-    #     if column not in colnames:
-    #         # get column description from DATA
-    #         desc = ts.getcoldesc('DATA')
-    #         # create output column
-    #         print('Create ' + column)
-    #         desc['name'] = column
-    #         # create template for output column
-    #         ts.addcols(desc)
-    #
-    #     else:
-    #         print(column, ' already exists')
-
-    command = ['DP3',
-               f'msin={to_ms}',
-               f'msout=.',
-               'msout.storagemanager=dysco',
-               'msout.storagemanager.databitrate=6',
-               f'steps=[transfer]',
-               'transfer.type=transfer',
-               'transfer.data=True',
-               f'transfer.source_ms={from_ms}',
-               f'transfer.datacolumn={column}',
-               f'msout.datacolumn={column}']
-
-    os.system(' '.join(command) + f' > {outdir}/transfer.log')
-
-
-def make_facet_data(ms: str = None, phaseshift: str = None, freqavg: str = None,
+def run_dp3(low_ms: str = None, high_ms: str = None, facet_column: str = "MODEL_DATA", phaseshift: str = None, freqavg: str = None,
             timeres: str = None, applycal_h5: str = None, dirname: str = None, outdir: str = "."):
     """
-    Run DP3 command to split out facet. This step assumes the solutions that are applied to be scalar.
+    Run DP3 command to upsample from low to high resolution data and split out facet.
+    This step assumes the solutions that are applied to be scalar.
 
-    :param ms: MeasurementSet of the output
+    :param low_ms: low resolution MeasurementSet
+    :param to_ms: high resolution MeasurementSet
     :param phaseshift: do phase shift to specific center
     :param freqavg: frequency averaging
     :param timeres: time resolution in seconds
@@ -73,25 +34,35 @@ def make_facet_data(ms: str = None, phaseshift: str = None, freqavg: str = None,
     """
 
     steps = []
+    msout = f"facet_{dirname.replace("Dir","")}_{basename(high_ms)}"
 
-    msout = f"facet_{dirname.replace("Dir","")}_{basename(ms)}"
-
+    # 1) Upsampling
     command = ['DP3',
-               f'msin={ms}',
-               'msin.datacolumn=DATA',
-               f'msout={msout}',
-               'msout.storagemanager=dysco',
-               'msout.storagemanager.databitrate=6',
-               'msout.storagemanager.weightbitrate=12']
+                f'msin={high_ms}',
+                f'msout={msout}',
+                'msout.storagemanager=dysco',
+                'msout.storagemanager.databitrate=6',
+                'msout.storagemanager.weightbitrate=12'
+                'transfer.type=transfer',
+                'transfer.data=True',
+                f'transfer.source_ms={low_ms}',
+                f'transfer.outputbuffername={facet_column}_BUFFER',
+                f'transfer.datacolumn={facet_column}',
+                'combine.type=combine',
+                'combine.operation=subtract',
+                f'combine.buffername={facet_column}_BUFFER']
 
-    # 1) PHASESHIFT
+    steps += ['transfer', 'combine']
+
+
+    # 2) PHASESHIFT
     phasecenter = phaseshift.replace('[', '').replace(']', '').split(',')
     phasecenter = f'[{phasecenter[0]},{phasecenter[1]}]'
     steps.append('ps')
     command += ['ps.type=phaseshifter',
                 'ps.phasecenter=' + phasecenter]
 
-    # 2) AVERAGING
+    # 3) AVERAGING
     steps.append('avg')
     command += ['avg.type=averager']
     if freqavg is not None:
@@ -102,7 +73,7 @@ def make_facet_data(ms: str = None, phaseshift: str = None, freqavg: str = None,
     if timeres is not None:
         command += [f'avg.timeresolution={timeres}']
 
-    # 3) APPLYCAL
+    # 4) APPLYCAL
     ac_count = 0
     T = tables.open_file(applycal_h5)
     for corr in T.root.sol000._v_groups.keys():
@@ -240,7 +211,10 @@ def get_facet_info(polygon_info_file, ms, polygon_region):
 
     direction_name = polygon['dir_name'].values[0]
 
-    return phasecentre, freq_avg, time_avg, direction_name
+    facet_number = basename(polygon_region).replace('.reg', '').replace('poly_', '')
+    facet_column = f"POLY_{facet_number}"
+
+    return phasecentre, freq_avg, time_avg, direction_name, facet_column
 
 
 def copy_data(dat, to):
@@ -253,8 +227,8 @@ def parse_args():
     """
 
     parser = ArgumentParser(description='Split out facets after interpolating model data to data.')
-    parser.add_argument('--from_ms', help='MS input from where to interpolate', required=True)
-    parser.add_argument('--to_ms', help='MS to interpolate to (your output set)', required=True)
+    parser.add_argument('--low_ms', help='Low-resolution MeasurementSet where to interpolate', required=True)
+    parser.add_argument('--high_ms', help='High-resolution MeasurementSet to interpolate to', required=True)
     parser.add_argument('--polygon', help='Polygon region', required=True)
     parser.add_argument('--h5parm', help='Multi-dir h5 solutions', required=True)
     parser.add_argument('--polygon_info', help='Polygon information')
@@ -273,31 +247,22 @@ def main():
 
     if args.tmp != '.':
         rundir = args.tmp
-        to_ms = basename(args.to_ms)
+        high_ms = basename(args.high_ms)
 
-        copy_data(to_ms, rundir) # MS
-        os.system(f"rm -rf {to_ms}") # Delete local MS to free up space
+        copy_data(high_ms, rundir) # MS
+        os.system(f"rm -rf {high_ms}") # Delete local MS to free up space
         outdir = os.getcwd()
         os.chdir(rundir)
     else:
         outdir = '.'
-        to_ms = args.to_ms
+        high_ms = args.high_ms
 
-    # Interpolate flags
-    print(f'Interpolate from {args.from_ms} to {to_ms}')
-    facet_number = basename(args.polygon).replace('.reg', '').replace('poly_', '')
-    facet_column = f"POLY_{facet_number}"
-    interpolate_transfer(args.from_ms, to_ms, facet_column, outdir)
-
-    phasecentre, freqavg, timeres, dirname = get_facet_info(args.polygon_info, to_ms, args.polygon)
-
-    # Subtraction
-    print(f"SUBTRACT ==> DATA = DATA - {facet_column}")
-    taql(f"UPDATE {to_ms} SET DATA = DATA - {facet_column}")
+    # Get information from facet
+    phasecentre, freqavg, timeres, dirname, facet_column = get_facet_info(args.polygon_info, high_ms, args.polygon)
 
     # Make facet data
     print("Run DP3")
-    make_facet_data(to_ms, phasecentre, freqavg, timeres, args.h5parm, dirname, outdir)
+    run_dp3(args.low_ms, high_ms, facet_column, phasecentre, freqavg, timeres, args.h5parm, dirname, outdir)
 
     # Copy data back to output directory
     if args.tmp != '.':
@@ -306,7 +271,7 @@ def main():
     # Delete a copy to save storage
     if args.cleanup:
         print("Cleanup...")
-        os.system(f"rm -rf {to_ms}")
+        os.system(f"rm -rf {high_ms}")
         os.system(f'rm *.dat')
 
 
