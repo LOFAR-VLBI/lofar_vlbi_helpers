@@ -134,8 +134,8 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
                '-predict',
                f'-model-column {model_column}',
                f'-name {prefix_name}',
-               '-parallel-gridding 6']
-               # '-model-storage-manager stokes-i']
+               '-parallel-gridding 6',
+               '-model-storage-manager stokes-i']
 
     for n, argument in enumerate(comparse):
         if argument in ['-gridder', '-padding',
@@ -297,8 +297,8 @@ def main():
         predict(msin, model_images, h5, poly)
         # Adding polygon to memmap facet masks
         with (table(msin, ack=False) as t):
-            # poly_data = t.getcol(f"POLY_{polynumber}")[..., 0].astype(dtype)
-            poly_data = t.getcol(f"MODEL_DATA")[..., 0].astype(dtype)
+            poly_data = t.getcol(f"POLY_{polynumber}")[..., 0].astype(dtype)
+            # poly_data = t.getcol(f"MODEL_DATA")[..., 0].astype(dtype)
             Parallel(n_jobs=ncpu, backend='loky')(delayed(update_memmap)(dat, polynumber, poly_data) for dat in memmaps)
         os.remove(h5)
 
