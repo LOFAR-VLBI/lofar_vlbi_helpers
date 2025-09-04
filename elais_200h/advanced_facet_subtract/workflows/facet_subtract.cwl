@@ -13,9 +13,6 @@ inputs:
     - id: h5parm
       type: File
       doc: Merged h5parms
-    - id: facetselfcal
-      type: Directory
-      doc: facetselfcal directory
     - id: dysco_bitrate
       type: int?
       doc: Number of bits per float used for columns containing visibilities
@@ -36,8 +33,6 @@ steps:
           valueFrom: $(self[0])
         - id: h5parm
           source: h5parm
-        - id: facetselfcal
-          source: facetselfcal
       out:
         - id: facet_regions
       run: ../steps/get_facet_layout.cwl
