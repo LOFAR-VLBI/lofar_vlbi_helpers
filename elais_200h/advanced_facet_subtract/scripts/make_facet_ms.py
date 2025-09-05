@@ -42,7 +42,7 @@ def run_dp3(low_ms: str = None, high_ms: str = None, facet_column: str = "MODEL_
                 f'msout={msout}',
                 'msout.storagemanager=dysco',
                 'msout.storagemanager.databitrate=6',
-                'msout.storagemanager.weightbitrate=12'
+                'msout.storagemanager.weightbitrate=12',
                 'transfer.type=transfer',
                 'transfer.data=True',
                 f'transfer.source_ms={low_ms}',
@@ -89,6 +89,7 @@ def run_dp3(low_ms: str = None, high_ms: str = None, facet_column: str = "MODEL_
 
     command += ['steps=' + str(steps).replace(" ", "").replace("\'", "")]
 
+    print('\n'.join(command) )
     os.system(' '.join(command) + f' > {outdir}/DP3.log')
 
     # Beam will be applied in a later concat step to reduce compute costs
@@ -146,9 +147,6 @@ def get_time_preavg_factor(ms: str = None):
     avg_num = re.findall(r'\d+', parsed_history.replace(parse_str, ''))[0]
     if avg_num.isdigit():
         factor = int(float(avg_num))
-        if factor != 1:
-            print("WARNING: " + ms + " time has been pre-averaged with factor " + str(
-                factor) + ". This might cause stronger time smearing effects in your final image.")
         return factor
     elif type(avg_num)==float:
         factor = float(avg_num)

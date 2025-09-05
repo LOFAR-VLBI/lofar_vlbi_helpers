@@ -11,14 +11,14 @@ inputs:
       type: Directory
       doc: Averaged MeasurementSet at lower time/freq resolution
       inputBinding:
-        prefix: "--from_ms"
+        prefix: "--low_ms"
         position: 1
         separate: true
     - id: full_ms
       type: Directory
       doc: Full MeasurementSet without averaging
       inputBinding:
-        prefix: "--to_ms"
+        prefix: "--high_ms"
         position: 2
     - id: h5parm
       type: File
@@ -80,7 +80,6 @@ requirements:
     - class: InitialWorkDirRequirement
       listing:
         - entry: $(inputs.full_ms)
-          writable: true
         - entry: $(inputs.avg_ms)
         - entry: $(inputs.h5parm)
         - entry: $(inputs.polygons)
