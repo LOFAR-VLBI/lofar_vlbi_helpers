@@ -5,7 +5,7 @@ __author__ = "Jurjen de Jong"
 
 from argparse import ArgumentParser
 import os
-from os.path import basename
+from os.path import basename, abspath
 import re
 import sys
 
@@ -243,17 +243,14 @@ def main():
 
     args = parse_args()
 
+    high_ms = abspath(args.high_ms)
+
     if args.tmp != '.':
         rundir = args.tmp
-        high_ms = basename(args.high_ms)
-
-        copy_data(high_ms, rundir) # MS
-        os.system(f"rm -rf {high_ms}") # Delete local MS to free up space
         outdir = os.getcwd()
         os.chdir(rundir)
     else:
         outdir = '.'
-        high_ms = args.high_ms
 
     # Get information from facet
     phasecentre, freqavg, timeres, dirname, facet_column = get_facet_info(args.polygon_info, high_ms, args.polygon)
@@ -261,10 +258,6 @@ def main():
     # Make facet data
     print("Run DP3")
     run_dp3(args.low_ms, high_ms, facet_column, phasecentre, freqavg, timeres, args.h5parm, dirname, outdir)
-
-    # Copy data back to output directory
-    if args.tmp != '.':
-        copy_data('facet_*.ms', outdir)
 
     # Delete a copy to save storage
     if args.cleanup:
