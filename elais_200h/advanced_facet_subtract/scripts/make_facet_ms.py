@@ -257,12 +257,14 @@ def main():
 
     # Make facet data
     print("Run DP3")
-    run_dp3(args.low_ms, high_ms, facet_column, phasecentre, freqavg, timeres, args.h5parm, dirname, outdir)
+    msout = run_dp3(args.low_ms, high_ms, facet_column, phasecentre, freqavg, timeres, args.h5parm, dirname, outdir)
+    copy_data(msout, outdir)
 
     # Delete a copy to save storage
     if args.cleanup:
         print("Cleanup...")
-        os.system(f"rm -rf {high_ms}")
+        if args.tmp != '.':
+            os.system(f"rm -rf {msout}")
         os.system(f'rm *.dat')
 
 
