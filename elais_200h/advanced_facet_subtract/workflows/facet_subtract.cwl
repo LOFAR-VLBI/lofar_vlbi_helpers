@@ -97,6 +97,8 @@ steps:
 
     - id: concat_facets
       in:
+        - id: msin
+          source: flatten_subtracte_ms/flattenedarray
         - id: parset
           source: make_concat_parset/concat_parsets
       out:

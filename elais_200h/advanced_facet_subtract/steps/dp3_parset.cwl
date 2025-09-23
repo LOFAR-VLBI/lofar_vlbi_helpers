@@ -12,13 +12,16 @@ inputs:
     doc: Parset for DP3
     inputBinding:
       position: 0
+  - id: msin
+    type: Directory[]
+    doc: input MS
 
 outputs:
   - id: msout
     type: Directory
     doc: Output measurement set
     outputBinding:
-      glob: "*.ms"
+      glob: "*.concat.ms"
   - id: logfile
     type: File[]
     outputBinding:
@@ -26,6 +29,11 @@ outputs:
     doc: |
         The files containing the stdout
         and stderr from the step.
+
+requirements:
+  - class: InitialWorkDirRequirement
+    listing:
+      - entry: $(inputs.msin)
 
 hints:
   - class: DockerRequirement
