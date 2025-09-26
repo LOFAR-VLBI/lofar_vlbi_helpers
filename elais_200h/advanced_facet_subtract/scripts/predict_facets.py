@@ -130,11 +130,14 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
     comparse = str(f[0].header['HISTORY']).replace('\n', '').split()
     prefix_name = re.sub(r"(-\d{4})?-model(-pb|-fpb)?\.fits$", "", basename(model_images[0]))
     model_column = basename(facet_region).replace(".reg","").upper()
-    command = ['wsclean -save-reordered',
+    command = ['wsclean',
                '-predict',
                f'-model-column {model_column}',
                f'-name {prefix_name}',
-               '-parallel-gridding 6']
+               '-parallel-gridding 6',
+               '-model-storage-manager stokes-i']
+                #  -save-reordered
+
 
     for n, argument in enumerate(comparse):
         if argument in ['-gridder', '-padding',
@@ -316,7 +319,6 @@ def main():
     if args.tmp != '.':
         # Copy output data back
         copy_data(msin, outdir)
-        os.system(f"cp *.dat {outdir}") #TODO FOR DEBUGGING
 
     # Cleanup
     for dat in memmaps:
