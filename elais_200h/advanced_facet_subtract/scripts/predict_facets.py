@@ -129,13 +129,12 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
     f = fits.open(model_images[0])
     comparse = str(f[0].header['HISTORY']).replace('\n', '').split()
     prefix_name = re.sub(r"(-\d{4})?-model(-pb|-fpb)?\.fits$", "", basename(model_images[0]))
-    # model_column = basename(facet_region).replace(".reg","").upper()
+    model_column = basename(facet_region).replace(".reg","").upper()
     command = ['wsclean -save-reordered',
                '-predict',
-               f'-model-column MODEL_DATA',
+               f'-model-column {model_column}',
                f'-name {prefix_name}',
-               '-parallel-gridding 6',
-               '-model-storage-manager stokes-i']
+               '-parallel-gridding 6']
 
     for n, argument in enumerate(comparse):
         if argument in ['-gridder', '-padding',
@@ -297,7 +296,7 @@ def main():
         predict(msin, model_images, h5, poly)
         # Adding polygon to memmap facet masks
         with (table(msin, ack=False) as t):
-            poly_data = t.getcol(f"MODEL_DATA")[..., 0].astype(dtype)
+            poly_data = t.getcol(f"POLY_{polynumber}")[..., 0].astype(dtype)
             Parallel(n_jobs=ncpu, backend='loky')(delayed(update_memmap)(dat, polynumber, poly_data) for dat in memmaps)
         os.remove(h5)
 
@@ -311,14 +310,6 @@ def main():
             inp = add_axis(np.array(dat), 4)
             inp[..., 1] = 0
             inp[..., 2] = 0
-
-            colnames = t.colnames()
-
-            if column not in colnames:
-                desc = t.getcoldesc('DATA')
-                print('Create ' + column)
-                desc['name'] = column
-                t.addcols(desc)
 
             t.putcol(column, inp)
 
