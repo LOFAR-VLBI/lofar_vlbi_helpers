@@ -208,7 +208,8 @@ def update_memmap(dat, polynumber, poly_data):
     if facet_id != polynumber:
         print(f"COMPUTE {dat.filename} + POLY_{polynumber}")
         # Get the column, convert to complex64, and add it in place
-        add_in_place(dat, poly_data)
+        # add_in_place(dat, poly_data)
+        dat += poly_data #TODO: FASTER?
 
 
 def add_axis(arr, ax_size):
