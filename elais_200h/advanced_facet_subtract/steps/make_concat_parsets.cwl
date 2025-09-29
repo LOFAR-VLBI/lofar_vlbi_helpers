@@ -14,7 +14,6 @@ inputs:
         prefix: "--msin"
         position: 1
         separate: true
-        valueFrom: $(self.basename)
     doc: Input data in MeasurementSet format.
   - id: dysco_bitrate
     type: int?
