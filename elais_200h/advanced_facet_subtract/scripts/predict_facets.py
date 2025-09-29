@@ -134,9 +134,9 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
                '-predict',
                f'-model-column {model_column}',
                f'-name {prefix_name}',
-               '-parallel-gridding 6',
-               '-model-storage-manager stokes-i']
-                #  -save-reordered
+               '-parallel-gridding 6']
+               # '-save-reordered',
+               # '-model-storage-manager stokes-i']
 
 
     for n, argument in enumerate(comparse):
@@ -208,8 +208,7 @@ def update_memmap(dat, polynumber, poly_data):
     if facet_id != polynumber:
         print(f"COMPUTE {dat.filename} + POLY_{polynumber}")
         # Get the column, convert to complex64, and add it in place
-        # add_in_place(dat, poly_data)
-        dat += poly_data #TODO: FASTER?
+        add_in_place(dat, poly_data)
 
 
 def add_axis(arr, ax_size):
