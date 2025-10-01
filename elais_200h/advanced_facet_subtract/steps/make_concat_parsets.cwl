@@ -40,7 +40,6 @@ outputs:
 arguments:
   - --make_only_parset
   - --remove_flagged_station
-  - --apply_beam
   - --only_basename
 
 requirements:

@@ -87,12 +87,16 @@ def run_dp3(low_ms: str = None, high_ms: str = None, facet_column: str = "MODEL_
             ac_count += 1
     T.close()
 
+    # 5) APPLY BEAM
+    steps.append('beam')
+    command += ['beam.type=applybeam',
+                'beam.updateweights=True',
+                'beam.direction=[]']
+
     command += ['steps=' + str(steps).replace(" ", "").replace("\'", "")]
 
     print('\n'.join(command) )
     os.system(' '.join(command) + f' > {outdir}/DP3.log')
-
-    # Beam will be applied in a later concat step to reduce compute costs
 
     return msout
 
