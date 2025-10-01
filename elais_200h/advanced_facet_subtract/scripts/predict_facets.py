@@ -32,14 +32,21 @@ def add_in_place(acc, arr):
         acc.flat[i] += arr.flat[i]
 
 
-def make_utf8(inp):
+def make_utf8(inp: str | bytes) -> str:
     """
-    Convert input to utf8 instead of bytes
+    Convert input from bytes to a UTF-8 string if necessary.
 
-    :param inp: string input
-    :return: input in utf-8 format
+    Parameters
+    ----------
+    inp : str or bytes
+        Input value, either already a string or a byte sequence.
+
+    Returns
+    -------
+    str
+        The input converted to a UTF-8 string (or returned unchanged if
+        conversion is not applicable).
     """
-
     try:
         inp = inp.decode('utf8')
         return inp
@@ -47,14 +54,17 @@ def make_utf8(inp):
         return inp
 
 
-def split_facet_h5(h5parm: str = None, dirname: str = None):
+def split_facet_h5(h5parm: str, dirname: str):
     """
-    Split multi-facet h5parm
+Split a multi-facet H5Parm file into per-direction solutions.
 
-    :param h5parm: multi-facet h5parm
-    :param dirname: direction name
+    Parameters
+    ----------
+    h5parm : str
+        Path to the multi-facet H5Parm file.
+    dirname : str
+        Name of the direction to extract.
     """
-
     outputh5 = f'{basename(h5parm)}.{dirname}.h5'
     os.system(f'cp {h5parm} {outputh5}')
 
@@ -110,22 +120,33 @@ def split_facet_h5(h5parm: str = None, dirname: str = None):
 
 
 def repack(h5):
-    """Repack function"""
+    """
+    Repack h5parm
+
+    Parameters
+    ----------
+    h5 : str
+        Path to h5parm
+    """
     print(f'Repack {h5}')
     os.system(f'mv {h5} {h5}.tmp && h5repack {h5}.tmp {h5} && rm {h5}.tmp')
 
 
-def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet_region: str = None):
+def predict(ms: str, model_images: list[str], h5parm: str, facet_region: str):
     """
-    Prediction of facet and add to facet masks
+    Run WSClean prediction for a facet and update facet masks.
 
-    Args:
-        ms: MeasurementSet
-        model_images: Model images
-        h5parm: h5 solutions
-        facet_region: Polygon region corresponding to facet
+    Parameters
+    ----------
+    ms : str, optional
+        Path to the Measurement Set.
+    model_images : list of str, optional
+        List of model image FITS files.
+    h5parm : str, optional
+        Path to H5Parm file containing calibration solutions.
+    facet_region : str, optional
+        DS9 region file (.reg) defining the facet polygon.
     """
-
     f = fits.open(model_images[0])
     comparse = str(f[0].header['HISTORY']).replace('\n', '').split()
     prefix_name = re.sub(r"(-\d{4})?-model(-pb|-fpb)?\.fits$", "", basename(model_images[0]))
@@ -137,7 +158,6 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
                '-parallel-gridding 6']
                # '-save-reordered',
                # '-model-storage-manager stokes-i']
-
 
     for n, argument in enumerate(comparse):
         if argument in ['-gridder', '-padding',
@@ -188,13 +208,46 @@ def predict(ms: str = None, model_images: list = None, h5parm: str = None, facet
     os.system(' '.join(command))
 
 
-def get_shape(ms):
+def get_data_shape(ms: str) -> tuple[int, int, int]:
+    """
+    Get the shape of the DATA column in a Measurement Set.
+
+    Parameters
+    ----------
+    ms : str
+        Path to the Measurement Set.
+
+    Returns
+    -------
+    tuple of int
+        A tuple (nrows, nfreq, npol) where:
+        - nrows is the number of rows in the table,
+        - nfreq is the number of frequency channels,
+        - npol is the number of polarisations.
+    """
     with table(ms, ack=False) as t:
         freq, pol = t.getdesc()["DATA"]['shape']
         return (t.nrows(), freq, pol)
 
 
-def create_memmap(facetnumber, shape, dtype):
+def create_memmap(facetnumber: int | str, shape: tuple[int, int], dtype: np.dtype) -> np.memmap:
+    """
+    Create a zero-initialised memory-mapped array.
+
+    Parameters
+    ----------
+    facetnumber : int or str
+        Identifier for the facet, used in the filename.
+    shape : tuple of int
+        Dimensions of the array.
+    dtype : data-type
+        Data type of the array elements.
+
+    Returns
+    -------
+    np.memmap
+        The created memory-mapped array.
+    """
     filename = f"FACET_{facetnumber}.dat"
     print(f"Creating {filename}")
     memmap_obj = np.memmap(filename, dtype=dtype, mode='w+', shape=(shape[0], shape[1]))
@@ -202,8 +255,19 @@ def create_memmap(facetnumber, shape, dtype):
     return memmap_obj
 
 
-def update_memmap(dat, polynumber, poly_data):
-    # Extract facet number from the filename
+def update_memmap(dat: np.memmap, polynumber: int | str, poly_data: np.ndarray) -> None:
+    """
+    Update a memory-mapped facet file with polynomial data.
+
+    Parameters
+    ----------
+    dat : np.memmap
+        Memory-mapped array representing the facet data.
+    polynumber : int or str
+        Identifier for the polynomial data.
+    poly_data : np.ndarray
+        Array of data to be added in place.
+    """
     facet_id = basename(dat.filename).replace("FACET_", "").replace(".dat", "")
     if facet_id != polynumber:
         print(f"COMPUTE {dat.filename} + POLY_{polynumber}")
@@ -211,24 +275,38 @@ def update_memmap(dat, polynumber, poly_data):
         add_in_place(dat, poly_data)
 
 
-def add_axis(arr, ax_size):
+def add_axis(arr: np.ndarray, ax_size: int) -> np.ndarray:
     """
-    Add ax dimension with a specific size
+    Add a new axis to an array with a given size.
 
-    :param:
-        - arr: numpy array
-        - ax_size: axis size
+    Parameters
+    ----------
+    arr : np.ndarray
+        Input array.
+    ax_size : int
+        Size of the new axis.
 
-    :return:
-        - output with new axis dimension with a particular size
+    Returns
+    -------
+    np.ndarray
+        Array with an added axis of the specified size.
     """
-
     or_shape = arr.shape
     new_shape = list(or_shape) + [ax_size]
     return np.repeat(arr, ax_size).reshape(new_shape)
 
 
-def copy_data(dat, to):
+def copy_data(dat: str, to: str):
+    """
+    Copy a file or directory using rsync.
+
+    Parameters
+    ----------
+    dat : str
+        Path to the source file or directory.
+    to : str
+        Destination path.
+    """
     os.system(f"rsync -avH --no-implied-dirs --copy-links {dat} {to}")
 
 
@@ -240,7 +318,6 @@ def parse_args():
     -------
     Parsed arguments
     """
-
     parser = ArgumentParser("Predict facet masks for subtraction in MeasurementSet")
     parser.add_argument('--msin', help='Input MS', default=None)
     parser.add_argument('--model_images', nargs="+", help='Model images', default=None)
@@ -260,11 +337,12 @@ def main():
     args = parse_args()
 
     # Job requirements
-    slurm_ncpu = int(os.getenv("SLURM_CPUS_PER_TASK", os.cpu_count() -1 ))
+    slurm_ncpu = int(os.getenv("SLURM_CPUS_PER_TASK", os.cpu_count() - 1))
     ncpu = min(args.ncpu, slurm_ncpu)
     set_num_threads(ncpu) # For numba
     dtype = np.complex64
 
+    # Copy data to --tmp if requested
     if args.tmp != '.':
         rundir = args.tmp
         msin = basename(args.msin)
@@ -282,17 +360,17 @@ def main():
         msin = args.msin
         model_images = args.model_images
 
-    # Read the HDF5 file to get the number of facets
+    # Get the number of facets
     with tables.open_file(args.h5) as T:
         dir_num = len(T.root.sol000.source[:]['dir'])
 
-    # Get the shape for the memmap from msin (this function should be defined)
-    shape = get_shape(msin)
+    # Get the shape for the memmap from msin
+    shape = get_data_shape(msin)
 
-    # Parallelize memmap creation
+    # Create memmaps
     memmaps = (Parallel(n_jobs=ncpu, backend='loky')(delayed(create_memmap)(facet, shape, dtype) for facet in range(dir_num)))
 
-    # Predict
+    # Predict facets
     for poly in args.polygons:
         polynumber = basename(poly).replace("poly_", "").replace(".reg", "")
         h5 = split_facet_h5(args.h5, f"Dir{int(float(polynumber)):02d}")
@@ -317,14 +395,12 @@ def main():
             t.putcol(column, inp)
 
     if args.tmp != '.':
-        # Copy output data back
+        # Copy output data back if tmp used
         copy_data(msin, outdir)
 
     # Cleanup
     for dat in memmaps:
         os.remove(dat.filename)
-
-    # Reorder files
     for tmpfile in glob(f"{msin}*.tmp"):
         os.remove(tmpfile)
 

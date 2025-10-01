@@ -17,20 +17,48 @@ import tables
 dtype = np.complex64
 
 
-def run_dp3(low_ms: str = None, high_ms: str = None, facet_column: str = "MODEL_DATA", phaseshift: str = None, freqavg: str = None,
-            timeres: str = None, applycal_h5: str = None, dirname: str = None, outdir: str = "."):
+def run_dp3(
+    low_ms: str | None = None,
+    high_ms: str | None = None,
+    facet_column: str = "MODEL_DATA",
+    phaseshift: str | None = None,
+    freqavg: str | None = None,
+    timeres: str | None = None,
+    applycal_h5: str | None = None,
+    dirname: str | None = None,
+    outdir: str = ".") -> str:
     """
-    Run DP3 command to upsample from low to high resolution data and split out facet.
-    This step assumes the solutions that are applied to be scalar.
+    Run DP3 to upsample from low- to high-resolution data and split out a facet.
 
-    :param low_ms: low resolution MeasurementSet
-    :param to_ms: high resolution MeasurementSet
-    :param phaseshift: do phase shift to specific center
-    :param freqavg: frequency averaging
-    :param timeres: time resolution in seconds
-    :param applycal_h5: applycal solution file
-    :param dirname: direction name from h5parm
-    :param outdir: Path to write log files to
+    This step performs transfer, combination, phase shifting, averaging,
+    calibration, and beam correction using DP3. It assumes the applied
+    solutions are scalar.
+
+    Parameters
+    ----------
+    low_ms : str, optional
+        Path to the low-resolution Measurement Set.
+    high_ms : str, optional
+        Path to the high-resolution Measurement Set.
+    facet_column : str, default="MODEL_DATA"
+        Data column to process within the facet.
+    phaseshift : str, optional
+        Phase centre to shift to, in `[ra,dec]` format.
+    freqavg : str, optional
+        Frequency averaging, given as number of channels or resolution string.
+    timeres : str, optional
+        Time resolution for averaging (e.g., in seconds).
+    applycal_h5 : str, optional
+        Path to H5Parm file with calibration solutions to apply.
+    dirname : str, optional
+        Direction name from the H5Parm.
+    outdir : str, default="."
+        Directory to write DP3 log files.
+
+    Returns
+    -------
+    str
+        The path of the output Measurement Set created by DP3.
     """
 
     steps = []
@@ -101,14 +129,26 @@ def run_dp3(low_ms: str = None, high_ms: str = None, facet_column: str = "MODEL_
     return msout
 
 
-def get_largest_divider(inp, integer):
+def get_largest_divider(inp: int, integer: int) -> int:
     """
-    Get largest divider
+    Get the largest divisor of a number within a given bound.
 
-    :param inp: input number
-    :param max: max divider
+    Parameters
+    ----------
+    inp : int
+        The input number to divide.
+    integer : int
+        The maximum possible divisor to check.
 
-    :return: largest divider from inp bound by max
+    Returns
+    -------
+    int
+        The largest divisor of `inp` that is less than or equal to `integer`.
+
+    Raises
+    ------
+    SystemExit
+        If no divisor is found between `inp` and `integer`.
     """
 
     for r in range(integer+1)[::-1]:
@@ -117,14 +157,21 @@ def get_largest_divider(inp, integer):
     sys.exit(f"ERROR: did not find a largest divider between {inp} and {integer}.")
 
 
-def parse_history(ms, hist_item):
+def parse_history(ms: str, hist_item: str) -> str | None:
     """
-    Grep specific history item from MS
+    Extract a specific history item from a Measurement Set.
 
-    :param ms: MeasurementSet
-    :param hist_item: history item
+    Parameters
+    ----------
+    ms : str
+        Path to the Measurement Set.
+    hist_item : str
+        Substring to search for in the HISTORY table.
 
-    :return: parsed string
+    Returns
+    -------
+    str or None
+        The first matching history entry if found, otherwise None.
     """
 
     hist = os.popen('taql "SELECT * FROM ' + ms + '::HISTORY" | grep ' + hist_item).read().split(' ')
@@ -161,7 +208,7 @@ def get_time_preavg_factor(ms: str = None):
         return None
 
 
-def get_facet_info(polygon_info_file, ms, polygon_region):
+def get_facet_info(polygon_info_file: str, ms: str, polygon_region: str):
     """
     Extract facet information from polygon metadata and a MeasurementSet.
 
@@ -219,7 +266,17 @@ def get_facet_info(polygon_info_file, ms, polygon_region):
     return phasecentre, freq_avg, time_avg, direction_name, facet_column
 
 
-def copy_data(dat, to):
+def copy_data(dat: str, to: str):
+    """
+    Copy a file or directory using rsync.
+
+    Parameters
+    ----------
+    dat : str
+        Path to the source file or directory.
+    to : str
+        Destination path.
+    """
     os.system(f"rsync -avH --no-implied-dirs --copy-links {dat} {to}")
 
 
@@ -256,7 +313,7 @@ def main():
     else:
         outdir = '.'
 
-    # Get information from facet
+    # Get information from facet polygon
     phasecentre, freqavg, timeres, dirname, facet_column = get_facet_info(args.polygon_info, high_ms, args.polygon)
 
     # Make facet data

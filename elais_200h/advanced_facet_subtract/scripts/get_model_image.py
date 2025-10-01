@@ -13,21 +13,40 @@ from casacore.tables import table
 from astropy.io import fits
 
 
-def add_trailing_zeros(s, digitsize=4):
+def add_trailing_zeros(s: str, digitsize: int = 4) -> str:
     """
-     Add trailing zero
+    Pad a string with leading zeros to a fixed width.
 
-     :param s: string
-     :param digitsize: number of digits (default 4)
-     :return: trailing zeros + number --> example: 0001, 0021, ...
-     """
+    Parameters
+    ----------
+    s : str
+        Input string representing a number.
+    digitsize : int, default=4
+        Total width of the output string.
+
+    Returns
+    -------
+    str
+        Zero-padded string, e.g. "1" → "0001", "21" → "0021".
+    """
     padded_string = "".join(repeat("0", digitsize)) + s
     return padded_string[-digitsize:]
 
 
-def get_model_image(msin, model_images):
+def get_model_image(msin: str, model_images: list[str]) -> None:
     """
-    Get matching model images with MS
+    Match model images to a MeasurementSet and prepare them for prediction.
+
+    This function selects model images whose frequency coverage overlaps
+    with the input Measurement Set, copies them to the current directory,
+    and renames them into a consistent numbering scheme for WSClean.
+
+    Parameters
+    ----------
+    msin : str
+        Path to the input Measurement Set.
+    model_images : list of str
+        List of candidate model image FITS files.
     """
 
     def rename_and_resort(pattern):
