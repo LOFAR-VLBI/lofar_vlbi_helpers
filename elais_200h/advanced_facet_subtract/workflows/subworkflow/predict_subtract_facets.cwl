@@ -60,13 +60,28 @@ steps:
          - id: tmpdir
            source: tmpdir
       out:
-         - predicted_ms
-      run: ../../steps/predict_facets.cwl
+         - model_data_npy
+      run: ../../steps/predict_facet.cwl
+      scatter: polygons
+
+    - id: combine_facets
+      in:
+         - id: msin
+           source: average_subband/ms_avg
+         - id: facet_model_data
+           source: predict_facets/model_data_npy
+         - id: ncpu
+           source: ncpu
+         - id: tmpdir
+           source: tmpdir
+      out:
+         - ms_with_polygon_model
+      run: ../../steps/combine_facets.cwl
 
     - id: make_facet_ms
       in:
          - id: avg_ms
-           source: predict_facets/predicted_ms
+           source: combine_facets/ms_with_polygon_model
          - id: full_ms
            source: msin
          - id: h5parm
