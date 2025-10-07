@@ -179,8 +179,18 @@ def main():
 
             if column not in colnames:
                 desc = t.getcoldesc('DATA')
-                print('Create ' + column)
+                desc['DATA']['dataManagerType'] = 'StandardStMan'
+                desc['DATA']['dataManagerGroup'] = 'StandardStMan'
+                desc['UVW']['dataManagerType'] = 'StandardStMan'
+                desc['UVW']['dataManagerGroup'] = 'StandardStMan'
+                desc['WEIGHT_SPECTRUM']['dataManagerType'] = 'StandardStMan'
+                desc['WEIGHT_SPECTRUM']['dataManagerGroup'] = 'StandardStMan'
+                desc['ANTENNA1']['dataManagerType'] = 'StandardStMan'
+                desc['ANTENNA1']['dataManagerGroup'] = 'StandardStMan'
+                desc['ANTENNA2']['dataManagerType'] = 'StandardStMan'
+                desc['ANTENNA2']['dataManagerGroup'] = 'StandardStMan'
                 desc['name'] = column
+                print('Create ' + column)
                 t.addcols(desc)
 
             t.putcol(column, inp)
