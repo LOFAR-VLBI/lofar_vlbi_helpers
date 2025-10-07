@@ -56,7 +56,7 @@ outputs:
       type: File
       doc: Predicted MeasurementSet
       outputBinding:
-        glob: "*.npy"
+        glob: "POLY*.npy"
 
     - id: logfile
       type: File[]

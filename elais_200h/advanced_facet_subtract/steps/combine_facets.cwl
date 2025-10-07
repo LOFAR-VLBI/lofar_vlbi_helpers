@@ -1,6 +1,6 @@
 class: CommandLineTool
 cwlVersion: v1.2
-id: predict_facets
+id: combine_facets
 doc: Combine facets by summing them together to form a facet mask and insert in MeasurementSet as model data
 
 baseCommand:
@@ -64,7 +64,7 @@ requirements:
       listing:
         - entry: $(inputs.msin)
           writable: true
-        - entry: $(inputs.model_data_npy)
+        - entry: $(inputs.facet_model_data)
 
 stdout: combine_facets.log
 stderr: combine_facets_err.log
