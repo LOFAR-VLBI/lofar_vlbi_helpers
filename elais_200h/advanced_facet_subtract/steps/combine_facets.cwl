@@ -50,9 +50,6 @@ outputs:
       outputBinding:
         glob: combine_facets*.log
 
-arguments:
-    - --cleanup
-
 hints:
     - class: DockerRequirement
       dockerPull: vlbi-cwl
