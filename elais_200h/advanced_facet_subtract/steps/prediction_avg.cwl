@@ -38,6 +38,9 @@ arguments:
   - avg.freqresolution='61.05kHz'
   - msout.storagemanager='dysco'
   - msout=$( inputs.msin.basename + '.avg.ms')
+  - msout.antennacompression=false
+  - msout.uvwcompression=false
+  - msout.scalarflags=false
 
 requirements:
   - class: ShellCommandRequirement
