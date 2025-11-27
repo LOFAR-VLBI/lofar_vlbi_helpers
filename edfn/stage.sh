@@ -9,7 +9,7 @@ mkdir -p L${SASID}
 
 cd $MASTERDIR/L${SASID}
 
-singularity exec $SING_IMG python $SOFTWARE_DIR/flocs-lta/flocs_lta/flocs_search_lta.py \
+singularity exec $SING_IMG python $SOFTWAREDIR/flocs-lta/flocs_lta/flocs_search_lta.py \
     --sasid "$SASID" \
     --project ALL \
     --stage
