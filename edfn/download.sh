@@ -4,16 +4,9 @@
 STAGE_ID_CALIBRATOR=$1
 STAGE_ID_TARGET=$2
 SASID=$3
+SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
 
 # SETUP
-if [[ -n "${SLURM_JOB_ID:-}" ]]; then
-    # Parse WorkDir from scontrol
-    SCRIPT="$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/Command=/{print $3}')"
-    echo $SCRIPT
-    SCRIPT_DIR=$( echo ${SCRIPT%/*} )
-else
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-fi
 source $SCRIPT_DIR/setup.sh --no-git --no-sing
 
 cd $MASTERDIR/L${SASID}

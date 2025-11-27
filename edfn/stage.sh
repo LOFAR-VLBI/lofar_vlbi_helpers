@@ -1,13 +1,8 @@
 #!/bin/bash
 
 SASID=$1
+SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
 
-if [[ -n ${SLURM_SUBMIT_DIR:-} ]]; then
-    SCRIPT=$(scontrol show job "${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" | awk -F= '/Command=/{print $1}')
-    export SCRIPT_DIR=$( echo ${SCRIPT%/*} )
-else
-    SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
-fi
 source $SCRIPT_DIR/setup.sh
 
 mkdir -p L${SASID}
