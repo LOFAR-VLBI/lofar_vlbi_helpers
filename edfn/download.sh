@@ -14,7 +14,7 @@ cd $MASTERDIR/L${SASID}
 # DOWNLOAD CALIBRATOR
 mkdir -p calibrator/data
 cd calibrator/data
-singularity exec $SING_IMG python $SOFTWARE_DIR/flocs-lta/flocs_lta/flocs_download.py --parallel-downloads 10 $STAGE_ID_CALIBRATOR
+singularity exec $SING_IMG python $SOFTWAREDIR/flocs-lta/flocs_lta/flocs_download.py --parallel-downloads 10 $STAGE_ID_CALIBRATOR
 for TAR in *SB*.tar*; do
     echo "Extracting $tar ..."
     tar -xf $tar
@@ -42,7 +42,7 @@ done
 # DOWNLOAD TARGET
 mkdir -p target/data
 cd target/data
-singularity exec $SING_IMG python $SOFTWARE_DIR/flocs-lta/flocs_lta/flocs_download.py --parallel-downloads 10 $STAGE_ID_TARGET
+singularity exec $SING_IMG python $SOFTWAREDIR/flocs-lta/flocs_lta/flocs_download.py --parallel-downloads 10 $STAGE_ID_TARGET
 for tar in *SB*.tar*; do
     echo "Extracting $tar ..."
     tar -xf $tar
