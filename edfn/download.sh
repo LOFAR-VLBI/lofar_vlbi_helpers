@@ -6,7 +6,11 @@ STAGE_ID_TARGET=$2
 SASID=$3
 
 # SETUP
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+if [[ -n ${SLURM_SUBMIT_DIR:-} ]]; then
+    SCRIPT_DIR="$SLURM_SUBMIT_DIR"
+else
+    SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+fi
 source $SCRIPT_DIR/setup.sh --no-git --no-sing
 
 cd $MASTERDIR/L${SASID}
