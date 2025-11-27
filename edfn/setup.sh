@@ -10,14 +10,6 @@ SINGULARITY=https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/containe
 DO_GIT=1
 DO_SINGULARITY=1
 
-usage() {
-    echo "Usage: $0 [--no-git] [--no-sing]"
-    echo
-    echo "  --no-git    Skip git clone/pull of repositories"
-    echo "  --no-sing   Skip downloading/copying the Singularity image"
-    echo "  -h, --help  Show this help message"
-    exit 1
-}
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -30,11 +22,15 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         -h|--help)
-            usage
+            echo "Usage: $0 [--no-git] [--no-sing]"
+            echo
+            echo "  --no-git    Skip git clone/pull of repositories"
+            echo "  --no-sing   Skip downloading/copying the Singularity image"
+            return 0 2>/dev/null || exit 0
             ;;
         *)
             echo "Unknown option: $1"
-            usage
+            return 1 2>/dev/null || exit 1
             ;;
     esac
 done
