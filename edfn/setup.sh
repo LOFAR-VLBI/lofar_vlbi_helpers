@@ -10,29 +10,17 @@ SINGULARITY=https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/containe
 DO_GIT=1
 DO_SINGULARITY=1
 
-
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --no-git)
             DO_GIT=0
-            shift
             ;;
         --no-sing)
             DO_SINGULARITY=0
-            shift
             ;;
-        -h|--help)
-            echo "Usage: $0 [--no-git] [--no-sing]"
-            echo
-            echo "  --no-git    Skip git clone/pull of repositories"
-            echo "  --no-sing   Skip downloading/copying the Singularity image"
-            return 0 2>/dev/null || exit 0
-            ;;
-        *)
-            echo "Unknown option: $1"
-            return 1 2>/dev/null || exit 1
-            ;;
+        # anything else is just ignored
     esac
+    shift
 done
 
 # DOWNLOAD SOFTWARE
