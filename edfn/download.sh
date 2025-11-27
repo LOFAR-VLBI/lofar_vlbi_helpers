@@ -7,7 +7,7 @@ SASID=$3
 
 # SETUP
 if [[ -n ${SLURM_SUBMIT_DIR:-} ]]; then
-    SCRIPT=$(scontrol show job "${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" | awk -F= '/Command=/{print $TARHTML}')
+    SCRIPT=$(scontrol show job "${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" | awk -F= '/Command=/{print $3}')
     export SCRIPT_DIR=$( echo ${SCRIPT%/*} )
 else
     SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
