@@ -1,0 +1,15 @@
+#!/bin/bash
+
+SASID=$1
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+source $SCRIPT_DIR/setup.sh
+
+mkdir -p L${SASID}
+
+cd $MASTERDIR/L${SASID}
+
+singularity exec $SING_IMG python $SOFTWARE_DIR/flocs-lta/flocs_lta/flocs_search_lta.py \
+    --sasid "$SASID" \
+    --project ALL \
+    --stage
