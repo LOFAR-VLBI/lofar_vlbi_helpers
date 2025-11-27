@@ -72,11 +72,14 @@ else
     echo ">>> Skipping git clone/pull (per --no-git)."
 fi
 
-# DOWNLOAD SINGULARITY
-mkdir -p $SIMG_CACHE_DIR/pull
+SIMG_CACHE_DIR=$SOFTWAREDIR/singularity_cache
+SIMG=vlib-cwl.sif
 
 if [[ $DO_SINGULARITY -eq 1 ]]; then
     echo ">>> Handling Singularity image..."
+
+    # DOWNLOAD SINGULARITY
+    mkdir -p $SIMG_CACHE_DIR/pull
 
     # Download singularity only if not already present in cache
     if [ -f $SIMG_CACHE_DIR/$SIMG ]; then
