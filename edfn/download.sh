@@ -8,7 +8,7 @@ SASID=$3
 # SETUP
 if [[ -n "${SLURM_JOB_ID:-}" ]]; then
     # Parse WorkDir from scontrol
-    SCRIPT_DIR="$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/WorkDir=/{print $2}')"
+    SCRIPT_DIR="$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/Command=/{print $3}')"
 else
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 fi
