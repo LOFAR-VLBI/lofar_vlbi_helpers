@@ -6,11 +6,11 @@ STAGE_ID_TARGET=$2
 SASID=$3
 
 # SETUP
-if [[ -n ${SLURM_SUBMIT_DIR:-} ]]; then
-    SCRIPT=$(scontrol show job "${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" | awk -F= '/Command=/{print $3}')
-    export SCRIPT_DIR=$( echo ${SCRIPT%/*} )
+if [[ -n "${SLURM_JOB_ID:-}" ]]; then
+    # Parse WorkDir from scontrol
+    SCRIPT_DIR="$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/WorkDir=/{print $2}')"
 else
-    SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 fi
 source $SCRIPT_DIR/setup.sh --no-git --no-sing
 
