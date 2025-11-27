@@ -73,7 +73,7 @@ else
 fi
 
 SIMG_CACHE_DIR=$SOFTWAREDIR/singularity_cache
-SIMG=vlib-cwl.sif
+SIMG=vlbi-cwl.sif
 
 if [[ $DO_SINGULARITY -eq 1 ]]; then
     echo ">>> Handling Singularity image..."
