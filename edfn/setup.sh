@@ -15,7 +15,6 @@ usage() {
     echo
     echo "  --no-git   Skip git clone/pull of repositories"
     echo "  --no-sing   Skip downloading/copying the Singularity image"
-    exit 1
 }
 
 while [[ $# -gt 0 ]]; do
@@ -29,10 +28,6 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         -h|--help)
-            usage
-            ;;
-        *)
-            echo "Unknown option: $1"
             usage
             ;;
     esac
