@@ -9,6 +9,7 @@ SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
 # SETUP
 source $SCRIPT_DIR/setup.sh --no-git --no-sing
 
+mkdir -p $MASTERDIR/L${SASID}
 cd $MASTERDIR/L${SASID}
 
 # DOWNLOAD CALIBRATOR
