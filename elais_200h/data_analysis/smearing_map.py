@@ -45,7 +45,7 @@ def scatter_with_scale(
     cmap="cividis",
     fits_file=None,
     facets=None,
-    smooth_sigma=10.0,      # Gaussian smoothing (in grid pixels)
+    smooth_sigma=5.0,      # Gaussian smoothing (in grid pixels)
     grid_res=400           # grid resolution
 ):
 
@@ -180,20 +180,15 @@ def scatter_with_scale(
             # write this facet into global smooth map
             smear_smooth_all = np.where(grid_mask, facet_smooth, smear_smooth_all)
 
-    # --- Display smooth per-facet map ---
     im = ax.imshow(
         smear_smooth_all,
         origin="lower",
         extent=[gx.min(), gx.max(), gy.min(), gy.max()],
         cmap=cmap,
-        aspect="equal"
+        aspect="equal",
+        vmin=0.2,
+        vmax=1.0,
     )
-
-    # Optional: overplot original points
-    # ax.scatter(xpix, ypix, c=scales, cmap=cmap, s=10,
-    #            edgecolor="k", linewidth=0.2, alpha=0.7)
-
-    # --- Colourbar & labels ---
     cbar = fig.colorbar(im, ax=ax)
     cbar.set_label("Smearing factor")
 
@@ -226,7 +221,7 @@ for facet in facets:
 ra2 = []
 dec2 = []
 smearing2 = []
-facets = glob('facet_*/facet_*avg2sec_source_catalog.fits')
+facets = glob('facet_*/facet_*avg1sec_source_catalog.fits')
 for facet in facets:
     m1, m2 = find_matches('fullFoV_1sec/1.2asec-image-restored_source_catalog.fits',
                           facet,

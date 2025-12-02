@@ -46,6 +46,20 @@ def fluxration_smearing(central_freq_hz, bandwidth_hz, integration_time_s, resol
     return time_smearing, bw_smearing, total_smearing
 
 
+def get_largest_divider(inp, integer):
+    """
+    Get largest divider
+
+    :param inp: input number
+    :param max: max divider
+
+    :return: largest divider from inp bound by max
+    """
+    for r in range(integer+1)[::-1]:
+        if inp % r == 0:
+            return r
+
+
 def plot_theoretical_smearing(
     fits_file,
     csv_file,
@@ -116,6 +130,9 @@ def plot_theoretical_smearing(
     for _, row in df.iterrows():
         poly_file = '/project/lofarvwf/Share/jdejong/output/ELAIS/ALL_200h/polygons/'+row["polygon_file"]
         avg_factor = float(row["avg"])
+        freqavg = avg_factor
+        if freqavg==3:
+            freqavg-=1
 
         # Region for this facet, in image coords
         reg = pyregion.open(poly_file).as_imagecoord(header=header)
@@ -162,7 +179,7 @@ def plot_theoretical_smearing(
         phase_centre_sep_deg = pts_coords.separation(phase_centre).deg
 
         # effective averaging in freq & time
-        eff_bw = bandwidth_hz * avg_factor
+        eff_bw = bandwidth_hz * freqavg
         eff_int_1 = integration_time_s * avg_factor
         avg_factor_2 = avg_factor
         if avg_factor_2%2!=0:
@@ -205,15 +222,19 @@ def plot_theoretical_smearing(
             distance_from_phase_center_deg=phase_centre_sep_deg,
         )
 
-        # smear_total_grid[mask] = ((facet_time_smearing_1*0.6 + facet_time_smearing_2*0.4)
+
+        smear_total_grid[mask] = ((facet_time_smearing_1*0.6 + facet_time_smearing_2*0.4)
+                                  * facet_bandwidth_smearing
+                                  * (total_time_smearing_1*0.6+np.where(total_time_smearing_2>0,total_time_smearing_2, 0)*0.4)
+                                  * total_bandwidth_smearing)
+
+        # total_time_smearing_1 = 1.0
+        # total_time_smearing_2 = 1.0
+        # smear_total_grid[mask] = ((facet_time_smearing_1*1.0 + facet_time_smearing_2*0.0)
         #                           * facet_bandwidth_smearing
-        #                           * (total_time_smearing_1*0.6+np.where(total_time_smearing_2>0,total_time_smearing_2, 0)*0.4)
+        #                           * (total_time_smearing_1*1.0+np.where(total_time_smearing_2>0,total_time_smearing_2, 0)*0.0)
         #                           * total_bandwidth_smearing)
 
-        smear_total_grid[mask] = ((facet_time_smearing_1*1.0)# + facet_time_smearing_2*0.4)
-                                  * facet_bandwidth_smearing
-                                  * (total_time_smearing_1*1.0)#+np.where(total_time_smearing_2>0,total_time_smearing_2, 0)*0.4)
-                                  * total_bandwidth_smearing)
 
     # ----- Plot result -----
     fig = plt.figure(figsize=(8, 6))
@@ -225,6 +246,8 @@ def plot_theoretical_smearing(
         extent=[gx.min(), gx.max(), gy.min(), gy.max()],
         cmap=cmap,
         aspect="equal",
+        vmin=0.2,
+        vmax=1.0,
     )
 
     # facet outlines
@@ -234,7 +257,7 @@ def plot_theoretical_smearing(
         ax.add_patch(patch)
 
     cbar = fig.colorbar(im, ax=ax)
-    cbar.set_label("Theoretical smearing factor")
+    cbar.set_label("Theoretical smearing")
 
     ax.set_xlabel("Right Ascension (J2000)")
     ax.set_ylabel("Declination (J2000)")
@@ -250,6 +273,6 @@ plot_theoretical_smearing(fits_file='fullFoV_1sec/1.2asec-image.fits',
                           central_freq_hz=140e6,
                           bandwidth_hz=12.21e3,
                           integration_time_s=1.0,
-                          resolution_arcsec=0.3,
+                          resolution_arcsec=0.4,
                           grid_res=800,
                           cmap="cividis")
