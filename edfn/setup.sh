@@ -4,6 +4,7 @@
 export SOFTWAREDIR="/project/lofarvwf/Software"
 export SING_BIND="/project/lofarvwf/"
 export MASTERDIR="/project/lofarvwf/Share/jdejong/output/EUCLID/edfn"
+export VENV="/project/lofarvwf/Software/venv"
 SINGULARITY=https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/containers/flocs_v6.0.0_znver2_znver2.sif
 
 # OPTIONS

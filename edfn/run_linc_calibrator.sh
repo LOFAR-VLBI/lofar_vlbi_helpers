@@ -16,4 +16,6 @@ ulimit -S -n 8192
 singularity exec $SING_IMG python ~/scripts/lofar_vlbi_helpers/elais_200h/download_scripts/removebands.py --freqcut 168 --datafolder data
 
 # Run LINC calibrator
+source ${VENV}/bin/activate
 flocs-run linc calibrator data
+deactivate
