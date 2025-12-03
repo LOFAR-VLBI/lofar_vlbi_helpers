@@ -94,5 +94,11 @@ export CWL_SINGULARITY_CACHE=$SIMG_CACHE_DIR
 export LINC_DATA_ROOT=$(realpath LINC)
 export VLBI_DATA_ROOT=$(realpath pilot)
 export TOIL_CHECK_ENV=True
+export APPTAINERENV_TMPDIR="${PWD}/tmpdir"
+export APPTAINERENV_RESULTSDIR="${PWD}/outdir"
+export APPTAINERENV_LOGSDIR="${PWD}/logs"
+
+mkdir -p ${APPTAINERENV_RESULTSDIR}
+mkdir -p ${APPTAINERENV_LOGSDIR}
 
 cd $STARTDIR
