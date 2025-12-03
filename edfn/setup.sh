@@ -59,29 +59,19 @@ else
 fi
 
 SIMG_CACHE_DIR=$SOFTWAREDIR/singularity_cache
-SIMG=vlbi-cwl.sif
+SIMG=vlbi-cwl
 
 if [[ $DO_SINGULARITY -eq 1 ]]; then
     echo ">>> Handling Singularity image..."
-
     # DOWNLOAD SINGULARITY
     mkdir -p $SIMG_CACHE_DIR/pull
-
-    # Download singularity only if not already present in cache
-    if [ -f $SIMG_CACHE_DIR/$SIMG ]; then
-        echo "$SIMG already exists in cache, skipping download."
-    else
-        echo "Downloading $SIMG..."
-        wget $SINGULARITY -O $SIMG_CACHE_DIR/$SIMG
-    fi
-
+    echo "Downloading $SIMG..."
+    wget $SINGULARITY -O ${SIMG_CACHE_DIR}/${SIMG}:latest.sif
+    cp singularity/vlbi-cwl:latest.sif singularity/astronrd_linc:latest.sif
     # Copy singularity into pull directory only if missing
-    if [ -f $SIMG_CACHE_DIR/pull/$SIMG ]; then
-        echo "$SIMG already exists in pull directory, skipping copy."
-    else
-        echo "Copying $SIMG into pull directory..."
-        cp $SIMG_CACHE_DIR/$SIMG" "$SIMG_CACHE_DIR/pull/$SIMG
-    fi
+    echo "Copying $SIMG into pull directory..."
+    cp ${SIMG_CACHE_DIR}/${SIMG}:latest.sif ${SIMG_CACHE_DIR}/pull/${SIMG}_latest.sif
+    cp ${SIMG_CACHE_DIR}/pull/${SIMG}_latest.sif singularity/astronrd_linc_latest.sif
 else
     echo ">>> Skipping Singularity download/copy (per --no-sing)."
 fi
@@ -89,7 +79,7 @@ fi
 # SETUP VARIABLES
 export APPTAINERENV_PYTHONPATH=$PWD/lofar_stager_api:$PWD/lotss-hba-survey:\$PYTHONPATH
 export APPTAINER_BIND=$SING_BIND
-export SING_IMG=$SIMG_CACHE_DIR/$SIMG
+export SING_IMG=${SIMG_CACHE_DIR}/pull/${SIMG}_latest.sif
 export CWL_SINGULARITY_CACHE=$SIMG_CACHE_DIR
 export LINC_DATA_ROOT=$(realpath LINC)
 export VLBI_DATA_ROOT=$(realpath pilot)
@@ -97,6 +87,7 @@ export TOIL_CHECK_ENV=True
 export APPTAINERENV_TMPDIR="${PWD}/tmpdir"
 export APPTAINERENV_RESULTSDIR="${PWD}/outdir"
 export APPTAINERENV_LOGSDIR="${PWD}/logs"
+export CWL_SINGULARITY_CACHE=${SIMG_CACHE_DIR}
 
 mkdir -p ${APPTAINERENV_RESULTSDIR}
 mkdir -p ${APPTAINERENV_LOGSDIR}
