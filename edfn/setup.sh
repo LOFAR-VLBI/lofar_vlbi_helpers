@@ -66,12 +66,16 @@ if [[ $DO_SINGULARITY -eq 1 ]]; then
     # DOWNLOAD SINGULARITY
     mkdir -p $SIMG_CACHE_DIR/pull
     echo "Downloading $SIMG..."
-    wget $SINGULARITY -O ${SIMG_CACHE_DIR}/${SIMG}:latest.sif
-    cp singularity/vlbi-cwl:latest.sif singularity/astronrd_linc:latest.sif
+    wget $SINGULARITY -O ${SIMG_CACHE_DIR}/${SIMG}.sif
+    cp ${SIMG_CACHE_DIR}/${SIMG}.sif ${SIMG_CACHE_DIR}/vlbi-cwl:latest.sif
+    cp ${SIMG_CACHE_DIR}/${SIMG}.sif singularity/astronrd_linc:latest.sif
+    cp ${SIMG_CACHE_DIR}/${SIMG}.sif ${SIMG_CACHE_DIR}/vlbi-cwl_latest.sif
+    cp ${SIMG_CACHE_DIR}/${SIMG}.sif singularity/astronrd_linc_latest.sif
     # Copy singularity into pull directory only if missing
     echo "Copying $SIMG into pull directory..."
-    cp ${SIMG_CACHE_DIR}/${SIMG}:latest.sif ${SIMG_CACHE_DIR}/pull/${SIMG}_latest.sif
-    cp ${SIMG_CACHE_DIR}/pull/${SIMG}_latest.sif singularity/astronrd_linc_latest.sif
+    cp ${SIMG_CACHE_DIR}/${SIMG}.sif ${SIMG_CACHE_DIR}/pull/${SIMG}.sif
+    cp ${SIMG_CACHE_DIR}/${SIMG}.sif ${SIMG_CACHE_DIR}/pull/${SIMG}_latest.sif
+    cp ${SIMG_CACHE_DIR}/${SIMG}.sif ${SIMG_CACHE_DIR}/pull/astronrd_linc_latest.sif
 else
     echo ">>> Skipping Singularity download/copy (per --no-sing)."
 fi
