@@ -70,7 +70,7 @@ if [[ $DO_SINGULARITY -eq 1 ]]; then
     cp ${SIMG_CACHE_DIR}/${SIMG}.sif ${SIMG_CACHE_DIR}/vlbi-cwl:latest.sif
     cp ${SIMG_CACHE_DIR}/${SIMG}.sif singularity/astronrd_linc:latest.sif
     cp ${SIMG_CACHE_DIR}/${SIMG}.sif ${SIMG_CACHE_DIR}/vlbi-cwl_latest.sif
-    cp ${SIMG_CACHE_DIR}/${SIMG}.sif singularity/astronrd_linc_latest.sif
+    cp ${SIMG_CACHE_DIR}/${SIMG}.sif ${SIMG_CACHE_DIR}/astronrd_linc_latest.sif
     # Copy singularity into pull directory only if missing
     echo "Copying $SIMG into pull directory..."
     cp ${SIMG_CACHE_DIR}/${SIMG}.sif ${SIMG_CACHE_DIR}/pull/${SIMG}.sif
@@ -81,10 +81,8 @@ else
 fi
 
 # SETUP VARIABLES
-export APPTAINERENV_PYTHONPATH=$PWD/lofar_stager_api:$PWD/lotss-hba-survey:\$PYTHONPATH
 export APPTAINER_BIND=$SING_BIND
 export SING_IMG=${SIMG_CACHE_DIR}/pull/${SIMG}_latest.sif
-export CWL_SINGULARITY_CACHE=$SIMG_CACHE_DIR
 export LINC_DATA_ROOT=$(realpath LINC)
 export VLBI_DATA_ROOT=$(realpath pilot)
 export TOIL_CHECK_ENV=True
@@ -93,6 +91,9 @@ export APPTAINERENV_RESULTSDIR="${PWD}/outdir"
 export APPTAINERENV_LOGSDIR="${PWD}/logs"
 export CWL_SINGULARITY_CACHE=${SIMG_CACHE_DIR}
 export APPTAINER_PULLDIR=${SIMG_CACHE_DIR}/pull
+export APPTAINER_CACHEDIR=${SIMG_CACHE_DIR}
+export APPTAINERENV_PREPEND_PATH=${LINC_DATA_ROOT}/scripts:${VLBI_DATA_ROOT}/scripts
+export APPTAINERENV_PYTHONPATH=${PWD}/lofar_stager_api:${PWD}/lotss-hba-survey:${VLBI_DATA_ROOT}/scripts:${LINC_DATA_ROOT}/scripts:\$PYTHONPATH
 
 mkdir -p ${APPTAINERENV_RESULTSDIR}
 mkdir -p ${APPTAINERENV_LOGSDIR}
