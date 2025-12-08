@@ -1,4 +1,5 @@
 #!/bin/bash
+#SBATCH -c 10
 
 # INPUT
 STAGE_ID_CALIBRATOR=$1
@@ -23,22 +24,22 @@ for TAR in *SB*.tar*; do
 done
 cd ../../
 
-# SPLIT CALIBRATORS
-cal1_prefix=""
-cal2_prefix=""
-for d in L[0-9][0-9][0-9][0-9][0-9][0-9][0-9]_* L[0-9][0-9][0-9][0-9][0-9][0-9]_*; do
-    [ -d "$d" ] || continue
-    prefix=${d%%_*}
-    if [[ -z $cal1_prefix || $prefix == $cal1_prefix ]]; then
-        cal1_prefix=$prefix
-        mkdir -p ../../calibrator_1/data
-        mv $d ../../calibrator_1/data/
-    else
-        cal2_prefix=$prefix
-        mkdir -p ../../calibrator_2/data
-        mv $d ../../calibrator_2/data/
-    fi
-done
+## SPLIT CALIBRATORS
+#cal1_prefix=""
+#cal2_prefix=""
+#for d in L[0-9][0-9][0-9][0-9][0-9][0-9][0-9]_* L[0-9][0-9][0-9][0-9][0-9][0-9]_*; do
+#    [ -d "$d" ] || continue
+#    prefix=${d%%_*}
+#    if [[ -z $cal1_prefix || $prefix == $cal1_prefix ]]; then
+#        cal1_prefix=$prefix
+#        mkdir -p ../../calibrator_1/data
+#        mv $d ../../calibrator_1/data/
+#    else
+#        cal2_prefix=$prefix
+#        mkdir -p ../../calibrator_2/data
+#        mv $d ../../calibrator_2/data/
+#    fi
+#done
 
 # DOWNLOAD TARGET
 mkdir -p target/data

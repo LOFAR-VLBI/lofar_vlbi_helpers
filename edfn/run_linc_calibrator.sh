@@ -12,9 +12,6 @@ ulimit -S -n 8192
 # Ensure < 168 MHz
 singularity exec $SIMG_CACHE_DIR/$SIMG python ~/scripts/lofar_vlbi_helpers/elais_200h/download_scripts/removebands.py --freqcut 168 --datafolder data
 
-export TOIL_SLURM_ARGS="--export=ALL -t 12:00:00"
-
-# Run LINC calibrator
 source ${VENV}/bin/activate
-flocs-run linc calibrator --runner toil data
+flocs-run linc calibrator --slurm-time "1:00:00" --slurm-queue "normal" --slurm-account lofarvwf --runner toil --scheduler slurm data
 deactivate
