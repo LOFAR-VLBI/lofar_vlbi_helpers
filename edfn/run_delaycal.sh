@@ -1,0 +1,33 @@
+#!/bin/bash
+#SBATCH -c 1
+#SBATCH --output=delay_%j.out
+#SBATCH --error=delay_%j.err
+#SBATCH -p short
+
+SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
+
+source $SCRIPT_DIR/setup.sh --no-git --no-sing
+
+ulimit -S -n 8192
+
+source ../../.venv/bin/activate
+python ../../run_plot_field.py --ms ../target/LINC_target_*/results_LINC_target/results/*.dp3concat
+deactivate
+
+source ${VENV}/bin/activate
+flocs-run vlbi delay-calibration \
+--slurm-time "48:00:00" \
+--slurm-queue "normal" \
+--slurm-account lofarvwf \
+--runner toil \
+--scheduler slurm \
+--ddf-solsdir $(abspath ../ddf/SOLSDIR) \
+--ddf-rundir $(abspath ../ddf) \
+--do-subtraction True \
+--do-validation True \
+--ms-suffix "dp3concat" \
+--apply-delay-solutions True \
+--do-auto-delay-selection True \
+--delay-calibrator $(abspath delay_calibrators.csv) \
+$(abspath ../target/LINC_target_*/results_LINC_target/results)
+deactivate

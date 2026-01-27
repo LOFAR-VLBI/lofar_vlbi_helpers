@@ -257,14 +257,16 @@ def plot_theoretical_smearing(
         ax.add_patch(patch)
 
     cbar = fig.colorbar(im, ax=ax)
-    cbar.set_label("Theoretical smearing")
+    cbar.set_label("Smearing", fontsize=16)
 
-    ax.set_xlabel("Right Ascension (J2000)")
-    ax.set_ylabel("Declination (J2000)")
-    ax.set_title("Facet-dependent smearing")
+    ax.set_xlabel("Right Ascension (J2000)", fontsize=16)
+    ax.set_ylabel("Declination (J2000)", fontsize=16)
+    # ax.set_title("Facet-dependent smearing")
+    ax.tick_params(axis="both", which="major", labelsize=14)
+    cbar.ax.tick_params(labelsize=14)
 
     plt.tight_layout()
-    plt.show()
+    plt.savefig("smearing.png", dpi=200)
 
 
 plot_theoretical_smearing(fits_file='fullFoV_1sec/1.2asec-image.fits',
