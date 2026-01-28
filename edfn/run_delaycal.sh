@@ -16,18 +16,18 @@ deactivate
 
 source ${VENV}/bin/activate
 flocs-run vlbi delay-calibration \
---slurm-time "48:00:00" \
+--slurm-time "72:00:00" \
 --slurm-queue "normal" \
 --slurm-account lofarvwf \
 --runner toil \
 --scheduler slurm \
---ddf-solsdir $(abspath ../ddf/SOLSDIR) \
---ddf-rundir $(abspath ../ddf) \
---do-subtraction True \
---do-validation True \
+--ddf-solsdir $(realpath ../ddf/SOLSDIR) \
+--ddf-rundir $(realpath ../ddf) \
+--do-subtraction \
+--do-validation \
 --ms-suffix "dp3concat" \
---apply-delay-solutions True \
---do-auto-delay-selection True \
---delay-calibrator $(abspath delay_calibrators.csv) \
-$(abspath ../target/LINC_target_*/results_LINC_target/results)
+--apply-delay-solutions \
+--do-auto-delay-selection \
+--delay-calibrator $(realpath delay_calibrators.csv) \
+$(realpath ../target/LINC_target_*/results_LINC_target/results)
 deactivate
