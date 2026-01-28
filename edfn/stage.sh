@@ -1,4 +1,5 @@
 #!/bin/bash
+#SBATCH -p short
 
 SASID=$1
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn

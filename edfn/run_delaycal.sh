@@ -2,7 +2,7 @@
 #SBATCH -c 1
 #SBATCH --output=delay_%j.out
 #SBATCH --error=delay_%j.err
-#SBATCH -p short
+#SBATCH -p infinite
 
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
 
