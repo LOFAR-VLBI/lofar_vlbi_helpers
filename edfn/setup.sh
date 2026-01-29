@@ -47,7 +47,7 @@ if [[ "$DO_GIT" -eq 1 ]]; then
         if [ -d "$name" ]; then
             (
                 echo "Updating $name..."
-                cd "$name" && git pull
+                cd "$name" && git stash && git pull
             )
         else
             echo "Cloning $name..."
