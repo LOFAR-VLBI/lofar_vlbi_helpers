@@ -3,7 +3,6 @@ from os import path
 import numpy as np
 from casacore.tables import table
 import subprocess
-from glob import glob
 
 def main():
     parser = argparse.ArgumentParser(description="Run LOFAR-VLBI/plot_field.")
