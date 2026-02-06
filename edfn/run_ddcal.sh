@@ -8,7 +8,8 @@
 ######################
 
 # Catalogue
-CAT=/project/lofarvwf/Share/jdejong/output/EUCLID/edfn/lofar_10sqdeg_edfpos_v4.1_gt5.fits
+CAT=$1
+#/project/lofarvwf/Share/jdejong/output/EUCLID/edfn/lofar_10sqdeg_edfpos_v4.1_gt5.fits
 # Directory with MS subbands with in-field solutions applied
 MSDATA=$(realpath "../applycal")
 
