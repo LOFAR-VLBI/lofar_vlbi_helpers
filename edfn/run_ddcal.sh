@@ -11,7 +11,7 @@
 CAT=$1
 #/project/lofarvwf/Share/jdejong/output/EUCLID/edfn/lofar_10sqdeg_edfpos_v4.1_gt5.fits
 # Directory with MS subbands with in-field solutions applied
-MSDATA=$(realpath "../applycal")
+MSDATA=$(realpath "../../applycal")
 
 export TOIL_SLURM_ARGS="--export=ALL -t 72:00:00"
 
