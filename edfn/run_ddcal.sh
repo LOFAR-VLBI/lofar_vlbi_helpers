@@ -89,6 +89,8 @@ toil-cwl-runner \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
 --eval-timeout 4000 \
+--setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:/project/lofarvwf/Software:\$PATH \
+--setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:/project/lofarvwf/Software:\$PYTHONPATH \
 ${VLBI_DATA_ROOT}/workflows/dd-calibration.cwl input.json
 
 ########################

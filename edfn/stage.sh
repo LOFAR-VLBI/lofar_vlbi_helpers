@@ -13,4 +13,5 @@ cd $MASTERDIR/L${SASID}
 singularity exec $SING_IMG python $SOFTWAREDIR/flocs-lta/flocs_lta/flocs_search_lta.py \
 --sasid $SASID \
 --project ALL \
---stage
+--stage \
+--stage-products "both"
