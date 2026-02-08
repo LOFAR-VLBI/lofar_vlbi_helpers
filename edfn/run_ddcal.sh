@@ -26,7 +26,7 @@ SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
 source $SCRIPT_DIR/setup.sh --no-git --no-sing
 VENV=/project/lofarvwf/Share/jdejong/output/EUCLID/edfn/.venv
 source ${VENV}/bin/activate
-export APPTAINER_BIND="${APPTAINER_BIND},/project/lofarvwf/Software/lofar_facet_selfcal/facetselfcal.py:/opt/lofar/pyenv-py3/bin/facetselfcal"
+export APPTAINER_BIND="${APPTAINER_BIND},/project/lofarvwf/Software/lofar_facet_selfcal/facetselfcal:/opt/lofar/pyenv-py3/lib/python3.12/site-packages/facetselfcal"
 
 # Make JSON file
 JSON="input.json"
@@ -89,6 +89,7 @@ toil-cwl-runner \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
 --eval-timeout 4000 \
+--writeLogsFromAllJobs True \
 --setEnv PATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:/project/lofarvwf/Software:\$PATH \
 --setEnv PYTHONPATH=$VLBI_DATA_ROOT/scripts:$LINC_DATA_ROOT/scripts:/project/lofarvwf/Software:\$PYTHONPATH \
 ${VLBI_DATA_ROOT}/workflows/dd-calibration.cwl input.json
