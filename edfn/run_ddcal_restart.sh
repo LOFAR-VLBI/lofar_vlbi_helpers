@@ -11,7 +11,7 @@ VENV=/project/lofarvwf/Share/jdejong/output/EUCLID/edfn/.venv
 
 source ${VENV}/bin/activate
 
-export APPTAINER_BIND="${APPTAINER_BIND},/project/lofarvwf/Software/lofar_facet_selfcal/facetselfcal.py:/opt/lofar/pyenv-py3/bin/facetselfcal"
+export APPTAINER_BIND="${APPTAINER_BIND},/project/lofarvwf/Software/lofar_facet_selfcal/facetselfcal:/opt/lofar/pyenv-py3/lib/python3.12/site-packages/facetselfcal"
 
 export TOIL_SLURM_ARGS="--export=ALL -t 72:00:00"
 

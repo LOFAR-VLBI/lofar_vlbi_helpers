@@ -25,14 +25,14 @@ flocs-run vlbi delay-calibration \
 --slurm-account lofarvwf \
 --runner toil \
 --scheduler slurm \
---ddf-solsdir $(realpath ../ddf/SOLSDIR) \
---ddf-rundir $(realpath ../ddf) \
+--ddf-solsdir $(realpath ../../ddf/SOLSDIR) \
+--ddf-rundir $(realpath ../../ddf) \
 --do-subtraction \
 --do-validation \
 --restart \
 --ms-suffix "dp3concat" \
 --apply-delay-solutions \
 --do-auto-delay-selection \
---delay-calibrator $(realpath delay_calibrators.csv) \
-$(realpath ../target/LINC_target_*/results_LINC_target/results)
+--delay-calibrator $(realpath ../delay_calibrators.csv) \
+$(realpath ../../target/LINC_target_*/results_LINC_target/results)
 deactivate
