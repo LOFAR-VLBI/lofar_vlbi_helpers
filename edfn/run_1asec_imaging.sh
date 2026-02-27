@@ -7,16 +7,12 @@
 ######## INPUT #######
 ######################
 
-# Catalogue
-CAT=$(realpath $1)
-#/project/lofarvwf/Share/jdejong/output/EUCLID/edfn/lofar_10sqdeg_edfpos_v4.1_gt5.fits
+# h5parm solutions
+SOLS=$(realpath $1)
 # Directory with MS subbands with in-field solutions applied
 MSDATA=$(realpath "../applycal")
 
 export TOIL_SLURM_ARGS="--export=ALL -t 72:00:00"
-
-FLUXCUT=0.025 #25 mJy
-NN_MODEL=$PWD/cortexchange
 
 ######################
 ######################
@@ -41,16 +37,13 @@ json="${json%,}]}"
 echo "$json" > "$JSON"
 
 # Add source_catalogue file
-jq --arg path "$CAT" \
+jq --arg path "$SOLS" \
    '. + {
-     "source_catalogue": {
+     "dd_solutions": {
        "class": "File",
        "path": $path
      }
    }' "$JSON" > temp.json && mv temp.json "$JSON"
-
-jq --argjson FLUXCUT "$FLUXCUT" '. + {"peak_flux_cut": $FLUXCUT}' "$JSON" > temp.json && mv temp.json "$JSON"
-jq --arg NN_MODEL "$NN_MODEL" '. + {model_cache: $NN_MODEL}' "$JSON" > temp.json && mv temp.json "$JSON"
 
 ########################
 
@@ -66,11 +59,6 @@ mkdir -p $OUTPUT
 mkdir -p $LOGDIR
 
 ########################
-
-# Download model
-
-python /project/lofarvwf/Software/lofar_facet_selfcal/submods/source_selection/download_neural_network.py --cache_directory cortexchange
-ulimit -S -n 8192
 
 # RUN TOIL
 
@@ -91,7 +79,7 @@ toil-cwl-runner \
 --cleanWorkDir onSuccess \
 --eval-timeout 4000 \
 --stats \
-${VLBI_DATA_ROOT}/workflows/dd-calibration.cwl input.json
+${VLBI_DATA_ROOT}/workflows/image_intermediate_resolution.cwl input.json
 
 ########################
 
