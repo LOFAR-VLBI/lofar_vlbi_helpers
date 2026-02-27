@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --output=ddcal_%j.out
-#SBATCH --error=ddcal_%j.err
+#SBATCH --output=1asec_%j.out
+#SBATCH --error=1asec_%j.err
 #SBATCH -p infinite
 
 ######################
