@@ -1,7 +1,6 @@
 #!/bin/bash
 #SBATCH --output=ddcal_%j.out
 #SBATCH --error=ddcal_%j.err
-#SBATCH -p infinite
 
 ######################
 ######## INPUT #######
@@ -9,13 +8,15 @@
 
 # Catalogue
 CAT=$(realpath $1)
-#/project/lofarvwf/Share/jdejong/output/EUCLID/edfn/lofar_10sqdeg_edfpos_v4.1_gt5.fits
+# Dutch solutions
+DUTCHSOL=$(realpath $2)
+
 # Directory with MS subbands with in-field solutions applied
 MSDATA=$(realpath "../applycal")
 
 export TOIL_SLURM_ARGS="--export=ALL -t 72:00:00"
 
-FLUXCUT=0.025 #25 mJy
+FLUXCUT=0.04 #25 mJy
 NN_MODEL=$PWD/cortexchange
 
 ######################
@@ -24,10 +25,10 @@ NN_MODEL=$PWD/cortexchange
 # SETUP ENVIRONMENT
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
 source $SCRIPT_DIR/setup.sh --no-git --no-sing
+
+# Activate env
 VENV=/project/lofarvwf/Share/jdejong/output/EUCLID/edfn/.venv
 source ${VENV}/bin/activate
-export APPTAINER_BIND="${APPTAINER_BIND},/project/lofarvwf/Software/lofar_facet_selfcal/facetselfcal:/opt/lofar/pyenv-py3/lib/python3.12/site-packages/facetselfcal"
-export APPTAINER_BIND="${APPTAINER_BIND},/project/lofarvwf/Software/pilot/scripts:/opt/lofar/VLBI-cwl/scripts"
 
 # Make JSON file
 JSON="input.json"
@@ -44,6 +45,15 @@ echo "$json" > "$JSON"
 jq --arg path "$CAT" \
    '. + {
      "source_catalogue": {
+       "class": "File",
+       "path": $path
+     }
+   }' "$JSON" > temp.json && mv temp.json "$JSON"
+
+# Add dutch solutions
+jq --arg path "$DUTCHSOL" \
+   '. + {
+     "dd_dutch_solutions": {
        "class": "File",
        "path": $path
      }
@@ -68,15 +78,13 @@ mkdir -p $LOGDIR
 ########################
 
 # Download model
-
 python /project/lofarvwf/Software/lofar_facet_selfcal/submods/source_selection/download_neural_network.py --cache_directory cortexchange
 ulimit -S -n 8192
 
 # RUN TOIL
-
 toil-cwl-runner \
 --no-read-only \
---retryCount 3 \
+--retryCount 6 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \
@@ -90,7 +98,9 @@ toil-cwl-runner \
 --batchSystem slurm \
 --cleanWorkDir onSuccess \
 --eval-timeout 4000 \
+--no-cwl-default-ram \
 --stats \
+--cwl-min-ram "8Gi" \
 ${VLBI_DATA_ROOT}/workflows/dd-calibration.cwl input.json
 
 ########################
