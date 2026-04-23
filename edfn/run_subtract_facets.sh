@@ -1,6 +1,4 @@
 #!/bin/bash
-#SBATCH --output=predim_%j.out
-#SBATCH --error=predim_%j.err
 #SBATCH -p infinite
 
 ######################
