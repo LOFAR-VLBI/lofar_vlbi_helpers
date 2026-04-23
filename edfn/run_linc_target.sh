@@ -1,26 +1,34 @@
 #!/bin/bash
-#SBATCH -c 1
-#SBATCH --output=linc_%j.out
-#SBATCH --error=linc_%j.err
+#SBATCH -c 64 -t 72:00:00 -J LINTar -p normal,infinite
+
+OUTDIR=$PWD
+DATA=$PWD/data
+CAL_SOLUTIONS=$(abspath $1)
+
+RUNDIR=$(realpath ${TMPDIR}/LINCrun)
+mkdir -p ${RUNDIR}
+cd ${RUNDIR}
 
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
-
-CAL_SOLUTIONS=$(abspath $1)
 
 source $SCRIPT_DIR/setup.sh --no-git --no-sing
 
 ulimit -S -n 8192
 
 # Ensure < 168 MHz
-singularity exec $SIMG_CACHE_DIR/$SIMG python ~/scripts/lofar_vlbi_helpers/elais_200h/download_scripts/removebands.py --freqcut 169 --datafolder data
+singularity exec $SIMG_CACHE_DIR/${SIMG}.sif \
+python ~/scripts/lofar_vlbi_helpers/elais_200h/download_scripts/removebands.py \
+--freqcut 168 --datafolder ${DATA}
 
 source ${VENV}/bin/activate
 flocs-run linc target \
---slurm-time "72:00:00" \
---slurm-queue "normal" \
---slurm-account lofarvwf \
---runner toil \
---scheduler slurm \
---output-fullres-data data \
-${CAL_SOLUTIONS}
+--runner cwltool \
+--output-fullres-data \
+--solveralgorithm directioniterative \
+--cal-solutions ${CAL_SOLUTIONS} \
+${DATA}
 deactivate
+
+echo "COPYING ${RUNDIR} to ${OUTDIR}"
+rsync -a ${RUNDIR} ${OUTDIR}
+echo "FINISHED"

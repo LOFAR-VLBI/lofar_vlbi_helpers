@@ -1,16 +1,16 @@
 #!/bin/bash
-#SBATCH --output=ddcal_%j.out
-#SBATCH --error=ddcal_%j.err
+#SBATCH --output=predim_%j.out
+#SBATCH --error=predim_%j.err
+#SBATCH -p infinite
 
 ######################
-######## INPUT #######
+####### INPUT ########
 ######################
 
-CAT=$(realpath $1)
-DUTCHSOL=$(realpath $2)
 MSDATA=$(realpath "../applycal")
-FLUXCUT=0.04 #25 mJy
-NN_MODEL=$PWD/cortexchange
+MODELS=$(realpath "../1asec")
+H5FACETS=$(realpath "../ddcal/h5parm_output/merged.h5")
+SCRATCH='true'
 
 ######################
 ######################
@@ -34,7 +34,6 @@ source ${VENV}/bin/activate
 # Make JSON file
 JSON="input.json"
 
-# Add MS
 json="{\"msin\":["
 for file in "$MSDATA"/*.ms; do
     json="$json{\"class\": \"Directory\", \"path\": \"$file\"},"
@@ -42,30 +41,25 @@ done
 json="${json%,}]}"
 echo "$json" > "$JSON"
 
-# Add source_catalogue file
-jq --arg path "$CAT" \
-   '. + {
-     "source_catalogue": {
-       "class": "File",
-       "path": $path
-     }
-   }' "$JSON" > temp.json && mv temp.json "$JSON"
+MODELPATH=$MAINFOLDER/modelims
+mkdir -p $MODELPATH
+cp $MODELS/*model-fpb.fits $MODELPATH
 
-# Add dutch solutions
-jq --arg path "$DUTCHSOL" \
-   '. + {
-     "dd_dutch_solutions": {
-       "class": "File",
-       "path": $path
-     }
-   }' "$JSON" > temp.json && mv temp.json "$JSON"
+jq --arg path "$MODELPATH" \
+   '. + {"model_image_folder": {"class": "Directory", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
 
-jq --argjson FLUXCUT "$FLUXCUT" '. + {"peak_flux_cut": $FLUXCUT}' "$JSON" > temp.json && mv temp.json "$JSON"
-jq --arg NN_MODEL "$NN_MODEL" '. + {model_cache: $NN_MODEL}' "$JSON" > temp.json && mv temp.json "$JSON"
+jq --arg path "$PWD/merged.h5" \
+   '. + {"h5parm": {"class": "File", "path": $path}}' \
+   "$JSON" > temp.json && mv temp.json "$JSON"
+
+if [ "$SCRATCH" = "true" ]; then
+  jq '. + {tmpdir: "/tmp"}' "$JSON" > temp.json && mv temp.json "$JSON"
+fi
 
 ########################
 
-# Make folders for running toil
+# MAKE TOIL RUNNING STRUCTURE
 WORKDIR=$PWD/workdir
 OUTPUT=$PWD/outdir
 JOBSTORE=$PWD/jobstore
@@ -78,14 +72,12 @@ mkdir -p $LOGDIR
 
 ########################
 
-# Download model
-python /project/lofarvwf/Software/lofar_facet_selfcal/submods/source_selection/download_neural_network.py --cache_directory cortexchange
 ulimit -S -n 8192
 
 # RUN TOIL
 toil-cwl-runner \
 --no-read-only \
---retryCount 6 \
+--retryCount 5 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \
@@ -102,7 +94,7 @@ toil-cwl-runner \
 --no-cwl-default-ram \
 --stats \
 --cwl-min-ram "8Gi" \
-${VLBI_DATA_ROOT}/workflows/dd-calibration.cwl input.json
+${VLBI_DATA_ROOT}/workflows/facet_subtract.cwl $JSON
 
 ########################
 
