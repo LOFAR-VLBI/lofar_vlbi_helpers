@@ -4,7 +4,7 @@
 #SBATCH --error=delay_%j.err
 #SBATCH -p infinite
 
-SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
+SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/lirgs
 
 source $SCRIPT_DIR/setup.sh --no-git --no-sing
 
@@ -17,13 +17,7 @@ flocs-run vlbi delay-calibration \
 --slurm-account lofarvwf \
 --runner toil \
 --scheduler slurm \
---ddf-solsdir $(realpath ../ddf/SOLSDIR) \
---ddf-rundir $(realpath ../ddf) \
---do-subtraction \
---do-validation \
---ms-suffix "dp3concat" \
---apply-delay-solutions \
+--ms-suffix "dp3concat" \ #VERIFY
 --do-auto-delay-selection \
---delay-calibrator $(realpath delay_calibrators.csv) \
 $(realpath ../target/LINC_target_*/results_LINC_target/results)
 deactivate
