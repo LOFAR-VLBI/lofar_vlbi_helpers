@@ -23,7 +23,6 @@ python ~/scripts/lofar_vlbi_helpers/elais_200h/download_scripts/removebands.py \
 source ${VENV}/bin/activate
 flocs-run linc target \
 --runner cwltool \
---output-fullres-data \
 --solveralgorithm directioniterative \
 --cal-solutions ${CAL_SOLUTIONS} \
 ${DATA}

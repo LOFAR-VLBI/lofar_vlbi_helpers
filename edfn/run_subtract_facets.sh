@@ -39,15 +39,11 @@ done
 json="${json%,}]}"
 echo "$json" > "$JSON"
 
-MODELPATH=$MAINFOLDER/modelims
-mkdir -p $MODELPATH
-cp $MODELS/*model-fpb.fits $MODELPATH
-
-jq --arg path "$MODELPATH" \
-   '. + {"model_image_folder": {"class": "Directory", "path": $path}}' \
+jq --arg path "$MODELS" \
+   '. + {"model_image_directory": {"class": "Directory", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 
-jq --arg path "$PWD/merged.h5" \
+jq --arg path "$H5FACETS" \
    '. + {"h5parm": {"class": "File", "path": $path}}' \
    "$JSON" > temp.json && mv temp.json "$JSON"
 

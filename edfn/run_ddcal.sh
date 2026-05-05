@@ -84,7 +84,7 @@ ulimit -S -n 8192
 # RUN TOIL
 toil-cwl-runner \
 --no-read-only \
---retryCount 6 \
+--retryCount 4 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \

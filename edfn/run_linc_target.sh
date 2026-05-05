@@ -1,13 +1,8 @@
 #!/bin/bash
-#SBATCH -c 64 -t 72:00:00 -J LINTar -p normal,infinite
+#SBATCH -J LINTar -p infinite
 
-OUTDIR=$PWD
 DATA=$PWD/data
 CAL_SOLUTIONS=$(abspath $1)
-
-RUNDIR=$(realpath ${TMPDIR}/LINCrun)
-mkdir -p ${RUNDIR}
-cd ${RUNDIR}
 
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
 
@@ -22,13 +17,12 @@ python ~/scripts/lofar_vlbi_helpers/elais_200h/download_scripts/removebands.py \
 
 source ${VENV}/bin/activate
 flocs-run linc target \
---runner cwltool \
+--slurm-time "15:00:00" \
+--slurm-queue "normal" \
+--slurm-account lofarvwf \
+--runner toil \
+--scheduler slurm \
 --output-fullres-data \
---solveralgorithm directioniterative \
 --cal-solutions ${CAL_SOLUTIONS} \
 ${DATA}
 deactivate
-
-echo "COPYING ${RUNDIR} to ${OUTDIR}"
-rsync -a ${RUNDIR} ${OUTDIR}
-echo "FINISHED"
