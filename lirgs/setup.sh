@@ -4,7 +4,7 @@
 export SOFTWAREDIR="/project/lofarvwf/Software"
 export SING_BIND="/project/lofarvwf/"
 export MASTERDIR="/project/lofarvwf/Share/jdejong/output/lirgs"
-export VENV="/project/lofarvwf/Software/venv"
+export VENV="/project/lofarvwf/Software/venv3.12"
 SINGULARITY=https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/containers/flocs_v6.1.0-rc2_znver2_znver2.sif
 
 # OPTIONS
