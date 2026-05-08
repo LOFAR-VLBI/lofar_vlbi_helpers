@@ -11,6 +11,8 @@ Step 9) Run `run_subtract_facets.sh` to split out datasets for each facet.\
 Step 10) Run `extra_selfcal.sh` to perform additional calibration on subtracted facets.\
 Step 11) Run `sva.sh` to apply sidereal visibility averaging on the data.
 
+After these steps, the data can be imaged with `WSClean` and mosaiced with `SWarp`.
+
 For details, see: \
 de Jong et al. 2025a (https://ui.adsabs.harvard.edu/abs/2025A%26A...694A..98D/abstract) \
 de Jong et al. 2025b (https://ui.adsabs.harvard.edu/abs/2025MNRAS.542.3253D/abstract) \
