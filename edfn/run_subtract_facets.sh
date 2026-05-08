@@ -26,7 +26,6 @@ if [[ -n "${BAD_NODES}" ]]; then
 fi
 
 # Activate env
-VENV=/project/lofarvwf/Share/jdejong/output/EUCLID/edfn/.venv
 source ${VENV}/bin/activate
 
 # Make JSON file

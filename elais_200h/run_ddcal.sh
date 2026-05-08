@@ -3,6 +3,8 @@
 #SBATCH --error=ddcal_%j.err
 #SBATCH -p infinite
 
+set -euo pipefail
+
 ######################
 ######## INPUT #######
 ######################
@@ -10,17 +12,19 @@
 # Catalogue
 CAT=$(realpath $1)
 # Directory with MS subbands with in-field solutions applied
-MSDATA=$(realpath $2)
+MSDATA=$(realpath applycal)
 
+export VENV=/project/lofarvwf/Software/venv
 export TOIL_SLURM_ARGS="--export=ALL -t 36:00:00"
-
-FLUXCUT=0.025 #25 mJy
-NN_MODEL=$PWD/cortexchange
-SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
-VENV=/project/lofarvwf/Software/venv
+export FLUXCUT=0.025 #25 mJy
+export NN_MODEL=$PWD/cortexchange
+export SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
 
 ######################
 ######################
+
+mkdir -p ddcal
+cd ddcal
 
 # SETUP ENVIRONMENT
 
@@ -29,25 +33,42 @@ source ${VENV}/bin/activate
 
 mkdir -p software
 cd software
-git clone -b ddcal_validation https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+
+git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+cd VLBI_cwl
+git checkout 98ff43f
+cd ..
+
 git clone https://github.com/jurjen93/lofar_helpers.git
+cd lofar_helpers
+git checkout f8255d0
+cd ..
+
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
+cd lofar_facet_selfcal
+git checkout c4688da
+cd ..
+
 git clone https://git.astron.nl/RD/LINC.git
+cd LINC
+git checkout 322fbb6
+cd ..
 
 mkdir scripts
 cp LINC/scripts/* scripts
 cp VLBI_cwl/scripts/* scripts
 SCRIPTS_PATH=$PWD/scripts
 chmod 755 ${SCRIPTS_PATH}/*
+
 SING_BIND=${SING_BIND}",${SCRIPTS_PATH}:/opt/lofar/DynSpecMS"
 PYPATH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PYTHONPATH
 PTH=${PWD}/VLBI_cwl/scripts:${PWD}/LINC/scripts:\$PATH
+
 cd ../
 
-# set up singularity
+# get singularity
 SIMG=vlbi-cwl.sif
 mkdir -p singularity
-#wget https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/containers/flocs_v5.7.0_znver2_znver2.sif -O singularity/$SIMG
 wget https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/containers/flocs_v6.0.0.alpha_cascadelake_cascadelake.sif -O singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
@@ -95,12 +116,14 @@ jq --arg path "$CAT" \
    }' "$JSON" > temp.json && mv temp.json "$JSON"
 
 singularity exec singularity/$SIMG \
-python /project/lofarvwf/Software/lofar_facet_selfcal/submods/source_selection/download_neural_network.py --cache_directory cortexchange
+python software/lofar_facet_selfcal/submods/source_selection/download_neural_network.py --cache_directory cortexchange
 
 jq --argjson FLUXCUT "$FLUXCUT" '. + {"peak_flux_cut": $FLUXCUT}' "$JSON" > temp.json && mv temp.json "$JSON"
 jq --arg NN_MODEL "$NN_MODEL" '. + {model_cache: $NN_MODEL}' "$JSON" > temp.json && mv temp.json "$JSON"
 
 ########################
+
+# MAKE TOIL STRUCTURE
 
 # Make folders for running toil
 WORKDIR=$PWD/workdir

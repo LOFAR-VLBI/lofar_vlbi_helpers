@@ -3,36 +3,54 @@
 #SBATCH --error=delay_%j.err
 #SBATCH -t 50:00:00
 
+set -euo pipefail
+
 ######################
 #### UPDATE THESE ####
 ######################
 
+VENV=/project/lofarvwf/Software/venv
+export SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
+export DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
+export CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
+export DDFOLDER=$(realpath "ddf")
+export TARGETDATA=$(realpath "target/data")
+export SOLSET=$(realpath "$(ls target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
+
 export TOIL_SLURM_ARGS="--export=ALL -t 12:00:00"
 
-SING_BIND="/project,/project/lofarvwf/Software,/project/lofarvwf/Share,/project/lofarvwf/Public"
-DELAYCAL=/project/lofarvwf/Share/jdejong/output/ELAIS/delaycalibrator.csv
-CONFIG=/project/lofarvwf/Share/jdejong/output/ELAIS/delaysolve_config.txt
-
-VENV=/project/lofarvwf/Software/venv
-
-export DDFOLDER=$(realpath "../ddf")
-export TARGETDATA=$(realpath "../target/data")
-export SOLSET=$(realpath "$(ls ../target/L*_LINC_target/results_LINC_target/cal_solutions.h5)")
-
-#####################
 ######################
+######################
+
+mkdir -p delaycal
+cd delaycal
 
 # set up software
 source ${VENV}/bin/activate
 
 mkdir -p software
 cd software
-git clone -b js-subtract https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
-git clone https://github.com/tikk3r/flocs.git
+
+git clone https://git.astron.nl/RD/VLBI-cwl.git VLBI_cwl
+cd VLBI_cwl
+git checkout 98ff43f
+cd ..
+
 git clone https://github.com/jurjen93/lofar_helpers.git
+cd lofar_helpers
+git checkout f8255d0
+cd ..
+
 git clone https://github.com/rvweeren/lofar_facet_selfcal.git
+cd lofar_facet_selfcal
+git checkout c4688da
+cd ..
+
 git clone https://git.astron.nl/RD/LINC.git
-git clone https://github.com/revoltek/losoto
+cd LINC
+git checkout 322fbb6
+cd ..
+
 mkdir scripts
 cp LINC/scripts/* scripts
 cp VLBI_cwl/scripts/* scripts
@@ -45,7 +63,7 @@ cd ../
 # set up singularity
 export SIMG=vlbi-cwl.sif
 mkdir -p singularity
-cp /project/lofarvwf/Software/singularity/flocs_v5.4.1_znver2_znver2.sif singularity/$SIMG
+wget https://public.spider.surfsara.nl/project/lofarvwf/fsweijen/containers/flocs_v5.4.1_znver2_znver2.sif -O singularity/$SIMG
 mkdir -p singularity/pull
 cp singularity/$SIMG singularity/pull/$SIMG
 
@@ -112,10 +130,6 @@ jq --arg nv "$DDFOLDER" '. + {"ddf_rundir": {"class": "Directory", "path": $nv}}
 jq --arg nv "$DDFOLDER/SOLSDIR" '. + {"ddf_solsdir": {"class": "Directory", "path": $nv}}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"do_subtraction": true}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
 jq '. + {"ms_suffix": ".MS"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-#jq '. + {"phasesol": "TGSSphase_final"}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-#jq '. + {"reference_stationSB": 75}' mslist_VLBI_delay_calibration.json > temp.json && mv temp.json mslist_VLBI_delay_calibration.json
-
-#source ${VENV}/bin/activate
 
 TGSSphase_final_lines=$(singularity exec -B /project/lofarvwf singularity/$SIMG python software/lofar_helpers/h5_merger.py -in=$SOLSET | grep "TGSSphase" | wc -l)
 # Check if the line count is greater than 1
@@ -142,13 +156,12 @@ mkdir -p $WORKDIR
 mkdir -p $OUTPUT
 mkdir -p $LOGDIR
 
-
 ########################
 
 # RUN TOIL
 
 toil-cwl-runner \
---retryCount 1 \
+--retryCount 3 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \

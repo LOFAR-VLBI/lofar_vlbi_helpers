@@ -1,16 +1,13 @@
 from astropy import units as u
 from astropy.table import Table
 from astropy.coordinates import match_coordinates_sky
-from past.utils import old_div
 import numpy as np
 from astropy.wcs import WCS
 from astropy.io import fits
 import matplotlib.pyplot as plt
 import pyregion
-from astropy.visualization.wcsaxes import WCSAxes
 import astropy.units as u
 from glob import glob
-import tables
 from astropy.wcs import utils
 from astropy.coordinates import SkyCoord
 from scipy.interpolate import griddata
