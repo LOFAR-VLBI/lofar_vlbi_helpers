@@ -2,7 +2,7 @@
 
 Step 1) Download LOFAR data from the LTA \
 Step 2) Run `run_linc.sh` for pre-calibration.\
-Step 3) Run `ddf.sh` for obtaining initial Dutch solutions.\
+Step 3) Run `run_ddf.sh` for obtaining initial Dutch solutions.\
 Step 4) Run `run_delaycal.sh` for preparing DI calibration.\
 Step 5) Run `run_dical.sh` for running DI calibration.\
 Step 6) Run `run_ddcal.sh` for running DD calibration. \
