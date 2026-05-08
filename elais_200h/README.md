@@ -1,6 +1,6 @@
 # DATA REDUCTION FOR ELAIS-N1 200hrs
 
-Step 1) Download LOFAR data from the LTA \
+Step 1) Download LOFAR data from the LTA. \
 Step 2) Run `run_linc.sh` for pre-calibration.\
 Step 3) Run `run_ddf.sh` for obtaining initial Dutch solutions.\
 Step 4) Run `run_delaycal.sh` for preparing DI calibration.\
