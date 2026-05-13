@@ -1,8 +1,5 @@
 #!/bin/bash
-#SBATCH -c 1
-#SBATCH --output=delay_%j.out
-#SBATCH --error=delay_%j.err
-#SBATCH -p infinite
+#SBATCH -p infinite -c 1
 
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
 
@@ -10,9 +7,18 @@ source $SCRIPT_DIR/setup.sh --no-git --no-sing
 
 ulimit -S -n 8192
 
+BAD_NODES=$( source ${SCRIPT_DIR}/detect_bad_slurm_nodes.sh )
+
+if [[ -n "${BAD_NODES}" ]]; then
+    export TOIL_SLURM_ARGS="--exclude=${BAD_NODES}"
+fi
+
 source ${VENV}/bin/activate
+
+python ../../run_plot_field.py --ms ../target/*LINC_target_*/results_LINC_target/results/*.dp3concat
+
 flocs-run vlbi delay-calibration \
---slurm-time "72:00:00" \
+--slurm-time "96:00:00" \
 --slurm-queue "normal" \
 --slurm-account lofarvwf \
 --runner toil \
@@ -25,5 +31,5 @@ flocs-run vlbi delay-calibration \
 --apply-delay-solutions \
 --do-auto-delay-selection \
 --delay-calibrator $(realpath delay_calibrators.csv) \
-$(realpath ../target/LINC_target_*/results_LINC_target/results)
+$(realpath ../target/*LINC_target_*/results_LINC_target/results)
 deactivate

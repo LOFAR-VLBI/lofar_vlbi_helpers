@@ -8,14 +8,14 @@ RUNDIR=$(realpath ${TMPDIR}/LINCrun)
 mkdir -p ${RUNDIR}
 cd ${RUNDIR}
 
-SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
+SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers
 
-source $SCRIPT_DIR/setup.sh --no-git --no-sing
+source $SCRIPT_DIR/edfn/setup.sh --no-git --no-sing
 
 ulimit -S -n 8192
 
 singularity exec $SIMG_CACHE_DIR/${SIMG}.sif \
-python ~/scripts/lofar_vlbi_helpers/elais_200h/download_scripts/removebands.py \
+python ${SCRIPT_DIR}/elais_200h/download_scripts/removebands.py \
 --freqcut 168 --datafolder $DATA
 
 # Run LINC calibrator

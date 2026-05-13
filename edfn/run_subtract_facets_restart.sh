@@ -6,13 +6,13 @@ source $SCRIPT_DIR/setup.sh --no-git --no-sing
 
 source ${VENV}/bin/activate
 
-export TOIL_SLURM_ARGS="--export=ALL -t 18:00:00"
+export TOIL_SLURM_ARGS="--export=ALL -t 72:00:00 -p normal,infinite"
 export APPTAINER_CLEANENV=1
 
 BAD_NODES=$( source ${SCRIPT_DIR}/detect_bad_slurm_nodes.sh )
 
 if [[ -n "${BAD_NODES}" ]]; then
-    export TOIL_SLURM_ARGS="${TOIL_SLURM_ARGS} --exclude=${BAD_NODES} -p normal,infinite"
+    export TOIL_SLURM_ARGS="${TOIL_SLURM_ARGS} --exclude=${BAD_NODES}"
 fi
 
 WORKDIR=$PWD/workdir
@@ -26,7 +26,7 @@ ulimit -S -n 8192
 # RUN TOIL
 toil-cwl-runner \
 --no-read-only \
---retryCount 6 \
+--retryCount 5 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \

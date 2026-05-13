@@ -1,7 +1,5 @@
 #!/bin/bash
-#SBATCH --output=1asec_%j.out
-#SBATCH --error=1asec_%j.err
-#SBATCH -p infinite
+#SBATCH -p infinite -c 64
 
 ######################
 ######## INPUT #######
@@ -12,8 +10,6 @@ SOLS=$(realpath $1)
 # Directory with MS subbands with in-field solutions applied
 MSDATA=$(realpath "../applycal")
 
-export TOIL_SLURM_ARGS="--export=ALL -t 72:00:00"
-
 ######################
 ######################
 
@@ -22,8 +18,6 @@ SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
 source $SCRIPT_DIR/setup.sh --no-git --no-sing
 VENV=/project/lofarvwf/Share/jdejong/output/EUCLID/edfn/.venv
 source ${VENV}/bin/activate
-export APPTAINER_BIND="${APPTAINER_BIND},/project/lofarvwf/Software/lofar_facet_selfcal/facetselfcal:/opt/lofar/pyenv-py3/lib/python3.12/site-packages/facetselfcal"
-export APPTAINER_BIND="${APPTAINER_BIND},/project/lofarvwf/Software/pilot/scripts:/opt/lofar/VLBI-cwl/scripts"
 
 # Make JSON file
 JSON="input.json"
@@ -45,7 +39,16 @@ jq --arg path "$SOLS" \
      }
    }' "$JSON" > temp.json && mv temp.json "$JSON"
 
+ncpu=64
+jq --argjson ncpu "$ncpu" '. + {"ncpu": $ncpu}' "$JSON" > temp.json && mv temp.json "$JSON"
+
 ########################
+
+FINALOUT=$PWD/outdir
+mkdir -p $FINALOUT
+cp input.json $TMPDIR
+
+cd $TMPDIR
 
 # Make folders for running toil
 WORKDIR=$PWD/workdir
@@ -61,11 +64,10 @@ mkdir -p $LOGDIR
 ########################
 
 # RUN TOIL
-
+singularity exec ${SING_IMG} \
 toil-cwl-runner \
 --no-read-only \
 --retryCount 3 \
---singularity \
 --disableCaching \
 --logFile full_log.log \
 --writeLogs ${LOGDIR} \
@@ -74,13 +76,18 @@ toil-cwl-runner \
 --jobStore ${JOBSTORE} \
 --workDir ${WORKDIR} \
 --disableAutoDeployment True \
---bypass-file-store \
---batchSystem slurm \
 --cleanWorkDir onSuccess \
 --eval-timeout 4000 \
+--no-container \
 --stats \
+--bypass-file-store \
+--preserve-entire-environment \
+--coordinationDir $PWD \
 ${VLBI_DATA_ROOT}/workflows/image_intermediate_resolution.cwl input.json
 
 ########################
 
-deactivate
+toil stats jobstore > ${FINALOUT}/stats.txt
+cp ${TMPDIR}/*/*.log ${FINALOUT}
+cp -r ${LOGDIR} ${FINALOUT}
+cp -r ${OUTPUT} ${FINALOUT}

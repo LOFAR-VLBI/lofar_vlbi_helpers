@@ -1,14 +1,19 @@
 #!/bin/bash
-#SBATCH -p infinite
+#SBATCH -p infinite -c 1
 
 ######################
 ######## INPUT #######
 ######################
 
+# Catalogue
 CAT=$(realpath $1)
-DUTCHSOL=$(realpath $2)
+#/project/lofarvwf/Share/jdejong/output/EUCLID/edfn/lofar_10sqdeg_edfpos_v4.1_gt5.fits
+# Directory with MS subbands with in-field solutions applied
 MSDATA=$(realpath "../applycal")
-FLUXCUT=0.04 #25 mJy
+
+export TOIL_SLURM_ARGS="--export=ALL -t 12:00:00 -p infinite,normal"
+
+FLUXCUT=0.025 #25 mJy
 NN_MODEL=$PWD/cortexchange
 
 ######################
@@ -17,18 +22,6 @@ NN_MODEL=$PWD/cortexchange
 # SETUP ENVIRONMENT
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
 source $SCRIPT_DIR/setup.sh --no-git --no-sing
-
-export TOIL_SLURM_ARGS="--export=ALL -t 72:00:00 -p normal,infinite"
-
-BAD_NODES=$( source /project/lofarvwf/Share/jdejong/output/EUCLID/edfn/detect_bad_slurm_nodes.sh )
-
-if [[ -n "${BAD_NODES}" ]]; then
-    export TOIL_SLURM_ARGS="${TOIL_SLURM_ARGS} --exclude=${BAD_NODES}"
-fi
-
-# Activate env
-VENV=/project/lofarvwf/Share/jdejong/output/EUCLID/edfn/.venv
-source ${VENV}/bin/activate
 
 # Make JSON file
 JSON="input.json"
@@ -45,15 +38,6 @@ echo "$json" > "$JSON"
 jq --arg path "$CAT" \
    '. + {
      "source_catalogue": {
-       "class": "File",
-       "path": $path
-     }
-   }' "$JSON" > temp.json && mv temp.json "$JSON"
-
-# Add dutch solutions
-jq --arg path "$DUTCHSOL" \
-   '. + {
-     "dd_dutch_solutions": {
        "class": "File",
        "path": $path
      }
@@ -77,14 +61,18 @@ mkdir -p $LOGDIR
 
 ########################
 
+source ${VENV}/bin/activate
+
 # Download model
+
 python /project/lofarvwf/Software/lofar_facet_selfcal/submods/source_selection/download_neural_network.py --cache_directory cortexchange
 ulimit -S -n 8192
 
 # RUN TOIL
+
 toil-cwl-runner \
 --no-read-only \
---retryCount 4 \
+--retryCount 6 \
 --singularity \
 --disableCaching \
 --logFile full_log.log \

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -c 10
+#SBATCH -c 8 -p short
 
 # INPUT
 STAGE_ID_CALIBRATOR=$1
@@ -16,7 +16,7 @@ cd $MASTERDIR/L${SASID}
 # DOWNLOAD CALIBRATOR
 mkdir -p calibrator
 cd calibrator
-singularity exec $SING_IMG python $SOFTWAREDIR/flocs-lta/flocs_lta/flocs_download.py --parallel-downloads 10 $STAGE_ID_CALIBRATOR
+singularity exec $SING_IMG python $SOFTWAREDIR/flocs-lta/flocs_lta/flocs_download.py --parallel-downloads 8 $STAGE_ID_CALIBRATOR
 for CAL in L*; do
   rm -f ${CAL}/*SB*.tar*
   mkdir -p ${CAL}/data
@@ -27,7 +27,7 @@ cd ../
 # DOWNLOAD TARGET
 mkdir -p target
 cd target
-singularity exec $SING_IMG python $SOFTWAREDIR/flocs-lta/flocs_lta/flocs_download.py --parallel-downloads 10 $STAGE_ID_TARGET
+singularity exec $SING_IMG python $SOFTWAREDIR/flocs-lta/flocs_lta/flocs_download.py --parallel-downloads 8 $STAGE_ID_TARGET
 for TARGET in L*; do
   rm -f ${TARGET}/*SB*.tar*
   mkdir -p data

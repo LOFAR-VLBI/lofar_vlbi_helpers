@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p infinite
+#SBATCH -p infinite -c 1
 
 ######################
 ####### INPUT ########
@@ -17,16 +17,13 @@ SCRATCH='true'
 SCRIPT_DIR=/home/lofarvwf-jdejong/scripts/lofar_vlbi_helpers/edfn
 source $SCRIPT_DIR/setup.sh --no-git --no-sing
 
-export TOIL_SLURM_ARGS="--export=ALL -t 72:00:00 -p normal,infinite"
+export TOIL_SLURM_ARGS="--export=ALL -t 48:00:00 -p normal,infinite"
 
-BAD_NODES=$( source /project/lofarvwf/Share/jdejong/output/EUCLID/edfn/detect_bad_slurm_nodes.sh )
+BAD_NODES=$( source ${SCRIPT_DIR}/detect_bad_slurm_nodes.sh )
 
 if [[ -n "${BAD_NODES}" ]]; then
     export TOIL_SLURM_ARGS="${TOIL_SLURM_ARGS} --exclude=${BAD_NODES}"
 fi
-
-# Activate env
-source ${VENV}/bin/activate
 
 # Make JSON file
 JSON="input.json"
@@ -66,6 +63,9 @@ mkdir -p $LOGDIR
 ########################
 
 ulimit -S -n 8192
+
+# Activate env
+source ${VENV}/bin/activate
 
 # RUN TOIL
 toil-cwl-runner \

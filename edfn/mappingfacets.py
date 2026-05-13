@@ -30,4 +30,4 @@ for LNUM in ['L727112', 'L720380']:
                 print(f'mv {ms} /project/lofarvwf/Share/jdejong/output/EUCLID/edfn/{LNUM}/facetsubtract/outdir/facet_{closest_index_dec}_{LNUM}_EDFN.ms')
                 os.system(f'mv {ms} /project/lofarvwf/Share/jdejong/output/EUCLID/edfn/{LNUM}/facetsubtract/outdir/facet_{closest_index_dec}_{LNUM}_EDFN.ms')
         except:
-            pass
+            print(f'ERROR: {ms}')
