@@ -26,10 +26,6 @@ singularity exec $SIMG_CACHE_DIR/${SIMG}.sif \
 python ${SCRIPT_DIR}/elais_200h/download_scripts/removebands.py \
 --freqcut 168 --datafolder ${DATA}
 
-# Fix losoto bug
-export APPTAINER_BIND="${APPTAINER_BIND},${VENV}/bin/losoto:/opt/lofar/pyenv-py3/bin/losoto"
-export APPTAINER_BIND="${APPTAINER_BIND},${VENV}/bin/H5parm_collector.py:/opt/lofar/pyenv-py3/bin/H5parm_collector.py"
-
 source ${VENV}/bin/activate
 flocs-run linc target \
 --slurm-time "15:00:00" \
