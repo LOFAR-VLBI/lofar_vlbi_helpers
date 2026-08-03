@@ -257,7 +257,7 @@ def plot_theoretical_smearing(
         ax.add_patch(patch)
 
     cbar = fig.colorbar(im, ax=ax)
-    cbar.set_label("Smearing", fontsize=16)
+    cbar.set_label("Peak intensity", fontsize=16)
 
     ax.set_xlabel("Right Ascension (J2000)", fontsize=16)
     ax.set_ylabel("Declination (J2000)", fontsize=16)
