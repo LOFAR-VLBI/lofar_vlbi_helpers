@@ -1,16 +1,18 @@
 #!/bin/bash
-#SBATCH -p infinite -c 1
+#SBATCH -p infinite,normal -c 1
 
 ######################
 ######## INPUT #######
 ######################
 
-# h5parm solutions
-SOLS=$(realpath $1)
-# Directory with MS subbands with in-field solutions applied
-MSDATA=$(realpath "../applycal")
+# Directory with facet MS
+MSDATA=$(realpath "./")
+POLYGONS=$(realpath "./")
 
-export TOIL_SLURM_ARGS="--export=ALL -t 96:00:00 -p infinite,normal"
+export TOIL_SLURM_ARGS="--export=ALL -t 12:00:00 -p infinite,normal"
+
+RES=1.2
+PIXSCALE=0.4
 
 ######################
 ######################
@@ -23,13 +25,17 @@ source $SCRIPT_DIR/setup.sh --no-git --no-sing
 JSON="input.json"
 
 jq -n \
-  --arg sols "$SOLS" \
+  --arg resolution "$RES" \
+  --argjson pixel_scale "$PIXSCALE" \
   --args '
     {
-      msin: [$ARGS.positional[] | {class: "Directory", path: .}],
-      dd_solutions: {class: "File", path: $sols},
+      msin: [$ARGS.positional[] | select(endswith(".ms")) | {class: "Directory", path: .}],
+      facet_polygons: [$ARGS.positional[] | select(endswith(".reg")) | {class: "File", path: .}],
+      $resolution,
+      $pixel_scale,
+      ncpu: 4
     }
-  ' "$MSDATA"/*.ms > "$JSON"
+  ' "$MSDATA"/*.ms "$POLYGONS"/*.reg > "$JSON"
 
 ########################
 
@@ -60,7 +66,7 @@ toil-cwl-runner \
 --eval-timeout 4000 \
 --stats \
 --workDir /tmp \
-${VLBI_DATA_ROOT}/workflows/image_intermediate_resolution.cwl input.json
+${VLBI_DATA_ROOT}/workflows/facet_imaging.cwl input.json
 
 ########################
 

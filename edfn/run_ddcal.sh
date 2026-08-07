@@ -26,25 +26,18 @@ source $SCRIPT_DIR/setup.sh --no-git --no-sing
 # Make JSON file
 JSON="input.json"
 
-# Add MS
-json="{\"msin\":["
-for file in "$MSDATA"/*.ms; do
-    json="$json{\"class\": \"Directory\", \"path\": \"$file\"},"
-done
-json="${json%,}]}"
-echo "$json" > "$JSON"
-
-# Add source_catalogue file
-jq --arg path "$CAT" \
-   '. + {
-     "source_catalogue": {
-       "class": "File",
-       "path": $path
-     }
-   }' "$JSON" > temp.json && mv temp.json "$JSON"
-
-jq --argjson FLUXCUT "$FLUXCUT" '. + {"peak_flux_cut": $FLUXCUT}' "$JSON" > temp.json && mv temp.json "$JSON"
-jq --arg NN_MODEL "$NN_MODEL" '. + {model_cache: $NN_MODEL}' "$JSON" > temp.json && mv temp.json "$JSON"
+jq -n \
+  --arg cat "$CAT" \
+  --argjson fluxcut "$FLUXCUT" \
+  --arg nn_model "$NN_MODEL" \
+  --args '
+    {
+      msin: [$ARGS.positional[] | {class: "Directory", path: .}],
+      source_catalogue: {class: "File", path: $cat},
+      peak_flux_cut: $fluxcut,
+      model_cache: $nn_model
+    }
+  ' "$MSDATA"/*.ms > "$JSON"
 
 ########################
 

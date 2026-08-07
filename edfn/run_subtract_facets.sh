@@ -28,24 +28,18 @@ fi
 # Make JSON file
 JSON="input.json"
 
-json="{\"msin\":["
-for file in "$MSDATA"/*.ms; do
-    json="$json{\"class\": \"Directory\", \"path\": \"$file\"},"
-done
-json="${json%,}]}"
-echo "$json" > "$JSON"
-
-jq --arg path "$MODELS" \
-   '. + {"model_image_directory": {"class": "Directory", "path": $path}}' \
-   "$JSON" > temp.json && mv temp.json "$JSON"
-
-jq --arg path "$H5FACETS" \
-   '. + {"h5parm": {"class": "File", "path": $path}}' \
-   "$JSON" > temp.json && mv temp.json "$JSON"
-
-if [ "$SCRATCH" = "true" ]; then
-  jq '. + {tmpdir: "/tmp"}' "$JSON" > temp.json && mv temp.json "$JSON"
-fi
+jq -n \
+  --arg models "$MODELS" \
+  --arg h5 "$H5FACETS" \
+  --arg scratch "$SCRATCH" \
+  --args '
+    {
+      msin: [$ARGS.positional[] | {class: "Directory", path: .}],
+      model_image_directory: {class: "Directory", path: $models},
+      h5parm: {class: "File", path: $h5}
+    }
+    + (if $scratch == "true" then {tmpdir: "/tmp"} else {} end)
+  ' "$MSDATA"/*.ms > "$JSON"
 
 ########################
 
